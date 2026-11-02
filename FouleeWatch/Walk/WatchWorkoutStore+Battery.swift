@@ -21,7 +21,7 @@ extension WatchWorkoutStore {
     }
 }
 
-extension BatteryReading {
+nonisolated extension BatteryReading {
     /// The watch's own gauge. Monitoring is off until an app asks for it, and
     /// the level reads -1 until then.
     @MainActor static func watch() -> BatteryReading {

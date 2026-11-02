@@ -18,7 +18,7 @@ import Foundation
 /// swings for reasons other than running.
 ///
 /// So both speak, in the same words, into `ActivitySwitchDetector`.
-struct ActivityObservation: Equatable, Sendable {
+nonisolated struct ActivityObservation: Equatable, Sendable {
     /// Which of the two produced it (issue #390).
     enum Origin: Equatable, Sendable {
         case coreMotion
@@ -40,7 +40,7 @@ struct ActivityObservation: Equatable, Sendable {
     var origin: Origin = .coreMotion
 }
 
-extension MotionActivityEstimate {
+nonisolated extension MotionActivityEstimate {
     /// Read one CoreMotion estimate as an observation.
     func observation(minimumConfidence: MotionActivityConfidence) -> ActivityObservation {
         ActivityObservation(

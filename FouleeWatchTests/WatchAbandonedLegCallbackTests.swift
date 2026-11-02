@@ -15,7 +15,6 @@ import Testing
 /// second leg makes the first fail **by design**. Foulée read that expected
 /// failure as the death of the outing and ended it, on the second switch, on a
 /// wrist, outdoors.
-@MainActor
 @Suite("Callbacks from an abandoned leg")
 struct WatchAbandonedLegCallbackTests {
     private let base = ManualClock.origin

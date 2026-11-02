@@ -7,7 +7,7 @@ import Foundation
 ///
 /// Hand-written like `WatchRouteSource`: the watch target links no
 /// dependency container, and the real `CMAltimeter` only answers on a wrist.
-struct WatchClimbSource: Sendable {
+nonisolated struct WatchClimbSource: Sendable {
     var updates: @Sendable () -> AsyncStream<Elevation>
 
     static let live = WatchClimbSource {
@@ -39,7 +39,6 @@ struct WatchClimbSource: Sendable {
 /// Spans every leg, as the route does: a change of sport is not a change of
 /// slope. **Writes nothing itself**, and whatever happens here, the outing
 /// goes on.
-@MainActor
 final class WatchClimbStore {
     private(set) var trail = ClimbTrail()
 

@@ -17,9 +17,8 @@ private let waterDeliveryStarted = OSAllocatedUnfairLock(initialState: false)
 enum WatchWaterBackgroundDelivery {
     /// The observer query only lives as long as its store — keep it for the
     /// whole process so deliveries keep landing after the view goes away.
-    @MainActor private static var store: HKHealthStore?
+    private static var store: HKHealthStore?
 
-    @MainActor
     static func start() async {
         #if DEBUG
         // Capture mode (issue #239): no background delivery, no persistent

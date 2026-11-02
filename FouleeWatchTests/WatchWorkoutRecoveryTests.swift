@@ -5,7 +5,6 @@ import Testing
 
 /// Cover for #554: a session that outlived the app is picked up, never
 /// finished behind the wearer's back.
-@MainActor
 @Suite("Watch session recovery")
 struct WatchWorkoutRecoveryTests {
     private func metrics(of store: WatchWorkoutStore) -> WatchWorkoutMetrics? {

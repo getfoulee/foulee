@@ -15,7 +15,7 @@ import SwiftUI
 /// moving, the others are glanced at. « Journée » closes the row, with the
 /// water in it (issue #281): the two answered the same question — how is the
 /// day going — on two pages.
-enum WatchSessionPage: Hashable {
+nonisolated enum WatchSessionPage: Hashable {
     case controls
     case session
     case music

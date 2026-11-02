@@ -8,7 +8,6 @@ import Testing
 /// The link itself is untestable here — it needs a paired iPhone — but
 /// everything that decides *what* goes over it is not: the shape of a snapshot,
 /// the moments that force one, and the interval that spaces the rest.
-@MainActor
 @Suite("Mirror snapshots")
 struct WatchMirrorSnapshotTests {
     private let base = ManualClock.origin

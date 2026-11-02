@@ -8,7 +8,7 @@ import Observation
 /// Hand-written for the same reason as `MotionActivitySource`: the watch
 /// target links no dependency container, and through the real CoreLocation
 /// the store's lifetime rules would only be reachable on a wrist.
-struct WatchRouteSource: Sendable {
+nonisolated struct WatchRouteSource: Sendable {
     /// Asks once, answers whether a position may be read.
     var requestAuthorization: @MainActor () async -> Bool
     /// Usable fixes until the consumer stops iterating.
@@ -31,7 +31,6 @@ struct WatchRouteSource: Sendable {
 /// **Writes nothing itself.** It holds the outing's fixes; `WatchWorkoutStore`
 /// hands them to each leg as it is saved, and whatever happens here, the
 /// outing goes on.
-@MainActor
 @Observable
 final class WatchRouteStore {
     /// Every usable fix of the outing, oldest first. Whole `CLLocation`s, not

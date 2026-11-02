@@ -34,7 +34,7 @@ import os
 /// The one HealthKit path not guarded is
 /// `WatchHydrationNotificationCenter`'s « J'ai bu » action, which is reachable
 /// only from a delivered notification — a capture run schedules none.
-enum WatchScreenshotMode {
+nonisolated enum WatchScreenshotMode {
     /// The argument the capture target passes on launch. The same spelling the
     /// phone uses, because it is the same concept and one string is easier to
     /// keep honest than two; the two apps are separate processes, so nothing is

@@ -18,7 +18,6 @@ import Testing
 /// open item recorded on the issue.
 @Suite("Watch workout collection")
 struct WatchWorkoutCollectionTests {
-    @MainActor
     private func configuration(_ activity: SessionActivity) -> HKWorkoutConfiguration {
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = activity.hkActivityType
@@ -26,7 +25,6 @@ struct WatchWorkoutCollectionTests {
         return configuration
     }
 
-    @MainActor
     private func inferredTypes(_ activity: SessionActivity) -> Set<HKQuantityType> {
         HKLiveWorkoutDataSource(
             healthStore: HKHealthStore(),
@@ -34,7 +32,6 @@ struct WatchWorkoutCollectionTests {
         ).typesToCollect
     }
 
-    @MainActor
     private func collectedTypes(_ activity: SessionActivity) -> Set<HKQuantityType> {
         WatchWorkoutHealthKit.makeDataSource(
             healthStore: HKHealthStore(),
@@ -43,7 +40,6 @@ struct WatchWorkoutCollectionTests {
     }
 
     @Test("Every type the store reads back is collected, for a walk and for a run")
-    @MainActor
     func everyIngestedTypeIsCollected() {
         // The contract that matters: `ingest` reads exactly
         // `collectedQuantityTypes`, so anything missing here is a live counter
@@ -55,7 +51,6 @@ struct WatchWorkoutCollectionTests {
     }
 
     @Test("The inference alone would freeze the step counter on a walk")
-    @MainActor
     func walkingInferenceOmitsStepCount() {
         // This is why the explicit enable exists: measured on device before
         // #223 (the live "pas" counter stayed at 0 while distance and heart
@@ -71,7 +66,6 @@ struct WatchWorkoutCollectionTests {
     }
 
     @Test("A run infers everything the store reads — the answer #223 was missing")
-    @MainActor
     func runningInferenceCoversEveryIngestedType() {
         // The unknown the issue flagged: for `.running` the data source already
         // infers step count too (plus the running-dynamics types Foulée doesn't
@@ -82,7 +76,6 @@ struct WatchWorkoutCollectionTests {
     }
 
     @Test("Enabling never drops a type the source had already inferred")
-    @MainActor
     func enablingIsAdditive() {
         // The "no-op when already inferred" claim in `makeDataSource`, held
         // rather than asserted in prose: a walk keeps its inferred set and

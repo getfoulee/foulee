@@ -17,7 +17,6 @@ import Testing
 /// split writes a permanent workout, so it waits for the new sport to hold —
 /// and is back-dated to where the sport actually changed, so waiting costs no
 /// accuracy.
-@MainActor
 @Suite("Watch session activity switching")
 struct WatchWorkoutActivitySwitchingTests {
     private let base = ManualClock.origin

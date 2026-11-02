@@ -26,7 +26,6 @@ struct WatchWorkoutMetricsTests {
 // these to re-render and to pick the right screen. The store's transitions
 // themselves are covered in WatchWorkoutStoreTests via the injectable
 // WatchWorkoutHealthKit facade.
-@MainActor
 @Suite("WatchWorkoutStore.State")
 struct WatchWorkoutStateTests {
     @Test("Save failure distinguishes the two summary states")

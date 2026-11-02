@@ -283,7 +283,8 @@ let project = Project(
             dependencies: [
                 .target(name: "FouleeKit"),
                 .target(name: "FouleeWatchWidget")
-            ]
+            ],
+            settings: .settings(base: mainActorByDefault)
         ),
         .target(
             name: "FouleeWatchWidget",
@@ -428,7 +429,8 @@ let project = Project(
             ],
             dependencies: [
                 .target(name: "FouleeWatch")
-            ]
+            ],
+            settings: .settings(base: mainActorByDefault)
         )
     ],
     schemes: [

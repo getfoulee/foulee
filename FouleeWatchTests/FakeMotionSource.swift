@@ -10,7 +10,6 @@ import Testing
 /// hard reason: `CMMotionActivityManager.isActivityAvailable()` is `false` on
 /// every simulator, so through real CoreMotion neither the probe's retry (issue
 /// #248) nor the live detection (issue #249) is reachable at all off a wrist.
-@MainActor
 final class FakeMotionSource {
     var isAvailable = false
     /// Flips availability on once this many reads have happened — a device
@@ -87,7 +86,6 @@ extension MotionActivitySource {
 /// Poll until `condition` holds, up to four seconds. A fixed sleep is what
 /// makes a suite flaky; this one returns as soon as the behaviour appears and
 /// only spends the full budget when it never does.
-@MainActor
 func waitUntil(
     _ condition: @MainActor () -> Bool,
     sourceLocation: SourceLocation = #_sourceLocation
@@ -101,7 +99,6 @@ func waitUntil(
 
 /// A pedometer that does what the test says (issue #331). Exists for the same
 /// reason as `FakeMotionSource`: no simulator reports a cadence.
-@MainActor
 final class FakePedometerSource {
     var isAvailable = false
     private(set) var opens = 0

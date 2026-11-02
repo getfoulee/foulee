@@ -2,7 +2,6 @@ import Foundation
 import Testing
 @testable import FouleeWatch
 
-@MainActor
 @Suite("WatchTodayStore")
 struct WatchTodayStoreTests {
     /// The store's signal observers hop to the main actor through a `Task` —

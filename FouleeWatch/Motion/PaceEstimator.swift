@@ -2,7 +2,7 @@ import Foundation
 
 /// The session's distance at one instant, as `HKLiveWorkoutBuilder` hands it
 /// over — cumulative, not a delta.
-struct MovementSample: Equatable, Sendable {
+nonisolated struct MovementSample: Equatable, Sendable {
     var date: Date
     var distanceMeters: Double
 }
@@ -39,7 +39,7 @@ struct MovementSample: Equatable, Sendable {
 ///
 /// Total lag, stated rather than hidden: about **15 s** at 5'00"/km — half the
 /// window plus the filter. That is what « récente » in the name is admitting.
-struct PaceEstimator: Equatable, Sendable {
+nonisolated struct PaceEstimator: Equatable, Sendable {
     /// The shortest distance worth dividing.
     static let windowDistance: Double = 30
     /// And the longest we will wait for it.

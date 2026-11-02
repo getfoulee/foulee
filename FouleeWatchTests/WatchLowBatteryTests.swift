@@ -5,7 +5,6 @@ import Testing
 
 /// An outing on the wrist ends itself before the battery does (issue #614):
 /// a watch that switches off finishes nothing, and the outing is lost to Santé.
-@MainActor
 @Suite("Watch low battery")
 struct WatchLowBatteryTests {
     private func savedFlag(_ store: WatchWorkoutStore) -> Bool? {

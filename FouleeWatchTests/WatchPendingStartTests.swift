@@ -7,7 +7,6 @@ import Testing
 /// `startWatchApp(with:)` hands a configuration to `WKApplicationDelegate`,
 /// which exists before any view does and cannot reach `WatchWorkoutStore` — the
 /// store is `@State` inside `WatchRootView`.
-@MainActor
 @Suite("Pending start from the phone")
 struct WatchPendingStartTests {
     @Test("Nothing is pending until the phone asks")

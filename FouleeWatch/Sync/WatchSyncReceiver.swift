@@ -2,7 +2,7 @@ import FouleeKit
 @preconcurrency import WatchConnectivity
 import WidgetKit
 
-extension Notification.Name {
+nonisolated extension Notification.Name {
     /// Posted (on the main actor) when fresh prefs arrive from the phone.
     static let watchSyncReceived = Notification.Name("watchSyncReceived")
 }
@@ -13,7 +13,7 @@ extension Notification.Name {
 /// `@unchecked Sendable` because an `NSObject` subclass can never be checked
 /// `Sendable` (issue #405); it stores nothing — every callback
 /// decodes and persists what it receives.
-final class WatchSyncReceiver: NSObject, WCSessionDelegate, @unchecked Sendable {
+nonisolated final class WatchSyncReceiver: NSObject, WCSessionDelegate, @unchecked Sendable {
     static let shared = WatchSyncReceiver()
 
     func activate() {

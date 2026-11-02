@@ -11,7 +11,7 @@ import Foundation
 /// `notDetermined` too), so through the real CoreMotion everything downstream —
 /// the retry that opens the stream the moment the device says it can, and the
 /// segment switching of issue #249 — would be reachable only on a wrist.
-struct MotionActivitySource: Sendable {
+nonisolated struct MotionActivitySource: Sendable {
     var isAvailable: @MainActor () -> Bool
     /// Opens the stream; `handler` is called once per estimate.
     ///
@@ -46,7 +46,7 @@ struct MotionActivitySource: Sendable {
     }
 }
 
-extension MotionActivityEstimate {
+nonisolated extension MotionActivityEstimate {
     /// The CoreMotion boundary, in full.
     ///
     /// The two flags are copied as they come, unreduced: they are not mutually

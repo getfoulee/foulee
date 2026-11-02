@@ -11,7 +11,6 @@ import SwiftUI
 ///
 /// State is a tiny three-case enum so the view binds declaratively. Errors
 /// funnel through a single boundary (`runOrTrap`); the rest is happy-path.
-@MainActor
 @Observable
 final class WatchWorkoutStore: NSObject {
     enum State: Equatable {

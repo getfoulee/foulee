@@ -13,7 +13,7 @@ import Foundation
 /// own builder had collected when it closed. The aggregation below stayed
 /// exactly as it was, which is the point of having made it a pure function over
 /// values in the first place.
-struct WatchWorkoutSegment: Equatable, Sendable, Identifiable {
+nonisolated struct WatchWorkoutSegment: Equatable, Sendable, Identifiable {
     /// Identifies the leg. Carried because `merged(_:)` folds lists that may
     /// describe the same one.
     var id: UUID
@@ -129,7 +129,7 @@ struct WatchWorkoutSegment: Equatable, Sendable, Identifiable {
 /// « Course : 2 min » permanently, resetting every time it got interesting.
 /// « Course : 12 min depuis le départ » is the number someone actually wants
 /// mid-outing.
-struct WatchActivityTotals: Equatable, Sendable {
+nonisolated struct WatchActivityTotals: Equatable, Sendable {
     var elapsed: TimeInterval = 0
     var steps: Int = 0
     var distanceMeters: Double = 0
@@ -190,7 +190,7 @@ struct WatchActivityTotals: Equatable, Sendable {
 /// A stretch of an outing — a leg, a sport's share — as VoiceOver says it
 /// (issue #600): duration, distance, pace and cadence in words, the pace left
 /// out where `paceText(overKm:)` would be.
-func spokenStretchText(duration: TimeInterval, distanceKm: Double, cadence: String?) -> String {
+nonisolated func spokenStretchText(duration: TimeInterval, distanceKm: Double, cadence: String?) -> String {
     [
         spokenDurationText(seconds: duration),
         WalkMetric.distance.spokenText(distanceKm),

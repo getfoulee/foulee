@@ -5,7 +5,6 @@ import Testing
 
 /// The phone's session on the wrist (issue #342): what is shown, and the
 /// commands sent back.
-@MainActor
 @Suite("Watch phone session")
 struct WatchPhoneSessionTests {
     private let now = Date(timeIntervalSince1970: 1_754_000_000)

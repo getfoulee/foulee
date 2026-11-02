@@ -8,7 +8,6 @@ import WidgetKit
 /// data is always present locally). The streak is *not* recomputed here — the
 /// watch keeps only a few days of history, so it would undercount long streaks.
 /// It's the value the phone computed and synced (`WatchSyncStore`).
-@MainActor
 @Observable
 final class WatchTodayStore {
     private(set) var steps = 0
