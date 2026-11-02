@@ -607,6 +607,19 @@ most: the composer refuses an eleventh. On CI the watch boards show the
 runner's hour (UTC) in the corner, where watchOS draws its clock.
 Screenshots are only needed at promotion (step 10), never for TestFlight.
 
+### 9.4 App preview (iPhone Duo)
+
+The iPhone Duo previews, French and English, are a HyperFrames project in
+[`appstore-preview/iphone-duo/`](../appstore-preview/iphone-duo/README.md):
+the 6.9" preview's thirty seconds, beats and captions, with the screens laid
+out for the Duo's inner screen. App Store Connect takes only 886 × 1920 for an
+iPhone Duo preview, which matches neither screen, so the film is drawn at that
+size with the Duo inside it rather than recorded from the simulator.
+`appstore-preview/iphone-duo/master.sh` renders both and writes the uploads,
+`renders/foulee-iphone-duo-preview-fr.mp4` and `-en.mp4` (not versioned).
+They are uploaded by hand in App Store Connect, in the iPhone Duo tab of the
+French and the English (U.S.) listings; deliver does not upload previews.
+
 ## 10. Promote to the public App Store
 
 TestFlight is the release's final step on purpose: the store gets a build only

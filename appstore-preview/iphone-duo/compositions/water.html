@@ -1,0 +1,290 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+    }
+    #wt-dim {
+      opacity: 0;
+      background: rgb(20 10 40 / 0.14);
+    }
+    .wt-body {
+      position: absolute;
+      left: 26px;
+      right: 26px;
+      top: 26px;
+    }
+    .wt-hero {
+      margin-top: 16px;
+      padding: 22px 26px;
+      gap: 28px;
+      background: linear-gradient(135deg, rgb(225 245 250 / 0.9), rgb(255 255 255 / 0.75));
+    }
+    .wt-drop {
+      position: relative;
+      width: 104px;
+      height: 130px;
+      flex: none;
+    }
+    .wt-drop svg {
+      position: absolute;
+      inset: 0;
+    }
+    .wt-amount {
+      position: relative;
+      height: 52px;
+    }
+    .wt-amount > span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: nowrap;
+    }
+    .wt-amount .num {
+      font-size: 46px;
+      line-height: 1.1;
+    }
+    .wt-amount small {
+      margin-left: 6px;
+      font-size: 18px;
+      color: var(--ink-2);
+    }
+    .wt-state {
+      position: relative;
+      margin-top: 6px;
+      height: 24px;
+      font-size: 17px;
+      font-weight: 500;
+    }
+    .wt-state > span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .wt-servings {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .wt-servings .card {
+      padding: 16px 6px 14px;
+      text-align: center;
+      border-radius: 20px;
+    }
+    .wt-servings svg {
+      color: #3cc0d6;
+    }
+    .wt-servings b {
+      display: block;
+      margin-top: 8px;
+      font-size: 16px;
+    }
+    .wt-servings span {
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+    .wt-list {
+      margin-top: 14px;
+      padding: 18px 22px 10px;
+    }
+    .wt-list .t,
+    .wt-weekcard .t {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .wt-rows {
+      position: relative;
+      margin-top: 4px;
+      height: 176px;
+      overflow: hidden;
+    }
+    .wt-rowstack {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -44px;
+    }
+    .wt-r {
+      height: 44px;
+      gap: 14px;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .wt-r .h {
+      min-width: 46px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink-2);
+    }
+    .wt-r i {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #3cc0d6;
+    }
+    .wt-r .src {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink-3);
+    }
+    .wt-weekcard {
+      margin-top: 14px;
+      padding: 18px 22px;
+    }
+    .wt-week {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      justify-items: center;
+      text-align: center;
+    }
+    .wt-week .d {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--ink-3);
+    }
+    .wt-week .v {
+      position: relative;
+      height: 18px;
+      width: 40px;
+      margin-top: 3px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .wt-week .v span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+    }
+    .wt-goal {
+      margin-top: 14px;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--water-deep);
+    }
+  </style>
+  <div id="root" data-composition-id="water" data-width="669" data-height="951">
+    <div class="dim" id="wt-dim"></div>
+    <div class="sheet" id="wt-sheet" data-layout-allow-occlusion>
+      <div class="wall"><i></i><i></i><i></i><i></i></div>
+      <div class="wt-body">
+        <div class="row between" style="align-items: flex-start">
+          <div>
+            <div class="eyebrow" data-en="Hydration">Hydratation</div>
+            <div class="large-title" data-en="Today">Aujourd'hui</div>
+          </div>
+          <span class="close"><svg class="icon" width="13" height="13"><use href="#i-x" /></svg></span>
+        </div>
+
+        <div class="card row wt-hero">
+          <div class="wt-drop">
+            <svg viewBox="0 0 104 130">
+              <defs>
+                <clipPath id="wt-clip"><path d="M52 4 C 52 4 6 58 6 86 a 46 42 0 0 0 92 0 C 98 58 52 4 52 4 z" /></clipPath>
+              </defs>
+              <path d="M52 4 C 52 4 6 58 6 86 a 46 42 0 0 0 92 0 C 98 58 52 4 52 4 z" fill="rgb(48 176 199 / 0.12)" />
+              <g clip-path="url(#wt-clip)">
+                <rect id="wt-level" x="0" y="0" width="104" height="130" fill="url(#g-water)" />
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div class="wt-amount" data-layout-allow-overlap>
+              <span id="wt-a1"><b class="num" id="wt-liters">0</b><small data-en="/ 2.0 L">/ 2 L</small></span>
+            </div>
+            <div class="wt-state" data-layout-allow-overlap>
+              <span class="row" id="wt-late" style="color: var(--ink-2)"><svg class="icon" width="16" height="16"><use href="#i-timer" /></svg><span data-en="One glass behind">Un verre de retard</span></span>
+              <span class="row" id="wt-ok" style="opacity: 0"><svg class="icon" width="16" height="16" style="color: var(--success)"><use href="#i-check" /></svg><span data-en="Right on pace">Pile dans ton rythme</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wt-servings">
+          <div class="card"><svg class="icon" width="22" height="22" style="transform: scale(0.8)"><use href="#i-glass" /></svg><b>150 mL</b><span data-en="Small glass">Petit verre</span></div>
+          <div class="card" id="wt-250"><svg class="icon" width="22" height="22"><use href="#i-glass" /></svg><b>250 mL</b><span data-en="Glass">Verre</span></div>
+          <div class="card"><svg class="icon" width="22" height="26"><use href="#i-glass" /></svg><b>400 mL</b><span data-en="Large glass">Grand verre</span></div>
+          <div class="card"><svg class="icon" width="22" height="28"><use href="#i-glass" /></svg><b>500 mL</b><span data-en="Bottle">Bouteille</span></div>
+        </div>
+
+        <div class="card wt-list">
+          <div class="t" data-en="Glass by glass">Verre par verre</div>
+          <div class="wt-rows">
+            <div class="wt-rowstack" id="wt-stack">
+              <div class="row wt-r" id="wt-new"><span class="h" data-en="12:47 PM">12:47</span><i></i>250 mL<span class="src">Foulée</span></div>
+              <div class="row wt-r"><span class="h" data-en="11:20 AM">11:20</span><i></i>250 mL<span class="src">Foulée</span></div>
+              <div class="row wt-r"><span class="h" data-en="10:05 AM">10:05</span><i></i>250 mL<span class="src">Foulée</span></div>
+              <div class="row wt-r"><span class="h" data-en="9:10 AM">09:10</span><i></i>250 mL<span class="src">Foulée</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card wt-weekcard">
+          <div class="t" data-en="This week">Cette semaine</div>
+          <div class="wt-week" id="wt-week"></div>
+          <div class="row wt-goal"><svg class="icon" width="13" height="13"><use href="#i-check" /></svg><span data-en="Goal met 2/5 · 1.7 L a day on average">Objectif tenu 2/5 · 1,7 L par jour en moyenne</span></div>
+        </div>
+      </div>
+      <i class="tap" id="wt-tap" style="left: 222px; top: 330px"></i>
+    </div>
+  </div>
+  <script>
+    Foulee.apply();
+    const letters = Foulee.weekdays();
+    const week = [1.8, 2.1, 1.6, 2, 0.75, 0, 0].map((l, i) => [letters[i], l]);
+    const host = document.querySelector("#wt-week");
+    week.forEach(([d, l], i) => {
+      const share = Math.min(l / 2, 1) * 100;
+      const arc = l
+        ? `<circle ${i === 4 ? 'id="wt-today"' : ""} cx="24" cy="24" r="19" fill="none" stroke="#30b0c7" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="${100 - share}" transform="rotate(-90 24 24)" />`
+        : "";
+      const fill = l >= 2 ? "rgb(48 176 199 / 0.14)" : "none";
+      const label = i === 4
+        ? `<span id="wt-v-before">${Foulee.dec(0.8, 1)}</span><span id="wt-v-after" style="opacity:0">${Foulee.t("1", "1.0")}</span>`
+        : `<span>${l ? Foulee.t(String(l).replace(".", ","), l.toFixed(1)) : "&nbsp;"}</span>`;
+      host.insertAdjacentHTML("beforeend", `<div><svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="${fill}" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" />${arc}</svg><div class="d">${d}</div><div class="v" data-layout-allow-overlap>${label}</div></div>`);
+    });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#wt-dim", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0);
+    tl.fromTo("#wt-sheet", { y: 951 }, { y: 0, duration: 0.55, ease: "expo.out" }, 0);
+
+    // Litres as the app writes them: « 0,75 », « 1 » in French; « 0.75 », « 1.0 » in English.
+    const fmt = (v) => {
+      const r = Math.round(v * 100) / 100;
+      if (Foulee.en) return Number.isInteger(r) ? r.toFixed(1) : String(r);
+      return String(r).replace(".", ",");
+    };
+    const l = { v: 0 };
+    tl.fromTo(l, { v: 0 }, {
+      v: 0.75, duration: 0.7, ease: "power2.out",
+      onUpdate: () => { document.querySelector("#wt-liters").textContent = fmt(l.v); },
+    }, 0.35);
+    // The drop's level: 130 pt tall, filled from the bottom.
+    tl.fromTo("#wt-level", { attr: { y: 130 } }, { attr: { y: 130 - 0.375 * 112 - 10 }, duration: 0.7, ease: "power2.out" }, 0.35);
+
+    // Tap « 250 mL »: a glass more, right on pace.
+    tl.fromTo("#wt-tap", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.16, ease: "power2.out" }, 1.2);
+    tl.to("#wt-250", { scale: 0.95, duration: 0.09, yoyo: true, repeat: 1 }, 1.3);
+    tl.to("#wt-tap", { opacity: 0, duration: 0.15 }, 1.48);
+    const l2 = { v: 0.75 };
+    tl.fromTo(l2, { v: 0.75 }, {
+      v: 1, duration: 0.55, ease: "power2.out", immediateRender: false,
+      onUpdate: () => { document.querySelector("#wt-liters").textContent = fmt(l2.v); },
+    }, 1.4);
+    tl.to("#wt-level", { attr: { y: 130 - 0.5 * 112 - 10 }, duration: 0.55, ease: "power2.out" }, 1.4);
+    tl.to("#wt-late", { opacity: 0, y: -6, duration: 0.18 }, 1.45);
+    tl.fromTo("#wt-ok", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }, 1.55);
+    tl.fromTo("#wt-stack", { y: 0 }, { y: 44, duration: 0.45, ease: "power3.out" }, 1.45);
+    tl.fromTo("#wt-new", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.55);
+    tl.to("#wt-today", { attr: { "stroke-dashoffset": 50 }, duration: 0.5, ease: "power2.out" }, 1.45);
+    tl.to("#wt-v-before", { opacity: 0, duration: 0.15 }, 1.6);
+    tl.to("#wt-v-after", { opacity: 1, duration: 0.15 }, 1.62);
+    window.__timelines["water"] = tl;
+  </script>
+</template>

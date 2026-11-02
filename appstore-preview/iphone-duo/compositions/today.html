@@ -1,0 +1,354 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+    }
+    /* Aujourd'hui, in the 640 pt column of the inner screen. */
+    .td-head {
+      top: 60px;
+    }
+    .td-head .row {
+      align-items: flex-end;
+    }
+    .td-streak {
+      gap: 4px;
+      margin-right: 14px;
+      font-size: 22px;
+      color: var(--ink);
+    }
+    .td-streak svg {
+      color: #ff9500;
+    }
+    .td-person {
+      color: #b05ef0;
+    }
+    .td-hero {
+      top: 144px;
+    }
+    .td-hero .card {
+      padding: 22px;
+    }
+    .td-ringbox {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      flex: none;
+    }
+    .td-ringbox svg.rings {
+      position: absolute;
+      inset: 0;
+    }
+    .td-ringbox .mid {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b05ef0;
+    }
+    .td-herotext {
+      margin-left: 26px;
+    }
+    .td-herotext .lead {
+      margin-top: 10px;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.22;
+    }
+    .td-herotext .lead b {
+      font-weight: 700;
+      color: var(--success);
+    }
+    .td-weather {
+      margin-top: 8px;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+    .td-weather svg {
+      color: #ff9f0a;
+    }
+    .td-actions {
+      margin-top: 20px;
+      gap: 12px;
+    }
+    .td-actions .button {
+      flex: 1;
+    }
+    .td-bell {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      background: rgb(29 18 51 / 0.07);
+    }
+    .td-stats {
+      top: 404px;
+    }
+    .td-stats .card {
+      padding: 16px 22px 20px;
+    }
+    .td-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      row-gap: 16px;
+      margin-top: 16px;
+    }
+    .td-grid .k {
+      gap: 5px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .td-grid .v {
+      position: relative;
+      height: 36px;
+      margin-top: 4px;
+    }
+    .td-grid .v > span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: nowrap;
+    }
+    .td-grid .num {
+      font-size: 30px;
+    }
+    .td-grid small {
+      margin-left: 4px;
+      font-size: 14px;
+      color: var(--ink-3);
+      font-family: var(--font);
+      font-weight: 500;
+    }
+    .td-water {
+      top: 628px;
+    }
+    .td-water .card {
+      padding: 18px 22px;
+    }
+    .td-water .h {
+      gap: 7px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .td-water .h svg {
+      color: var(--water);
+    }
+    .td-glasses {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .td-glasses span {
+      position: relative;
+      height: 40px;
+      border: 1.5px solid rgb(48 176 199 / 0.35);
+      border-radius: 4px 4px 9px 9px;
+      clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+      background: rgb(48 176 199 / 0.06);
+      overflow: hidden;
+    }
+    .td-glasses span i {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #46c6db, #2aa3ba);
+      transform-origin: 50% 100%;
+    }
+    .td-water .foot {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--ink-2);
+      gap: 6px;
+    }
+    .td-drank {
+      gap: 5px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #3cc0d6, #1f9db3);
+    }
+    .td-week {
+      top: 800px;
+    }
+    .td-week .card {
+      padding: 18px 22px;
+    }
+    .td-week .h {
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .td-week .h svg {
+      color: #b05ef0;
+    }
+    .td-weekrings {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+    }
+  </style>
+  <div id="root" data-composition-id="today" data-width="669" data-height="951">
+    <div class="app">
+      <div class="wall"><i></i><i></i><i></i><i></i></div>
+      <div class="status"><span>9:41</span><span class="bars"><span class="signal"><b></b><b></b><b></b><b></b></span><span class="battery"></span></span></div>
+
+      <div class="column td-head">
+        <div class="row between">
+          <div>
+            <div class="eyebrow" data-en="Friday, October 9">Vendredi 9 octobre</div>
+            <div class="large-title" data-en="Today">Aujourd'hui</div>
+          </div>
+          <div class="row" style="margin-bottom: 4px">
+            <span class="row td-streak num"><svg class="icon" width="22" height="22"><use href="#i-flame" /></svg>12</span>
+            <svg class="icon td-person" width="34" height="34"><use href="#i-person" /></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="column td-hero">
+        <div class="card">
+          <div class="row">
+            <div class="td-ringbox">
+              <svg class="rings" viewBox="0 0 150 150">
+                <g transform="rotate(-90 75 75)">
+                  <circle cx="75" cy="75" r="67" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="13" />
+                  <circle cx="75" cy="75" r="49" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="13" />
+                  <circle id="td-outer" cx="75" cy="75" r="67" fill="none" stroke="url(#g-accent)" stroke-width="13" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                  <circle id="td-inner" cx="75" cy="75" r="49" fill="none" stroke="url(#g-activity)" stroke-width="13" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                </g>
+              </svg>
+              <div class="mid"><svg class="icon" width="34" height="34"><use href="#i-feet" /></svg></div>
+            </div>
+            <div class="td-herotext">
+              <span class="chip purple"><svg class="icon" width="13" height="13"><use href="#i-bell" /></svg><span data-en="Starts in 25 min">Départ dans 25 min</span></span>
+              <div class="lead" data-en="<b>18 min</b> of activity<br />to go">Encore <b>18 min</b><br />d'activité</div>
+              <div class="row td-weather"><svg class="icon" width="17" height="17"><use href="#i-sun" /></svg><span data-en="18° · Sunny">18° · Ensoleillé</span></div>
+            </div>
+          </div>
+          <div class="row td-actions">
+            <div class="button"><svg class="icon" width="17" height="17"><use href="#i-play" /></svg><span data-en="Start your workout">Démarrer ta sortie</span></div>
+            <div class="td-bell"><svg class="icon" width="21" height="21"><use href="#i-bell" /></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column td-stats">
+        <div class="card">
+          <div class="segmented">
+            <i class="thumb" id="td-thumb" style="width: calc(50% - 2px)"></i>
+            <span data-en="Day">Jour</span><span data-en="Week">Semaine</span>
+          </div>
+          <div class="td-grid">
+            <div>
+              <div class="row k" style="color: var(--steps)"><svg class="icon" width="16" height="16"><use href="#i-feet" /></svg><span data-en="Steps">Pas</span></div>
+              <div class="v" data-layout-allow-overlap>
+                <span id="td-day-steps"><b class="num" id="td-steps">0</b><small data-en="/ 8,000">/ 8 000</small></span>
+                <span class="td-wk"><b class="num" data-en="38,912">38 912</b></span>
+              </div>
+            </div>
+            <div>
+              <div class="row k" style="color: var(--minutes)"><svg class="icon" width="16" height="16"><use href="#i-timer" /></svg><span data-en="Minutes">Minutes</span></div>
+              <div class="v" data-layout-allow-overlap>
+                <span id="td-day-min"><b class="num" id="td-min">0</b><small>/ 30</small></span>
+                <span class="td-wk"><b class="num" data-en="2 hr, 20 min">2 h 20</b></span>
+              </div>
+            </div>
+            <div>
+              <div class="row k" style="color: var(--distance)"><svg class="icon" width="16" height="16"><use href="#i-pin" /></svg><span data-en="Distance">Distance</span></div>
+              <div class="v" data-layout-allow-overlap>
+                <span id="td-day-km"><b class="num" id="td-km">0</b><small>km</small></span>
+                <span class="td-wk"><b class="num" data-en="27.6">27,6</b><small>km</small></span>
+              </div>
+            </div>
+            <div>
+              <div class="row k" style="color: var(--calories)"><svg class="icon" width="16" height="16"><use href="#i-flame" /></svg><span data-en="Calories">Calories</span></div>
+              <div class="v" data-layout-allow-overlap>
+                <span id="td-day-kcal"><b class="num" id="td-kcal">0</b><small>kcal</small></span>
+                <span class="td-wk"><b class="num" data-en="1,692">1 692</b><small>kcal</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column td-water">
+        <div class="card">
+          <div class="row between">
+            <span class="row h"><svg class="icon" width="18" height="18"><use href="#i-drop" /></svg><span data-en="Hydration">Hydratation</span></span>
+            <span class="num muted" style="font-size: 17px; font-weight: 700" data-en="0.75 / 2.0 L">0,75 / 2 L</span>
+          </div>
+          <div class="td-glasses">
+            <span><i id="td-g1"></i></span><span><i id="td-g2"></i></span><span><i id="td-g3"></i></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="row between foot">
+            <span class="row" style="gap: 6px"><svg class="icon" width="15" height="15"><use href="#i-timer" /></svg><span data-en="One glass behind">Un verre de retard</span></span>
+            <span class="row td-drank"><svg class="icon" width="14" height="14"><use href="#i-drop" /></svg><span data-en="Had a glass">J'ai bu</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="column td-week">
+        <div class="card">
+          <div class="row between">
+            <span class="row h"><svg class="icon" width="18" height="18"><use href="#i-cal" /></svg><span data-en="Your week">Ta semaine</span></span>
+            <svg class="icon" width="16" height="16" style="color: #b05ef0"><use href="#i-chev-r" /></svg>
+          </div>
+          <div class="td-weekrings">
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgb(52 199 89 / 0.15)" stroke="url(#g-accent)" stroke-width="5" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" /><circle cx="22" cy="22" r="18" fill="none" stroke="url(#g-accent)" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="72 100" transform="rotate(-90 22 22)" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgb(52 199 89 / 0.15)" stroke="url(#g-accent)" stroke-width="5" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgb(52 199 89 / 0.15)" stroke="url(#g-accent)" stroke-width="5" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" /><circle id="td-today-ring" cx="22" cy="22" r="18" fill="none" stroke="url(#g-accent)" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" transform="rotate(-90 22 22)" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" /></svg>
+          </div>
+        </div>
+      </div>
+
+      <i class="tap" id="td-tap" style="left: 474px; top: 437px"></i>
+    </div>
+  </div>
+  <script>
+    Foulee.apply();
+    const tl = gsap.timeline({ paused: true });
+    const nb = Foulee.nb;
+    const count = (sel, from, to, at, dur, fmt) => {
+      const o = { v: from };
+      tl.fromTo(o, { v: from }, {
+        v: to, duration: dur, ease: "power2.out",
+        onUpdate: () => { document.querySelector(sel).textContent = fmt(o.v); },
+      }, at);
+    };
+
+    // The rings draw as the screen appears behind the onboarding.
+    tl.fromTo("#td-outer", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 47 }, duration: 1.1, ease: "power3.out" }, 0.25);
+    tl.fromTo("#td-inner", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 60 }, duration: 1.1, ease: "power3.out" }, 0.4);
+    tl.fromTo("#td-today-ring", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 60 }, duration: 0.9, ease: "power3.out" }, 0.5);
+    count("#td-steps", 0, 4218, 0.25, 1.1, nb);
+    count("#td-min", 0, 12, 0.3, 1.0, nb);
+    count("#td-km", 0, 3.1, 0.3, 1.0, (v) => Foulee.dec(v, 1));
+    count("#td-kcal", 0, 214, 0.3, 1.0, nb);
+    ["#td-g1", "#td-g2", "#td-g3"].forEach((id, i) => {
+      tl.fromTo(id, { scaleY: 0 }, { scaleY: 0.86, duration: 0.45, ease: "power2.out" }, 0.55 + i * 0.12);
+    });
+
+    // Tap « Semaine »: the thumb slides and the week's totals replace the day's.
+    tl.fromTo("#td-tap", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.16, ease: "power2.out" }, 1.7);
+    tl.to("#td-tap", { opacity: 0, scale: 1.2, duration: 0.18 }, 1.95);
+    tl.fromTo("#td-thumb", { x: 0 }, { x: 276, duration: 0.32, ease: "power3.inOut" }, 1.8);
+    tl.fromTo(".td-wk", { opacity: 0, y: 10, filter: "blur(4px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.04 }, 1.9);
+    tl.to(["#td-day-steps", "#td-day-min", "#td-day-km", "#td-day-kcal"], { opacity: 0, y: -10, filter: "blur(4px)", duration: 0.2, ease: "power2.in", stagger: 0.04 }, 1.84);
+
+    window.__timelines["today"] = tl;
+  </script>
+</template>

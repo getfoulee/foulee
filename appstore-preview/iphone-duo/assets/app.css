@@ -1,0 +1,346 @@
+/* Foulée's light theme, redrawn in CSS for the iPhone Duo preview.
+   One CSS pixel is one point of the Duo's inner screen (669 × 951 pt,
+   2007 × 2853 px at 3x), so every size below is the app's own point size.
+   Colours come from Foulee/DesignSystem/FouleeColor.swift and the web site's
+   light palette (getfoulee/web src/styles/global.css). */
+
+:root {
+  --accent-start: #d97aff;
+  --accent-mid: #bf5af2;
+  --accent-end: #7c3aed;
+  --button-start: #9d4edd;
+  --accent-gradient: linear-gradient(135deg, var(--accent-start), var(--accent-mid) 50%, var(--accent-end));
+  --button-gradient: linear-gradient(135deg, var(--button-start), var(--accent-end));
+  --streak-gradient: linear-gradient(135deg, #ff9f0a, #c85400);
+  --activity-gradient: linear-gradient(135deg, #239f42, #34c759 50%, #188a36);
+
+  --ink: #1d1233;
+  --ink-2: rgb(29 18 51 / 0.62);
+  --ink-3: rgb(29 18 51 / 0.45);
+  --track: rgb(29 18 51 / 0.07);
+  --hairline: rgb(76 40 130 / 0.1);
+  --card: rgb(255 255 255 / 0.74);
+  --card-strong: rgb(255 255 255 / 0.9);
+  --card-border: rgb(255 255 255 / 0.85);
+  --card-shadow: 0 6px 18px rgb(80 40 140 / 0.08);
+
+  --steps: #bf5af2;
+  --minutes: #24a148;
+  --distance: #0a84ff;
+  --calories: #ff9500;
+  --walk: #32ade6;
+  --run: #ff9500;
+  --water: #30b0c7;
+  --water-deep: #1f9db3;
+  --success: #24a148;
+  --danger: #ff3b30;
+
+  --font: "Inter", sans-serif;
+  --font-num: "Nunito", "Inter", sans-serif;
+}
+
+/* ---------- A screen of the app ---------- */
+
+.app {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font);
+  color: var(--ink);
+  background: #fbf7ff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The Wallpaper: soft blobs that stretch with the window (D4 of ADR 0015). */
+.app .wall {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.app .wall i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+}
+.app .wall i:nth-child(1) { width: 520px; height: 460px; left: -170px; top: -150px; background: #f3cdff; opacity: 0.95; }
+.app .wall i:nth-child(2) { width: 460px; height: 420px; right: -170px; top: 160px; background: #e6d2ff; opacity: 0.85; }
+.app .wall i:nth-child(3) { width: 440px; height: 420px; left: -180px; bottom: 60px; background: #d6e4ff; opacity: 0.8; }
+.app .wall i:nth-child(4) { width: 460px; height: 420px; right: -160px; bottom: -150px; background: #ffe0f0; opacity: 0.9; }
+
+/* Status bar of the inner screen: no Dynamic Island, a camera hole. */
+.status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 34px 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  z-index: 5;
+}
+.status .bars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status .signal {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.6px;
+  height: 11px;
+}
+.status .signal b {
+  width: 3px;
+  border-radius: 1px;
+  background: var(--ink);
+}
+.status .signal b:nth-child(1) { height: 4px; }
+.status .signal b:nth-child(2) { height: 6px; }
+.status .signal b:nth-child(3) { height: 8.5px; }
+.status .signal b:nth-child(4) { height: 11px; }
+.status .battery {
+  position: relative;
+  width: 24px;
+  height: 11.5px;
+  border: 1.2px solid rgb(29 18 51 / 0.4);
+  border-radius: 3.5px;
+  padding: 1.4px;
+}
+.status .battery::before {
+  content: "";
+  display: block;
+  height: 100%;
+  border-radius: 1.5px;
+  background: var(--ink);
+}
+.status .battery::after {
+  content: "";
+  position: absolute;
+  right: -3.5px;
+  top: 3px;
+  width: 1.6px;
+  height: 3.6px;
+  border-radius: 0 1px 1px 0;
+  background: rgb(29 18 51 / 0.4);
+}
+
+/* The reading column: 640 pt at most, a 20 pt gutter (ScreenColumn.swift). */
+.column {
+  position: absolute;
+  left: 50%;
+  width: 640px;
+  margin-left: -320px;
+  padding: 0 20px;
+}
+
+.eyebrow {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.large-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+.title2 { font-size: 22px; font-weight: 700; letter-spacing: -0.015em; }
+.title3 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.headline { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.body { font-size: 17px; }
+.callout { font-size: 16px; }
+.subhead { font-size: 15px; }
+.footnote { font-size: 13px; }
+.caption { font-size: 12px; }
+.muted { color: var(--ink-2); }
+.faint { color: var(--ink-3); }
+.num {
+  font-family: var(--font-num);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.card {
+  position: relative;
+  background: var(--card);
+  border: 0.5px solid var(--card-border);
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+}
+
+.row { display: flex; align-items: center; }
+.between { justify-content: space-between; }
+.grow { flex: 1; }
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 54px;
+  border-radius: 27px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  background: var(--button-gradient);
+  box-shadow: 0 8px 20px rgb(124 58 237 / 0.3);
+}
+.button.grey {
+  color: var(--ink);
+  background: rgb(29 18 51 / 0.07);
+  box-shadow: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.chip.green { color: var(--success); background: rgb(52 199 89 / 0.15); }
+.chip.purple { color: #9b3ddb; background: rgb(191 90 242 / 0.13); }
+
+/* Segmented picker */
+.segmented {
+  position: relative;
+  display: flex;
+  height: 34px;
+  padding: 2px;
+  border-radius: 10px;
+  background: rgb(29 18 51 / 0.06);
+}
+.segmented span {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+.segmented .thumb {
+  position: absolute;
+  z-index: 0;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+}
+
+/* Day chips (L M M J V S D) */
+.days { display: flex; gap: 10px; }
+.day {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid rgb(29 18 51 / 0.08);
+  position: relative;
+  overflow: hidden;
+}
+.day .on {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d97aff, #a24ee8);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+}
+.day em {
+  position: relative;
+  font-style: normal;
+}
+.day .on + em { color: #fff; }
+
+/* Toggle */
+.toggle {
+  position: relative;
+  width: 51px;
+  height: 31px;
+  border-radius: 16px;
+  background: #34c759;
+}
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
+}
+
+/* The finger: a soft disc that presses where the viewer would tap. */
+.tap {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.55);
+  border: 1.5px solid rgb(255 255 255 / 0.9);
+  box-shadow: 0 4px 14px rgb(60 20 110 / 0.25);
+  opacity: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+/* A sheet on the inner screen: a card inset from the sides and the top, over
+   a dimmed parent (the composer trims the same band: 320 px top, 24 px sides). */
+.dim {
+  position: absolute;
+  inset: 0;
+  background: rgb(20 10 40 / 0.22);
+  opacity: 0;
+  z-index: 20;
+}
+.sheet {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 58px;
+  bottom: 0;
+  border-radius: 38px 38px 0 0;
+  overflow: hidden;
+  z-index: 21;
+  background: #fbf7ff;
+  box-shadow: 0 -6px 30px rgb(40 10 80 / 0.12);
+}
+.close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(29 18 51 / 0.07);
+  color: var(--ink-2);
+}
+
+svg.icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+}

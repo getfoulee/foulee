@@ -1,0 +1,115 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+      font-family: "Inter", sans-serif;
+      pointer-events: none;
+    }
+    .cap {
+      position: absolute;
+      left: 62px;
+      right: 56px;
+      top: 150px;
+    }
+    .cap .eb {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #b05ef0;
+    }
+    .cap .hd {
+      margin-top: 18px;
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: #1d1233;
+    }
+    .cap .hd span {
+      display: inline-block;
+    }
+    .cap .hd .a {
+      background: linear-gradient(135deg, #cf74f8, #8b3fe8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  </style>
+  <!-- One caption per beat, the same words as the 6.9" preview. Times are
+       local to this host, which starts at 2 s on the film. -->
+  <div id="root" data-composition-id="captions" data-width="886" data-height="1920">
+    <div id="cap-1" class="cap clip" data-start="0.3" data-duration="3.12">
+      <div class="eb" data-en="Welcome">Bienvenue</div>
+      <div class="hd" data-en='<span>Ready</span> <span>in</span> <span class="a">three</span> <span class="a">steps.</span>'><span>Prêt</span> <span>en</span> <span class="a">trois</span> <span class="a">étapes.</span></div>
+    </div>
+    <div id="cap-2" class="cap clip" data-start="3.42" data-duration="2.9">
+      <div class="eb" data-en="Home">Accueil</div>
+      <div class="hd" data-en='<span>Each</span> <span>ring,</span> <span class="a">its</span> <span class="a">own</span> <span class="a">color.</span>'><span>Chaque</span> <span>anneau,</span> <span class="a">sa</span> <span class="a">couleur.</span></div>
+    </div>
+    <div id="cap-3" class="cap clip" data-start="6.32" data-duration="1.73">
+      <div class="eb" data-en="Streaks">Séries</div>
+      <div class="hd" data-en='<span>Your</span> <span>streak,</span> <span class="a">day</span> <span class="a">after</span> <span class="a">day.</span>'><span>Ta</span> <span>série,</span> <span class="a">jour</span> <span class="a">après</span> <span class="a">jour.</span></div>
+    </div>
+    <div id="cap-4" class="cap clip" data-start="8.05" data-duration="2.25">
+      <div class="eb" data-en="Workout">Sortie</div>
+      <div class="hd" data-en='<span>Start</span> <span>your</span> <span>workout,</span> <span class="a">we</span> <span class="a">count</span> <span class="a">it</span> <span class="a">all.</span>'><span>Lance</span> <span>ta</span> <span>sortie,</span> <span class="a">on</span> <span class="a">compte</span> <span class="a">tout.</span></div>
+    </div>
+    <div id="cap-5" class="cap clip" data-start="10.3" data-duration="2.4">
+      <div class="eb" data-en="Goal met">Objectif atteint</div>
+      <div class="hd" data-en='<span>Ring</span> <span>closed,</span> <span class="a">well</span> <span class="a">done!</span>'><span>Anneau</span> <span>fermé,</span> <span class="a">bravo&nbsp;!</span></div>
+    </div>
+    <div id="cap-6" class="cap clip" data-start="12.7" data-duration="2.65">
+      <div class="eb" data-en="Recap">Bilan</div>
+      <div class="hd" data-en='<span>Your</span> <span>week,</span> <span class="a">Monday</span> <span class="a">to</span> <span class="a">Sunday.</span>'><span>Ta</span> <span>semaine,</span> <span class="a">du</span> <span class="a">lundi</span> <span class="a">au</span> <span class="a">dimanche.</span></div>
+    </div>
+    <div id="cap-7" class="cap clip" data-start="15.35" data-duration="3.35">
+      <div class="eb" data-en="Multi-sport workout">Sortie multi-sport</div>
+      <div class="hd" data-en='<span>Walk,</span> <span>run:</span> <span class="a">every</span> <span class="a">part.</span>'><span>Marche,</span> <span>course&nbsp;:</span> <span class="a">chaque</span> <span class="a">portion.</span></div>
+    </div>
+    <div id="cap-8" class="cap clip" data-start="18.7" data-duration="3">
+      <div class="eb" data-en="Hydration">Hydratation</div>
+      <div class="hd" data-en='<span>Your</span> <span>water,</span> <span class="a">glass</span> <span class="a">by</span> <span class="a">glass.</span>'><span>Ton</span> <span>eau,</span> <span class="a">verre</span> <span class="a">après</span> <span class="a">verre.</span></div>
+    </div>
+    <div id="cap-9" class="cap clip" data-start="21.7" data-duration="2.1">
+      <div class="eb" data-en="Settings">Réglages</div>
+      <div class="hd" data-en='<span>Foulée,</span> <span class="a">your</span> <span class="a">way.</span>'><span>Foulée,</span> <span class="a">à</span> <span class="a">ta</span> <span class="a">façon.</span></div>
+    </div>
+    <div id="cap-10" class="cap clip" data-start="23.8" data-duration="2.45">
+      <div class="eb" data-en="Apple Watch">Apple Watch</div>
+      <div class="hd" data-en='<span>Also</span> <span class="a">on</span> <span class="a">your</span> <span class="a">wrist.</span>'><span>Aussi</span> <span class="a">au</span> <span class="a">poignet.</span></div>
+    </div>
+  </div>
+  <script>
+    Foulee.apply();
+    const tl = gsap.timeline({ paused: true });
+    // Each caption: the eyebrow first, then the words one by one, from a pale
+    // lilac and a little blur to their colour; it leaves with a short blur.
+    const beats = [
+      ["#cap-1", 0.3, 3.42],
+      ["#cap-2", 3.42, 6.32],
+      ["#cap-3", 6.32, 8.05],
+      ["#cap-4", 8.05, 10.3],
+      ["#cap-5", 10.3, 12.7],
+      ["#cap-6", 12.7, 15.35],
+      ["#cap-7", 15.35, 18.7],
+      ["#cap-8", 18.7, 21.7],
+      ["#cap-9", 21.7, 23.8],
+      ["#cap-10", 23.8, 26.25],
+    ];
+    beats.forEach(([id, start, end]) => {
+      tl.fromTo(`${id} .eb`, { opacity: 0, filter: "blur(4px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, start);
+      tl.fromTo(
+        `${id} .hd span`,
+        { opacity: 0, filter: "blur(7px)" },
+        { opacity: 1, filter: "blur(0px)", duration: 0.24, ease: "power2.out", stagger: 0.085 },
+        start + 0.1,
+      );
+      tl.to(`${id} .hd`, { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, end - 0.2);
+      tl.to(`${id} .eb`, { opacity: 0, duration: 0.15, ease: "power2.in" }, end - 0.17);
+    });
+    window.__timelines["captions"] = tl;
+  </script>
+</template>

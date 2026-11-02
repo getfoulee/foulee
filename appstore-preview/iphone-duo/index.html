@@ -1,0 +1,331 @@
+<!doctype html>
+<html
+  lang="fr"
+  data-composition-variables='[{"id":"locale","type":"enum","label":"Langue","default":"fr","options":[{"value":"fr","label":"Français"},{"value":"en","label":"English"}]}]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=886, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/i18n.js"></script>
+    <style>
+      /* Foulée's App Store preview for the iPhone Duo.
+         886 × 1920 is the only portrait size App Store Connect accepts for an
+         iPhone Duo preview, so the film is drawn at that size and the device
+         inside it keeps the inner screen's own proportions (2007 × 2853). */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 886px;
+        height: 1920px;
+        overflow: hidden;
+        background: #f7f0fd;
+        font-family: "Inter", sans-serif;
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* The ground: the same pastel wash as the 6.9" preview. */
+      #ground {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: linear-gradient(180deg, #f8eefe 0%, #f4effd 45%, #f3f1fd 70%, #fbf1f8 100%);
+      }
+      #ground i {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(110px);
+      }
+      #blob-a { width: 760px; height: 640px; left: -260px; top: -240px; background: #f2c4ff; opacity: 0.9; }
+      #blob-b { width: 700px; height: 700px; right: -330px; top: 560px; background: #dcc8ff; opacity: 0.85; }
+      #blob-c { width: 680px; height: 640px; left: -330px; top: 1100px; background: #cfdfff; opacity: 0.85; }
+      #blob-d { width: 720px; height: 620px; right: -300px; bottom: -260px; background: #ffd9ec; opacity: 0.9; }
+
+      /* The iPhone Duo, unfolded, in portrait. The screen is 669 × 951 pt: one
+         CSS pixel is one point, so the scenes inside are drawn at the app's
+         own sizes. */
+      #rig {
+        position: absolute;
+        left: 95px;
+        top: 556px;
+        width: 697px;
+        height: 979px;
+        z-index: 10;
+      }
+      #device {
+        position: absolute;
+        inset: 0;
+        border-radius: 60px;
+        padding: 14px;
+        background: linear-gradient(145deg, #3d3549, #17121f 38%, #2b2435 70%, #1a1522);
+        box-shadow:
+          0 0 0 1.5px #4d4459,
+          0 46px 90px -24px rgb(60 20 110 / 0.45),
+          0 18px 40px -10px rgb(30 10 60 / 0.3);
+      }
+      #device .button-r {
+        position: absolute;
+        right: -4px;
+        width: 4px;
+        border-radius: 0 3px 3px 0;
+        background: #2c2536;
+      }
+      #screen {
+        position: relative;
+        width: 669px;
+        height: 951px;
+        border-radius: 46px;
+        overflow: hidden;
+        background: #fbf7ff;
+        isolation: isolate;
+      }
+      /* Each scene paints in its own stacking context, so a sheet's dim and
+         card stay inside their scene and the hosts stack in DOM order. */
+      #screen > [data-composition-src],
+      #screen [data-composition-id] {
+        position: absolute;
+        inset: 0;
+        isolation: isolate;
+      }
+      #camera {
+        position: absolute;
+        left: 50%;
+        top: 13px;
+        width: 13px;
+        height: 13px;
+        margin-left: -6.5px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 40% 35%, #2e3550, #05060a 60%);
+        z-index: 100;
+      }
+      #glare {
+        position: absolute;
+        inset: 0;
+        border-radius: 46px;
+        background: linear-gradient(125deg, rgb(255 255 255 / 0.1), transparent 30%);
+        z-index: 99;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Icons shared by every scene, drawn on a 24-point grid like SF Symbols. -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <linearGradient id="g-accent" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#d97aff" />
+          <stop offset="0.5" stop-color="#bf5af2" />
+          <stop offset="1" stop-color="#7c3aed" />
+        </linearGradient>
+        <linearGradient id="g-activity" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#4fd667" />
+          <stop offset="0.5" stop-color="#2fbf55" />
+          <stop offset="1" stop-color="#1f9a41" />
+        </linearGradient>
+        <linearGradient id="g-water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7fdcec" />
+          <stop offset="1" stop-color="#1f9db3" />
+        </linearGradient>
+        <symbol id="i-feet" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M7.6 3c2 0 3.1 2.2 3.1 4.6 0 2.1-.8 3.6-1 5.2l-4.3.6C5 11.9 4.4 10 4.4 8c0-2.7 1.1-5 3.2-5zm-2 11.6l4-.6c.2 1.9-.4 3.7-2 3.9-1.5.2-2-1.6-2-3.3zM16.4 6.5c2.1 0 3.2 2.3 3.2 5 0 2-.6 3.9-1 5.4l-4.3-.6c-.2-1.6-1-3.1-1-5.2 0-2.4 1.1-4.6 3.1-4.6zm-2 11.1l4 .6c0 1.7-.5 3.5-2 3.3-1.6-.2-2.2-2-2-3.9z" />
+        </symbol>
+        <symbol id="i-timer" viewBox="0 0 24 24">
+          <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5" /><path d="M12 13.5V9.6M9.6 2.8h4.8" /></g>
+        </symbol>
+        <symbol id="i-pin" viewBox="0 0 24 24">
+          <g fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" /><circle cx="12" cy="10" r="2.3" /></g>
+        </symbol>
+        <symbol id="i-flame" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12.6 2.3c.3 2.9-1 4.6-2.4 6.3C8.7 10.4 7 12.4 7 15.3 7 18.7 9.3 21.5 12.3 21.5c3.3 0 5.7-2.6 5.7-6.1 0-2.6-1.2-4.6-2.4-6.1-.2 1.4-.8 2.4-1.8 3 .3-3.4-.6-7-1.2-10z" />
+        </symbol>
+        <symbol id="i-drop" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 2.8s-6.3 7.1-6.3 11.6a6.3 6.3 0 0 0 12.6 0C18.3 9.9 12 2.8 12 2.8z" />
+        </symbol>
+        <symbol id="i-play" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M7 4.8v14.4c0 .8.9 1.3 1.6.8l11-7.2c.6-.4.6-1.2 0-1.6l-11-7.2C7.9 3.5 7 4 7 4.8z" />
+        </symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24">
+          <g fill="currentColor"><rect x="6" y="4.5" width="4.2" height="15" rx="1.4" /><rect x="13.8" y="4.5" width="4.2" height="15" rx="1.4" /></g>
+        </symbol>
+        <symbol id="i-stop" viewBox="0 0 24 24">
+          <rect fill="currentColor" x="5.5" y="5.5" width="13" height="13" rx="2.5" />
+        </symbol>
+        <symbol id="i-loc" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 2.5a7 7 0 0 0-7 7c0 5.3 7 12 7 12s7-6.7 7-12a7 7 0 0 0-7-7z" />
+        </symbol>
+        <symbol id="i-bell" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 2.8a6 6 0 0 0-6 6v5.4l-1.7 2.3c-.4.6 0 1.4.7 1.4h14c.7 0 1.1-.8.7-1.4L18 14.2V8.8a6 6 0 0 0-6-6zM9.5 19.2a2.5 2.5 0 0 0 5 0z" />
+        </symbol>
+        <symbol id="i-person" viewBox="0 0 24 24">
+          <g fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9.6" /><circle cx="12" cy="9.6" r="3.3" /><path d="M5.6 18.7c1.4-2.3 3.6-3.6 6.4-3.6s5 1.3 6.4 3.6" /></g>
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5" />
+        </symbol>
+        <symbol id="i-sparkles" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M10 2.5l1.9 5.6 5.6 1.9-5.6 1.9L10 17.5l-1.9-5.6-5.6-1.9 5.6-1.9zM18.3 13.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9zM18 2.5l.6 1.7 1.7.6-1.7.6L18 7.1l-.6-1.7-1.7-.6 1.7-.6z" />
+        </symbol>
+        <symbol id="i-chev-l" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 4.5L7.5 12l7.5 7.5" />
+        </symbol>
+        <symbol id="i-chev-r" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M9 4.5l7.5 7.5L9 19.5" />
+        </symbol>
+        <symbol id="i-x" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" d="M6.5 6.5l11 11M17.5 6.5l-11 11" />
+        </symbol>
+        <symbol id="i-bolt" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M13.6 2.2L4.8 13.3c-.4.5 0 1.2.6 1.2h5.4l-1.4 7.3c-.1.6.6.9 1 .4l8.8-11.1c.4-.5 0-1.2-.6-1.2h-5.4l1.4-7.3c.1-.6-.6-.9-1-.4z" />
+        </symbol>
+        <symbol id="i-wave" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" d="M2.5 12.5h3.5l2.5-6 4.5 12 3-8.5 1.5 2.5h4" />
+        </symbol>
+        <symbol id="i-cal" viewBox="0 0 24 24">
+          <g fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="5" width="17" height="15.5" rx="3" /><path d="M3.5 10h17M8 2.8v4M16 2.8v4" stroke-linecap="round" /></g>
+        </symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24">
+          <g fill="currentColor"><circle cx="12" cy="12" r="4.6" /><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" /></g></g>
+        </symbol>
+        <symbol id="i-glass" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M5 3.5h14l-1.6 16.1c-.1 1-1 1.9-2 1.9H8.6c-1 0-1.9-.8-2-1.9z" />
+        </symbol>
+        <symbol id="i-target" viewBox="0 0 24 24">
+          <g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1.4" fill="currentColor" /></g>
+        </symbol>
+        <symbol id="i-heart" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M12 20.7S3 15.3 3 9.1A4.6 4.6 0 0 1 12 7.4a4.6 4.6 0 0 1 9 1.7c0 6.2-9 11.6-9 11.6z" />
+        </symbol>
+        <symbol id="i-arrow-up" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M12 19.5V5M6 11l6-6 6 6" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="30"
+      data-width="886"
+      data-height="1920"
+      data-fps="30"
+    >
+      <div id="ground" data-layout-ignore>
+        <i id="blob-a"></i>
+        <i id="blob-b"></i>
+        <i id="blob-c"></i>
+        <i id="blob-d"></i>
+      </div>
+
+      <div
+        id="intro"
+        data-composition-id="intro"
+        data-composition-src="compositions/intro.html"
+        data-start="0"
+        data-duration="2.6"
+        data-track-index="5"
+        data-track-kind="graphics"
+        data-width="886"
+        data-height="1920"
+        style="z-index: 5"
+      ></div>
+
+      <div id="rig">
+        <div id="device">
+          <i class="button-r" style="top: 190px; height: 74px"></i>
+          <div id="screen">
+            <div id="today" data-composition-id="today" data-composition-src="compositions/today.html" data-start="5.25" data-duration="3.55" data-track-index="1" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 1"></div>
+            <div id="onboarding" data-composition-id="onboarding" data-composition-src="compositions/onboarding.html" data-start="2" data-duration="3.75" data-track-index="2" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 2"></div>
+            <div id="streak" data-composition-id="streak" data-composition-src="compositions/streak.html" data-start="8.2" data-duration="2.3" data-track-index="3" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 3"></div>
+            <div id="goal" data-composition-id="goal" data-composition-src="compositions/goal.html" data-start="12.2" data-duration="3" data-track-index="4" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 4"></div>
+            <div id="outing" data-composition-id="outing" data-composition-src="compositions/outing.html" data-start="9.9" data-duration="2.9" data-track-index="5" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 5"></div>
+            <div id="recap" data-composition-id="recap" data-composition-src="compositions/recap.html" data-start="14.45" data-duration="6.75" data-track-index="6" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 6"></div>
+            <div id="detail" data-composition-id="detail" data-composition-src="compositions/detail.html" data-start="17.2" data-duration="3.95" data-track-index="7" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 7"></div>
+            <div id="water" data-composition-id="water" data-composition-src="compositions/water.html" data-start="20.6" data-duration="3.55" data-track-index="8" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 8"></div>
+            <div id="settings" data-composition-id="settings" data-composition-src="compositions/settings.html" data-start="23.6" data-duration="2.6" data-track-index="9" data-track-kind="graphics" data-width="669" data-height="951" style="z-index: 9"></div>
+          </div>
+          <i id="camera"></i>
+          <i id="glare"></i>
+        </div>
+      </div>
+
+      <div
+        id="watch"
+        data-composition-id="watch"
+        data-composition-src="compositions/watch.html"
+        data-start="25.6"
+        data-duration="2.95"
+        data-track-index="11"
+        data-track-kind="graphics"
+        data-width="886"
+        data-height="1920"
+        style="z-index: 11"
+      ></div>
+
+      <div
+        id="outro"
+        data-composition-id="outro"
+        data-composition-src="compositions/outro.html"
+        data-start="28.2"
+        data-duration="1.8"
+        data-track-index="12"
+        data-track-kind="graphics"
+        data-width="886"
+        data-height="1920"
+        style="z-index: 12"
+      ></div>
+
+      <div
+        id="captions"
+        data-composition-id="captions"
+        data-composition-src="compositions/captions.html"
+        data-start="2"
+        data-duration="26.4"
+        data-track-index="20"
+        data-track-kind="captions"
+        data-width="886"
+        data-height="1920"
+        style="z-index: 20"
+      ></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      Foulee.apply();
+      const tl = gsap.timeline({ paused: true });
+
+      // The ground drifts, slowly, the whole film long.
+      tl.fromTo("#blob-a", { x: 0, y: 0 }, { x: 140, y: 90, duration: 30, ease: "sine.inOut" }, 0);
+      tl.fromTo("#blob-b", { x: 0, y: 0 }, { x: -120, y: -160, duration: 30, ease: "sine.inOut" }, 0);
+      tl.fromTo("#blob-c", { x: 0, y: 0 }, { x: 110, y: -120, duration: 30, ease: "sine.inOut" }, 0);
+      tl.fromTo("#blob-d", { x: 0, y: 0 }, { x: -90, y: 70, duration: 30, ease: "sine.inOut" }, 0);
+
+      // The Duo rises under the title, as the 6.9" phone does.
+      tl.fromTo(
+        "#rig",
+        { y: 1300, opacity: 0, scale: 0.94, transformOrigin: "50% 0%" },
+        { y: 0, opacity: 1, scale: 1, duration: 0.9, ease: "expo.out" },
+        1.92,
+      );
+
+      // Multi-sport: the camera moves in on the map and the portions.
+      tl.to("#rig", { scale: 1.25, y: -70, duration: 0.7, ease: "power2.inOut" }, 17.45);
+      tl.to("#rig", { scale: 1, y: 0, duration: 0.6, ease: "power2.inOut" }, 20.55);
+
+      // Apple Watch: the Duo leaves to the left as the watch comes in.
+      tl.to("#rig", { x: -1000, rotation: -4, duration: 0.55, ease: "power3.in" }, 25.75);
+      tl.set("#rig", { opacity: 0 }, 26.31);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
