@@ -7,7 +7,7 @@ import WidgetKit
 /// « J'ai bu un verre » (`LogWaterIntent`, issue #607). Both run without
 /// `WatchTodayStore`, which owns the card, so both tell it through the same
 /// signals.
-enum WatchWaterLog {
+nonisolated enum WatchWaterLog {
     enum Outcome: Equatable {
         case logged(milliliters: Int)
         case unavailable

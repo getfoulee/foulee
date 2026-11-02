@@ -4,7 +4,6 @@ import Testing
 
 /// Scriptable stand-in for `RouteRecorder` (issue #312): answers the
 /// authorization question as told, and hands out a stream the test feeds.
-@MainActor
 final class FakeRouteSource {
     var granted = true
     private(set) var authorizationRequests = 0
@@ -47,7 +46,6 @@ extension WatchRouteSource {
     )
 }
 
-@MainActor
 @Suite("Watch route store")
 struct WatchRouteStoreTests {
     @Test("Fixes are drawn in the order they arrive")
@@ -155,7 +153,6 @@ struct RouteRecorderAccuracyTests {
 }
 
 /// The route follows the outing's lifetime, not a leg's (issue #312).
-@MainActor
 @Suite("Workout store drives the route")
 struct WatchWorkoutRouteLifecycleTests {
     @Test("An outing opens the route; « Terminer » stops it; home forgets it")
@@ -206,7 +203,6 @@ struct WatchWorkoutRouteLifecycleTests {
 }
 
 /// Saving the route with each leg's workout (issue #312, lot 2).
-@MainActor
 @Suite("Route saved with the workout")
 struct WatchWorkoutRouteSaveTests {
     private func fix(at date: Date) -> CLLocation {

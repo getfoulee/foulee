@@ -21,7 +21,7 @@ import Foundation
 /// wrong by construction (issue #331): HealthKit delivers steps in uneven
 /// batches, so a three-second window could hold two seconds of strides and read
 /// a run at 2,8 steps/s as a walk at 1,8 — on a stretch the wearer ran.
-enum MovementClassifier {
+nonisolated enum MovementClassifier {
     /// Cadence at or above which this reads as running.
     ///
     /// A brisk walk tops out around 2,2 steps/s and a slow jog starts around

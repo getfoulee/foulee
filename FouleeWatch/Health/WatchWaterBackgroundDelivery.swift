@@ -15,11 +15,12 @@ private let waterDeliveryStarted = OSAllocatedUnfairLock(initialState: false)
 /// keep a persistent observer that reloads the complication. The today store's
 /// own foreground observer handles the in-app card.
 enum WatchWaterBackgroundDelivery {
+    // periphery:ignore - held, never read: holding it is the point. Periphery
+    // let it pass while it carried `@MainActor`, which the default made redundant.
     /// The observer query only lives as long as its store — keep it for the
     /// whole process so deliveries keep landing after the view goes away.
-    @MainActor private static var store: HKHealthStore?
+    private static var store: HKHealthStore?
 
-    @MainActor
     static func start() async {
         #if DEBUG
         // Capture mode (issue #239): no background delivery, no persistent

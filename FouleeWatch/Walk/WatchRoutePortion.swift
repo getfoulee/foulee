@@ -2,14 +2,14 @@ import CoreLocation
 import FouleeKit
 
 /// One leg's stretch of the route, in the sport it was done as (issue #320).
-struct WatchRoutePortion: Identifiable {
+nonisolated struct WatchRoutePortion: Identifiable {
     /// The leg's id, so a portion keeps its identity as fixes arrive.
     var id: UUID
     var activity: SessionActivity
     var coordinates: [CLLocationCoordinate2D]
 }
 
-extension WatchRoutePortion {
+nonisolated extension WatchRoutePortion {
     /// Identity of the single portion drawn when the outing has no legs yet —
     /// the seeded capture session, or the instant before the first batch.
     private static let soloID = UUID()

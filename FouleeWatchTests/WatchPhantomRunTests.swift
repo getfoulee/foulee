@@ -7,7 +7,6 @@ import Testing
 /// The outing that prompted it: 57 minutes of walking, with a « run » of 60 m
 /// in 1'19" — 2,6 km/h, half the walk's own pace — written into Santé as its
 /// own workout. Three rules now stand between a stray reading and a workout.
-@MainActor
 @Suite("Phantom runs")
 struct WatchPhantomRunTests {
     private let base = Date(timeIntervalSince1970: 1_754_000_000)

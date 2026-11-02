@@ -5,7 +5,6 @@ import Testing
 
 /// Every leg of an outing carries the same outing identifier (issue #316), so
 /// the phone can show five workouts in Santé as the one sortie they were.
-@MainActor
 @Suite("Watch outing legs")
 struct WatchOutingLegTests {
     private let base = ManualClock.origin

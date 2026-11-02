@@ -17,7 +17,8 @@ Swift 6.2 permet d'inverser ce défaut module par module : `SWIFT_DEFAULT_ACTOR_
 ### D1 — Le main actor par défaut, cible par cible
 
 - **L'app iOS et ses tests unitaires** l'activent en premier (`mainActorByDefault` dans `Project.swift`).
-- **La montre, puis les extensions** suivront, chacune dans sa propre PR, une fois la précédente stable en CI.
+- **L'app montre et ses tests** l'activent ensuite (2026-11). Ses délégués système (`WCSessionDelegate`, `UNUserNotificationCenterDelegate`) et ses clients HealthKit et CoreMotion sont `nonisolated` : sinon leur conformance prendrait le main actor, et un rappel reçu sur une file d'arrière-plan planterait à l'exécution, sans aucun avertissement à la compilation.
+- **Les extensions** suivront, chacune dans sa propre PR, une fois la précédente stable en CI.
 - **Une cible sans le réglage garde le défaut de Swift** (non isolé). Les fichiers partagés entre cibles doivent donc compiler sous les deux règles.
 
 ### D2 — Ce qui quitte le main actor le dit là où c'est déclaré
@@ -33,7 +34,7 @@ Swift 6.2 permet d'inverser ce défaut module par module : `SWIFT_DEFAULT_ACTOR_
 
 ### D3 — Plus de `@MainActor` redondant
 
-Les annotations `@MainActor` sur les déclarations de l'app iOS sont retirées : elles ne disent plus rien. Elles restent sur les types de fonctions (`@MainActor () -> Void`) et dans les types `nonisolated`, où elles changent le sens.
+Les annotations `@MainActor` sur les déclarations des apps iOS et montre sont retirées : elles ne disent plus rien. Elles restent sur les types de fonctions (`@MainActor () -> Void`) et dans les types `nonisolated`, où elles changent le sens. Elles restent aussi sur `perform()` d'une `AppIntent` et ses aides : le protocole rend le type non isolé.
 
 ## Règle pour le code à venir
 

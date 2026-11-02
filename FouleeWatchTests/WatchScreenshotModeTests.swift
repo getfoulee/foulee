@@ -8,7 +8,6 @@ import Testing
 /// none of them. A capture that touched Santé would show up here as a non-zero
 /// counter rather than as a workout the owner discovers in Santé three weeks
 /// later.
-@MainActor
 private final class TrapHealthKit {
     private(set) var availabilityChecks = 0
     private(set) var authorizationRequests = 0
@@ -56,7 +55,6 @@ private final class TrapHealthKit {
 /// depend on test ordering, which is the very thing they exist to rule out. So
 /// each seeded path is driven through the function the guard calls, not through
 /// the guard.
-@MainActor
 @Suite("Watch screenshot mode")
 struct WatchScreenshotModeTests {
     // MARK: - Never active in production

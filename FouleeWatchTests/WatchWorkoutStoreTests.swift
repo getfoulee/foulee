@@ -12,7 +12,6 @@ struct StubError: LocalizedError {
 /// Scriptable stand-in for `WatchWorkoutHealthKit.live`: records every call,
 /// throws on demand, and tracks the handle's lifetime so tests can assert
 /// that the store releases (or deliberately retains) the builder.
-@MainActor
 final class WorkoutHealthKitStub {
     var isAvailable = true
     var authError: Error?
@@ -189,7 +188,6 @@ struct RecoverableSession {
     var isPaused = false
 }
 
-@MainActor
 @Suite("WatchWorkoutStore state machine")
 struct WatchWorkoutStoreTests {
     @Test("start() goes active once authorization succeeds")
@@ -438,7 +436,6 @@ struct WatchWorkoutStoreTests {
     }
 }
 
-@MainActor
 extension WatchWorkoutStoreTests {
     /// Whether the outing ended, and whether it wants a retry.
     ///

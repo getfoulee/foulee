@@ -5,7 +5,6 @@ import Foundation
 /// `WatchWorkoutStore` dates every pause, leg and batch with the clock it is
 /// given. Handing it this one makes a test's arithmetic exact: no bracket
 /// around `start`, no tolerance for a slow runner.
-@MainActor
 final class ManualClock {
     /// Where every clock starts: the `base` the store suites date their
     /// estimates and splits from.

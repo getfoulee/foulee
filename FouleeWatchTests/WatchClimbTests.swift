@@ -5,7 +5,6 @@ import Testing
 
 /// The climb and descent of a watch outing, stamped on each leg (issues #535,
 /// #564).
-@MainActor
 @Suite("Watch climb")
 struct WatchClimbTests {
     @Test("A leg is stamped with what the outing climbed and descended while it ran")

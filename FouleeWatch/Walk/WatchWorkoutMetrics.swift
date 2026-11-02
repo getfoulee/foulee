@@ -3,7 +3,7 @@ import Foundation
 
 /// Live snapshot from `HKLiveWorkoutBuilder` — the view binds against
 /// this. Heart rate is `nil` until the first sensor reading lands.
-struct WatchWorkoutMetrics: Equatable, Sendable {
+nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     var elapsed: TimeInterval
     var steps: Int
     var distanceMeters: Double
@@ -206,7 +206,7 @@ struct WatchWorkoutMetrics: Equatable, Sendable {
     }
 }
 
-extension WatchWorkoutMetrics {
+nonisolated extension WatchWorkoutMetrics {
     /// These figures, as the phone will read them (issue #278).
     ///
     /// Built from the metrics alone — no store state — so what the wrist sends
@@ -235,7 +235,7 @@ extension WatchWorkoutMetrics {
 }
 
 /// One sport's share of an outing, as the summary states it (issue #265).
-struct WatchSportSummary: Equatable, Sendable, Identifiable {
+nonisolated struct WatchSportSummary: Equatable, Sendable, Identifiable {
     var activity: SessionActivity
     var totals: WatchActivityTotals
 

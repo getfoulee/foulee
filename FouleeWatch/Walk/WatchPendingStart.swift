@@ -14,7 +14,6 @@ import Observation
 /// it) or already be on screen (the view is told). Draining on appear alone
 /// would lose the second case, which is the one where the wearer is looking at
 /// the watch.
-@MainActor
 @Observable
 final class WatchPendingStart {
     static let shared = WatchPendingStart()

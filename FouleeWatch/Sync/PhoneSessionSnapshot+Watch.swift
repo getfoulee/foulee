@@ -4,7 +4,7 @@ import Foundation
 
 /// The phone's session in the wrist's own types (issue #342), so its screens
 /// are the very pages of a watch session rather than look-alikes.
-extension PhoneSessionSnapshot {
+nonisolated extension PhoneSessionSnapshot {
     /// The figures, as the session metrics page reads them. No heart rate: the
     /// phone has no sensor for it, and the page shows a dash for « none ».
     var metrics: WatchWorkoutMetrics {

@@ -21,7 +21,6 @@ struct WatchStartOutingIntentTests {
     }
 
     @Test("A named sport wins over the synced mode")
-    @MainActor
     func aNamedSportWins() throws {
         try withDefaults { defaults in
             WatchSyncStore.write(payload(.walking), to: defaults)
@@ -30,7 +29,6 @@ struct WatchStartOutingIntentTests {
     }
 
     @Test("No sport named starts the synced one")
-    @MainActor
     func noSportFollowsTheMode() throws {
         try withDefaults { defaults in
             WatchSyncStore.write(payload(.running), to: defaults)
@@ -40,7 +38,6 @@ struct WatchStartOutingIntentTests {
 
     /// The stamp in Santé is permanent (#223): « les deux » asks on the wrist.
     @Test("No sport named with « les deux » asks")
-    @MainActor
     func noSportWithBothAsks() throws {
         try withDefaults { defaults in
             WatchSyncStore.write(payload(.both), to: defaults)

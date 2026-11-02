@@ -8,7 +8,6 @@ import Testing
 /// the configuration a start produces. `WatchWorkoutStoreTests` has the full
 /// scriptable stub for the state machine; this one exists so the picker can be
 /// followed all the way to what Santé would be handed.
-@MainActor
 private final class ConfigurationRecorder {
     private(set) var startedConfiguration: HKWorkoutConfiguration?
 
@@ -43,11 +42,9 @@ private final class ConfigurationRecorder {
 /// it is walked with `ViewTreeProbe`, the real screen and its real closures,
 /// rather than a stand-in that is not what ships.
 @Suite("Watch activity picker")
-@MainActor
 struct WatchActivityPickerTests {
     /// What the screen's closures did — a reference type so the `struct`
     /// test's escaping closures can record into it.
-    @MainActor
     final class Taps {
         var started: [SessionActivity] = []
         var asked = 0

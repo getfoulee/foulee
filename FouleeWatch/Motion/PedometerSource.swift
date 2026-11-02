@@ -11,7 +11,7 @@ import Foundation
 /// moment they were *delivered* — and HealthKit delivers steps in uneven
 /// batches, so a three-second window could hold two seconds of strides and
 /// read a run as a walk.
-struct PedometerReading: Equatable, Sendable {
+nonisolated struct PedometerReading: Equatable, Sendable {
     /// The end of the interval the estimate describes — the pedometer's own
     /// timestamp, never the moment this process was told.
     var date: Date
@@ -35,7 +35,7 @@ struct PedometerReading: Equatable, Sendable {
 /// simulator, so the real one would leave everything downstream reachable only
 /// on a wrist. It needs no permission of its own — « Mouvements et forme »
 /// covers both, and the activity stream already asks for it.
-struct PedometerSource: Sendable {
+nonisolated struct PedometerSource: Sendable {
     var isAvailable: @MainActor () -> Bool
     /// Opens the stream from `start`; `handler` is called once per update, on
     /// whatever queue CoreMotion picks — never assume the main one (#338).

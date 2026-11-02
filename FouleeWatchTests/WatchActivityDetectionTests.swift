@@ -12,10 +12,8 @@ import Testing
 /// Its failure mode is also the quietest one in the feature: detection that
 /// never runs for a whole outing, with nothing on screen to say so.
 @Suite("Watch activity detection stream")
-@MainActor
 struct WatchActivityDetectionTests {
     /// Escaping-closure output, collected somewhere a test can read it.
-    @MainActor
     final class SwitchLog {
         private(set) var switches: [ActivitySwitchDetector.Switch] = []
         func record(_ confirmed: ActivitySwitchDetector.Switch) { switches.append(confirmed) }

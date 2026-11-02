@@ -21,7 +21,6 @@ import Foundation
 /// The watch is the one place this can work at all: a running
 /// `HKWorkoutSession` keeps the app alive, so the streams keep delivering. The
 /// same code on iPhone would go silent the moment the phone went in a pocket.
-@MainActor
 final class WatchActivityDetection {
     /// How long a pedometer cadence stays worth showing (issue #331). Past
     /// this the stream has gone quiet — the wearer stopped, or the pedometer
@@ -196,7 +195,7 @@ final class WatchActivityDetection {
     }
 }
 
-private extension MotionActivityReading {
+nonisolated private extension MotionActivityReading {
     /// « marche », « course » or « sans avis » — what the log line says.
     var logText: String {
         switch self {

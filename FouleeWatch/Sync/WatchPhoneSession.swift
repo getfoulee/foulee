@@ -9,7 +9,6 @@ import Observation
 /// the application context otherwise — and able to send the phone a command.
 /// A singleton because the state lands in the receiver, which has no screen,
 /// while the screen that shows it may not exist yet.
-@MainActor
 @Observable
 final class WatchPhoneSession {
     static let shared = WatchPhoneSession()
@@ -76,7 +75,7 @@ final class WatchPhoneSession {
 ///
 /// `WCSession.sendMessage` wakes the iPhone app in the background. Nothing
 /// about it runs in a simulator — hence the seam.
-struct PhoneCommandSender: Sendable {
+nonisolated struct PhoneCommandSender: Sendable {
     /// Whether the phone carried the command out. Throws when it cannot be
     /// reached.
     var send: @Sendable (PhoneSessionCommand) async throws -> Bool

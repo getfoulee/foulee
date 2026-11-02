@@ -41,7 +41,6 @@ final class WatchAppDelegate: NSObject, WKApplicationDelegate {
 /// exists, and the store is `@State` inside `WatchRootView`: this is the hop
 /// between them, like `WatchPendingStart`. The view also tries once on appear,
 /// for a relaunch the system does not route through the delegate.
-@MainActor
 @Observable
 final class WatchWorkoutRecovery {
     static let shared = WatchWorkoutRecovery()

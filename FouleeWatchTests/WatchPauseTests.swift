@@ -8,7 +8,6 @@ import Testing
 /// detection — or it lies somewhere: a workout longer than the outing, a clock
 /// that ran through the coffee, or a leg cut because standing still looked
 /// like a change of sport.
-@MainActor
 @Suite("Watch pause")
 struct WatchPauseTests {
     private let base = ManualClock.origin

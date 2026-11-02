@@ -6,7 +6,7 @@ import FouleeKit
 /// struct-of-closures (the watch target doesn't link the Dependencies
 /// package). `.live` talks to `HKWorkoutSession`/`HKLiveWorkoutBuilder`;
 /// tests swap in stubs to exercise the state machine deterministically.
-struct WatchWorkoutHealthKit: Sendable {
+nonisolated struct WatchWorkoutHealthKit: Sendable {
     var isAvailable: @MainActor () -> Bool
     /// Throws only when the request itself fails — denial is silent, by
     /// HealthKit design.
@@ -44,7 +44,7 @@ struct WatchWorkoutHealthKit: Sendable {
 
 /// A session found running at launch, and what the store needs to pick it up
 /// where it was (issue #554).
-struct WatchRecoveredSession: Sendable {
+nonisolated struct WatchRecoveredSession: Sendable {
     var handle: WatchWorkoutSessionHandle
     var activity: SessionActivity
     /// When the leg began: its builder's start.
@@ -61,7 +61,7 @@ struct WatchRecoveredSession: Sendable {
 /// The closures are the only strong references to the underlying HK objects,
 /// so releasing the handle releases the builder — the store's save/retry
 /// logic relies on exactly that.
-struct WatchWorkoutSessionHandle: Sendable {
+nonisolated struct WatchWorkoutSessionHandle: Sendable {
     /// Identifies the underlying `HKWorkoutSession`, and its builder.
     ///
     /// The store is the delegate of **every** session it opens, and since issue
@@ -131,14 +131,14 @@ struct WatchWorkoutSessionHandle: Sendable {
 /// exactly these. Three lists that had to agree by hand — a type collected but
 /// not shareable is what makes `finishWorkout()` fail with an authorization
 /// error, and a type read back but never collected is a counter frozen at 0.
-let collectedQuantityTypes: [HKQuantityType] = [
+nonisolated let collectedQuantityTypes: [HKQuantityType] = [
     HKQuantityType(.stepCount),
     HKQuantityType(.distanceWalkingRunning),
     HKQuantityType(.activeEnergyBurned),
     HKQuantityType(.heartRate)
 ]
 
-extension HKWorkoutBuilder {
+nonisolated extension HKWorkoutBuilder {
     /// What the builder has summed for `identifier` so far, or 0 before the
     /// first sample.
     func sum(of identifier: HKQuantityTypeIdentifier, in unit: HKUnit) -> Double {
@@ -152,7 +152,7 @@ extension HKWorkoutBuilder {
     }
 }
 
-extension WatchWorkoutHealthKit {
+nonisolated extension WatchWorkoutHealthKit {
     /// The live data source for `configuration`, with every type the store
     /// reads back in `ingest` force-enabled.
     ///
@@ -375,7 +375,7 @@ extension WatchWorkoutHealthKit {
 /// Carries the recovered session out of HealthKit's callback. Unchecked
 /// because `HKWorkoutSession` is not `Sendable`; it is only ever touched on
 /// the main actor once out.
-private final class RecoveredSessionBox: @unchecked Sendable {
+nonisolated private final class RecoveredSessionBox: @unchecked Sendable {
     let session: HKWorkoutSession?
 
     init(session: HKWorkoutSession?) {

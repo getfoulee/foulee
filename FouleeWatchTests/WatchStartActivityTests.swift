@@ -28,7 +28,6 @@ struct WatchStartActivityTests {
     }
 
     @Test("A synced running mode starts a run, in one gesture")
-    @MainActor
     func runningModeStartsARun() throws {
         try withDefaults { defaults in
             // The full wire, through `WatchSyncStore`'s own storage: what the
@@ -39,7 +38,6 @@ struct WatchStartActivityTests {
     }
 
     @Test("A synced walking mode starts a walk, in one gesture")
-    @MainActor
     func walkingModeStartsAWalk() throws {
         try withDefaults { defaults in
             // No picker in a single-activity mode: the user answered this
@@ -51,7 +49,6 @@ struct WatchStartActivityTests {
     }
 
     @Test("« Les deux » asks instead of guessing")
-    @MainActor
     func bothAsks() throws {
         try withDefaults { defaults in
             // The watch sees the raw mode, not a resolved activity, precisely
@@ -64,7 +61,6 @@ struct WatchStartActivityTests {
     }
 
     @Test("A watch that never received a payload starts a walk")
-    @MainActor
     func freshPairingStartsAWalk() throws {
         try withDefaults { defaults in
             // Fresh pairing, or a phone not opened since the update. Walking is
@@ -77,7 +73,6 @@ struct WatchStartActivityTests {
     }
 
     @Test("A newer mode from the phone wins")
-    @MainActor
     func laterPushWins() throws {
         try withDefaults { defaults in
             // Read at tap time, not at view build: the phone can push while the

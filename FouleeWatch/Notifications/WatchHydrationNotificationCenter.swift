@@ -2,7 +2,7 @@ import FouleeKit
 @preconcurrency import HealthKit
 @preconcurrency import UserNotifications
 
-extension Notification.Name {
+nonisolated extension Notification.Name {
     /// Posted (on the main actor) when the "J'ai bu" notification action could
     /// not save the glass — `WatchTodayStore` owns the card state and would
     /// otherwise never learn.
@@ -23,7 +23,7 @@ extension Notification.Name {
 /// `@unchecked Sendable` because an `NSObject` subclass can never be checked
 /// `Sendable` (issue #405); its only stored property is an
 /// immutable `HKHealthStore`.
-final class WatchHydrationNotificationCenter: NSObject, UNUserNotificationCenterDelegate, @unchecked Sendable {
+nonisolated final class WatchHydrationNotificationCenter: NSObject, UNUserNotificationCenterDelegate, @unchecked Sendable {
     static let shared = WatchHydrationNotificationCenter()
 
     private let store = HKHealthStore()

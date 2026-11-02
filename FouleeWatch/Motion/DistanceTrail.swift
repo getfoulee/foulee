@@ -8,7 +8,7 @@ import Foundation
 /// was said to begin to the moment it is about to be recorded. Two distances
 /// and two dates — the plainest measure there is, and the one a sensor cannot
 /// argue with.
-struct DistanceTrail: Equatable, Sendable {
+nonisolated struct DistanceTrail: Equatable, Sendable {
     /// Longer than any stretch that is still waiting to be recorded.
     static let horizon: TimeInterval = 600
     /// Under this, two readings say more about how they were delivered than

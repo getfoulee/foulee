@@ -1,7 +1,7 @@
 import FouleeKit
 import Foundation
 
-extension MotionActivityEstimate {
+nonisolated extension MotionActivityEstimate {
     /// Reduce the flags to at most one activity.
     ///
     /// The rule itself lives in `MotionActivityReading`, compiled into both
@@ -43,7 +43,7 @@ extension MotionActivityEstimate {
 /// `confirmations` remains, and remains tested: if the field ever shows the
 /// label flapping, raising it is one number — and the day segmenting becomes
 /// possible again, it must go back up with it.
-struct ActivitySwitchDetector: Sendable {
+nonisolated struct ActivitySwitchDetector: Sendable {
     /// A confirmed change: the activity to switch to, when it started, and
     /// when that was decided.
     struct Switch: Equatable, Sendable {
