@@ -30,11 +30,11 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # Same pin as .github/actions/prepare-project, the reasons with it (issue #660).
-      - name: Select Xcode 27.1 or a later 27.x
+      # Same pin as .github/actions/prepare-project, the reasons with it (issues #660, #766).
+      - name: Select Xcode 27.2 or a later 27.x
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
-          xcode-version: '^27.1'
+          xcode-version: '^27.2'
 
       - name: Install toolchain (Tuist) from mise.toml
         uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d # v5.2.4

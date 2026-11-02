@@ -7,14 +7,16 @@ description: >
 runs:
   using: composite
   steps:
-    # The iOS 27.1 SDK at least (issue #660): it lays Foulée out on the
-    # iPhone Duo inner screen instead of compatibility mode, and App Store
-    # Connect refuses builds made with an older SDK from April 2027. Any later
-    # stable 27.x is taken as the image gains it; Xcode 28 is a deliberate bump.
-    - name: Select Xcode 27.1 or a later 27.x
+    # Xcode 27.2 at least (issue #766), the version the image ships: a Mac on
+    # 27.1 no longer builds what CI builds. The iOS 27.1 SDK was the first
+    # floor (issue #660): it lays Foulée out on the iPhone Duo inner screen
+    # instead of compatibility mode, and App Store Connect refuses builds made
+    # with an older SDK from April 2027. Any later stable 27.x is taken as the
+    # image gains it; Xcode 28 is a deliberate bump.
+    - name: Select Xcode 27.2 or a later 27.x
       uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
       with:
-        xcode-version: '^27.1'
+        xcode-version: '^27.2'
 
     - name: Show Xcode version
       shell: bash
