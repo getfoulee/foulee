@@ -16,13 +16,15 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write # create and edit the draft release
+  contents: read
 
 jobs:
   draft:
     name: Update the draft
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    permissions:
+      contents: write # create and edit the draft release
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
