@@ -67,6 +67,19 @@ stops itself and is saved rather than lost. Réglages › À propos ›
 hangs the iPhone kept, only if you choose to attach it: see
 [ADR 0014](docs/adr/0014-fiabilite-et-diagnostics.md) (French).
 
+## Supported devices
+
+- **iPhone** on iOS 26 or later, in portrait.
+- **iPhone Duo**, on both screens: the outer one is a phone; on the inner one
+  every screen keeps a reading column of 640 pt at most, and the outing in
+  progress puts its map beside its figures when the window is wider than tall.
+  Layout follows the space the window gives, never the device or its posture,
+  so Split View and resizing work the same way. Hinge APIs and whole-screen
+  rearrangements are out of scope:
+  see [ADR 0015](docs/adr/0015-iphone-duo.md) (French).
+- **iPad** runs the iPhone app in compatibility mode; there is no iPad layout.
+- **Apple Watch** on watchOS 26 or later, and Garmin watches (below).
+
 ## Compatible watches
 
 - **Apple Watch** — native support (companion app, complications, live workouts).
