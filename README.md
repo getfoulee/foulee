@@ -318,9 +318,12 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The version comes from the tag, the build number from the commit count. See
-[docs/RELEASE.md](docs/RELEASE.md) for the one-time App Store Connect setup and
-the GitHub secrets the workflow needs.
+The version comes from the tag, the build number from the commit count. The
+tag needs the version's notes in `docs/releases/`; the App Store submission is
+a workflow run by hand, approved, then released in phases. See
+[docs/RELEASE.md](docs/RELEASE.md#a-versions-journey-from-the-tag-to-the-app-store)
+for the whole journey, the one-time App Store Connect setup and the GitHub
+secrets the workflows need.
 
 ## Conventions
 
