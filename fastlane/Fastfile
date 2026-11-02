@@ -148,14 +148,16 @@ platform :ios do
 
   # The boards composed by tools/compose_appstore_screenshots.swift (issue
   # #582), uploaded in place of the version's screenshots: no binary, no
-  # metadata, never submitted for review. deliver tells the iPhone 6.9", iPad
-  # 13" and Apple Watch boards apart by their size and orders each set by file
-  # name, so the family prefix keeps the iPhone and iPad boards — same capture
-  # names — from overwriting each other, and the number keeps the store order.
-  # One folder per language: the French boards, and the English ones the
-  # composer writes under en-US/ (issue #592). Not the iPhone Duo boards
-  # (issue #666): the App Store Connect API has no display type for them yet,
-  # and the web form no slot. They join this list once it has one.
+  # metadata, never submitted for review. deliver tells the iPhone 6.9",
+  # iPhone Duo, iPad 13" and Apple Watch boards apart by their size and orders
+  # each set by file name, so the family prefix keeps the iPhone, iPhone Duo
+  # and iPad boards — same capture names — from overwriting each other, and the
+  # number keeps the store order. One folder per language: the French boards,
+  # and the English ones the composer writes under en-US/ (issue #592).
+  # Overwriting deletes every display type of a language, not only the ones
+  # uploaded, so a missing family stops the lane instead of emptying its tab.
+  # That holds for the iPhone Duo boards too (issue #666), although they are
+  # captured by hand on an unfolded simulator and so only exist on a Mac.
   desc "Upload the composed App Store boards to the version being prepared"
   lane :screenshots do
     root = File.expand_path("../appstore-screenshots", __dir__)
@@ -164,7 +166,7 @@ platform :ios do
     { "fr-FR" => root, "en-US" => File.join(root, "en-US") }.each do |locale, boards|
       staging = File.join(screenshots, locale)
       FileUtils.mkdir_p(staging)
-      { "iphone-6.9" => "iphone", "ipad-13" => "ipad", "watch" => nil }.each do |family, prefix|
+      { "iphone-6.9" => "iphone", "iphone-duo" => "duo", "ipad-13" => "ipad", "watch" => nil }.each do |family, prefix|
         files = Dir[File.join(boards, family, "*.png")].sort
         UI.user_error!("No boards in #{File.join(boards, family)}: capture and compose first") if files.empty?
         files.each do |file|

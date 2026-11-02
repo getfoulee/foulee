@@ -510,10 +510,11 @@ Each board carries its French `lines` and its `english` ones; « outing » and
 lane `screenshots`), with the version string. It creates its own iPhone and
 Apple Watch simulators, captures both sets in French then in English, composes
 the boards and keeps them
-as the `store-screenshots` artifact. Run it once with « publish » unticked and
-look at the artifact; run it again ticked, with that run's id in « boards_from_run », to publish exactly those boards in place of the version's screenshots
-in App Store Connect. It never uploads a binary or the listing, and never
-submits.
+as the `store-screenshots` artifact. Run it with « publish » unticked and look
+at the artifact. Ticked, with that run's id in « boards_from_run », it would
+publish exactly those boards in place of the version's screenshots in App Store
+Connect, but it cannot capture the iPhone Duo set, so it refuses (see below).
+It never uploads a binary or the listing, and never submits.
 
 The lane reads the boards from `appstore-screenshots/`, so a set composed on a
 Mac goes up the same way (`fastlane screenshots`, with the App Store Connect
@@ -522,11 +523,22 @@ key of step 6 in the environment):
 | App Store Connect tab | Folder | Uploaded as |
 |-----------------------|--------|-------------|
 | iPhone 6.9" Display | `appstore-screenshots/iphone-6.9/` | `iphone-01_home.png` … |
+| iPhone Duo | `appstore-screenshots/iphone-duo/` | `duo-01_home.png` … |
 | iPad 13" Display | `appstore-screenshots/ipad-13/` | `ipad-01_home.png` … |
 | Apple Watch | `appstore-screenshots/watch/` | `watch-01-today.png` … |
 
 The English boards go up the same way from `appstore-screenshots/en-US/` to
 the English (U.S.) localization; the lane stops if either language is missing.
+
+It also stops if any family is missing, the iPhone Duo included (issue #666):
+deliver replaces a language's screenshots by deleting every display type, not
+only the ones it uploads, so a run without a family would empty its tab. The
+iPhone Duo boards come from a hand-unfolded simulator
+(`tools/capture_screenshots.sh "Foulee Duo" iphone-duo`, then the same with
+`--language en`), which the workflow's runner cannot do: it refuses « publish »
+before capturing anything. Capture and compose the Duo sets on a Mac, put the
+reviewed artifact's other boards beside them, and run `fastlane screenshots`
+there.
 
 deliver files each board under its tab by its size and orders a tab by file
 name, so the numbers are the store order. The first three are what shows on

@@ -4,7 +4,8 @@ name: Store screenshots
 # (issue #582) and keeps them as an artifact. With « publish » ticked, uploads
 # them to the version being prepared in App Store Connect in place of its
 # screenshots: no binary, no metadata, never submitted for review. Run it by
-# hand from Actions, unticked first, and look at the artifact.
+# hand from Actions, unticked first, and look at the artifact. Publishing needs
+# the iPhone Duo boards too, which only a Mac can capture (issue #666).
 on:
   workflow_dispatch:
     inputs:
@@ -62,6 +63,20 @@ jobs:
           path: appstore-screenshots
           run-id: ${{ inputs.boards_from_run }}
           github-token: ${{ github.token }}
+
+      # The lane uploads the iPhone Duo boards with the others and deleting a
+      # language's screenshots takes every display type, so it refuses to run
+      # without them (issue #666). This runner cannot unfold the simulator to
+      # capture them: say so before the capture rather than after it.
+      - name: Check the iPhone Duo boards
+        if: inputs.publish
+        run: |
+          for boards in appstore-screenshots/iphone-duo appstore-screenshots/en-US/iphone-duo; do
+            if ! compgen -G "$boards/*.png" > /dev/null; then
+              echo "::error::No boards in $boards: the iPhone Duo set is captured by hand on an unfolded simulator, so publish from a Mac with fastlane screenshots (docs/RELEASE.md § 9.3)"
+              exit 1
+            fi
+          done
 
       - uses: ./.github/actions/prepare-project
         if: inputs.boards_from_run == ''
