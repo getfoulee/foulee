@@ -22,7 +22,8 @@
 //   iphone-6.9  1320 × 2868
 //   ipad-13     2064 × 2752
 //   watch        416 ×  496
-//   iphone-duo  2007 × 2853  — composed only when its raw folder exists
+//   iphone-duo  2007 × 2853  — from 2006 × 2852 captures, and only when its
+//                             raw folder exists
 //
 // The capture is always scaled to *fit* the space left under the caption, so a
 // screen can never be clipped at the bottom edge. Captures are never cropped
@@ -60,11 +61,19 @@ let nativeSize: [Family: (width: Int, height: Int)] = [
     .duo: (width: 2007, height: 2853)
 ]
 
+/// What the raw captures measure, where it is not the board size: XCTest grabs
+/// the iPhone Duo's inner screen one pixel short each way (verified on iOS
+/// 27.1). The board is still 2007 × 2853: the capture is scaled into its card
+/// anyway.
+let rawSize: [Family: (width: Int, height: Int)] = nativeSize.merging([
+    .duo: (width: 2006, height: 2852)
+]) { _, raw in raw }
+
 // MARK: - Captions — edit here
 
 /// One board: a raw capture plus the two caption lines drawn above it.
 ///
-/// `trimTop` / `trimBottom` are source pixels shaved off the capture *before*
+/// `trimTop` / `trimBottom` / `trimSides` are source pixels shaved off the capture *before*
 /// it is laid out. They exist for one case only: a sheet captured over a dimmed
 /// parent, where the parent's grey band would otherwise show above the sheet.
 /// Prefer capturing the sheet full-screen and leaving these at zero.
@@ -97,6 +106,8 @@ struct Shot {
     var scrolls: Bool = false
     var trimTop: Int = 0
     var trimBottom: Int = 0
+    /// Off the left and the right alike.
+    var trimSides: Int = 0
 }
 
 /// Source pixels to shave off a screen captured as a modal sheet on a 6.9"
@@ -115,6 +126,17 @@ struct Shot {
 /// 6.9" only. The other families must be re-measured against their own
 /// captures rather than inheriting this number.
 let sheetDimBand = 210
+
+/// The same on the iPhone Duo's inner screen, in portrait, measured on its own
+/// captures the same way. The dim is uniform for 270 px down the middle and
+/// 24 px in from the left edge (23 from the right) the whole way down. Past the
+/// side trim the sheet's corners, a radius of about 120 px, hold it to 354 px at
+/// 6 px in, 329 at 16 and 303 at 36. The card's own corners are tighter, so 300
+/// left a grey arc in both; 320 is the first value whose residue the card's
+/// rounded mask covers, and the sheet keeps its top padding. Verified by
+/// rendering both values and looking at them.
+let duoSheetDimBand = 320
+let duoSheetInset = 24
 
 let iphoneShots: [Shot] = [
     // iPhone 6.9" — the store order of issue #582: the streak, the watch, the
@@ -171,11 +193,22 @@ let ipadShots = iphoneShots.prefix(6).map { shot in
 /// and with the same captions, from captures of their own: unlike the iPad, the
 /// app lays itself out on that screen.
 ///
-/// No `trimTop` yet. A sheet on the Duo leaves its dimmed parent on the left as
-/// well as above, and how wide on the inner screen is still to be measured on
-/// the first set, the way `sheetDimBand` was on the 6.9".
+/// A sheet there is a card inset from all three edges, so those boards lose the
+/// dimmed home on the sides as well as above. They are the 6.9"'s sheets plus
+/// the statistics, which the phone pushes and the inner screen presents.
+///
+/// The taller screen also holds the whole statistics page, so that board drops
+/// the fade: drawn under a page that ends, it would promise rows that are not
+/// there.
+let duoUnscrolled: Set<String> = ["09_stats"]
+let duoSheets: Set<String> = ["03_outing", "04_summary", "06_streak", "08_hydration", "09_stats", "10_weather"]
 let duoShots = iphoneShots.map { shot in
-    Shot(family: .duo, file: shot.file, lines: shot.lines, english: shot.english, scrolls: shot.scrolls)
+    let sheet = duoSheets.contains(shot.file)
+    return Shot(
+        family: .duo, file: shot.file, lines: shot.lines, english: shot.english,
+        scrolls: shot.scrolls && !duoUnscrolled.contains(shot.file),
+        trimTop: sheet ? duoSheetDimBand : 0, trimSides: sheet ? duoSheetInset : 0
+    )
 }
 
 let shots = iphoneShots + ipadShots + watchShots + duoShots
@@ -439,16 +472,17 @@ func loadCapture(_ url: URL) -> CGImage? {
     return image.cgImage(forProposedRect: nil, context: nil, hints: nil)
 }
 
-/// Shaves `trimTop` / `trimBottom` source pixels off a capture. Applied *after*
+/// Shaves `trimTop` / `trimBottom` / `trimSides` source pixels off a capture. Applied *after*
 /// the native-resolution check, so a trimmed shot is still a validated grab.
 func trimmed(_ cgImage: CGImage, shot: Shot) -> CGImage {
-    guard shot.trimTop > 0 || shot.trimBottom > 0 else { return cgImage }
+    guard shot.trimTop > 0 || shot.trimBottom > 0 || shot.trimSides > 0 else { return cgImage }
+    let width = cgImage.width - 2 * shot.trimSides
     let height = cgImage.height - shot.trimTop - shot.trimBottom
-    guard height > 0 else {
-        fatalError("\(shot.file): trimTop + trimBottom leaves nothing of a \(cgImage.height)px capture")
+    guard width > 0, height > 0 else {
+        fatalError("\(shot.file): the trims leave nothing of a \(cgImage.width)×\(cgImage.height)px capture")
     }
     // CGImage.cropping uses a top-left origin, which is what trimTop means here.
-    let crop = CGRect(x: 0, y: shot.trimTop, width: cgImage.width, height: height)
+    let crop = CGRect(x: shot.trimSides, y: shot.trimTop, width: width, height: height)
     guard let cropped = cgImage.cropping(to: crop) else {
         fatalError("\(shot.file): cropping to \(crop) failed")
     }
@@ -537,7 +571,7 @@ let composed = shots.filter { !skippedFamilies.contains($0.sourceFamily ?? $0.fa
 
 for shot in composed {
     let sourceFamily = shot.sourceFamily ?? shot.family
-    guard let geometry = geometries[shot.family], let native = nativeSize[sourceFamily] else { continue }
+    guard let geometry = geometries[shot.family], let native = rawSize[sourceFamily] else { continue }
     let source = inputRoot.appendingPathComponent(sourceFamily.rawValue).appendingPathComponent("\(shot.file).png")
     guard let raw = loadCapture(source) else {
         missing.append(source.path)

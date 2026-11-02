@@ -158,11 +158,27 @@ extension XCTestCase {
     /// bundle afterwards, which is also what makes a CI run able to publish
     /// them as an artefact.
     func capture(_ name: String) {
-        let screenshot = XCUIScreen.main.screenshot()
-        let attachment = XCTAttachment(screenshot: screenshot, quality: .original)
+        let attachment = XCTAttachment(screenshot: screenshotOfTheAppScreen(), quality: .original)
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
+    }
+
+    /// The screen the app is drawn on. `XCUIScreen.main` is the iPhone Duo's
+    /// outer screen, folded or not, so on the unfolded simulator it grabs a
+    /// black frame (issue #666). The largest screen is no answer either: folded,
+    /// the inner one stays powered and black. The one shaped like the app's
+    /// window is — the two screens are 1.455 and 1.422 long side to short side.
+    private func screenshotOfTheAppScreen() -> XCUIScreenshot {
+        let screens = XCUIScreen.screens
+        guard screens.count > 1 else { return XCUIScreen.main.screenshot() }
+        func elongation(_ size: CGSize) -> CGFloat {
+            max(size.width, size.height) / max(min(size.width, size.height), 1)
+        }
+        let window = elongation(XCUIApplication().frame.size)
+        let screenshots = screens.map { $0.screenshot() }
+        return screenshots.min { abs(elongation($0.image.size) - window) < abs(elongation($1.image.size) - window) }
+            ?? XCUIScreen.main.screenshot()
     }
 
     /// Wait for `element`, then tap it. Fails the run rather than tapping into

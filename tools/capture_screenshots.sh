@@ -38,12 +38,15 @@
 # second runtime), it is not composed, and it cannot clobber the real one.
 #
 # `iphone-duo` is the one other set the composer reads (issue #666): the
-# iPhone Duo's inner screen, 2007 × 2853. Nothing here can unfold the
-# simulator — simctl and XCTest leave the app on the 1398 × 2034 screen, and
-# powering that screen off with `simctl io screenConfig` leaves the inner one
-# black — so open it in Simulator.app before the run. The PNGs are measured
-# once exported, before anything is written: a run left on the other screen
-# refuses instead of filling the set with grabs the composer rejects.
+# iPhone Duo's inner screen, which XCTest grabs at 2006 × 2852. Nothing here
+# can unfold the simulator — simctl and XCTest leave the app on the 1398 × 2034
+# screen, and powering that screen off with `simctl io screenConfig` leaves the
+# inner one black — so unfold it in Simulator.app before the run, in portrait
+# with the right way up: XCTest grabs the inner screen as its panel stores it,
+# so the other portrait comes out upside down and landscape sideways. The PNGs
+# are measured once exported, before anything is written: a run left on the
+# other screen refuses instead of filling the set with grabs the composer
+# rejects.
 #
 # `--watch` runs the wrist half: another platform, another scheme, another
 # output folder, and no status-bar pinning (watchOS refuses it — see below).
@@ -115,7 +118,7 @@ SET_NAME="${2:-$DEFAULT_SET}"
 # The size every PNG of a composed set must have; empty for a probe or a review.
 case "$PLATFORM/$SET_NAME" in
   "$PLATFORM/$DEFAULT_SET") SET_SIZE="$DEFAULT_SET_SIZE" ;;
-  iOS/iphone-duo) SET_SIZE="2007x2853" ;;
+  iOS/iphone-duo) SET_SIZE="2006x2852" ;;
   *) SET_SIZE="" ;;
 esac
 
