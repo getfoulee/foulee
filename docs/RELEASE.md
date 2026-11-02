@@ -13,7 +13,37 @@ git push origin v0.1.0
 - **Marketing version** (`CFBundleShortVersionString`) comes from the tag — `v0.1.0` → `0.1.0`.
 - **Build number** (`CFBundleVersion`) is the commit count (`git rev-list --count HEAD`), so it always increases.
 
-Everything below is **one-time setup**. Once it's done, releasing is just the two commands above.
+## A version's journey, from the tag to the App Store
+
+Each step links to its section below. The decisions behind it are in
+[ADR 0016](adr/0016-parcours-d-une-version.md) (French).
+
+1. **Notes.** Start from the draft release « Prochaine version », which lists
+   the pull requests merged since the last tag. Write `docs/releases/X.Y.Z.md`
+   and its English `X.Y.Z.en.md`, and merge them to `main` (§ 8). A notable
+   version also gets an entry in `Foulee/Resources/WhatsNew.json`: the app
+   shows it once, in a « Nouveautés » sheet, at the first opening after the
+   update. A version without an entry shows nothing.
+2. **Tag.** `git tag vX.Y.Z && git push origin vX.Y.Z`. The **Release**
+   workflow stops in its first seconds when either notes file is missing.
+3. **TestFlight.** The build is uploaded with the French notes as its « What
+   to Test », then the workflow publishes the GitHub release « Foulée X.Y.Z »
+   (French notes, then `## English`), which the website shows on its
+   « Nouveautés » and « What's new » pages. Add the build to the internal
+   testing group. There is no public beta yet (issue #623).
+4. **Screenshots**, only when the screens changed: capture, compose and upload
+   them (§ 9).
+5. **Submission.** **Actions → App Store submission**, run with the tag, then
+   approve the `app-store` environment. It writes the listing from
+   `fastlane/metadata/`, takes « What's New » from the notes in both
+   languages, attaches the tag's build and submits it for review (§ 10).
+6. **Phased release.** Once Apple approves, the version goes out by itself
+   over 7 days. Pause it, or release to everyone, in App Store Connect.
+
+The Garmin app follows its own path, on `garmin-v*` tags (§ 11).
+
+Everything from § 1 to § 7 is **one-time setup**. Once it's done, a release is
+the journey above.
 
 ---
 
