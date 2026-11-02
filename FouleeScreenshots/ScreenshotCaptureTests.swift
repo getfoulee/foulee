@@ -126,7 +126,10 @@ final class ScreenshotCaptureTests: XCTestCase {
         waitForScreen(app.staticTexts.labeled(ScreenshotCapture.label.portions), "Outing detail")
         capture("03_outing")
         // The detail is pushed over the Bilan, whose close button it hides.
-        tapWhenReady(app.navigationBars.buttons.firstMatch, "Back to the Bilan")
+        // Looked up by the system's identifier, not inside the navigation
+        // bar: on the iPhone Duo's inner screen iOS draws the back button in
+        // the side strip under the clock, outside the bar (#672).
+        tapWhenReady(app.buttons["BackButton"].firstMatch, "Back to the Bilan")
         close(app)
     }
 
