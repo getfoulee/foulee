@@ -6,6 +6,9 @@ name: Dependabot auto-merge
 # left open for a human to review.
 on: pull_request
 
+permissions:
+  contents: read
+
 jobs:
   auto-merge:
     name: Enable auto-merge
