@@ -18,6 +18,7 @@
 #   tools/capture_screenshots.sh --language en          # the English set
 #   tools/capture_screenshots.sh --watch --language en
 #   tools/capture_screenshots.sh --language en --pseudo "" review-pseudo
+#   tools/capture_screenshots.sh "Foulee Duo" iphone-duo  # unfolded by hand first
 #
 # The first argument is a simulator NAME or a UDID. A name shared by two
 # available simulators is refused rather than resolved: the runtime a same-named
@@ -32,9 +33,17 @@
 # `compose_appstore_screenshots.swift`, which accepts exactly one resolution per
 # family, so an off-size run into `watch/` would overwrite a good set with grabs
 # the composer then rejects one by one. Verified: `Apple Watch Ultra 3 (49mm)`
-# grabs 422 × 514, and three of those in `watch/` compose 0 boards. A set name
-# other than the default is never checked — it is a probe (a smaller wrist, a
+# grabs 422 × 514, and three of those in `watch/` compose 0 boards. Any other
+# set name but `iphone-duo` is never checked — it is a probe (a smaller wrist, a
 # second runtime), it is not composed, and it cannot clobber the real one.
+#
+# `iphone-duo` is the one other set the composer reads (issue #666): the
+# iPhone Duo's inner screen, 2007 × 2853. Nothing here can unfold the
+# simulator — simctl and XCTest leave the app on the 1398 × 2034 screen, and
+# powering that screen off with `simctl io screenConfig` leaves the inner one
+# black — so open it in Simulator.app before the run. The PNGs are measured
+# once exported, before anything is written: a run left on the other screen
+# refuses instead of filling the set with grabs the composer rejects.
 #
 # `--watch` runs the wrist half: another platform, another scheme, another
 # output folder, and no status-bar pinning (watchOS refuses it — see below).
@@ -103,7 +112,14 @@ else
 fi
 SET_NAME="${2:-$DEFAULT_SET}"
 
-if { [ -n "$DARK" ] || [ -n "$TEXT_SIZE" ] || [ -n "$PSEUDO" ]; } && [ "$SET_NAME" = "$DEFAULT_SET" ]; then
+# The size every PNG of a composed set must have; empty for a probe or a review.
+case "$PLATFORM/$SET_NAME" in
+  "$PLATFORM/$DEFAULT_SET") SET_SIZE="$DEFAULT_SET_SIZE" ;;
+  iOS/iphone-duo) SET_SIZE="2007x2853" ;;
+  *) SET_SIZE="" ;;
+esac
+
+if { [ -n "$DARK" ] || [ -n "$TEXT_SIZE" ] || [ -n "$PSEUDO" ]; } && [ -n "$SET_SIZE" ]; then
   echo "--dark, --text-size and --pseudo are for reviews: name the set (e.g. review-dark)." >&2
   exit 1
 fi
@@ -263,16 +279,15 @@ xcrun xcresulttool export attachments \
   --path "$RESULT_BUNDLE" \
   --output-path "$WORK_DIR/attachments" >/dev/null
 
-mkdir -p "$OUTPUT_DIR"
-python3 - "$WORK_DIR/attachments" "$OUTPUT_DIR" "$NAME_PATTERN" <<'PY'
-import json, os, re, shutil, sys
+python3 - "$WORK_DIR/attachments" "$OUTPUT_DIR" "$NAME_PATTERN" "$SET_SIZE" <<'PY'
+import json, os, re, shutil, struct, sys
 
-source, destination, pattern = sys.argv[1], sys.argv[2], sys.argv[3]
+source, destination, pattern, size = sys.argv[1:5]
 with open(os.path.join(source, "manifest.json")) as handle:
     manifest = json.load(handle)
 
 OURS = re.compile(pattern)
-copied = []
+found = {}
 
 
 def walk(node):
@@ -286,19 +301,32 @@ def walk(node):
     name = node.get("suggestedHumanReadableName") or node.get("name") or ""
     match = OURS.match(name)
     if exported and match:
-        shutil.copyfile(
-            os.path.join(source, exported),
-            os.path.join(destination, match.group(1) + ".png"),
-        )
-        copied.append(match.group(1))
+        found[match.group(1)] = os.path.join(source, exported)
     for value in node.values():
         walk(value)
 
 
+def measured(path):
+    # Width and height from the PNG's IHDR chunk, right after the signature.
+    with open(path, "rb") as handle:
+        width, height = struct.unpack(">II", handle.read(24)[16:24])
+    return "%dx%d" % (width, height)
+
+
 walk(manifest)
-if not copied:
+if not found:
     sys.exit("No screenshots found in the result bundle")
-for name in sorted(set(copied)):
+# Measured before the first copy, so a wrong screen leaves the set untouched.
+wrong = sorted(n for n, path in found.items() if size and measured(path) != size)
+if wrong:
+    sys.exit(
+        "Refusing to write %s: %s grabbed %s, the set is %s. On the iPhone Duo,"
+        " unfold the simulator in Simulator.app and run again."
+        % (destination, wrong[0], measured(found[wrong[0]]), size)
+    )
+os.makedirs(destination, exist_ok=True)
+for name in sorted(found):
+    shutil.copyfile(found[name], os.path.join(destination, name + ".png"))
     print("   " + name + ".png")
 PY
 

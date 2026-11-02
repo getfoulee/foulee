@@ -22,6 +22,7 @@
 //   iphone-6.9  1320 × 2868
 //   ipad-13     2064 × 2752
 //   watch        416 ×  496
+//   iphone-duo  2007 × 2853  — composed only when its raw folder exists
 //
 // The capture is always scaled to *fit* the space left under the caption, so a
 // screen can never be clipped at the bottom edge. Captures are never cropped
@@ -41,6 +42,7 @@ enum Family: String, CaseIterable {
     case iphone = "iphone-6.9"
     case ipad = "ipad-13"
     case watch = "watch"
+    case duo = "iphone-duo"
 }
 
 /// Native pixel size per family: what `simctl io screenshot` writes on the
@@ -54,7 +56,8 @@ enum Family: String, CaseIterable {
 let nativeSize: [Family: (width: Int, height: Int)] = [
     .iphone: (width: 1320, height: 2868),
     .ipad: (width: 2064, height: 2752),
-    .watch: (width: 416, height: 496)
+    .watch: (width: 416, height: 496),
+    .duo: (width: 2007, height: 2853)
 ]
 
 // MARK: - Captions — edit here
@@ -164,7 +167,24 @@ let ipadShots = iphoneShots.prefix(6).map { shot in
     )
 }
 
-let shots = iphoneShots + ipadShots + watchShots
+/// iPhone Duo, inner screen (issue #666) — the iPhone boards, in the same order
+/// and with the same captions, from captures of their own: unlike the iPad, the
+/// app lays itself out on that screen.
+///
+/// No `trimTop` yet. A sheet on the Duo leaves its dimmed parent on the left as
+/// well as above, and how wide on the inner screen is still to be measured on
+/// the first set, the way `sheetDimBand` was on the 6.9".
+let duoShots = iphoneShots.map { shot in
+    Shot(family: .duo, file: shot.file, lines: shot.lines, english: shot.english, scrolls: shot.scrolls)
+}
+
+let shots = iphoneShots + ipadShots + watchShots + duoShots
+
+/// Families whose raw set is captured by hand: no simulator command unfolds the
+/// iPhone Duo (see tools/capture_screenshots.sh). Skipped while their folder is
+/// missing, so the store-screenshots workflow composes what it captured; held to
+/// every capture as soon as the folder exists.
+let handCapturedFamilies: Set<Family> = [.duo]
 
 /// App Store Connect's ceiling per display family.
 let maximumBoardsPerFamily = 10
@@ -203,6 +223,12 @@ let geometries: [Family: Geometry] = [
         canvas: CGSize(width: 416, height: 496),
         sideInset: 32, bottomInset: 28, captionTop: 16,
         captionSize: 31, captionLeading: 1.16, captionGap: 18, cornerRadius: 48
+    ),
+    // The iPad's margins: the two canvases are within 3 % of each other's width.
+    .duo: Geometry(
+        canvas: CGSize(width: 2007, height: 2853),
+        sideInset: 210, bottomInset: 190, captionTop: 140,
+        captionSize: 116, captionLeading: 1.16, captionGap: 96, cornerRadius: 60
     )
 ]
 
@@ -504,7 +530,12 @@ var missing: [String] = []
 var wrongSize: [String] = []
 var written = 0
 
-for shot in shots {
+let skippedFamilies = handCapturedFamilies.filter { family in
+    !FileManager.default.fileExists(atPath: inputRoot.appendingPathComponent(family.rawValue).path)
+}
+let composed = shots.filter { !skippedFamilies.contains($0.sourceFamily ?? $0.family) }
+
+for shot in composed {
     let sourceFamily = shot.sourceFamily ?? shot.family
     guard let geometry = geometries[shot.family], let native = nativeSize[sourceFamily] else { continue }
     let source = inputRoot.appendingPathComponent(sourceFamily.rawValue).appendingPathComponent("\(shot.file).png")
@@ -534,7 +565,10 @@ for shot in shots {
     written += 1
 }
 
-print("\(written)/\(shots.count) boards composed")
+print("\(written)/\(composed.count) boards composed")
+for family in skippedFamilies.sorted(by: { $0.rawValue < $1.rawValue }) {
+    print("\(family.rawValue) skipped: no raw set in \(inputRoot.path) (captured by hand)")
+}
 
 if !missing.isEmpty {
     print("missing raw captures:")

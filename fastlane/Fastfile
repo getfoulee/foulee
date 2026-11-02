@@ -153,7 +153,9 @@ platform :ios do
   # name, so the family prefix keeps the iPhone and iPad boards — same capture
   # names — from overwriting each other, and the number keeps the store order.
   # One folder per language: the French boards, and the English ones the
-  # composer writes under en-US/ (issue #592).
+  # composer writes under en-US/ (issue #592). Not the iPhone Duo boards
+  # (issue #666): the App Store Connect API has no display type for them yet,
+  # and the web form no slot. They join this list once it has one.
   desc "Upload the composed App Store boards to the version being prepared"
   lane :screenshots do
     root = File.expand_path("../appstore-screenshots", __dir__)
