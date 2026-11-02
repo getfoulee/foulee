@@ -214,14 +214,17 @@ versioned is the way to rebuild them:
 appstore-screenshots/
 ├── raw/                 ← what you capture (untouched simulator grabs)
 │   ├── iphone-6.9/
+│   ├── iphone-duo/      ← captured by hand on a Mac (see below)
 │   ├── ipad-13/
 │   └── watch/
 ├── iphone-6.9/          ← what the composer writes (what you upload)
+├── iphone-duo/
 ├── ipad-13/
 ├── watch/
 └── en-US/               ← the English set (issue #592), the same tree again
     ├── raw/
     ├── iphone-6.9/
+    ├── iphone-duo/
     ├── ipad-13/
     └── watch/
 ```
@@ -241,6 +244,7 @@ just like a missing capture):
 | Folder | Simulator | Native resolution | Automated? |
 |--------|-----------|-------------------|------------|
 | `iphone-6.9` | iPhone 17 Pro Max (any 6.9" iPhone) | 1320 × 2868 | yes |
+| `iphone-duo` | iPhone Duo, inner screen, unfolded by hand | 2006 × 2852 (boards 2007 × 2853) | no — by hand, on a Mac |
 | `ipad-13` | iPad Pro 13-inch (M4 or M5) | 2064 × 2752 | no — by hand |
 | `watch` | Apple Watch Series 11 (46 mm) | 416 × 496 | yes |
 
@@ -341,6 +345,30 @@ rather than cuts.
 run and puts it back afterwards. Both capture targets launch the app in French
 (`-AppleLanguages (fr) -AppleLocale fr_FR`) whatever the host's language: a
 runner in English grouped thousands as « 8,240 » on the boards.
+
+#### iPhone Duo — unfolded by hand
+
+App Store Connect wants iPhone Duo boards taken on the device or its simulator
+for apps built with the iOS 27.1 SDK, so they are never recomposed from the
+iPhone set like the iPad ones (issue #666). The same thirteen captures, on the
+inner screen:
+
+1. `tools/smoke_test.sh` creates the « Foulee Duo » simulator on the newest
+   runtime (Xcode 27.1 at least) if it is missing. Boot it and **unfold it in
+   Simulator.app**, in
+   portrait and the right way up. Nothing else unfolds it: `simctl` and XCTest
+   leave the app on the outer screen, and XCTest grabs the inner one as its
+   panel stores it, so the other portrait comes out upside down.
+2. `tools/capture_screenshots.sh "Foulee Duo" iphone-duo`, then the same with
+   `--language en`. The script measures the PNGs before writing anything and
+   refuses a run left on the outer screen (1398 × 2034) instead of 2006 × 2852.
+3. `swift tools/compose_appstore_screenshots.swift` composes the `iphone-duo`
+   family as soon as `raw/iphone-duo/` exists, at 2007 × 2853, and trims the
+   six sheets' dimmed band (320 px on top, 24 px each side).
+
+The capture tests find the back button by its `BackButton` identifier: on the
+iPhone Duo it sits in the side strip, outside the navigation bar (issue #672).
+Upload them from the Mac with the rest (§ 9.3).
 
 #### Apple Watch — one command
 
