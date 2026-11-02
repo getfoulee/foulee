@@ -1,0 +1,193 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+    }
+    /* The outing in progress. Portrait inner screen: taller than wide, so the
+       stacked layout (LiveWalkLayout), with the ring grown from its 232 pt by
+       the window over the 440 × 860 reference: 232 × 1.106 ≈ 257 pt. */
+    .ou-head {
+      top: 60px;
+    }
+    .ou-head .large-title {
+      margin-top: 10px;
+    }
+    .ou-timer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 170px;
+      text-align: center;
+    }
+    .ou-timer .clock {
+      position: relative;
+      height: 116px;
+      font-family: var(--font-num);
+      font-weight: 400;
+      font-size: 112px;
+      letter-spacing: -0.02em;
+      line-height: 116px;
+      font-variant-numeric: tabular-nums;
+    }
+    .ou-timer .clock span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+    }
+    .ou-timer .lbl {
+      margin-top: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--ink-2);
+    }
+    .ou-ring {
+      position: absolute;
+      left: 50%;
+      top: 338px;
+      width: 257px;
+      height: 257px;
+      margin-left: -128.5px;
+    }
+    .ou-ring svg {
+      position: absolute;
+      inset: 0;
+    }
+    .ou-ring .in {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .ou-ring .num {
+      font-size: 54px;
+      line-height: 1;
+    }
+    .ou-ring .pas {
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--ink-2);
+    }
+    .ou-sub {
+      margin-top: 14px;
+      gap: 14px;
+      text-align: center;
+    }
+    .ou-sub b {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .ou-sub span {
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+    .ou-controls {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 700px;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 54px;
+    }
+    .ou-controls .ctl {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+    .ou-controls .b {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      box-shadow: 0 6px 16px rgb(80 40 140 / 0.12);
+    }
+    .ou-controls .b.main {
+      width: 88px;
+      height: 88px;
+      color: #fff;
+      background: var(--accent-gradient);
+      box-shadow: 0 12px 26px rgb(124 58 237 / 0.4);
+    }
+  </style>
+  <div id="root" data-composition-id="outing" data-width="669" data-height="951">
+    <div class="app" id="ou-app" data-layout-allow-occlusion>
+      <div class="wall"><i></i><i></i><i></i><i></i></div>
+      <div class="status"><span>9:41</span><span class="bars"><span class="signal"><b></b><b></b><b></b><b></b></span><span class="battery"></span></span></div>
+
+      <div class="column ou-head">
+        <span class="chip green">EN COURS</span>
+        <div class="large-title">Ta sortie</div>
+      </div>
+
+      <div class="ou-timer">
+        <div class="clock" data-layout-allow-overlap>
+          <span id="ou-t0">31:58</span><span id="ou-t1" style="opacity: 0">31:59</span><span id="ou-t2" style="opacity: 0">32:00</span><span id="ou-t3" style="opacity: 0">32:01</span>
+        </div>
+        <div class="lbl">DURÉE</div>
+      </div>
+
+      <div class="ou-ring">
+        <svg viewBox="0 0 257 257">
+          <g transform="rotate(-90 128.5 128.5)">
+            <circle cx="128.5" cy="128.5" r="117" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="20" />
+            <circle id="ou-arc" cx="128.5" cy="128.5" r="117" fill="none" stroke="url(#g-accent)" stroke-width="20" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="35" />
+          </g>
+        </svg>
+        <div class="in">
+          <span class="num" id="ou-steps">3 170</span>
+          <span class="pas">PAS</span>
+          <div class="row ou-sub">
+            <div><b>2,6 km</b><span>Distance</span></div>
+            <div><b>214 kcal</b><span>Énergie</span></div>
+            <div><b>18 m</b><span>Dénivelé</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row ou-controls">
+        <div class="ctl"><span class="b" style="color: var(--danger)"><svg class="icon" width="24" height="24"><use href="#i-stop" /></svg></span>Arrêter</div>
+        <div class="ctl"><span class="b main"><svg class="icon" width="34" height="34"><use href="#i-pause" /></svg></span>Pause</div>
+        <div class="ctl"><span class="b" style="color: var(--distance)"><svg class="icon" width="26" height="26"><use href="#i-loc" /></svg></span>Carte</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const nb = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+    // Comes up over the streak like a full-screen cover...
+    tl.fromTo("#ou-app", { y: 951 }, { y: 0, duration: 0.55, ease: "expo.out" }, 0);
+
+    // ...the clock ticks a second at a time and the steps keep coming.
+    [["#ou-t0", "#ou-t1"], ["#ou-t1", "#ou-t2"], ["#ou-t2", "#ou-t3"]].forEach(([a, b], i) => {
+      const at = 0.62 + i * 0.75;
+      tl.to(a, { opacity: 0, duration: 0.12, ease: "none" }, at);
+      tl.to(b, { opacity: 1, duration: 0.12, ease: "none" }, at);
+    });
+    const s = { v: 3170 };
+    tl.fromTo(s, { v: 3170 }, {
+      v: 3194, duration: 2.0, ease: "none",
+      onUpdate: () => { document.querySelector("#ou-steps").textContent = nb(s.v); },
+    }, 0.4);
+    tl.fromTo("#ou-arc", { attr: { "stroke-dashoffset": 36 } }, { attr: { "stroke-dashoffset": 33 }, duration: 2.0, ease: "none" }, 0.4);
+
+    // Stopped: it slides away and Aujourd'hui is underneath.
+    tl.to("#ou-app", { y: 951, duration: 0.45, ease: "power3.in" }, 2.35);
+    window.__timelines["outing"] = tl;
+  </script>
+</template>

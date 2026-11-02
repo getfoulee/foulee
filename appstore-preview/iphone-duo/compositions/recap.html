@@ -1,0 +1,302 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+    }
+    #rc-dim {
+      opacity: 0;
+    }
+    .rc-body {
+      position: absolute;
+      left: 26px;
+      right: 26px;
+      top: 26px;
+    }
+    .rc-seg {
+      margin-top: 14px;
+      width: 300px;
+    }
+    .rc-sum {
+      margin-top: 16px;
+      padding: 20px 22px;
+      gap: 24px;
+    }
+    .rc-ring {
+      position: relative;
+      width: 116px;
+      height: 116px;
+      flex: none;
+    }
+    .rc-ring svg {
+      position: absolute;
+      inset: 0;
+    }
+    .rc-ring .in {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .rc-ring .num {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .rc-ring .in span:last-child {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--ink-2);
+    }
+    .rc-total {
+      margin-top: 4px;
+      gap: 10px;
+      align-items: center;
+    }
+    .rc-total .num {
+      font-size: 38px;
+      line-height: 1.1;
+    }
+    .rc-up {
+      gap: 3px;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--success);
+      background: rgb(52 199 89 / 0.14);
+    }
+    .rc-sum .msg {
+      margin-top: 6px;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .rc-days {
+      margin-top: 14px;
+      padding: 18px 22px;
+    }
+    .rc-days .t,
+    .rc-cmp .t {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .rc-dayrow {
+      position: relative;
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      justify-items: center;
+      text-align: center;
+    }
+    .rc-dayrow .d {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--ink-3);
+    }
+    .rc-dayrow .m {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .rc-dayrow .today .d,
+    .rc-dayrow .today .m {
+      color: #a24ee8;
+    }
+    .rc-hl {
+      position: absolute;
+      top: -6px;
+      bottom: -6px;
+      left: calc(4 / 7 * 100% + 1 / 14 * 100% - 30px);
+      width: 60px;
+      border-radius: 16px;
+      background: rgb(191 90 242 / 0.1);
+    }
+    .rc-legend {
+      margin-top: 14px;
+      gap: 16px;
+      font-size: 13px;
+    }
+    .rc-today {
+      margin-top: 22px;
+    }
+    .rc-today .t {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .rc-today .s {
+      margin-top: 4px;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+    .rc-outing {
+      margin-top: 12px;
+      gap: 14px;
+    }
+    .rc-outing .time {
+      width: 60px;
+      font-size: 14px;
+      color: var(--ink-2);
+      gap: 8px;
+    }
+    .rc-outing .time i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff9500;
+    }
+    .rc-outing .card {
+      flex: 1;
+      padding: 14px 18px;
+      gap: 14px;
+    }
+    .rc-outing .tile {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ff9500;
+      background: rgb(255 149 0 / 0.14);
+    }
+    .rc-outing .n {
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .rc-outing .m {
+      margin-top: 2px;
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+    .rc-cmp {
+      margin-top: 18px;
+      padding: 18px 22px;
+    }
+    .rc-cmp .r {
+      margin-top: 12px;
+      font-size: 15px;
+    }
+  </style>
+  <div id="root" data-composition-id="recap" data-width="669" data-height="951">
+    <div class="dim" id="rc-dim"></div>
+    <div class="sheet" id="rc-sheet" data-layout-allow-occlusion>
+      <div class="wall"><i></i><i></i><i></i><i></i></div>
+      <div class="rc-body" id="rc-body" data-layout-allow-overlap>
+        <div class="row between" style="align-items: flex-start">
+          <div>
+            <div class="eyebrow">Récap</div>
+            <div class="large-title">Ton bilan</div>
+          </div>
+          <span class="close"><svg class="icon" width="13" height="13"><use href="#i-x" /></svg></span>
+        </div>
+        <div class="segmented rc-seg">
+          <i class="thumb" style="width: calc(50% - 2px)"></i>
+          <span>Semaine</span><span>Mois</span>
+        </div>
+
+        <div class="card row rc-sum">
+          <div class="rc-ring">
+            <svg viewBox="0 0 116 116">
+              <g transform="rotate(-90 58 58)">
+                <circle cx="58" cy="58" r="50" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="12" />
+                <circle id="rc-arc" cx="58" cy="58" r="50" fill="none" stroke="url(#g-accent)" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+              </g>
+            </svg>
+            <div class="in"><span class="num">4/5</span><span>objectifs</span></div>
+          </div>
+          <div>
+            <div class="footnote muted">Du 5 oct. au 9 oct.</div>
+            <div class="row rc-total"><span class="num" id="rc-total">0 min</span><span class="row rc-up" id="rc-up"><svg class="icon" width="11" height="11"><use href="#i-arrow-up" /></svg>18 %</span></div>
+            <div class="msg">Belle régularité, continue comme ça.</div>
+          </div>
+        </div>
+
+        <div class="card rc-days">
+          <div class="t">Jour par jour</div>
+          <div class="rc-dayrow" id="rc-dayrow">
+            <i class="rc-hl"></i>
+          </div>
+          <div class="row rc-legend">
+            <span style="color: var(--success)">● Objectif de 30 min tenu</span>
+            <span class="faint">○ Jour de repos</span>
+          </div>
+        </div>
+
+        <div class="rc-today" id="rc-today">
+          <div class="t">Aujourd'hui</div>
+          <div class="row s">44 min d'activité <span class="row" style="gap: 3px; color: var(--success); font-weight: 600"><svg class="icon" width="13" height="13"><use href="#i-check" /></svg>Objectif tenu</span></div>
+          <div class="row rc-outing">
+            <span class="row time">12:10<i></i></span>
+            <div class="card row" id="rc-row">
+              <span class="tile"><svg class="icon" width="22" height="22"><use href="#i-wave" /></svg></span>
+              <div class="grow">
+                <div class="n">Marche et course</div>
+                <div class="m">4,2 km · 286 kcal · Apple Watch</div>
+              </div>
+              <span class="num" style="font-size: 18px">32 min</span>
+              <svg class="icon" width="13" height="13" style="color: var(--ink-3)"><use href="#i-chev-r" /></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="card rc-cmp" id="rc-cmp">
+          <div class="t">Par rapport à la semaine dernière</div>
+          <div class="row between r">
+            <span class="row" style="gap: 8px"><svg class="icon" width="16" height="16" style="color: var(--steps)"><use href="#i-timer" /></svg>Minutes</span>
+            <span class="row" style="gap: 10px"><b class="num">2 h 52</b><span class="row rc-up"><svg class="icon" width="11" height="11"><use href="#i-arrow-up" /></svg>18 %</span></span>
+          </div>
+        </div>
+      </div>
+      <i class="tap" id="rc-tap" style="left: 380px; top: 640px"></i>
+    </div>
+  </div>
+  <script>
+    // Monday to Friday, the minutes of each day; the weekend still to come.
+    const week = [["L", 34], ["M", 22], ["M", 41], ["J", 31], ["V", 44], ["S", 0], ["D", 0]];
+    const row = document.querySelector("#rc-dayrow");
+    week.forEach(([d, m], i) => {
+      const reached = m >= 30;
+      const share = Math.min(m / 30, 1) * 100;
+      const ring = m
+        ? `<circle class="rc-ring-day" cx="26" cy="26" r="20" fill="none" stroke="url(#g-accent)" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" data-to="${100 - share}" transform="rotate(-90 26 26)" />`
+        : "";
+      const fill = reached ? "rgb(52 199 89 / 0.16)" : "none";
+      row.insertAdjacentHTML(
+        "beforeend",
+        `<div class="${i === 4 ? "today" : ""}" style="position:relative"><svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" fill="${fill}" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" />${ring}</svg><div class="d">${d}</div><div class="m">${m || "&nbsp;"}</div></div>`,
+      );
+    });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#rc-dim", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0);
+    tl.fromTo("#rc-sheet", { y: 951 }, { y: 0, duration: 0.55, ease: "expo.out" }, 0);
+
+    tl.fromTo("#rc-arc", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 20 }, duration: 1.0, ease: "power3.out" }, 0.35);
+    const total = { v: 0 };
+    tl.fromTo(total, { v: 0 }, {
+      v: 172, duration: 1.1, ease: "power2.out",
+      onUpdate: () => {
+        const m = Math.round(total.v);
+        document.querySelector("#rc-total").textContent = m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}`;
+      },
+    }, 0.35);
+    tl.fromTo("#rc-up", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 1.35);
+    document.querySelectorAll(".rc-ring-day").forEach((ring, i) => {
+      tl.fromTo(ring, { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": Number(ring.dataset.to) }, duration: 0.5, ease: "power2.out" }, 0.5 + i * 0.1);
+    });
+    tl.fromTo("#rc-today", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.15);
+    tl.fromTo("#rc-cmp", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.25);
+
+    // Tap the outing: its detail is pushed inside the sheet.
+    tl.fromTo("#rc-tap", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.16, ease: "power2.out" }, 2.4);
+    tl.to("#rc-row", { scale: 0.98, duration: 0.09, yoyo: true, repeat: 1 }, 2.5);
+    tl.to("#rc-tap", { opacity: 0, duration: 0.15 }, 2.68);
+    tl.to("#rc-body", { x: -180, opacity: 0.6, duration: 0.5, ease: "power3.inOut" }, 2.75);
+    window.__timelines["recap"] = tl;
+  </script>
+</template>

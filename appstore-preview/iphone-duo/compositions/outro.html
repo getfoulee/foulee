@@ -1,0 +1,74 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+      font-family: "Inter", sans-serif;
+      color: #1d1233;
+    }
+    #ou2-mark {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    #ou2-icon {
+      width: 250px;
+      height: 250px;
+      border-radius: 57px;
+      background: url("assets/app-icon.png") center / cover;
+      box-shadow: 0 30px 60px -18px rgb(124 58 237 / 0.45);
+    }
+    #ou2-name {
+      margin-top: 44px;
+      font-size: 120px;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1;
+    }
+    #ou2-tag {
+      margin-top: 34px;
+      font-size: 46px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    #ou2-tag span {
+      display: inline-block;
+    }
+    .ou2-accent {
+      background: linear-gradient(135deg, #c86ef7, #8b3fe8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    #ou2-devices {
+      margin-top: 30px;
+      font-size: 26px;
+      font-weight: 500;
+      color: rgb(29 18 51 / 0.55);
+    }
+  </style>
+  <div id="root" data-composition-id="outro" data-width="886" data-height="1920">
+    <div id="ou2-mark">
+      <div id="ou2-icon"></div>
+      <div id="ou2-name">Foulée</div>
+      <div id="ou2-tag">
+        <span>Bouge</span> <span>un</span> <span>peu,</span> <span class="ou2-accent">chaque</span> <span class="ou2-accent">jour.</span>
+      </div>
+      <div id="ou2-devices">iPhone · iPhone Duo · Apple Watch</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#ou2-icon", { opacity: 0, scale: 0.75, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0.1);
+    tl.fromTo("#ou2-name", { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.35, ease: "power2.out" }, 0.3);
+    tl.fromTo("#ou2-tag span", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out", stagger: 0.08 }, 0.55);
+    tl.fromTo("#ou2-devices", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.0);
+    window.__timelines["outro"] = tl;
+  </script>
+</template>

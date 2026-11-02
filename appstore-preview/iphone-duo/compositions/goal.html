@@ -1,0 +1,419 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+    }
+    /* Aujourd'hui, in the 640 pt column of the inner screen. */
+    .gl-head {
+      top: 60px;
+    }
+    .gl-head .row {
+      align-items: flex-end;
+    }
+    .gl-streak {
+      gap: 4px;
+      margin-right: 14px;
+      font-size: 22px;
+      color: var(--ink);
+    }
+    .gl-streak svg {
+      color: #ff9500;
+    }
+    .gl-person {
+      color: #b05ef0;
+    }
+    .gl-hero {
+      top: 144px;
+    }
+    .gl-hero .card {
+      padding: 22px;
+    }
+    .gl-ringbox {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      flex: none;
+    }
+    .gl-ringbox svg.rings {
+      position: absolute;
+      inset: 0;
+    }
+    .gl-ringbox .mid {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b05ef0;
+    }
+    .gl-herotext {
+      margin-left: 26px;
+    }
+    .gl-herotext .lead {
+      margin-top: 10px;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.22;
+    }
+    .gl-herotext .lead b {
+      font-weight: 700;
+      color: var(--success);
+    }
+    .gl-weather {
+      margin-top: 8px;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+    .gl-weather svg {
+      color: #ff9f0a;
+    }
+    .gl-actions {
+      margin-top: 20px;
+      gap: 12px;
+    }
+    
+    .gl-bell {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      background: rgb(29 18 51 / 0.07);
+    }
+    .gl-swap {
+      position: relative;
+      height: 96px;
+    }
+    .gl-swap > div {
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: nowrap;
+    }
+    #gl-after {
+      opacity: 0;
+    }
+    .gl-actswap {
+      position: relative;
+      flex: 1;
+      height: 54px;
+    }
+    .gl-act {
+      position: absolute;
+      inset: 0;
+      gap: 12px;
+    }
+    .gl-act .button {
+      flex: 1;
+    }
+    #gl-act-after {
+      opacity: 0;
+    }
+    .gl-done {
+      flex-direction: column;
+      gap: 0;
+      color: var(--success) !important;
+      opacity: 0;
+    }
+    .gl-done span {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    #gl-burst {
+      position: absolute;
+      left: 75px;
+      top: 75px;
+    }
+    #gl-burst i {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      margin: -4.5px 0 0 -4.5px;
+      border-radius: 50%;
+      opacity: 0;
+    }
+    .gl-stats {
+      top: 404px;
+    }
+    .gl-stats .card {
+      padding: 16px 22px 20px;
+    }
+    .gl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      row-gap: 16px;
+      margin-top: 16px;
+    }
+    .gl-grid .k {
+      gap: 5px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .gl-grid .v {
+      position: relative;
+      height: 36px;
+      margin-top: 4px;
+    }
+    .gl-grid .v > span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: nowrap;
+    }
+    .gl-grid .num {
+      font-size: 30px;
+    }
+    .gl-grid small {
+      margin-left: 4px;
+      font-size: 14px;
+      color: var(--ink-3);
+      font-family: var(--font);
+      font-weight: 500;
+    }
+    .gl-water {
+      top: 628px;
+    }
+    .gl-water .card {
+      padding: 18px 22px;
+    }
+    .gl-water .h {
+      gap: 7px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .gl-water .h svg {
+      color: var(--water);
+    }
+    .gl-glasses {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .gl-glasses span {
+      position: relative;
+      height: 40px;
+      border: 1.5px solid rgb(48 176 199 / 0.35);
+      border-radius: 4px 4px 9px 9px;
+      clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+      background: rgb(48 176 199 / 0.06);
+      overflow: hidden;
+    }
+    .gl-glasses span i {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #46c6db, #2aa3ba);
+      transform-origin: 50% 100%;
+    }
+    .gl-water .foot {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--ink-2);
+      gap: 6px;
+    }
+    .gl-drank {
+      gap: 5px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #3cc0d6, #1f9db3);
+    }
+    .gl-week {
+      top: 800px;
+    }
+    .gl-week .card {
+      padding: 18px 22px;
+    }
+    .gl-week .h {
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .gl-week .h svg {
+      color: #b05ef0;
+    }
+    .gl-weekrings {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+    }
+  </style>
+  <div id="root" data-composition-id="goal" data-width="669" data-height="951">
+    <div class="app">
+      <div class="wall"><i></i><i></i><i></i><i></i></div>
+      <div class="status"><span>9:41</span><span class="bars"><span class="signal"><b></b><b></b><b></b><b></b></span><span class="battery"></span></span></div>
+
+      <div class="column gl-head">
+        <div class="row between">
+          <div>
+            <div class="eyebrow">Vendredi 9 octobre</div>
+            <div class="large-title">Aujourd'hui</div>
+          </div>
+          <div class="row" style="margin-bottom: 4px">
+            <span class="row gl-streak num"><svg class="icon" width="22" height="22"><use href="#i-flame" /></svg>12</span>
+            <svg class="icon gl-person" width="34" height="34"><use href="#i-person" /></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="column gl-hero">
+        <div class="card">
+          <div class="row">
+            <div class="gl-ringbox">
+              <svg class="rings" viewBox="0 0 150 150">
+                <g transform="rotate(-90 75 75)">
+                  <circle cx="75" cy="75" r="67" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="13" />
+                  <circle cx="75" cy="75" r="49" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="13" />
+                  <circle id="gl-outer" cx="75" cy="75" r="67" fill="none" stroke="url(#g-accent)" stroke-width="13" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                  <circle id="gl-inner" cx="75" cy="75" r="49" fill="none" stroke="url(#g-activity)" stroke-width="13" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                </g>
+              </svg>
+              <div class="mid" id="gl-mid-feet"><svg class="icon" width="34" height="34"><use href="#i-feet" /></svg></div>
+              <div class="mid gl-done" id="gl-mid-done"><svg class="icon" width="30" height="30"><use href="#i-check" /></svg><span>Fait</span></div>
+              <div id="gl-burst"></div>
+            </div>
+            <div class="gl-herotext">
+              <div class="gl-swap" data-layout-allow-overlap>
+                <div id="gl-before">
+                  <span class="chip purple"><svg class="icon" width="13" height="13"><use href="#i-bell" /></svg>De retour à 12:42</span>
+                  <div class="lead">Encore <b>3 min</b><br />d'activité</div>
+                </div>
+                <div id="gl-after">
+                  <span class="chip green"><svg class="icon" width="12" height="12"><use href="#i-check" /></svg>Sortie terminée</span>
+                  <div class="lead">Bravo, <b>44 min</b><br />d'activité</div>
+                </div>
+              </div>
+              <div class="row gl-weather"><svg class="icon" width="17" height="17"><use href="#i-sun" /></svg>18° · Ensoleillé</div>
+            </div>
+          </div>
+          <div class="row gl-actions">
+            <div class="gl-actswap" data-layout-allow-overlap>
+              <div class="row gl-act" id="gl-act-before">
+                <div class="button"><svg class="icon" width="17" height="17"><use href="#i-play" /></svg>Démarrer ta sortie</div>
+                <div class="gl-bell"><svg class="icon" width="21" height="21"><use href="#i-bell" /></svg></div>
+              </div>
+              <div class="row gl-act" id="gl-act-after">
+                <div class="button grey" id="gl-recap"><svg class="icon" width="17" height="17" style="color: #b05ef0"><use href="#i-sparkles" /></svg>Voir le bilan</div>
+                <div class="button"><svg class="icon" width="17" height="17"><use href="#i-play" /></svg>Repartir</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column gl-stats">
+        <div class="card">
+          <div class="segmented">
+            <i class="thumb" id="gl-thumb" style="width: calc(50% - 2px)"></i>
+            <span>Jour</span><span>Semaine</span>
+          </div>
+          <div class="gl-grid">
+            <div>
+              <div class="row k" style="color: var(--steps)"><svg class="icon" width="16" height="16"><use href="#i-feet" /></svg>Pas</div>
+              <div class="v">
+                <span id="gl-day-steps"><b class="num">7 412</b><small>/ 8 000</small></span>
+              </div>
+            </div>
+            <div>
+              <div class="row k" style="color: var(--minutes)"><svg class="icon" width="16" height="16"><use href="#i-timer" /></svg>Minutes</div>
+              <div class="v">
+                <span id="gl-day-min"><b class="num">44</b><small>/ 30</small></span>
+              </div>
+            </div>
+            <div>
+              <div class="row k" style="color: var(--distance)"><svg class="icon" width="16" height="16"><use href="#i-pin" /></svg>Distance</div>
+              <div class="v">
+                <span id="gl-day-km"><b class="num">7,3</b><small>km</small></span>
+              </div>
+            </div>
+            <div>
+              <div class="row k" style="color: var(--calories)"><svg class="icon" width="16" height="16"><use href="#i-flame" /></svg>Calories</div>
+              <div class="v">
+                <span id="gl-day-kcal"><b class="num">500</b><small>kcal</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column gl-water">
+        <div class="card">
+          <div class="row between">
+            <span class="row h"><svg class="icon" width="18" height="18"><use href="#i-drop" /></svg>Hydratation</span>
+            <span class="num muted" style="font-size: 17px; font-weight: 700">0,75 / 2 L</span>
+          </div>
+          <div class="gl-glasses">
+            <span><i style="transform: scaleY(0.86)"></i></span><span><i style="transform: scaleY(0.86)"></i></span><span><i style="transform: scaleY(0.86)"></i></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="row between foot">
+            <span class="row" style="gap: 6px"><svg class="icon" width="15" height="15"><use href="#i-timer" /></svg>Un verre de retard</span>
+            <span class="row gl-drank"><svg class="icon" width="14" height="14"><use href="#i-drop" /></svg>J'ai bu</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="column gl-week">
+        <div class="card">
+          <div class="row between">
+            <span class="row h"><svg class="icon" width="18" height="18"><use href="#i-cal" /></svg>Ta semaine</span>
+            <svg class="icon" width="16" height="16" style="color: #b05ef0"><use href="#i-chev-r" /></svg>
+          </div>
+          <div class="gl-weekrings">
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgb(52 199 89 / 0.15)" stroke="url(#g-accent)" stroke-width="5" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" /><circle cx="22" cy="22" r="18" fill="none" stroke="url(#g-accent)" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="72 100" transform="rotate(-90 22 22)" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgb(52 199 89 / 0.15)" stroke="url(#g-accent)" stroke-width="5" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="rgb(52 199 89 / 0.15)" stroke="url(#g-accent)" stroke-width="5" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" /><circle id="gl-today-ring" cx="22" cy="22" r="18" fill="none" stroke="url(#g-accent)" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="12" transform="rotate(-90 22 22)" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" /></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" /></svg>
+          </div>
+        </div>
+      </div>
+
+      <i class="tap" id="gl-tap" style="left: 212px; top: 363px"></i>
+    </div>
+  </div>
+  <script>
+    // A little burst of the ring's colours when it closes (CelebrationBurst).
+    const burst = document.querySelector("#gl-burst");
+    const colours = ["#bf5af2", "#34c759", "#ff9f0a", "#d97aff", "#30b0c7", "#7c3aed"];
+    for (let i = 0; i < 18; i++) {
+      burst.insertAdjacentHTML("beforeend", `<i class="gl-dot" style="background:${colours[i % colours.length]}"></i>`);
+    }
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#gl-outer", { attr: { "stroke-dashoffset": 22 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.7, ease: "power3.inOut" }, 0.5);
+    tl.fromTo("#gl-inner", { attr: { "stroke-dashoffset": 10 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.6, ease: "power3.inOut" }, 0.62);
+    tl.fromTo("#gl-today-ring", { attr: { "stroke-dashoffset": 12 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.6, ease: "power3.inOut" }, 0.62);
+
+    // Closed: the centre turns into a check, the words and the buttons change.
+    tl.to("#gl-mid-feet", { opacity: 0, scale: 0.6, duration: 0.2, ease: "power2.in" }, 1.15);
+    tl.fromTo("#gl-mid-done", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.2)" }, 1.25);
+    tl.to("#gl-before", { opacity: 0, y: -8, filter: "blur(4px)", duration: 0.2, ease: "power2.in" }, 1.2);
+    tl.fromTo("#gl-after", { opacity: 0, y: 8, filter: "blur(4px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 1.32);
+    tl.to("#gl-act-before", { opacity: 0, duration: 0.2 }, 1.3);
+    tl.fromTo("#gl-act-after", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 1.4);
+    document.querySelectorAll(".gl-dot").forEach((dot, i) => {
+      const a = (i / 18) * Math.PI * 2;
+      const r = 92 + (i % 3) * 14;
+      tl.fromTo(dot, { x: 0, y: 0, opacity: 0, scale: 0.4 }, { x: Math.cos(a) * r, y: Math.sin(a) * r, opacity: 1, scale: 1, duration: 0.5, ease: "expo.out" }, 1.2);
+      tl.to(dot, { opacity: 0, scale: 0.2, duration: 0.3, ease: "power2.in" }, 1.6 + (i % 4) * 0.04);
+    });
+
+    // Tap « Voir le bilan ».
+    tl.fromTo("#gl-tap", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.16, ease: "power2.out" }, 1.95);
+    tl.to("#gl-recap", { scale: 0.96, duration: 0.09, yoyo: true, repeat: 1 }, 2.05);
+    tl.to("#gl-tap", { opacity: 0, scale: 1.2, duration: 0.18 }, 2.2);
+    window.__timelines["goal"] = tl;
+  </script>
+</template>

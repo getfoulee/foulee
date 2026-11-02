@@ -1,0 +1,267 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+    }
+    /* Pushed inside the Bilan's sheet: same card, inset from the sides. */
+    .dt-frame {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    #dt-page {
+      position: absolute;
+      inset: 0;
+      background: #fbf7ff;
+      box-shadow: -10px 0 30px rgb(40 10 80 / 0.12);
+    }
+    .dt-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 18px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .dt-back {
+      position: absolute;
+      left: 18px;
+      gap: 4px;
+      color: #a24ee8;
+      font-weight: 400;
+    }
+    .dt-body {
+      position: absolute;
+      left: 26px;
+      right: 26px;
+      top: 74px;
+    }
+    .dt-headcard {
+      padding: 18px 22px;
+      text-align: center;
+    }
+    .dt-headcard .tile {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b05ef0;
+      background: rgb(191 90 242 / 0.13);
+    }
+    .dt-headcard .eyebrow {
+      margin-top: 10px;
+    }
+    .dt-headcard .num {
+      font-size: 40px;
+      line-height: 1.15;
+    }
+    .dt-headcard .s {
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+    .dt-map {
+      margin-top: 14px;
+      padding: 10px 10px 14px;
+    }
+    .dt-map svg {
+      display: block;
+      border-radius: 16px;
+    }
+    .dt-legend {
+      margin: 12px 0 0 10px;
+      gap: 20px;
+      font-size: 14px;
+    }
+    .dt-legend span {
+      gap: 6px;
+    }
+    .dt-legend i {
+      width: 18px;
+      height: 4px;
+      border-radius: 2px;
+    }
+    .dt-portions {
+      margin-top: 14px;
+      padding: 18px 22px;
+    }
+    .dt-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--ink-2);
+    }
+    .dt-bar {
+      position: relative;
+      margin-top: 12px;
+      height: 46px;
+      display: flex;
+      gap: 3px;
+    }
+    .dt-bar span {
+      height: 100%;
+      transform-origin: 0 50%;
+    }
+    .dt-bar .w {
+      background: #32ade6;
+    }
+    .dt-bar .r {
+      background: #ff9500;
+    }
+    #dt-knob {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 38px;
+      height: 38px;
+      margin: -19px 0 0 -19px;
+      border-radius: 50%;
+      background: rgb(255 255 255 / 0.55);
+      border: 2px solid #fff;
+      box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+      opacity: 0;
+    }
+    .dt-ticks {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+    .dt-info {
+      position: relative;
+      margin-top: 12px;
+      height: 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .dt-info > span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .dt-rows .r {
+      margin-top: 14px;
+      gap: 12px;
+    }
+    .dt-rows .n {
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .dt-rows .m {
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+    .dt-rows .num {
+      font-size: 19px;
+    }
+  </style>
+  <div id="root" data-composition-id="detail" data-width="669" data-height="951">
+    <div class="sheet dt-frame">
+      <div id="dt-page" data-layout-allow-occlusion>
+        <div class="wall"><i></i><i></i><i></i><i></i></div>
+        <div class="dt-nav">
+          <span class="row dt-back"><svg class="icon" width="17" height="17"><use href="#i-chev-l" /></svg>Retour</span>
+          Détail
+        </div>
+        <div class="dt-body">
+          <div class="card dt-headcard">
+            <div class="tile"><svg class="icon" width="22" height="22"><use href="#i-wave" /></svg></div>
+            <div class="eyebrow">Aujourd'hui</div>
+            <div class="num">32:14</div>
+            <div class="s">Marche et course · 12:10 – 12:42 · Apple Watch</div>
+          </div>
+
+          <div class="card dt-map">
+            <svg width="581" height="250" viewBox="0 0 581 250">
+              <rect width="581" height="250" fill="#ece7f3" />
+              <path d="M0 250 C 30 215 18 175 0 150 Z" fill="#a9d1f3" />
+              <ellipse cx="395" cy="112" rx="70" ry="44" fill="#d4ecd2" />
+              <g stroke="#ffffff" stroke-width="11" fill="none" stroke-linecap="round">
+                <path d="M-10 60 L 600 30" />
+                <path d="M-10 160 L 600 120" />
+                <path d="M120 -10 L 175 260" />
+                <path d="M300 -10 L 260 260" />
+                <path d="M480 -10 L 520 260" />
+                <path d="M-10 230 L 600 210" />
+              </g>
+              <g stroke="#f7e8a4" stroke-width="7" fill="none" stroke-linecap="round">
+                <path d="M30 -10 L 230 260" />
+                <path d="M560 -10 L 380 260" />
+              </g>
+              <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="7">
+                <path id="dt-walk1" d="M62 210 C 100 196 132 168 172 146 S 246 114 292 98" stroke="#32ade6" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <path id="dt-run" d="M292 98 C 322 52 414 38 460 72 C 506 106 484 164 424 174 C 372 182 322 152 292 98" stroke="#ff9500" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <path id="dt-walk2" d="M292 98 C 272 152 222 202 152 214 S 84 216 62 210" stroke="#32ade6" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+              </g>
+              <circle cx="62" cy="210" r="8" fill="#34c759" stroke="#fff" stroke-width="3" />
+            </svg>
+            <div class="row dt-legend">
+              <span class="row"><i style="background: #32ade6"></i><svg class="icon" width="14" height="14" style="color: #32ade6"><use href="#i-feet" /></svg>Marche</span>
+              <span class="row"><i style="background: #ff9500"></i><svg class="icon" width="14" height="14" style="color: #ff9500"><use href="#i-bolt" /></svg>Course</span>
+            </div>
+          </div>
+
+          <div class="card dt-portions">
+            <div class="dt-label">PORTIONS</div>
+            <div class="dt-bar">
+              <span class="w" id="dt-s1" style="width: 155px; border-radius: 10px 0 0 10px"></span>
+              <span class="r" id="dt-s2" style="width: 241px"></span>
+              <span class="w" id="dt-s3" style="width: 155px; border-radius: 0 10px 10px 0"></span>
+              <i id="dt-knob"></i>
+            </div>
+            <div class="row between dt-ticks"><span>12:10</span><span>12:20</span><span>12:30</span><span>12:40</span></div>
+            <div class="dt-info" data-layout-allow-overlap>
+              <span class="row" id="dt-hint" style="color: var(--ink-3); font-weight: 400">Glisse le doigt sur la frise pour le détail d'une portion</span>
+              <span class="row" id="dt-i1" style="opacity: 0"><svg class="icon" width="15" height="15" style="color: #32ade6"><use href="#i-feet" /></svg>Marche · 12:10 → 12:19 · 0,8 km · 11'19"/km</span>
+              <span class="row" id="dt-i2" style="opacity: 0"><svg class="icon" width="15" height="15" style="color: #ff9500"><use href="#i-bolt" /></svg>Course · 12:19 → 12:33 · 2,6 km · 5'26"/km</span>
+            </div>
+            <div class="dt-rows">
+              <div class="row r">
+                <svg class="icon" width="20" height="20" style="color: #32ade6"><use href="#i-feet" /></svg>
+                <div class="grow"><div class="n">Marche</div><div class="m">1,6 km · 11'17"/km</div></div>
+                <span class="num">18:07</span>
+              </div>
+              <div class="row r">
+                <svg class="icon" width="20" height="20" style="color: #ff9500"><use href="#i-bolt" /></svg>
+                <div class="grow"><div class="n">Course</div><div class="m">2,6 km · 5'26"/km</div></div>
+                <span class="num">14:07</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#dt-page", { x: 653 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 0);
+
+    // The route draws itself: the walk, the run's loop, the walk home.
+    tl.fromTo("#dt-walk1", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power1.in" }, 0.55);
+    tl.fromTo("#dt-run", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.7, ease: "none" }, 0.95);
+    tl.fromTo("#dt-walk2", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power1.out" }, 1.65);
+    tl.fromTo(["#dt-s1", "#dt-s2", "#dt-s3"], { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.out", stagger: 0.12 }, 0.6);
+
+    // A finger on the strip: the first walk, then the run.
+    tl.fromTo("#dt-knob", { x: 77.5, opacity: 0, scale: 0.6 }, { x: 77.5, opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2)" }, 1.95);
+    tl.to("#dt-hint", { opacity: 0, duration: 0.15 }, 1.95);
+    tl.to("#dt-i1", { opacity: 1, duration: 0.15 }, 2.0);
+    tl.to(["#dt-s2", "#dt-s3"], { opacity: 0.35, duration: 0.2 }, 2.0);
+    tl.to("#dt-knob", { x: 278.5, duration: 0.45, ease: "power2.inOut" }, 2.45);
+    tl.to("#dt-s2", { opacity: 1, duration: 0.15 }, 2.62);
+    tl.to("#dt-s1", { opacity: 0.35, duration: 0.15 }, 2.62);
+    tl.to("#dt-i1", { opacity: 0, duration: 0.12 }, 2.62);
+    tl.to("#dt-i2", { opacity: 1, duration: 0.15 }, 2.66);
+    tl.to("#dt-walk1", { opacity: 0.35, duration: 0.2 }, 2.62);
+    tl.to("#dt-walk2", { opacity: 0.35, duration: 0.2 }, 2.62);
+    window.__timelines["detail"] = tl;
+  </script>
+</template>

@@ -1,0 +1,377 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+    }
+    #ob-pages {
+      position: absolute;
+      inset: 0;
+    }
+    .ob-page {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 669px;
+    }
+    #ob-p2,
+    #ob-p3 {
+      left: 669px;
+    }
+    .ob-dots {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 66px;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 6;
+      opacity: 0;
+    }
+    .ob-dots i {
+      width: 7px;
+      height: 7px;
+      border-radius: 4px;
+      background: rgb(29 18 51 / 0.14);
+    }
+    .ob-dots i.on {
+      width: 22px;
+      background: #b05ef0;
+    }
+    .ob-dots i.done {
+      background: #c88af5;
+    }
+
+    /* Welcome */
+    #ob-welcome-body {
+      top: 210px;
+      text-align: center;
+    }
+    #ob-spark {
+      width: 112px;
+      height: 112px;
+      margin: 0 auto;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: linear-gradient(135deg, #d97aff, #a24ee8 55%, #7c3aed);
+      box-shadow: 0 16px 34px rgb(124 58 237 / 0.35);
+    }
+    #ob-welcome-body .large-title {
+      margin-top: 26px;
+      font-size: 40px;
+    }
+    #ob-welcome-body .tag {
+      margin-top: 8px;
+      font-size: 19px;
+      line-height: 1.3;
+      color: var(--ink-2);
+    }
+    .ob-features {
+      margin: 40px auto 0;
+      width: 440px;
+      padding: 8px 20px;
+      text-align: left;
+    }
+    .ob-features .row {
+      gap: 14px;
+      height: 54px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .ob-features .row + .row {
+      border-top: 0.5px solid var(--hairline);
+    }
+    .ob-features .ic {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a24ee8;
+      background: rgb(191 90 242 / 0.12);
+    }
+    .ob-cta {
+      bottom: 46px;
+    }
+
+    /* Question pages */
+    .ob-q {
+      top: 108px;
+    }
+    .ob-q .large-title {
+      font-size: 36px;
+    }
+    .ob-q .sub {
+      margin-top: 10px;
+      font-size: 17px;
+      color: var(--ink-2);
+    }
+    .ob-option {
+      margin-top: 14px;
+      height: 74px;
+      padding: 0 18px;
+      gap: 14px;
+    }
+    .ob-option:first-of-type {
+      margin-top: 30px;
+    }
+    .ob-option .ic {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a24ee8;
+      background: rgb(191 90 242 / 0.12);
+    }
+    .ob-option .t {
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .ob-option .s {
+      margin-top: 2px;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+    #ob-both-ring {
+      position: absolute;
+      inset: -1px;
+      border-radius: 24px;
+      border: 2px solid #b05ef0;
+      opacity: 0;
+    }
+    #ob-both-check {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: #a24ee8;
+      opacity: 0;
+    }
+    .ob-label {
+      margin: 30px 0 10px 4px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--ink-2);
+    }
+    .ob-q .days {
+      gap: 14px;
+    }
+    .ob-q .day {
+      width: 48px;
+      height: 48px;
+      font-size: 17px;
+    }
+    .ob-window {
+      height: 76px;
+      padding: 0 22px;
+    }
+    .ob-window .k {
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+    .ob-window .v {
+      margin-top: 2px;
+      font-size: 20px;
+    }
+    .ob-window .dash {
+      flex: 1;
+      margin: 0 26px;
+      height: 1.5px;
+      background: rgb(29 18 51 / 0.12);
+    }
+    .ob-goal {
+      padding: 20px 22px 18px;
+    }
+    .ob-goal .val {
+      justify-content: center;
+      gap: 8px;
+      align-items: baseline;
+    }
+    .ob-goal .val .num {
+      font-size: 40px;
+    }
+    .ob-goal .track {
+      position: relative;
+      margin-top: 16px;
+      height: 6px;
+      border-radius: 3px;
+      background: rgb(29 18 51 / 0.08);
+    }
+    #ob-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #d97aff, #8b3fe8);
+      transform-origin: 0 50%;
+    }
+    #ob-knob {
+      position: absolute;
+      top: -11px;
+      left: -14px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    }
+    .ob-goal .ends {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+  </style>
+  <div id="root" data-composition-id="onboarding" data-width="669" data-height="951">
+    <div class="app" id="ob-app" data-layout-allow-occlusion>
+      <div class="wall"><i></i><i></i><i></i><i></i></div>
+      <div class="status"><span>9:41</span><span class="bars"><span class="signal"><b></b><b></b><b></b><b></b></span><span class="battery"></span></span></div>
+
+      <div class="ob-dots" id="ob-dots">
+        <i id="ob-d1" class="on"></i><i id="ob-d2"></i><i id="ob-d3"></i><i id="ob-d4"></i>
+      </div>
+
+      <div id="ob-pages">
+        <!-- 1. Welcome -->
+        <div class="ob-page" id="ob-p1">
+          <div class="column" id="ob-welcome-body">
+            <div id="ob-spark"><svg class="icon" width="56" height="56"><use href="#i-sparkles" /></svg></div>
+            <div class="large-title">Foulée</div>
+            <div class="tag">Bouge un peu,<br />chaque jour.</div>
+            <div class="card ob-features">
+              <div class="row"><span class="ic"><svg class="icon" width="18" height="18"><use href="#i-wave" /></svg></span>Une sortie par jour ouvré</div>
+              <div class="row"><span class="ic"><svg class="icon" width="18" height="18"><use href="#i-target" /></svg></span>Un objectif simple, pas un score</div>
+              <div class="row"><span class="ic"><svg class="icon" width="18" height="18"><use href="#i-timer" /></svg></span>Détection auto via ta montre</div>
+            </div>
+          </div>
+          <div class="column ob-cta"><div class="button" id="ob-start">Commencer</div></div>
+        </div>
+
+        <!-- 2. Walk or run -->
+        <div class="ob-page" id="ob-p2">
+          <div class="column ob-q">
+            <div class="large-title">Tu marches ou<br />tu cours ?</div>
+            <div class="sub">On adaptera Foulée à ta pratique.</div>
+            <div class="card row ob-option">
+              <span class="ic"><svg class="icon" width="22" height="22"><use href="#i-feet" /></svg></span>
+              <div class="grow"><div class="t">Marche</div><div class="s">Une sortie tranquille, à ton rythme</div></div>
+            </div>
+            <div class="card row ob-option">
+              <span class="ic"><svg class="icon" width="22" height="22"><use href="#i-bolt" /></svg></span>
+              <div class="grow"><div class="t">Course</div><div class="s">Des sorties plus intenses</div></div>
+            </div>
+            <div class="card row ob-option" id="ob-both">
+              <i id="ob-both-ring"></i>
+              <span class="ic"><svg class="icon" width="22" height="22"><use href="#i-wave" /></svg></span>
+              <div class="grow"><div class="t">Les deux</div><div class="s">Ça dépend des jours</div></div>
+              <span id="ob-both-check"><svg class="icon" width="15" height="15"><use href="#i-check" /></svg></span>
+            </div>
+          </div>
+          <div class="column ob-cta"><div class="button">Continuer</div></div>
+        </div>
+
+        <!-- 3. When -->
+        <div class="ob-page" id="ob-p3">
+          <div class="column ob-q">
+            <div class="large-title">Quand veux-tu<br />bouger ?</div>
+            <div class="sub">On t'enverra un petit rappel juste avant.</div>
+            <div class="ob-label">JOURS</div>
+            <div class="days">
+              <span class="day"><i class="on" id="ob-day1"></i><em>L</em></span>
+              <span class="day"><i class="on" id="ob-day2"></i><em>M</em></span>
+              <span class="day"><i class="on" id="ob-day3"></i><em>M</em></span>
+              <span class="day"><i class="on" id="ob-day4"></i><em>J</em></span>
+              <span class="day"><i class="on" id="ob-day5"></i><em>V</em></span>
+              <span class="day"><em>S</em></span>
+              <span class="day"><em>D</em></span>
+            </div>
+            <div class="ob-label">FENÊTRE</div>
+            <div class="card row ob-window">
+              <div><div class="k">Début</div><div class="v num">12:00</div></div>
+              <i class="dash"></i>
+              <div style="text-align: right"><div class="k">Fin</div><div class="v num">13:00</div></div>
+            </div>
+            <div class="ob-label">OBJECTIF QUOTIDIEN</div>
+            <div class="card ob-goal">
+              <div class="row val"><span class="num" id="ob-min">20</span><span class="muted">minutes</span></div>
+              <div class="track"><i id="ob-fill"></i><i id="ob-knob"></i></div>
+              <div class="row between ends"><span>10 min</span><span>60 min</span></div>
+            </div>
+          </div>
+          <div class="column ob-cta"><div class="button">Continuer</div></div>
+        </div>
+      </div>
+
+      <i class="tap" id="ob-tap1" style="left: 335px; top: 880px"></i>
+      <i class="tap" id="ob-tap2" style="left: 360px; top: 480px"></i>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const W = 669;
+
+    // Page strip: welcome, then the two questions, as the app's TabView pages.
+    
+    // Tap « Commencer ».
+    tl.fromTo("#ob-tap1", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.18, ease: "power2.out" }, 0.82);
+    tl.to("#ob-start", { scale: 0.96, duration: 0.1, yoyo: true, repeat: 1, ease: "power1.inOut" }, 0.92);
+    tl.to("#ob-tap1", { opacity: 0, scale: 1.3, duration: 0.18, ease: "power2.in" }, 1.08);
+
+    tl.to("#ob-p1", { x: -W, duration: 0.5, ease: "power3.inOut" }, 1.12);
+    tl.fromTo("#ob-p2", { x: 0 }, { x: -W, duration: 0.5, ease: "power3.inOut" }, 1.12);
+    tl.to("#ob-dots", { opacity: 1, duration: 0.25 }, 1.3);
+
+    // Pick « Les deux ».
+    tl.fromTo("#ob-tap2", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.16, ease: "power2.out" }, 1.62);
+    tl.to("#ob-both", { scale: 0.98, duration: 0.09, yoyo: true, repeat: 1 }, 1.72);
+    tl.to("#ob-both-ring", { opacity: 1, duration: 0.15 }, 1.76);
+    tl.fromTo("#ob-both-check", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2)" }, 1.76);
+    tl.to("#ob-tap2", { opacity: 0, duration: 0.15 }, 1.88);
+
+    tl.to("#ob-p2", { x: -2 * W, duration: 0.5, ease: "power3.inOut" }, 2.02);
+    tl.fromTo("#ob-p3", { x: 0 }, { x: -W, duration: 0.5, ease: "power3.inOut" }, 2.02);
+    tl.set("#ob-d1", { attr: { class: "done" } }, 1.3);
+    tl.set("#ob-d2", { attr: { class: "on" } }, 1.3);
+    tl.set("#ob-d2", { attr: { class: "done" } }, 2.2);
+    tl.set("#ob-d3", { attr: { class: "on" } }, 2.2);
+
+    // The weekdays light up one after the other, then the goal goes 20 → 30.
+    for (let i = 1; i <= 5; i++) {
+      tl.fromTo(`#ob-day${i}`, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.22, ease: "back.out(1.8)" }, 2.45 + (i - 1) * 0.09);
+    }
+    const goal = { m: 20 };
+    tl.fromTo("#ob-fill", { scaleX: 0.2 }, { scaleX: 0.4, duration: 0.55, ease: "power2.inOut" }, 2.9);
+    tl.fromTo("#ob-knob", { x: 0.2 * 560 }, { x: 0.4 * 560, duration: 0.55, ease: "power2.inOut" }, 2.9);
+    tl.fromTo(
+      goal,
+      { m: 20 },
+      {
+        m: 30,
+        duration: 0.55,
+        ease: "power2.inOut",
+        onUpdate: () => {
+          document.querySelector("#ob-min").textContent = Math.round(goal.m);
+        },
+      },
+      2.9,
+    );
+
+    // Off to the left, onto the home screen underneath.
+    tl.to("#ob-app", { x: -W, duration: 0.5, ease: "power3.inOut" }, 3.22);
+    window.__timelines["onboarding"] = tl;
+  </script>
+</template>

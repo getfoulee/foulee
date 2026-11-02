@@ -1,0 +1,118 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+    }
+    .st-head {
+      top: 60px;
+    }
+    .st-sec {
+      margin: 26px 0 10px 4px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--ink-2);
+    }
+    .st-body {
+      top: 140px;
+    }
+    .st-card {
+      padding: 16px 22px;
+    }
+    .st-card .note {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.35;
+      color: var(--ink-2);
+    }
+    .st-card .lbl {
+      margin-top: 20px;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .st-card .days {
+      margin-top: 12px;
+      gap: 12px;
+    }
+    .st-card .day {
+      width: 44px;
+      height: 44px;
+    }
+    .st-line {
+      margin-top: 20px;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .st-line .num {
+      font-size: 18px;
+    }
+    .st-toggle-row {
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 500;
+    }
+  </style>
+  <div id="root" data-composition-id="settings" data-width="669" data-height="951">
+    <div class="app" id="st-app" data-layout-allow-occlusion>
+      <div class="wall"><i></i><i></i><i></i><i></i></div>
+      <div class="status"><span>9:41</span><span class="bars"><span class="signal"><b></b><b></b><b></b><b></b></span><span class="battery"></span></span></div>
+
+      <div class="column st-head">
+        <div class="eyebrow">Réglages</div>
+        <div class="large-title">Préférences</div>
+      </div>
+
+      <div class="column st-body">
+        <div class="st-sec">APPARENCE</div>
+        <div class="card st-card">
+          <div class="segmented">
+            <i class="thumb" style="width: calc(33.333% - 1.4px)"></i>
+            <span>Clair</span><span>Sombre</span><span>Système</span>
+          </div>
+        </div>
+
+        <div class="st-sec">ACTIVITÉ</div>
+        <div class="card st-card">
+          <div class="segmented">
+            <i class="thumb" id="st-thumb" style="width: calc(33.333% - 1.4px)"></i>
+            <span>Marche</span><span>Course</span><span>Les deux</span>
+          </div>
+          <div class="note">Ta série compte toutes tes activités, quel que soit ce choix.</div>
+          <div class="lbl">Jours actifs</div>
+          <div class="days">
+            <span class="day"><i class="on"></i><em>L</em></span>
+            <span class="day"><i class="on"></i><em>M</em></span>
+            <span class="day"><i class="on"></i><em>M</em></span>
+            <span class="day"><i class="on"></i><em>J</em></span>
+            <span class="day"><i class="on"></i><em>V</em></span>
+            <span class="day"><em>S</em></span>
+            <span class="day"><em>D</em></span>
+          </div>
+          <div class="row between st-line"><span>Fenêtre horaire</span><span class="num">12:00 – 13:00</span></div>
+          <div class="row between st-line" style="margin-bottom: 4px"><span>Objectif d'activité</span><span class="num" style="color: #a24ee8">30 min</span></div>
+        </div>
+
+        <div class="st-sec">HYDRATATION</div>
+        <div class="card st-card">
+          <div class="row between">
+            <span class="row st-toggle-row"><svg class="icon" width="17" height="17" style="color: var(--water)"><use href="#i-drop" /></svg>Suivi d'hydratation</span>
+            <span class="toggle"></span>
+          </div>
+        </div>
+      </div>
+      <i class="tap" id="st-tap" style="left: 540px; top: 343px"></i>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Pushed from the right, over the hydration sheet.
+    tl.fromTo("#st-app", { x: 669 }, { x: 0, duration: 0.55, ease: "power3.out" }, 0);
+    // « Les deux »: the thumb slides from « Course ».
+    tl.fromTo("#st-thumb", { x: 184 }, { x: 368, duration: 0.3, ease: "power3.inOut" }, 0.85);
+    tl.fromTo("#st-tap", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.16, ease: "power2.out" }, 0.72);
+    tl.to("#st-tap", { opacity: 0, duration: 0.15 }, 0.98);
+    window.__timelines["settings"] = tl;
+  </script>
+</template>
