@@ -10,8 +10,11 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-locales=("${@:-fr en}")
-[ "$#" -eq 0 ] && locales=(fr en)
+if [ "$#" -gt 0 ]; then
+  locales=("$@")
+else
+  locales=(fr en)
+fi
 mkdir -p renders
 
 for locale in "${locales[@]}"; do
