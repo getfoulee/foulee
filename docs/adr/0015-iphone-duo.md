@@ -15,6 +15,7 @@ L'app avait de bonnes bases : ni `UIScreen.main`, ni test d'idiome, ni barre d'o
 
 - La CI, la release et le job des paquets Swift choisissent tous les trois **le Xcode 27.x stable le plus récent à partir de 27.1** (`setup-xcode` avec `'^27.1'`) : `.github/actions/prepare-project/action.yml`, `release.yml`, `swift-packages.yml`. Il n'y a pas de fichier `.xcode-version` et Tuist ne fixe rien.
 - 27.1 est le plancher parce que c'est son SDK qui étend l'app à tout l'écran intérieur au lieu du mode compatibilité. Passer à Xcode 28 est un changement délibéré des trois réglages.
+- **Mise à jour (#766)** : le plancher passe à **Xcode 27.2** (`'^27.2'`), la version que fournit l'image de la CI, pour qu'un Mac resté en 27.1 ne compile plus ce que la CI ne construit plus. La raison du SDK 27.1 ci-dessus reste celle de l'iPhone Duo.
 - La cible de déploiement reste **iOS 26.0** (`Project.swift`) : changer de SDK ne retire aucun appareil.
 - Le verrou en portrait (`UISupportedInterfaceOrientations`) reste pour l'écran extérieur. L'écran intérieur l'ignore : l'app doit donc tenir en paysage comme en portrait.
 
@@ -66,7 +67,7 @@ L'app avait de bonnes bases : ni `UIScreen.main`, ni test d'idiome, ni barre d'o
 - Une taille nouvelle se lit en direct et se teste comme `LiveWalkLayout`, en logique pure.
 - Un changement d'écran met à jour le parcours de `FouleeSmoke` s'il touche à la navigation.
 - Une version proposée à l'App Store a ses planches iPhone Duo, en français et en anglais, prises sur un Mac (`docs/RELEASE.md` § 9).
-- L'app a besoin de Xcode 27.1 au moins, en local comme en CI.
+- L'app a besoin de Xcode 27.2 au moins, en local comme en CI.
 
 ## Ce qui reste non vérifié
 

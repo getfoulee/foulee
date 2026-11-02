@@ -61,11 +61,11 @@ jobs:
         with:
           fetch-depth: 0 # full history so the build number (commit count) is stable
 
-      # Same pin as .github/actions/prepare-project, the reasons with it (issue #660).
-      - name: Select Xcode 27.1 or a later 27.x
+      # Same pin as .github/actions/prepare-project, the reasons with it (issues #660, #766).
+      - name: Select Xcode 27.2 or a later 27.x
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
-          xcode-version: '^27.1'
+          xcode-version: '^27.2'
 
       - name: Ensure the watchOS platform is installed (the iOS app embeds the Watch app)
         run: |

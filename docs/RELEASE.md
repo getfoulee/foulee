@@ -190,15 +190,17 @@ last job publishes the GitHub release « Foulée 0.1.0 » with the notes; it
 runs only once TestFlight has the build, and re-running it rewrites the notes.
 
 The release runs on GitHub's `xcode-27` image with the **newest stable Xcode
-27.x from 27.1 on** it ships (`setup-xcode` with `'^27.1'`: no beta). 27.1 is
-the floor because its SDK lays the app out on the iPhone Duo inner screen
-instead of compatibility mode, and App Store Connect refuses builds made with
-an older SDK from April 2027 (issue #660). CI, the release and the Swift
+27.x from 27.2 on** it ships (`setup-xcode` with `'^27.2'`: no beta). The
+iOS 27.1 SDK was the first floor because it lays the app out on the iPhone Duo
+inner screen instead of compatibility mode, and App Store Connect refuses
+builds made with an older SDK from April 2027 (issue #660); the floor then
+moved to 27.2, the version the image ships, so a Mac on 27.1 cannot build what
+CI no longer builds (issue #766). CI, the release and the Swift
 packages job all select it the same way (issue #404), so the build that ships
 is the one the tests ran against, and a newer 27.x on the image needs no bump
 (issue #462); moving to Xcode 28 is a deliberate change of the three pins. The
 version each run used is printed by the « Show Xcode version »
-step. It therefore links the **iOS 27.1 / watchOS 27 SDK**: system
+step. It therefore links the **iOS 27.2 / watchOS 27 SDK** at least: system
 controls take the iOS 27 look even where no code changed. Review the screens
 and recapture the screenshots on the iOS 27 runtime before promoting a build to
 the store (issue #408).
@@ -354,7 +356,7 @@ iPhone set like the iPad ones (issue #666). The same thirteen captures, on the
 inner screen:
 
 1. `tools/smoke_test.sh` creates the « Foulee Duo » simulator on the newest
-   runtime (Xcode 27.1 at least) if it is missing. Boot it and **unfold it in
+   runtime (Xcode 27.2 at least) if it is missing. Boot it and **unfold it in
    Simulator.app**, in
    portrait and the right way up. Nothing else unfolds it: `simctl` and XCTest
    leave the app on the outer screen, and XCTest grabs the inner one as its
