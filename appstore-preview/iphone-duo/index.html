@@ -1,10 +1,14 @@
 <!doctype html>
-<html lang="fr">
+<html
+  lang="fr"
+  data-composition-variables='[{"id":"locale","type":"enum","label":"Langue","default":"fr","options":[{"value":"fr","label":"Français"},{"value":"en","label":"English"}]}]'
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=886, height=1920" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/i18n.js"></script>
     <style>
       /* Foulée's App Store preview for the iPhone Duo.
          886 × 1920 is the only portrait size App Store Connect accepts for an
@@ -296,6 +300,7 @@
 
     <script>
       window.__timelines = window.__timelines || {};
+      Foulee.apply();
       const tl = gsap.timeline({ paused: true });
 
       // The ground drifts, slowly, the whole film long.

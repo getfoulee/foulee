@@ -113,8 +113,8 @@
           <div class="row sk-top">
             <div class="sk-flame"><svg class="icon" width="38" height="38"><use href="#i-flame" /></svg></div>
             <div>
-              <div class="eyebrow">Série actuelle</div>
-              <div class="row sk-count"><span class="num" id="sk-n">0</span><span>jours</span></div>
+              <div class="eyebrow" data-en="Current streak">Série actuelle</div>
+              <div class="row sk-count"><span class="num" id="sk-n">0</span><span data-en="days">jours</span></div>
             </div>
           </div>
           <span class="close"><svg class="icon" width="13" height="13"><use href="#i-x" /></svg></span>
@@ -122,7 +122,7 @@
 
         <div class="card sk-record">
           <div class="row between">
-            <span class="t">Plus que 3 jours pour ton record</span>
+            <span class="t" data-en="3 days to go for your record">Plus que 3 jours pour ton record</span>
             <span class="num muted" style="font-size: 17px">12 / 15</span>
           </div>
           <div class="sk-bar"><i id="sk-fill"></i></div>
@@ -131,22 +131,23 @@
         <div class="card sk-cal">
           <div class="row between sk-month">
             <svg class="icon" width="16" height="16"><use href="#i-chev-l" /></svg>
-            <span>Octobre 2026</span>
+            <span data-en="October 2026">Octobre 2026</span>
             <svg class="icon" width="16" height="16" style="opacity: 0.4"><use href="#i-chev-r" /></svg>
           </div>
           <div class="sk-kpis">
-            <div><span class="num">100 %</span><div>Réussite</div></div>
-            <div><span class="num">7</span><div>sorties</div></div>
+            <div><span class="num" data-en="100%">100 %</span><div data-en="success">Réussite</div></div>
+            <div><span class="num">7</span><div data-en="workouts">sorties</div></div>
             <div><span class="num">236</span><div>minutes</div></div>
           </div>
           <div class="sk-grid" id="sk-grid">
-            <span class="wd">L</span><span class="wd">M</span><span class="wd">M</span><span class="wd">J</span><span class="wd">V</span><span class="wd">S</span><span class="wd">D</span>
+            <span class="wd" data-en="M">L</span><span class="wd" data-en="T">M</span><span class="wd" data-en="W">M</span><span class="wd" data-en="T">J</span><span class="wd" data-en="F">V</span><span class="wd">S</span><span class="wd" data-en="S">D</span>
           </div>
         </div>
       </div>
     </div>
   </div>
   <script>
+    Foulee.apply();
     // October 2026 starts on a Thursday. The weekdays done so far (1, 2 and
     // 5 to 9) carry a closed ring; the weekend and the days to come stay blank.
     const done = [1, 2, 5, 6, 7, 8, 9];

@@ -52,13 +52,14 @@
     <div id="in-mark">
       <div id="in-icon"></div>
       <div id="in-name">Foulée</div>
-      <div id="in-tag">
+      <div id="in-tag" data-en='<span id="in-w1">Move</span> <span id="in-w2">a</span> <span id="in-w3">little,</span><br /><span id="in-w4" class="in-accent">every</span> <span id="in-w5" class="in-accent">day.</span>'>
         <span id="in-w1">Bouge</span> <span id="in-w2">un</span> <span id="in-w3">peu,</span><br />
         <span id="in-w4" class="in-accent">chaque</span> <span id="in-w5" class="in-accent">jour.</span>
       </div>
     </div>
   </div>
   <script>
+    Foulee.apply();
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#in-icon", { opacity: 0.35, scale: 0.8, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.55, ease: "expo.out" }, 0.05);
     tl.fromTo("#in-name", { opacity: 0, y: 24, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, 0.4);

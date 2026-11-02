@@ -130,15 +130,15 @@
       <div class="status"><span>9:41</span><span class="bars"><span class="signal"><b></b><b></b><b></b><b></b></span><span class="battery"></span></span></div>
 
       <div class="column ou-head">
-        <span class="chip green">EN COURS</span>
-        <div class="large-title">Ta sortie</div>
+        <span class="chip green" data-en="IN PROGRESS">EN COURS</span>
+        <div class="large-title" data-en="Your workout">Ta sortie</div>
       </div>
 
       <div class="ou-timer">
         <div class="clock" data-layout-allow-overlap>
           <span id="ou-t0">31:58</span><span id="ou-t1" style="opacity: 0">31:59</span><span id="ou-t2" style="opacity: 0">32:00</span><span id="ou-t3" style="opacity: 0">32:01</span>
         </div>
-        <div class="lbl">DURÉE</div>
+        <div class="lbl" data-en="DURATION">DURÉE</div>
       </div>
 
       <div class="ou-ring">
@@ -149,26 +149,27 @@
           </g>
         </svg>
         <div class="in">
-          <span class="num" id="ou-steps">3 170</span>
-          <span class="pas">PAS</span>
+          <span class="num" id="ou-steps" data-en="3,170">3 170</span>
+          <span class="pas" data-en="STEPS">PAS</span>
           <div class="row ou-sub">
-            <div><b>2,6 km</b><span>Distance</span></div>
-            <div><b>214 kcal</b><span>Énergie</span></div>
-            <div><b>18 m</b><span>Dénivelé</span></div>
+            <div><b data-en="2.6 km">2,6 km</b><span>Distance</span></div>
+            <div><b>214 kcal</b><span data-en="Energy">Énergie</span></div>
+            <div><b>18 m</b><span data-en="Elevation">Dénivelé</span></div>
           </div>
         </div>
       </div>
 
       <div class="row ou-controls">
-        <div class="ctl"><span class="b" style="color: var(--danger)"><svg class="icon" width="24" height="24"><use href="#i-stop" /></svg></span>Arrêter</div>
+        <div class="ctl"><span class="b" style="color: var(--danger)"><svg class="icon" width="24" height="24"><use href="#i-stop" /></svg></span><span data-en="Stop">Arrêter</span></div>
         <div class="ctl"><span class="b main"><svg class="icon" width="34" height="34"><use href="#i-pause" /></svg></span>Pause</div>
-        <div class="ctl"><span class="b" style="color: var(--distance)"><svg class="icon" width="26" height="26"><use href="#i-loc" /></svg></span>Carte</div>
+        <div class="ctl"><span class="b" style="color: var(--distance)"><svg class="icon" width="26" height="26"><use href="#i-loc" /></svg></span><span data-en="Map">Carte</span></div>
       </div>
     </div>
   </div>
   <script>
+    Foulee.apply();
     const tl = gsap.timeline({ paused: true });
-    const nb = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    const nb = Foulee.nb;
 
     // Comes up over the streak like a full-screen cover...
     tl.fromTo("#ou-app", { y: 951 }, { y: 0, duration: 0.55, ease: "expo.out" }, 0);

@@ -168,70 +168,77 @@
       <div id="dt-page" data-layout-allow-occlusion>
         <div class="wall"><i></i><i></i><i></i><i></i></div>
         <div class="dt-nav">
-          <span class="row dt-back"><svg class="icon" width="17" height="17"><use href="#i-chev-l" /></svg>Retour</span>
-          Détail
+          <span class="row dt-back"><svg class="icon" width="17" height="17"><use href="#i-chev-l" /></svg><span data-en="">Retour</span></span>
+          <span data-en="Details">Détail</span>
         </div>
         <div class="dt-body">
           <div class="card dt-headcard">
             <div class="tile"><svg class="icon" width="22" height="22"><use href="#i-wave" /></svg></div>
-            <div class="eyebrow">Aujourd'hui</div>
+            <div class="eyebrow" data-en="Today">Aujourd'hui</div>
             <div class="num">32:14</div>
-            <div class="s">Marche et course · 12:10 – 12:42 · Apple Watch</div>
+            <div class="s" data-en="Walk and run · 12:10 PM → 12:42 PM · Apple Watch">Marche et course · 12:10 – 12:42 · Apple Watch</div>
           </div>
 
           <div class="card dt-map">
+            <!-- A town block drawn like the app's route map: streets on a grid, a
+                 park with its loop, the river and its quay. The outing follows
+                 them: a walk up the street and along the avenue to the park,
+                 the run around the park's loop, the walk home by the quay. -->
             <svg width="581" height="250" viewBox="0 0 581 250">
               <rect width="581" height="250" fill="#ece7f3" />
-              <path d="M0 250 C 30 215 18 175 0 150 Z" fill="#a9d1f3" />
-              <ellipse cx="395" cy="112" rx="70" ry="44" fill="#d4ecd2" />
-              <g stroke="#ffffff" stroke-width="11" fill="none" stroke-linecap="round">
-                <path d="M-10 60 L 600 30" />
-                <path d="M-10 160 L 600 120" />
-                <path d="M120 -10 L 175 260" />
-                <path d="M300 -10 L 260 260" />
-                <path d="M480 -10 L 520 260" />
-                <path d="M-10 230 L 600 210" />
+              <path d="M0 224 L581 224 L581 250 L0 250 Z" fill="#a9d1f3" />
+              <g stroke="#f6f3fa" stroke-width="4" fill="none">
+                <path d="M0 77 H330 M125 0 V212 M260 0 V212 M0 165 H330" />
               </g>
-              <g stroke="#f7e8a4" stroke-width="7" fill="none" stroke-linecap="round">
-                <path d="M30 -10 L 230 260" />
-                <path d="M560 -10 L 380 260" />
+              <rect x="345" y="50" width="250" height="150" rx="22" fill="#d4ecd2" />
+              <ellipse cx="460" cy="125" rx="85" ry="50" fill="none" stroke="#bfe1bc" stroke-width="7" />
+              <g stroke="#ffffff" stroke-width="13" fill="none" stroke-linecap="round">
+                <path d="M-10 36 H600 M-10 118 H345 M-10 212 H600 M60 -10 V212 M330 -10 V212 M345 118 L375 125" />
               </g>
-              <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="7">
-                <path id="dt-walk1" d="M62 210 C 100 196 132 168 172 146 S 246 114 292 98" stroke="#32ade6" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
-                <path id="dt-run" d="M292 98 C 322 52 414 38 460 72 C 506 106 484 164 424 174 C 372 182 322 152 292 98" stroke="#ff9500" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
-                <path id="dt-walk2" d="M292 98 C 272 152 222 202 152 214 S 84 216 62 210" stroke="#32ade6" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+              <path d="M190 -10 V212" stroke="#f7e8a4" stroke-width="13" fill="none" />
+              <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path class="dt-case dt-c1" d="M60 212 V118 H190" stroke="#fff" stroke-width="11" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <path class="dt-case dt-c2" d="M190 118 H345 L375 125 A85 50 0 1 1 545 125 A85 50 0 1 1 375 125 L345 118" stroke="#fff" stroke-width="11" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <path class="dt-case dt-c3" d="M345 118 H330 V212 H60" stroke="#fff" stroke-width="11" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <path id="dt-walk1" d="M60 212 V118 H190" stroke="#32ade6" stroke-width="6" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <path id="dt-run" d="M190 118 H345 L375 125 A85 50 0 1 1 545 125 A85 50 0 1 1 375 125 L345 118" stroke="#ff9500" stroke-width="6" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <path id="dt-walk2" d="M345 118 H330 V212 H60" stroke="#32ade6" stroke-width="6" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
               </g>
-              <circle cx="62" cy="210" r="8" fill="#34c759" stroke="#fff" stroke-width="3" />
+              <circle cx="60" cy="212" r="8" fill="#34c759" stroke="#fff" stroke-width="3" />
+              <g id="dt-finish">
+                <circle cx="60" cy="212" r="10" fill="#fff" stroke="#1d1233" stroke-width="2" />
+                <path d="M54 206 h4 v4 h-4z M62 206 h4 v4 h-4z M58 210 h4 v4 h-4z M54 214 h4 v4 h-4z M62 214 h4 v4 h-4z" fill="#1d1233" />
+              </g>
             </svg>
             <div class="row dt-legend">
-              <span class="row"><i style="background: #32ade6"></i><svg class="icon" width="14" height="14" style="color: #32ade6"><use href="#i-feet" /></svg>Marche</span>
-              <span class="row"><i style="background: #ff9500"></i><svg class="icon" width="14" height="14" style="color: #ff9500"><use href="#i-bolt" /></svg>Course</span>
+              <span class="row"><i style="background: #32ade6"></i><svg class="icon" width="14" height="14" style="color: #32ade6"><use href="#i-feet" /></svg><span data-en="Walk">Marche</span></span>
+              <span class="row"><i style="background: #ff9500"></i><svg class="icon" width="14" height="14" style="color: #ff9500"><use href="#i-bolt" /></svg><span data-en="Run">Course</span></span>
             </div>
           </div>
 
           <div class="card dt-portions">
-            <div class="dt-label">PORTIONS</div>
+            <div class="dt-label" data-en="PARTS">PORTIONS</div>
             <div class="dt-bar">
               <span class="w" id="dt-s1" style="width: 155px; border-radius: 10px 0 0 10px"></span>
               <span class="r" id="dt-s2" style="width: 241px"></span>
               <span class="w" id="dt-s3" style="width: 155px; border-radius: 0 10px 10px 0"></span>
               <i id="dt-knob"></i>
             </div>
-            <div class="row between dt-ticks"><span>12:10</span><span>12:20</span><span>12:30</span><span>12:40</span></div>
+            <div class="row between dt-ticks"><span data-en="12:10 PM">12:10</span><span data-en="12:20 PM">12:20</span><span data-en="12:30 PM">12:30</span><span data-en="12:40 PM">12:40</span></div>
             <div class="dt-info" data-layout-allow-overlap>
-              <span class="row" id="dt-hint" style="color: var(--ink-3); font-weight: 400">Glisse le doigt sur la frise pour le détail d'une portion</span>
-              <span class="row" id="dt-i1" style="opacity: 0"><svg class="icon" width="15" height="15" style="color: #32ade6"><use href="#i-feet" /></svg>Marche · 12:10 → 12:19 · 0,8 km · 11'19"/km</span>
-              <span class="row" id="dt-i2" style="opacity: 0"><svg class="icon" width="15" height="15" style="color: #ff9500"><use href="#i-bolt" /></svg>Course · 12:19 → 12:33 · 2,6 km · 5'26"/km</span>
+              <span class="row" id="dt-hint" style="color: var(--ink-3); font-weight: 400" data-en="Slide along the timeline for the details of a part">Glisse le doigt sur la frise pour le détail d'une portion</span>
+              <span class="row" id="dt-i1" style="opacity: 0"><svg class="icon" width="15" height="15" style="color: #32ade6"><use href="#i-feet" /></svg><span data-en="Walk · 12:10 PM → 12:19 PM · 0.8 km · 11'19&quot;/km">Marche · 12:10 → 12:19 · 0,8 km · 11'19"/km</span></span>
+              <span class="row" id="dt-i2" style="opacity: 0"><svg class="icon" width="15" height="15" style="color: #ff9500"><use href="#i-bolt" /></svg><span data-en="Run · 12:19 PM → 12:33 PM · 2.6 km · 5'26&quot;/km">Course · 12:19 → 12:33 · 2,6 km · 5'26"/km</span></span>
             </div>
             <div class="dt-rows">
               <div class="row r">
                 <svg class="icon" width="20" height="20" style="color: #32ade6"><use href="#i-feet" /></svg>
-                <div class="grow"><div class="n">Marche</div><div class="m">1,6 km · 11'17"/km</div></div>
+                <div class="grow"><div class="n" data-en="Walk">Marche</div><div class="m" data-en="1.6 km · 11'17&quot;/km">1,6 km · 11'17"/km</div></div>
                 <span class="num">18:07</span>
               </div>
               <div class="row r">
                 <svg class="icon" width="20" height="20" style="color: #ff9500"><use href="#i-bolt" /></svg>
-                <div class="grow"><div class="n">Course</div><div class="m">2,6 km · 5'26"/km</div></div>
+                <div class="grow"><div class="n" data-en="Run">Course</div><div class="m" data-en="2.6 km · 5'26&quot;/km">2,6 km · 5'26"/km</div></div>
                 <span class="num">14:07</span>
               </div>
             </div>
@@ -241,27 +248,29 @@
     </div>
   </div>
   <script>
+    Foulee.apply();
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#dt-page", { x: 653 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 0);
 
-    // The route draws itself: the walk, the run's loop, the walk home.
-    tl.fromTo("#dt-walk1", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power1.in" }, 0.55);
-    tl.fromTo("#dt-run", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.7, ease: "none" }, 0.95);
-    tl.fromTo("#dt-walk2", { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power1.out" }, 1.65);
+    // The route draws itself along the streets: the walk to the park, the
+    // run around its loop, the walk home by the quay.
+    tl.fromTo(["#dt-walk1", ".dt-c1"], { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power1.in" }, 0.55);
+    tl.fromTo(["#dt-run", ".dt-c2"], { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.75, ease: "none" }, 0.95);
+    tl.fromTo(["#dt-walk2", ".dt-c3"], { attr: { "stroke-dashoffset": 100 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.4, ease: "power1.out" }, 1.7);
+    tl.fromTo("#dt-finish", { opacity: 0, scale: 0.4, svgOrigin: "60 212" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 2.05);
     tl.fromTo(["#dt-s1", "#dt-s2", "#dt-s3"], { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.out", stagger: 0.12 }, 0.6);
 
     // A finger on the strip: the first walk, then the run.
     tl.fromTo("#dt-knob", { x: 77.5, opacity: 0, scale: 0.6 }, { x: 77.5, opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2)" }, 1.95);
     tl.to("#dt-hint", { opacity: 0, duration: 0.15 }, 1.95);
     tl.to("#dt-i1", { opacity: 1, duration: 0.15 }, 2.0);
-    tl.to(["#dt-s2", "#dt-s3"], { opacity: 0.35, duration: 0.2 }, 2.0);
+    tl.to(["#dt-s2", "#dt-s3", "#dt-run", "#dt-walk2"], { opacity: 0.35, duration: 0.2 }, 2.0);
     tl.to("#dt-knob", { x: 278.5, duration: 0.45, ease: "power2.inOut" }, 2.45);
-    tl.to("#dt-s2", { opacity: 1, duration: 0.15 }, 2.62);
+    tl.to(["#dt-s2", "#dt-run"], { opacity: 1, duration: 0.15 }, 2.62);
     tl.to("#dt-s1", { opacity: 0.35, duration: 0.15 }, 2.62);
     tl.to("#dt-i1", { opacity: 0, duration: 0.12 }, 2.62);
     tl.to("#dt-i2", { opacity: 1, duration: 0.15 }, 2.66);
     tl.to("#dt-walk1", { opacity: 0.35, duration: 0.2 }, 2.62);
-    tl.to("#dt-walk2", { opacity: 0.35, duration: 0.2 }, 2.62);
     window.__timelines["detail"] = tl;
   </script>
 </template>

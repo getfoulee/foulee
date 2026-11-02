@@ -115,7 +115,7 @@
       font-weight: 600;
     }
     .wt-r .h {
-      width: 46px;
+      min-width: 46px;
       font-size: 14px;
       font-weight: 400;
       color: var(--ink-2);
@@ -176,8 +176,8 @@
       <div class="wt-body">
         <div class="row between" style="align-items: flex-start">
           <div>
-            <div class="eyebrow">Hydratation</div>
-            <div class="large-title">Aujourd'hui</div>
+            <div class="eyebrow" data-en="Hydration">Hydratation</div>
+            <div class="large-title" data-en="Today">Aujourd'hui</div>
           </div>
           <span class="close"><svg class="icon" width="13" height="13"><use href="#i-x" /></svg></span>
         </div>
@@ -196,45 +196,47 @@
           </div>
           <div>
             <div class="wt-amount" data-layout-allow-overlap>
-              <span id="wt-a1"><b class="num" id="wt-liters">0</b><small>/ 2 L</small></span>
+              <span id="wt-a1"><b class="num" id="wt-liters">0</b><small data-en="/ 2.0 L">/ 2 L</small></span>
             </div>
             <div class="wt-state" data-layout-allow-overlap>
-              <span class="row" id="wt-late" style="color: var(--ink-2)"><svg class="icon" width="16" height="16"><use href="#i-timer" /></svg>Un verre de retard</span>
-              <span class="row" id="wt-ok" style="opacity: 0"><svg class="icon" width="16" height="16" style="color: var(--success)"><use href="#i-check" /></svg>Pile dans ton rythme</span>
+              <span class="row" id="wt-late" style="color: var(--ink-2)"><svg class="icon" width="16" height="16"><use href="#i-timer" /></svg><span data-en="One glass behind">Un verre de retard</span></span>
+              <span class="row" id="wt-ok" style="opacity: 0"><svg class="icon" width="16" height="16" style="color: var(--success)"><use href="#i-check" /></svg><span data-en="Right on pace">Pile dans ton rythme</span></span>
             </div>
           </div>
         </div>
 
         <div class="wt-servings">
-          <div class="card"><svg class="icon" width="22" height="22" style="transform: scale(0.8)"><use href="#i-glass" /></svg><b>150 mL</b><span>Petit verre</span></div>
-          <div class="card" id="wt-250"><svg class="icon" width="22" height="22"><use href="#i-glass" /></svg><b>250 mL</b><span>Verre</span></div>
-          <div class="card"><svg class="icon" width="22" height="26"><use href="#i-glass" /></svg><b>400 mL</b><span>Grand verre</span></div>
-          <div class="card"><svg class="icon" width="22" height="28"><use href="#i-glass" /></svg><b>500 mL</b><span>Bouteille</span></div>
+          <div class="card"><svg class="icon" width="22" height="22" style="transform: scale(0.8)"><use href="#i-glass" /></svg><b>150 mL</b><span data-en="Small glass">Petit verre</span></div>
+          <div class="card" id="wt-250"><svg class="icon" width="22" height="22"><use href="#i-glass" /></svg><b>250 mL</b><span data-en="Glass">Verre</span></div>
+          <div class="card"><svg class="icon" width="22" height="26"><use href="#i-glass" /></svg><b>400 mL</b><span data-en="Large glass">Grand verre</span></div>
+          <div class="card"><svg class="icon" width="22" height="28"><use href="#i-glass" /></svg><b>500 mL</b><span data-en="Bottle">Bouteille</span></div>
         </div>
 
         <div class="card wt-list">
-          <div class="t">Verre par verre</div>
+          <div class="t" data-en="Glass by glass">Verre par verre</div>
           <div class="wt-rows">
             <div class="wt-rowstack" id="wt-stack">
-              <div class="row wt-r" id="wt-new"><span class="h">12:47</span><i></i>250 mL<span class="src">Foulée</span></div>
-              <div class="row wt-r"><span class="h">11:20</span><i></i>250 mL<span class="src">Foulée</span></div>
-              <div class="row wt-r"><span class="h">10:05</span><i></i>250 mL<span class="src">Foulée</span></div>
-              <div class="row wt-r"><span class="h">09:10</span><i></i>250 mL<span class="src">Foulée</span></div>
+              <div class="row wt-r" id="wt-new"><span class="h" data-en="12:47 PM">12:47</span><i></i>250 mL<span class="src">Foulée</span></div>
+              <div class="row wt-r"><span class="h" data-en="11:20 AM">11:20</span><i></i>250 mL<span class="src">Foulée</span></div>
+              <div class="row wt-r"><span class="h" data-en="10:05 AM">10:05</span><i></i>250 mL<span class="src">Foulée</span></div>
+              <div class="row wt-r"><span class="h" data-en="9:10 AM">09:10</span><i></i>250 mL<span class="src">Foulée</span></div>
             </div>
           </div>
         </div>
 
         <div class="card wt-weekcard">
-          <div class="t">Cette semaine</div>
+          <div class="t" data-en="This week">Cette semaine</div>
           <div class="wt-week" id="wt-week"></div>
-          <div class="row wt-goal"><svg class="icon" width="13" height="13"><use href="#i-check" /></svg>Objectif tenu 2/5 · 1,7 L par jour en moyenne</div>
+          <div class="row wt-goal"><svg class="icon" width="13" height="13"><use href="#i-check" /></svg><span data-en="Goal met 2/5 · 1.7 L a day on average">Objectif tenu 2/5 · 1,7 L par jour en moyenne</span></div>
         </div>
       </div>
       <i class="tap" id="wt-tap" style="left: 222px; top: 330px"></i>
     </div>
   </div>
   <script>
-    const week = [["L", 1.8], ["M", 2.1], ["M", 1.6], ["J", 2], ["V", 0.75], ["S", 0], ["D", 0]];
+    Foulee.apply();
+    const letters = Foulee.weekdays();
+    const week = [1.8, 2.1, 1.6, 2, 0.75, 0, 0].map((l, i) => [letters[i], l]);
     const host = document.querySelector("#wt-week");
     week.forEach(([d, l], i) => {
       const share = Math.min(l / 2, 1) * 100;
@@ -243,8 +245,8 @@
         : "";
       const fill = l >= 2 ? "rgb(48 176 199 / 0.14)" : "none";
       const label = i === 4
-        ? `<span id="wt-v-before">0,8</span><span id="wt-v-after" style="opacity:0">1</span>`
-        : `<span>${l ? String(l).replace(".", ",") : "&nbsp;"}</span>`;
+        ? `<span id="wt-v-before">${Foulee.dec(0.8, 1)}</span><span id="wt-v-after" style="opacity:0">${Foulee.t("1", "1.0")}</span>`
+        : `<span>${l ? Foulee.t(String(l).replace(".", ","), l.toFixed(1)) : "&nbsp;"}</span>`;
       host.insertAdjacentHTML("beforeend", `<div><svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="${fill}" stroke="rgb(29 18 51 / 0.07)" stroke-width="5" />${arc}</svg><div class="d">${d}</div><div class="v" data-layout-allow-overlap>${label}</div></div>`);
     });
 
@@ -252,7 +254,12 @@
     tl.fromTo("#wt-dim", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0);
     tl.fromTo("#wt-sheet", { y: 951 }, { y: 0, duration: 0.55, ease: "expo.out" }, 0);
 
-    const fmt = (v) => (Math.round(v * 100) / 100).toFixed(2).replace(/0$/, "").replace(/\.0$/, "").replace(/\.$/, "").replace(".", ",");
+    // Litres as the app writes them: « 0,75 », « 1 » in French; « 0.75 », « 1.0 » in English.
+    const fmt = (v) => {
+      const r = Math.round(v * 100) / 100;
+      if (Foulee.en) return Number.isInteger(r) ? r.toFixed(1) : String(r);
+      return String(r).replace(".", ",");
+    };
     const l = { v: 0 };
     tl.fromTo(l, { v: 0 }, {
       v: 0.75, duration: 0.7, ease: "power2.out",

@@ -60,44 +60,44 @@
       <div class="status"><span>9:41</span><span class="bars"><span class="signal"><b></b><b></b><b></b><b></b></span><span class="battery"></span></span></div>
 
       <div class="column st-head">
-        <div class="eyebrow">Réglages</div>
-        <div class="large-title">Préférences</div>
+        <div class="eyebrow" data-en="Settings">Réglages</div>
+        <div class="large-title" data-en="Preferences">Préférences</div>
       </div>
 
       <div class="column st-body">
-        <div class="st-sec">APPARENCE</div>
+        <div class="st-sec" data-en="APPEARANCE">APPARENCE</div>
         <div class="card st-card">
           <div class="segmented">
             <i class="thumb" style="width: calc(33.333% - 1.4px)"></i>
-            <span>Clair</span><span>Sombre</span><span>Système</span>
+            <span data-en="Light">Clair</span><span data-en="Dark">Sombre</span><span data-en="System">Système</span>
           </div>
         </div>
 
-        <div class="st-sec">ACTIVITÉ</div>
+        <div class="st-sec" data-en="ACTIVITY">ACTIVITÉ</div>
         <div class="card st-card">
           <div class="segmented">
             <i class="thumb" id="st-thumb" style="width: calc(33.333% - 1.4px)"></i>
-            <span>Marche</span><span>Course</span><span>Les deux</span>
+            <span data-en="Walk">Marche</span><span data-en="Run">Course</span><span data-en="Both">Les deux</span>
           </div>
-          <div class="note">Ta série compte toutes tes activités, quel que soit ce choix.</div>
-          <div class="lbl">Jours actifs</div>
+          <div class="note" data-en="Your streak counts all your activities, whatever you choose.">Ta série compte toutes tes activités, quel que soit ce choix.</div>
+          <div class="lbl" data-en="Active days">Jours actifs</div>
           <div class="days">
-            <span class="day"><i class="on"></i><em>L</em></span>
-            <span class="day"><i class="on"></i><em>M</em></span>
-            <span class="day"><i class="on"></i><em>M</em></span>
-            <span class="day"><i class="on"></i><em>J</em></span>
-            <span class="day"><i class="on"></i><em>V</em></span>
+            <span class="day"><i class="on"></i><em data-en="M">L</em></span>
+            <span class="day"><i class="on"></i><em data-en="T">M</em></span>
+            <span class="day"><i class="on"></i><em data-en="W">M</em></span>
+            <span class="day"><i class="on"></i><em data-en="T">J</em></span>
+            <span class="day"><i class="on"></i><em data-en="F">V</em></span>
             <span class="day"><em>S</em></span>
-            <span class="day"><em>D</em></span>
+            <span class="day"><em data-en="S">D</em></span>
           </div>
-          <div class="row between st-line"><span>Fenêtre horaire</span><span class="num">12:00 – 13:00</span></div>
-          <div class="row between st-line" style="margin-bottom: 4px"><span>Objectif d'activité</span><span class="num" style="color: #a24ee8">30 min</span></div>
+          <div class="row between st-line"><span data-en="Time window">Fenêtre horaire</span><span class="num" data-en="12:00 – 1:00 PM">12:00 – 13:00</span></div>
+          <div class="row between st-line" style="margin-bottom: 4px"><span data-en="Activity goal">Objectif d'activité</span><span class="num" style="color: #a24ee8">30 min</span></div>
         </div>
 
-        <div class="st-sec">HYDRATATION</div>
+        <div class="st-sec" data-en="HYDRATION">HYDRATATION</div>
         <div class="card st-card">
           <div class="row between">
-            <span class="row st-toggle-row"><svg class="icon" width="17" height="17" style="color: var(--water)"><use href="#i-drop" /></svg>Suivi d'hydratation</span>
+            <span class="row st-toggle-row"><svg class="icon" width="17" height="17" style="color: var(--water)"><use href="#i-drop" /></svg><span data-en="Hydration tracking">Suivi d'hydratation</span></span>
             <span class="toggle"></span>
           </div>
         </div>
@@ -106,6 +106,7 @@
     </div>
   </div>
   <script>
+    Foulee.apply();
     const tl = gsap.timeline({ paused: true });
     // Pushed from the right, over the hydration sheet.
     tl.fromTo("#st-app", { x: 669 }, { x: 0, duration: 0.55, ease: "power3.out" }, 0);
