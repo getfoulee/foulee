@@ -60,7 +60,7 @@ formats numbers, decimals and durations, when the root's `locale` variable is
 the command line:
 
 ```bash
-npx hyperframes@0.9.5 render --variables '{"locale":"en"}' -o renders/en.mp4
+npx hyperframes@0.9.22 render --variables '{"locale":"en"}' -o renders/en.mp4
 ```
 
 A new text in a scene gets its `data-en` in the same change.
@@ -79,9 +79,9 @@ the SVG sprite at the top of `index.html`.
 Node 22 and FFmpeg. From this folder:
 
 ```bash
-npx hyperframes@0.9.5 preview --background   # Studio, to watch and edit
+npx hyperframes@0.9.22 preview --background   # Studio, to watch and edit
 npm run check                               # lint, layout and timing checks
-npx hyperframes@0.9.5 snapshot --at 6,12,18  # frames to look at
+npx hyperframes@0.9.22 snapshot --at 6,12,18  # frames to look at
 ./master.sh                                 # both languages, App Store masters
 ```
 

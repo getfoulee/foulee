@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npx --yes hyperframes@0.9.5 preview",
-    "check": "npx --yes hyperframes@0.9.5 check",
-    "render": "npx --yes hyperframes@0.9.5 render",
-    "publish": "npx --yes hyperframes@0.9.5 publish",
+    "dev": "npx --yes hyperframes@0.9.22 preview",
+    "check": "npx --yes hyperframes@0.9.22 check",
+    "render": "npx --yes hyperframes@0.9.22 render",
+    "publish": "npx --yes hyperframes@0.9.22 publish",
     "master": "./master.sh"
   }
 }

@@ -21,7 +21,7 @@ for locale in "${locales[@]}"; do
   raw="renders/raw-$locale.mp4"
   out="renders/foulee-iphone-duo-preview-$locale.mp4"
 
-  npx --yes hyperframes@0.9.5 render --quality high \
+  npx --yes hyperframes@0.9.22 render --quality high \
     --variables "{\"locale\":\"$locale\"}" --strict-variables -o "$raw"
 
   ffmpeg -y -loglevel error \
