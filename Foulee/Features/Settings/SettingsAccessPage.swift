@@ -12,7 +12,7 @@ struct SettingsAccessPage: View {
         VStack(spacing: 16) {
             if let refused = store.refused {
                 if refused.isEmpty {
-                    GlassSection {
+                    CardSection {
                         Label {
                             Text("Foulée a tout ce qu'il lui faut.").font(FouleeFont.callout)
                         } icon: {

@@ -22,6 +22,6 @@ struct SettingsToggle: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .tint(FouleeColor.success)
+        .tint(FouleeColor.accent)
     }
 }

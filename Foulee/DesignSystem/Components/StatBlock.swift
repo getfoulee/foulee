@@ -10,17 +10,19 @@ struct StatBlock: View {
     /// The value as VoiceOver says it, when the written one reads wrong —
     /// « 8 432 sur 10 000 » rather than « 8 432 barre oblique 10 000 ».
     var spokenValue: String?
+    /// The metric's colour, on its glyph only — the label stays secondary, so
+    /// the four tiles read as figures rather than as four colours.
     var tint: Color
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 6) {
                 Image(systemName: systemIcon)
-                    .font(FouleeFont.footnote.weight(.semibold))
+                    .foregroundStyle(tint)
                 Text(label)
-                    .font(FouleeFont.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
             }
-            .foregroundStyle(tint)
+            .font(FouleeFont.footnote.weight(.medium))
 
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(value)

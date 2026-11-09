@@ -17,14 +17,14 @@ struct HydrationTodayHero: View {
                 DropShape()
                     .fill(FouleeColor.water.opacity(0.12))
                 Rectangle()
-                    .fill(FouleeColor.water.gradient)
+                    .fill(FouleeColor.water)
                     .scaleEffect(x: 1, y: progress, anchor: .bottom)
                     .mask(DropShape())
                 DropShape()
                     .stroke(FouleeColor.water.opacity(0.6), lineWidth: 2)
             }
             .frame(width: 84, height: 112)
-            .motionAnimation(.spring(duration: 0.8, bounce: 0.2), value: progress)
+            .motionAnimation(.easeOut(duration: 0.6), value: progress)
             .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 6) {
@@ -33,23 +33,18 @@ struct HydrationTodayHero: View {
                         .scaledNumericFont(size: 40)
                         .contentTransition(.numericText())
                     Text("/ \(litres(goalML)) L")
-                        .font(FouleeFont.callout.weight(.semibold))
+                        .font(FouleeFont.callout.weight(.medium))
                         .foregroundStyle(.secondary)
                 }
                 Label(pace.text, systemImage: pace.systemImage)
-                    .font(FouleeFont.callout.weight(.semibold))
+                    .font(FouleeFont.callout.weight(.medium))
                     .foregroundStyle(pace == .reached ? FouleeColor.water : .primary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(18)
-        .background {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(FouleeColor.water)
-                .opacity(0.1)
-        }
-        .fouleeGlass(cornerRadius: 24, strong: true)
+        .padding(20)
+        .fouleeCard()
         // Read as the home card says it: « 0,9 / 2 L » combined came out as
         // « 0,9 barre oblique 2 L ».
         .accessibilityElement(children: .ignore)
@@ -112,7 +107,7 @@ struct HydrationTimeline: View {
     private func row(_ sample: WaterSample, isLast: Bool) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Text(sample.date.clockText)
-                .font(FouleeFont.caption.weight(.semibold).monospacedDigit())
+                .font(FouleeFont.caption.weight(.medium).monospacedDigit())
                 .foregroundStyle(.secondary)
                 // A minimum, not a width: at the accessibility sizes a fixed
                 // 42 pt broke « 14:20 » over two lines (issue #408).
@@ -130,7 +125,7 @@ struct HydrationTimeline: View {
             }
             HStack {
                 Text("\(sample.milliliters) mL")
-                    .font(FouleeFont.callout.weight(.semibold).monospacedDigit())
+                    .font(FouleeFont.callout.weight(.medium).monospacedDigit())
                 Spacer()
                 Text(sample.sourceName)
                     .font(FouleeFont.caption)
@@ -162,7 +157,7 @@ struct HydrationWeekView: View {
                     VStack(spacing: 6) {
                         ring(day)
                         Text(day.date.weekdayInitial.uppercased())
-                            .font(FouleeFont.caption.weight(.semibold))
+                            .font(FouleeFont.caption.weight(.medium))
                             .foregroundStyle(.secondary)
                         Text(day.milliliters > 0 ? litres(day.milliliters) : "–")
                             .font(FouleeFont.caption.monospacedDigit())
@@ -177,7 +172,7 @@ struct HydrationWeekView: View {
                     VStack(spacing: 6) {
                         UpcomingDayRing(lineWidth: 4.5)
                         Text(date.weekdayInitial.uppercased())
-                            .font(FouleeFont.caption.weight(.semibold))
+                            .font(FouleeFont.caption.weight(.medium))
                             .foregroundStyle(.tertiary)
                         Text(" ")
                             .font(FouleeFont.caption)
@@ -193,7 +188,7 @@ struct HydrationWeekView: View {
                 Text("· \(litres(history.averageML)) L par jour en moyenne")
                     .foregroundStyle(.secondary)
             }
-            .font(FouleeFont.footnote.weight(.semibold))
+            .font(FouleeFont.footnote.weight(.medium))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(weekAccessibilityText)
         }
@@ -210,10 +205,10 @@ struct HydrationWeekView: View {
         let held = HydrationMath.reachedGoal(intakeML: day.milliliters, goalML: history.goalML)
         return ZStack {
             Circle()
-                .stroke(Color.gray.opacity(0.18), lineWidth: 4.5)
+                .stroke(FouleeColor.raised, lineWidth: 4.5)
             Circle()
                 .trim(from: 0, to: HydrationMath.progress(intakeML: day.milliliters, goalML: history.goalML))
-                .stroke(FouleeColor.water.gradient, style: StrokeStyle(lineWidth: 4.5, lineCap: .round))
+                .stroke(FouleeColor.water, style: StrokeStyle(lineWidth: 4.5, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             if held {
                 Circle()

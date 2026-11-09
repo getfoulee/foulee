@@ -41,7 +41,7 @@ struct OnboardingActivityView: View {
     private var heading: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Tu marches ou\ntu cours ?")
-                .scaledSystemFont(size: 30, weight: .bold)
+                .scaledSystemFont(size: 30, weight: .semibold)
                 .lineSpacing(2)
                 .accessibilityAddTraits(.isHeader)
             Text("On adaptera Foulée à ta pratique.")
@@ -77,7 +77,7 @@ struct OnboardingActivityView: View {
     }
 }
 
-/// One tappable glass row per mode. The copy lives here rather than on
+/// One tappable card row per mode. The copy lives here rather than on
 /// `ActivityMode`: onboarding wants a title *and* a line of explanation, and
 /// the enum deliberately carries no display label until the settings picker
 /// needs one (#220). The glyph did move onto the enum (#222) — unlike the
@@ -95,7 +95,7 @@ struct ActivityChoiceRow: View {
 
     var body: some View {
         Button(action: select) {
-            HStack(spacing: 14) {
+            HStack(spacing: 12) {
                 icon
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
@@ -108,16 +108,16 @@ struct ActivityChoiceRow: View {
                 Spacer()
                 Image(systemName: FouleeIcon.check)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(FouleeColor.accentMid)
+                    .foregroundStyle(FouleeColor.accentInk)
                     .opacity(isSelected ? 1 : 0)
                     // The selected trait says it.
                     .accessibilityHidden(true)
             }
-            .padding(14)
-            .fouleeGlass(cornerRadius: 18)
+            .padding(16)
+            .fouleeCard(cornerRadius: Radius.row)
             .overlay {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(FouleeColor.accentMid.opacity(isSelected ? 0.8 : 0), lineWidth: 2)
+                RoundedRectangle(cornerRadius: Radius.row, style: .continuous)
+                    .strokeBorder(isSelected ? FouleeColor.accent : .clear, lineWidth: 2)
             }
         }
         .buttonStyle(.pressable)
@@ -125,18 +125,11 @@ struct ActivityChoiceRow: View {
     }
 
     private var icon: some View {
-        RoundedRectangle(cornerRadius: 12, style: .continuous)
-            .fill(
-                isSelected
-                    ? AnyShapeStyle(FouleeColor.accentGradient)
-                    : AnyShapeStyle(FouleeColor.accentMid.opacity(0.15))
-            )
+        Image(systemName: mode.icon)
+            .font(.system(size: 20, weight: .medium))
+            .foregroundStyle(isSelected ? FouleeColor.accentInk : .secondary)
             .frame(width: 40, height: 40)
-            .overlay {
-                Image(systemName: mode.icon)
-                    .font(.system(size: 20))
-                    .foregroundStyle(isSelected ? AnyShapeStyle(Color.white) : AnyShapeStyle(FouleeColor.accentMid))
-            }
+            .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.control))
             .accessibilityHidden(true)
     }
 
@@ -162,7 +155,7 @@ struct ActivityChoiceRow: View {
 // declaration only previews reach reads as dead code to the Periphery scan.
 #Preview("Light") {
     ZStack {
-        Wallpaper()
+        PageBackground()
         OnboardingActivityView(
             preferences: UserPreferences(
                 defaults: UserDefaults(suiteName: "preview-onboarding-activity") ?? .standard
@@ -175,7 +168,7 @@ struct ActivityChoiceRow: View {
 
 #Preview("Dark") {
     ZStack {
-        Wallpaper()
+        PageBackground()
         OnboardingActivityView(
             preferences: UserPreferences(
                 defaults: UserDefaults(suiteName: "preview-onboarding-activity") ?? .standard

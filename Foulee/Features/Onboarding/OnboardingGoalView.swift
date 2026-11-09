@@ -39,7 +39,7 @@ struct OnboardingGoalView: View {
             // may have answered "Course" (#221/#222), and the window it sets
             // is the same one whatever they picked.
             Text("Quand veux-tu\nbouger ?")
-                .scaledSystemFont(size: 30, weight: .bold)
+                .scaledSystemFont(size: 30, weight: .semibold)
                 .lineSpacing(2)
                 .accessibilityAddTraits(.isHeader)
             Text("On t'enverra un petit rappel juste avant.")
@@ -75,10 +75,10 @@ struct OnboardingGoalView: View {
         VStack(alignment: .leading, spacing: 10) {
             sectionLabel("Fenêtre")
             TimeWindowPicker(start: $preferences.walkWindowStart, end: $preferences.walkWindowEnd)
-                .scaledNumericFont(size: 22, weight: .semibold)
-                .padding(.horizontal, 18)
-                .padding(.vertical, 14)
-                .fouleeGlass(cornerRadius: 18)
+                .scaledNumericFont(size: 22)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 16)
+                .fouleeCard(cornerRadius: Radius.row)
         }
     }
 
@@ -105,7 +105,7 @@ struct OnboardingGoalView: View {
                 ) {
                     Text("Objectif quotidien")
                 }
-                .tint(FouleeColor.accentMid)
+                .tint(FouleeColor.accentInk)
                 .accessibilityValue("\(preferences.minutesGoal) minutes")
                 HStack {
                     Text("10 min").font(FouleeFont.caption).foregroundStyle(.secondary)
@@ -114,16 +114,14 @@ struct OnboardingGoalView: View {
                 }
                 .accessibilityHidden(true)
             }
-            .padding(18)
-            .fouleeGlass(cornerRadius: 18)
+            .padding(20)
+            .fouleeCard(cornerRadius: Radius.row)
         }
     }
 
     private func sectionLabel(_ title: LocalizedStringResource) -> some View {
         Text(title)
-            .textCase(.uppercase)
-            .font(FouleeFont.footnote.weight(.semibold))
+            .font(FouleeFont.footnote.weight(.medium))
             .foregroundStyle(.secondary)
-            .tracking(1)
     }
 }

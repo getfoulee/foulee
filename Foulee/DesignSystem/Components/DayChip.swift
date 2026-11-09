@@ -13,20 +13,12 @@ struct DayChip: View {
             // The circle stays 40 pt (7 chips must fit one row), so the label
             // scales with Dynamic Type until it hits the circle, then shrinks.
             Text(day.shortLabel)
-                .font(.system(.subheadline, weight: .semibold))
+                .font(.system(.subheadline, weight: .medium))
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)
-                .foregroundStyle(active ? AnyShapeStyle(Color.white) : AnyShapeStyle(Color.primary))
+                .foregroundStyle(active ? Color.white : Color.primary)
                 .frame(width: 40, height: 40)
-                .background(
-                    Circle()
-                        .fill(active ? AnyShapeStyle(FouleeColor.buttonGradient) : AnyShapeStyle(Color.clear))
-                )
-                .overlay(
-                    Circle()
-                        .stroke(Color.gray.opacity(active ? 0 : 0.25), lineWidth: 1)
-                )
-                .shadow(color: FouleeColor.accentMid.opacity(active ? 0.35 : 0), radius: 10, x: 0, y: 4)
+                .background(active ? FouleeColor.accent : FouleeColor.raised, in: Circle())
         }
         .buttonStyle(.pressable)
         // « L » alone says nothing, nor does the fill whether the day is on.

@@ -45,7 +45,7 @@ struct WalkRouteMap: View {
     /// The phone's own walk: one stroke, in the accent colour — the phone
     /// cannot tell a walk from a run while it records (issue #246).
     static func strokes(route: [Coordinate]) -> [RouteLines.Stroke] {
-        [RouteLines.Stroke(id: strokeID, coordinates: route.map(\.locationCoordinate), tint: FouleeColor.accentMid)]
+        [RouteLines.Stroke(id: strokeID, coordinates: route.map(\.locationCoordinate), tint: FouleeColor.accent)]
     }
 
     private var isDrawable: Bool {
@@ -69,11 +69,13 @@ struct WalkRouteMap: View {
                     // Neutral glyph (#222): the map is drawn from a route, and
                     // nothing here knows whether it was walked or run.
                     Image(systemName: FouleeIcon.mixedCardio)
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                         .padding(8)
-                        .background(FouleeColor.accentGradient, in: Circle())
-                        .shadow(color: FouleeColor.accentMid.opacity(0.4), radius: 6, y: 3)
+                        .background(FouleeColor.accent, in: Circle())
+                        // Edged in white, like the kilometre marks, so it
+                        // stands off any map tile.
+                        .overlay(Circle().strokeBorder(.white, lineWidth: 2))
                 }
             }
         }
@@ -81,11 +83,11 @@ struct WalkRouteMap: View {
 
     private var emptyState: some View {
         ZStack {
-            SheetBackground()
+            PageBackground()
             VStack(spacing: 12) {
                 Image(systemName: FouleeIcon.location)
-                    .font(.system(size: 44, weight: .semibold))
-                    .foregroundStyle(FouleeColor.accentMid)
+                    .font(.system(size: 40, weight: .medium))
+                    .foregroundStyle(.secondary)
                 Text("Tracé en attente")
                     .font(FouleeFont.title3)
                 Text("Ton parcours apparaîtra ici dès les premiers points GPS.")

@@ -32,23 +32,27 @@ struct HydrationActionToast: View {
         ZStack(alignment: .top) {
             if let message {
                 HStack(spacing: 12) {
-                    Label(message, systemImage: isError ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                    Label {
+                        Text(message)
+                    } icon: {
+                        Image(systemName: isError ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                            .foregroundStyle(tint)
+                    }
                     if let undo {
                         Button("Annuler") { take(back: undo) }
-                            .font(FouleeFont.footnote.weight(.bold))
-                            .padding(.horizontal, 10)
+                            .font(FouleeFont.footnote.weight(.medium))
+                            .foregroundStyle(FouleeColor.accentInk)
                             .padding(.vertical, 4)
-                            .background(.white.opacity(0.22), in: Capsule())
                             .buttonStyle(.pressable)
                             .accessibilityLabel("Annuler ce verre")
                     }
                 }
-                .font(FouleeFont.footnote.weight(.semibold))
-                .foregroundStyle(.white)
+                .font(FouleeFont.footnote.weight(.medium))
                 .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(tint, in: Capsule())
-                .shadow(color: tint.opacity(0.35), radius: 12, x: 0, y: 6)
+                .padding(.vertical, 12)
+                .fouleeCard(cornerRadius: Radius.row)
+                // It floats over the home: a soft neutral shadow sets it off.
+                .shadow(color: .black.opacity(0.08), radius: 12, y: 4)
                 .padding(.top, 6)
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
@@ -84,7 +88,7 @@ struct HydrationActionToast: View {
     }
 
     private var tint: Color {
-        isError ? .orange : .teal
+        isError ? FouleeColor.warning : FouleeColor.water
     }
 
     /// Delete the glass, then say how it went in the same toast.
@@ -102,7 +106,7 @@ struct HydrationActionToast: View {
 
     private func show(_ text: String, asError: Bool = false, undo: HydrationNotification.Undo? = nil) {
         isError = asError
-        withAnimation(.spring(duration: 0.35)) {
+        withAnimation(.easeOut(duration: 0.3)) {
             message = text
             self.undo = undo
         }

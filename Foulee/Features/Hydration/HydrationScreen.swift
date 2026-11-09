@@ -30,11 +30,11 @@ struct HydrationScreen: View {
                 SheetHeader(eyebrow: "Hydratation", title: "Aujourd'hui")
                 HydrationTodayHero(intakeML: store.intakeML, goalML: goalML, pace: pace)
                 servings
-                GlassSection("Verre par verre") {
+                CardSection("Verre par verre") {
                     HydrationTimeline(samples: detail.samples)
                 }
                 if let history = detail.history {
-                    GlassSection("Cette semaine") {
+                    CardSection("Cette semaine") {
                         HydrationWeekView(history: history)
                     }
                 } else if detail.lastError != nil {
@@ -48,7 +48,7 @@ struct HydrationScreen: View {
             .padding(.bottom, 40)
         }
         .overlay(alignment: .topTrailing) { SheetCloseButton(action: onClose) }
-        .presentationBackground { SheetBackground() }
+        .presentationBackground { PageBackground() }
         .sensoryFeedback(.increase, trigger: store.intakeML)
         // Any change to the day's water — a glass here, one from the watch, an
         // undone one — redraws the timeline and today's ring.
@@ -68,7 +68,7 @@ struct HydrationScreen: View {
                             .scaledSystemFont(size: 20, weight: .semibold)
                             .foregroundStyle(FouleeColor.water)
                         Text("\(serving.milliliters) mL")
-                            .font(FouleeFont.footnote.weight(.semibold).monospacedDigit())
+                            .font(FouleeFont.footnote.weight(.medium).monospacedDigit())
                             .foregroundStyle(.primary)
                         // Wraps rather than shrinks (issue #658): a quarter
                         // of the width cuts « Grand verre » at large sizes.
@@ -81,7 +81,7 @@ struct HydrationScreen: View {
                     // one label takes two lines.
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(.vertical, 12)
-                    .fouleeGlass(cornerRadius: 18)
+                    .fouleeCard(cornerRadius: Radius.row)
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel("J'ai bu : \(serving.label), \(serving.milliliters) millilitres")

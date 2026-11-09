@@ -2,7 +2,7 @@ import Dependencies
 import FouleeKit
 import SwiftUI
 
-/// Glass card holding the day's or the week's 4 stat blocks (pas / minutes /
+/// Card holding the day's or the week's 4 stat blocks (pas / minutes /
 /// distance / calories). Each block is a button that opens the metric's stats.
 ///
 /// **Two tabs, one card** (issue #327). « Semaine » took the place of the
@@ -34,8 +34,8 @@ struct TodayStatsGrid: View {
                 tiles
             }
         }
-        .padding(18)
-        .fouleeGlass(cornerRadius: 24)
+        .padding(20)
+        .fouleeCard()
         // Only while « Semaine » is shown, and again whenever the day's
         // figures move: today is part of the week, so a step taken now has to
         // reach its total too. Nothing is read for a tab nobody opened.

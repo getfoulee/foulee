@@ -29,14 +29,14 @@ struct RecapDayTimeline: View {
                             .foregroundStyle(.secondary)
                         if let emptyHint {
                             Text(emptyHint)
-                                .font(FouleeFont.footnote.weight(.semibold))
-                                .foregroundStyle(FouleeColor.accentMid)
+                                .font(FouleeFont.footnote)
+                                .foregroundStyle(.secondary)
                         }
                     }
                     Spacer()
                 }
-                .padding(14)
-                .fouleeGlass(cornerRadius: 18)
+                .padding(16)
+                .fouleeCard(cornerRadius: Radius.row)
             } else {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(Array(workouts.enumerated()), id: \.element.id) { index, workout in
@@ -59,7 +59,7 @@ struct RecapDayTimeline: View {
                 }
                 if ring.minutes >= goalMinutes, ring.minutes > 0 {
                     Label("Objectif tenu", systemImage: FouleeIcon.check)
-                        .font(FouleeFont.footnote.weight(.semibold))
+                        .font(FouleeFont.footnote.weight(.medium))
                         .foregroundStyle(FouleeColor.success)
                 }
             }
@@ -72,7 +72,7 @@ struct RecapDayTimeline: View {
             // Shrunk rather than wrapped: « 12:05 PM » is wider than the
             // column « 12:05 » was sized for (issue #594).
             Text(workout.startedAt.clockText)
-                .font(FouleeFont.caption.weight(.semibold).monospacedDigit())
+                .font(FouleeFont.caption.weight(.medium).monospacedDigit())
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
@@ -110,14 +110,13 @@ struct RecapDayTimeline: View {
 
     private func card(_ workout: WorkoutSummary, tint: Color) -> some View {
         HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(tint.opacity(0.18))
+            // The sport's colour on its glyph only — the same as its line on
+            // the map.
+            Image(systemName: workout.activityIcon)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(tint)
                 .frame(width: 40, height: 40)
-                .overlay {
-                    Image(systemName: workout.activityIcon)
-                        .font(.system(size: 19, weight: .semibold))
-                        .foregroundStyle(tint)
-                }
+                .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.control))
             VStack(alignment: .leading, spacing: 3) {
                 Text(workout.activityLabel)
                     .font(FouleeFont.headline)
@@ -132,15 +131,15 @@ struct RecapDayTimeline: View {
             }
             Spacer(minLength: 4)
             Text(durationText(minutes: Int(workout.durationSeconds / 60)))
-                .scaledNumericFont(size: 18, weight: .semibold)
+                .scaledNumericFont(size: 18)
                 .accessibilityLabel(spokenDurationText(seconds: workout.durationSeconds))
                 .foregroundStyle(.primary)
             Image(systemName: "chevron.right")
-                .font(FouleeFont.caption.weight(.semibold))
+                .font(FouleeFont.caption.weight(.medium))
                 .foregroundStyle(.tertiary)
         }
-        .padding(14)
-        .fouleeGlass(cornerRadius: 20)
+        .padding(16)
+        .fouleeCard(cornerRadius: Radius.row)
     }
 
     // MARK: - A day without an outing (issue #443)

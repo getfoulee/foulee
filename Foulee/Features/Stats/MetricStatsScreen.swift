@@ -24,7 +24,7 @@ struct MetricStatsScreen: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            SheetBackground()
+            PageBackground()
             ScrollView {
                 VStack(spacing: 16) {
                     header
@@ -44,19 +44,18 @@ struct MetricStatsScreen: View {
     }
 
     /// The icon above the titles at the accessibility sizes: beside it,
-    /// « STATISTIQUES » broke into syllables.
+    /// « Statistiques » broke into syllables.
     private var header: some View {
         AdaptiveStack(stacked: VStackLayout(alignment: .leading, spacing: 8), regular: HStackLayout(spacing: 12)) {
             Image(systemName: metric.icon)
-                .font(.system(size: 22, weight: .semibold))
+                .font(.system(size: 22, weight: .medium))
                 .foregroundStyle(metric.tint)
-                .frame(width: 46, height: 46)
-                .background(metric.tint.opacity(0.16), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .frame(width: 44, height: 44)
+                .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.row))
             VStack(alignment: .leading, spacing: 2) {
-                Text("STATISTIQUES")
-                    .font(FouleeFont.footnote.weight(.semibold))
+                Text("Statistiques")
+                    .font(FouleeFont.footnote.weight(.medium))
                     .foregroundStyle(.secondary)
-                    .tracking(1.1)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 Text(metric.title)
@@ -89,8 +88,8 @@ struct MetricStatsScreen: View {
                 chart.frame(height: 200)
             }
         }
-        .padding(18)
-        .fouleeGlass(cornerRadius: 24)
+        .padding(20)
+        .fouleeCard()
     }
 
     private var chartUnit: Calendar.Component {
@@ -186,22 +185,20 @@ struct MetricStatsScreen: View {
         return top > 0 ? top * 1.25 : 1
     }
 
-    /// Tooltip shown above the scrubbed bar. Solid metric-coloured pill with
-    /// white text — translucent materials washed out over the pale light-mode
-    /// gradient, so this stays unmistakable in both themes.
+    /// Tooltip shown above the scrubbed bar. Solid metric-coloured tag with
+    /// white text, unmistakable in both themes.
     private func callout(_ point: MetricPoint) -> some View {
         VStack(spacing: 1) {
             Text(point.date, format: calloutFormat)
-                .font(FouleeFont.caption.weight(.semibold))
+                .font(FouleeFont.caption.weight(.medium))
                 .foregroundStyle(.white.opacity(0.85))
             Text(metric.formattedWithUnit(point.value))
-                .scaledNumericFont(size: 15, weight: .semibold)
+                .scaledNumericFont(size: 15)
                 .foregroundStyle(.white)
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 7)
-        .background(metric.tint, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .shadow(color: metric.tint.opacity(0.45), radius: 8, y: 3)
+        .padding(.vertical, 8)
+        .background(metric.tint, in: .rect(cornerRadius: Radius.tag))
         .fixedSize()
     }
 
@@ -217,7 +214,7 @@ struct MetricStatsScreen: View {
         if let dailyGoal, store.range != .today, value < dailyGoal {
             return AnyShapeStyle(Color.gray.opacity(0.25))
         }
-        return AnyShapeStyle(metric.tint.gradient)
+        return AnyShapeStyle(metric.tint)
     }
 
     private var xAxisFormat: Date.FormatStyle {
@@ -244,8 +241,8 @@ struct MetricStatsScreen: View {
                 summaryCell(label: summaryItems[index].label, value: summaryItems[index].value)
             }
         }
-        .padding(18)
-        .fouleeGlass(cornerRadius: 22)
+        .padding(20)
+        .fouleeCard()
     }
 
     private var summaryItems: [(label: LocalizedStringResource, value: String)] {
@@ -263,7 +260,7 @@ struct MetricStatsScreen: View {
     private func summaryCell(label: LocalizedStringResource, value: String) -> some View {
         VStack(spacing: 4) {
             Text(value)
-                .scaledNumericFont(size: 20, weight: .semibold)
+                .scaledNumericFont(size: 20)
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
             Text(label)

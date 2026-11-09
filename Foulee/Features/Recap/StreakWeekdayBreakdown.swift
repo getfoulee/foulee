@@ -25,22 +25,20 @@ struct StreakWeekdayBreakdown: View {
     private func column(_ stat: WeekdayStat) -> some View {
         VStack(spacing: 6) {
             ZStack(alignment: .bottom) {
-                Capsule().fill(Color.gray.opacity(0.15)).frame(width: 9, height: maxBarHeight)
-                Capsule().fill(fill(for: stat)).frame(width: 9, height: barHeight(stat))
+                Capsule().fill(FouleeColor.raised).frame(width: 8, height: maxBarHeight)
+                Capsule().fill(fill(for: stat)).frame(width: 8, height: barHeight(stat))
             }
             Text(stat.weekday.shortLabel)
                 .font(FouleeFont.caption)
-                .foregroundStyle(best?.id == stat.id ? FouleeColor.accentMid : .secondary)
+                .foregroundStyle(best?.id == stat.id ? FouleeColor.accentInk : .secondary)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(stat.weekday.fullName)
         .accessibilityValue(stat.isActive ? Text("\(stat.rate) % de réussite") : Text("jour de repos"))
     }
 
-    private func fill(for stat: WeekdayStat) -> AnyShapeStyle {
-        stat.isActive
-            ? AnyShapeStyle(FouleeColor.accentGradient)
-            : AnyShapeStyle(Color.gray.opacity(0.3))
+    private func fill(for stat: WeekdayStat) -> Color {
+        stat.isActive ? FouleeColor.accent : Color.gray.opacity(0.3)
     }
 
     private func barHeight(_ stat: WeekdayStat) -> CGFloat {

@@ -13,7 +13,7 @@ struct SettingsNotificationsPage: View {
     var body: some View {
         VStack(spacing: 16) {
             permissionBanner
-            GlassSection {
+            CardSection {
                 SettingsToggle(
                     "Rappel avant ta sortie",
                     detail: "10 minutes avant ta fenêtre, sur les jours actifs.",
@@ -78,7 +78,7 @@ struct SettingsNotificationsPage: View {
             )
             NavigationLink(value: SettingsPage.hydration) {
                 Label("Régler la plage et la fréquence", systemImage: "slider.horizontal.3")
-                    .font(FouleeFont.footnote.weight(.semibold))
+                    .font(FouleeFont.footnote.weight(.medium))
                     .foregroundStyle(FouleeColor.water)
             }
             .buttonStyle(.pressable)

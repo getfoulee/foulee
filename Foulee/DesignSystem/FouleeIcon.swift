@@ -29,7 +29,6 @@ nonisolated enum FouleeIcon {
     static let pause = "pause.fill"
     static let stop = "stop.fill"
     static let location = "location.fill"
-    static let sparkle = "sparkles"
     static let target = "target"
     static let watch = "applewatch"
     static let merge = "arrow.triangle.merge"

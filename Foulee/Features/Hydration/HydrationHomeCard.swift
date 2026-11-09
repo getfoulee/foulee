@@ -68,6 +68,6 @@ struct HydrationHomeCard: View {
             Spacer(minLength: 0)
         }
         .padding(12)
-        .fouleeGlass(cornerRadius: 16)
+        .fouleeCard(cornerRadius: Radius.row)
     }
 }

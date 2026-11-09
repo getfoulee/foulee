@@ -4,7 +4,7 @@ import FouleeKit
 import SwiftUI
 import UIKit
 
-/// Pre/post-walk dashboard and the app's home. Content-only: the wallpaper is
+/// Pre/post-walk dashboard and the app's home. Content-only: the page is
 /// provided by `HomeView`. Data comes from `TodayStore`, which reads HealthKit
 /// through the `healthKit` dependency. Settings open from the profile button.
 struct TodayScreen: View {
@@ -152,7 +152,7 @@ struct TodayScreen: View {
             ))
             .sheet(isPresented: $isShowingSettings) {
                 SettingsScreen(preferences: preferences) { isShowingSettings = false }
-                    .presentationBackground { SheetBackground() }
+                    .presentationBackground { PageBackground() }
                     .preferredColorScheme(preferredScheme)
             }
     }
@@ -252,7 +252,7 @@ struct TodayScreen: View {
         VStack(spacing: 16) {
             ProgressView()
                 .controlSize(.large)
-                .tint(FouleeColor.accentMid)
+                .tint(FouleeColor.accentInk)
             Text("Connexion à Santé…")
                 .font(FouleeFont.footnote)
                 .foregroundStyle(.secondary)
@@ -267,10 +267,9 @@ struct TodayScreen: View {
             regular: HStackLayout(alignment: .center, spacing: 12)
         ) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(formatted(date: snapshot.date))
-                    .font(FouleeFont.footnote.weight(.semibold))
+                Text(snapshot.date.dayText.sentenceCased)
+                    .font(FouleeFont.footnote.weight(.medium))
                     .foregroundStyle(.secondary)
-                    .tracking(1.2)
                 Text("Aujourd'hui")
                     .font(FouleeFont.largeTitle)
                     // Shrinks rather than breaking into « Aujourd'-hui » when
@@ -289,20 +288,16 @@ struct TodayScreen: View {
                     RecapRouter.shared.open(.month)
                 }
                 Button { isShowingSettings = true } label: {
-                    Image(systemName: "gearshape.fill")
-                        .scaledSystemFont(size: 32)
-                        .foregroundStyle(FouleeColor.accentMid)
-                        .symbolRenderingMode(.hierarchical)
+                    Image(systemName: "gearshape")
+                        .scaledSystemFont(size: 22, weight: .medium)
+                        .foregroundStyle(.secondary)
+                        .frame(minWidth: 44, minHeight: 44)
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel("Réglages")
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func formatted(date: Date) -> String {
-        date.dayText.uppercased()
     }
 
     /// Push the active walk sheet. Available from the hero even once today's

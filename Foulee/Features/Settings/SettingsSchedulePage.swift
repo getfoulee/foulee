@@ -6,7 +6,7 @@ struct SettingsSchedulePage: View {
     @Bindable var preferences: UserPreferences
 
     var body: some View {
-        GlassSection("Jours actifs", footer: "Un jour non coché ne casse jamais ta série.") {
+        CardSection("Jours actifs", footer: "Un jour non coché ne casse jamais ta série.") {
             HStack(spacing: 8) {
                 ForEach(Weekday.allCases) { day in
                     DayChip(
@@ -20,7 +20,7 @@ struct SettingsSchedulePage: View {
         }
         // « Fenêtre horaire », not « Fenêtre de marche »: the same single
         // window serves walking, running or both (#222).
-        GlassSection("Fenêtre horaire", footer: "Le rappel de sortie arrive 10 minutes avant son début.") {
+        CardSection("Fenêtre horaire", footer: "Le rappel de sortie arrive 10 minutes avant son début.") {
             TimeWindowPicker(start: $preferences.walkWindowStart, end: $preferences.walkWindowEnd)
         }
     }

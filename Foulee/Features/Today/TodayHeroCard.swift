@@ -74,11 +74,11 @@ struct TodayHeroCard: View {
             }
             actionRow
         }
-        // 22, not more: on an iPhone SE every extra point of margin comes out
+        // 20, not more: on an iPhone SE every extra point of margin comes out
         // of « Sortie terminée » and « Voir le bilan », which then truncate
         // and wrap.
-        .padding(22)
-        .fouleeGlass(cornerRadius: 28)
+        .padding(20)
+        .fouleeCard()
         .sensoryFeedback(.success, trigger: celebrations)
         // Only a change counts: a goal already met when the home opens was
         // celebrated when it happened, not again on every launch.
@@ -114,15 +114,15 @@ struct TodayHeroCard: View {
         if snapshot.hasWalkedToday {
             VStack(spacing: 2) {
                 Image(systemName: FouleeIcon.check)
-                    .font(.system(size: 30, weight: .bold))
-                    .foregroundStyle(FouleeColor.accentMid)
+                    .font(.system(size: 28, weight: .semibold))
+                    .foregroundStyle(FouleeColor.success)
                 Text("Fait")
-                    .font(FouleeFont.footnote.weight(.semibold))
+                    .font(FouleeFont.footnote.weight(.medium))
             }
         } else {
             Image(systemName: preferences.activityMode.icon)
-                .font(.system(size: 30, weight: .semibold))
-                .foregroundStyle(FouleeColor.accentMid)
+                .font(.system(size: 28, weight: .medium))
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -136,7 +136,7 @@ struct TodayHeroCard: View {
                     tint: ReadablePalette.greenText,
                     fill: FouleeColor.success.opacity(0.16)
                 )
-                Text("Bravo, \(Text(durationText(minutes: snapshot.minutes)).foregroundStyle(WalkMetric.minutes.tint)) d'activité")
+                Text("Bravo, \(Text(durationText(minutes: snapshot.minutes)).foregroundStyle(WalkMetric.minutes.labelTint)) d'activité")
                     .font(FouleeFont.title3)
                     .accessibilityLabel("Bravo, \(spokenDurationText(minutes: snapshot.minutes)) d'activité")
                 // The weather stays once the outing is done, in one line —
@@ -148,12 +148,7 @@ struct TodayHeroCard: View {
             }
         } else if snapshot.isRestDay {
             VStack(alignment: .leading, spacing: 10) {
-                Chip(
-                    label: "Jour de repos",
-                    systemIcon: "moon.stars.fill",
-                    tint: ReadablePalette.indigoText,
-                    fill: FouleeColor.accentSecondary.opacity(0.16)
-                )
+                Chip(label: "Jour de repos", systemIcon: "moon")
                 Text("Pas de sortie prévue aujourd'hui — profite de ta pause.")
                     .font(FouleeFont.title3)
                 if snapshot.weather.isAvailable {
@@ -162,15 +157,10 @@ struct TodayHeroCard: View {
             }
         } else {
             VStack(alignment: .leading, spacing: 10) {
-                Chip(
-                    label: countdownLabel,
-                    systemIcon: FouleeIcon.timer,
-                    tint: ReadablePalette.purpleText,
-                    fill: FouleeColor.accentMid.opacity(0.16)
-                )
+                Chip(label: countdownLabel, systemIcon: FouleeIcon.timer)
                 // Same shape as « Bravo » once done: what the day is at, then
                 // the weather on one line.
-                Text("Encore \(Text(durationText(minutes: minutesToGo)).foregroundStyle(WalkMetric.minutes.tint)) d'activité")
+                Text("Encore \(Text(durationText(minutes: minutesToGo)).foregroundStyle(WalkMetric.minutes.labelTint)) d'activité")
                     .font(FouleeFont.title3)
                     .accessibilityLabel("Encore \(spokenDurationText(minutes: minutesToGo)) d'activité")
                 windowDetail
@@ -254,11 +244,10 @@ struct TodayHeroCard: View {
     private var weatherLine: some View {
         HStack(spacing: 6) {
             Image(systemName: FouleeIcon.sun)
-                .foregroundStyle(FouleeColor.warning)
             Text("\(snapshot.weather.temperatureCelsius)° · \(snapshot.weather.condition)")
-                .foregroundStyle(.secondary)
         }
         .font(FouleeFont.footnote)
+        .foregroundStyle(.secondary)
     }
 
     private var actionRow: some View {
@@ -280,7 +269,7 @@ struct TodayHeroCard: View {
             } else if snapshot.hasWalkedToday {
                 // Goal already met: still let the user start another session —
                 // the single summary button used to be the only option.
-                SecondaryButton(title: "Voir le bilan", systemIcon: FouleeIcon.sparkle, action: onSummary)
+                SecondaryButton(title: "Voir le bilan", systemIcon: "calendar", action: onSummary)
                 PrimaryButton(title: "Repartir", systemIcon: FouleeIcon.play, action: onStart)
             } else {
                 PrimaryButton(title: "Démarrer ta sortie", systemIcon: FouleeIcon.play, action: onStart)
@@ -323,10 +312,10 @@ struct TodayHeroCard: View {
             }
         } label: {
             Image(systemName: notificationsEnabled && !remindersBlocked ? "bell.fill" : "bell.slash.fill")
-                .font(.system(size: 20))
+                .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(bellStyle)
                 .frame(width: 50, height: 50)
-                .background(Color.gray.opacity(0.16), in: Circle())
+                .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.control))
         }
         .menuOrder(.fixed)
         .accessibilityLabel("Rappels de sortie")
@@ -335,7 +324,7 @@ struct TodayHeroCard: View {
     }
 
     private var bellStyle: some ShapeStyle {
-        if remindersBlocked { return AnyShapeStyle(.orange) }
+        if remindersBlocked { return AnyShapeStyle(FouleeColor.warning) }
         return notificationsEnabled ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary)
     }
 

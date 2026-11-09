@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Pill-shaped CTA with the button gradient — "Démarrer ta sortie",
+/// The screen's one main action, flat on the accent — "Démarrer ta sortie",
 /// "Continuer", "Terminer l'installation".
 struct PrimaryButton: View {
     var title: LocalizedStringResource
@@ -18,14 +18,13 @@ struct PrimaryButton: View {
             .font(FouleeFont.headline)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, minHeight: 50)
-            .background(FouleeColor.buttonGradient, in: Capsule())
-            .shadow(color: FouleeColor.accentMid.opacity(0.35), radius: 12, x: 0, y: 8)
+            .background(FouleeColor.accent, in: .rect(cornerRadius: Radius.control))
         }
         .buttonStyle(.pressable)
     }
 }
 
-/// Subtle gray pill for secondary actions next to the primary CTA. Part of the
+/// A quiet action beside the main one, on the raised neutral. Part of the
 /// button pair shown in `DesignSystemGallery`; kept as the design-system
 /// counterpart to `PrimaryButton`.
 struct SecondaryButton: View {
@@ -44,7 +43,7 @@ struct SecondaryButton: View {
             .font(FouleeFont.headline)
             .foregroundStyle(.primary)
             .frame(maxWidth: .infinity, minHeight: 50)
-            .background(Color.gray.opacity(0.16), in: Capsule())
+            .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.control))
         }
         .buttonStyle(.pressable)
     }

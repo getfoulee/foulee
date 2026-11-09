@@ -25,10 +25,9 @@ struct WorkoutDetailOuting: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("PORTIONS")
-                .font(FouleeFont.footnote.weight(.semibold))
+            Text("Portions")
+                .font(FouleeFont.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
-                .tracking(1)
             timeline
             selectionLine
             VStack(spacing: 10) {
@@ -37,8 +36,8 @@ struct WorkoutDetailOuting: View {
                 }
             }
         }
-        .padding(18)
-        .fouleeGlass(cornerRadius: 22)
+        .padding(20)
+        .fouleeCard()
     }
 
     /// Every leg, end to end, its length the time it took. Swift Charts rather
@@ -87,7 +86,7 @@ struct WorkoutDetailOuting: View {
                     Text("\(leg.activity.label) · \(OutingBreakdown.legText(leg))")
                         .monospacedDigit()
                 }
-                .font(FouleeFont.footnote.weight(.semibold))
+                .font(FouleeFont.footnote.weight(.medium))
             } else {
                 Text("Glisse le doigt sur la frise pour le détail d'une portion")
                     .font(FouleeFont.footnote)
@@ -120,7 +119,7 @@ struct WorkoutDetailOuting: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Text(share.duration.walkClockText)
-                    .scaledNumericFont(size: 18, weight: .semibold)
+                    .scaledNumericFont(size: 18)
             }
         }
         .accessibilityElement(children: .ignore)

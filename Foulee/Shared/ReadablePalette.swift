@@ -35,10 +35,10 @@ nonisolated enum ReadablePalette {
 
     // MARK: Small text (issue #658)
 
-    // A brand colour on small text — a tile's label, a chip, a selected day.
-    // Text needs 4.5:1, on a card's glass and on a chip's own tint, where the
-    // shades above reach 3:1: light mode takes a deeper one still, the same
-    // with « Augmenter le contraste ». Dark mode keeps the bright shade.
+    // A brand colour on small text — a tile's glyph, a chip, a selected day.
+    // Text needs 4.5:1, on a card and on a chip's own tint, where the shades
+    // above reach 3:1: light mode takes a deeper one still, the same with
+    // « Augmenter le contraste ». Dark mode keeps the bright shade.
 
     static let greenText = Color.readable(
         dark: brightGreen,
@@ -60,12 +60,6 @@ nonisolated enum ReadablePalette {
         dark: Color(.sRGB, red: 10 / 255, green: 132 / 255, blue: 255 / 255),
         light: 0x0050A5,
         increasedContrast: 0x0050A5
-    )
-    /// The rest day's indigo.
-    static let indigoText = Color.readable(
-        dark: Color(.sRGB, red: 94 / 255, green: 92 / 255, blue: 230 / 255),
-        light: 0x3230DF,
-        increasedContrast: 0x3230DF
     )
 }
 

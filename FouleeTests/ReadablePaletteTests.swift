@@ -6,8 +6,8 @@ import UIKit
 /// The brand's bright shades stay readable on a light background (issue #599).
 @Suite("Readable palette")
 struct ReadablePaletteTests {
-    /// The grouped background, the lightest a card sits on, and plain white.
-    private static let lightBackgrounds: [UInt32] = [0xF2F2F7, 0xFFFFFF]
+    /// The page, the darkest light surface anything sits on, and a card's white.
+    private static let lightBackgrounds: [UInt32] = [0xF5F4F1, 0xFFFFFF]
 
     private static let colors: [(String, Color)] = [
         ("green", ReadablePalette.green),
@@ -40,19 +40,18 @@ struct ReadablePaletteTests {
         }
     }
 
-    /// A card's glass, as the accessibility audit measured it (issue #658).
-    private static let glass: UInt32 = 0xF2EDF4
+    /// The raised neutral — a chip, a selected day, a secondary button.
+    private static let raised: UInt32 = 0xEDEBE7
 
     private static let textColors: [(String, Color)] = [
         ("green", ReadablePalette.greenText),
         ("orange", ReadablePalette.orangeText),
         ("purple", ReadablePalette.purpleText),
-        ("blue", ReadablePalette.blueText),
-        ("indigo", ReadablePalette.indigoText)
+        ("blue", ReadablePalette.blueText)
     ]
 
     @Test(
-        "Small text in a brand colour reaches 4.5:1 on the glass",
+        "Small text in a brand colour reaches 4.5:1 on every light surface",
         arguments: [UIAccessibilityContrast.normal, .high]
     )
     func textShades(contrast: UIAccessibilityContrast) throws {
@@ -61,20 +60,29 @@ struct ReadablePaletteTests {
             traits.accessibilityContrast = contrast
         }
         for (name, color) in Self.textColors {
-            for background in Self.lightBackgrounds + [Self.glass] {
+            for background in Self.lightBackgrounds + [Self.raised] {
                 let ratio = try Self.contrast(color, on: background, traits: traits)
                 #expect(ratio >= 4.5, "\(name) on \(String(background, radix: 16)): \(ratio)")
             }
         }
     }
 
-    @Test("White text reaches 4.5:1 across the button gradient")
-    func buttonGradient() throws {
+    @Test(
+        "White text reaches 4.5:1 on the accent",
+        arguments: [UIUserInterfaceStyle.light, .dark]
+    )
+    func accent(style: UIUserInterfaceStyle) throws {
+        let traits = UITraitCollection(userInterfaceStyle: style)
+        let ratio = try Self.contrast(FouleeColor.accent, on: 0xFFFFFF, traits: traits)
+        #expect(ratio >= 4.5, "white on the accent: \(ratio)")
+    }
+
+    @Test("The accent as ink reaches 4.5:1 on the light surfaces")
+    func accentInk() throws {
         let traits = UITraitCollection(userInterfaceStyle: .light)
-        for stop in [FouleeColor.buttonStart, FouleeColor.accentEnd] {
-            let ratio = try Self.contrast(stop, on: 0xFFFFFF, traits: traits)
-            let hex = Self.hex(try Self.components(stop, traits: traits))
-            #expect(ratio >= 4.5, "white on \(String(hex, radix: 16)): \(ratio)")
+        for background in Self.lightBackgrounds + [Self.raised] {
+            let ratio = try Self.contrast(FouleeColor.accentInk, on: background, traits: traits)
+            #expect(ratio >= 4.5, "accent ink on \(String(background, radix: 16)): \(ratio)")
         }
     }
 

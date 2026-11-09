@@ -62,14 +62,14 @@ struct WorkoutDetailHeartRate: View {
                 .accessibilityLabel("Courbe de fréquence cardiaque")
                 .accessibilityValue(Text(heartRateSummary))
         }
-        .padding(18)
-        .fouleeGlass(cornerRadius: 22)
+        .padding(20)
+        .fouleeCard()
     }
 
     private var header: some View {
         HStack(spacing: 10) {
             Image(systemName: "heart.fill")
-                .font(.system(.callout, weight: .bold))
+                .font(.system(.callout, weight: .semibold))
                 .foregroundStyle(FouleeColor.danger)
             Text("Fréquence cardiaque")
                 .font(FouleeFont.headline)
@@ -77,7 +77,7 @@ struct WorkoutDetailHeartRate: View {
             Spacer()
             if let avg = detail.averageHeartRate {
                 Text("\(avg) bpm")
-                    .scaledNumericFont(size: 22, weight: .semibold)
+                    .scaledNumericFont(size: 22)
                     .foregroundStyle(FouleeColor.danger)
                     // The « Moyenne » cell below says it in words.
                     .accessibilityHidden(true)
@@ -88,7 +88,7 @@ struct WorkoutDetailHeartRate: View {
     private func hrCell(label: LocalizedStringResource, value: Int?) -> some View {
         VStack(spacing: 2) {
             Text(value.map { "\($0)" } ?? "—")
-                .scaledNumericFont(size: 18, weight: .semibold)
+                .scaledNumericFont(size: 18)
             Text(label)
                 .font(FouleeFont.caption)
                 .foregroundStyle(.secondary)
@@ -164,7 +164,7 @@ struct WorkoutDetailHeartRate: View {
             : nil
         return VStack(alignment: .leading, spacing: 2) {
             Text("\(reading.bpm) bpm")
-                .scaledNumericFont(size: 15, weight: .semibold)
+                .scaledNumericFont(size: 15)
                 .foregroundStyle(FouleeColor.danger)
             Text(reading.date.clockText)
                 .font(FouleeFont.caption)
@@ -172,16 +172,15 @@ struct WorkoutDetailHeartRate: View {
                 .foregroundStyle(.secondary)
             if let leg {
                 Label(leg.activity.label, systemImage: leg.activity.icon)
-                    .font(FouleeFont.caption.weight(.semibold))
+                    .font(FouleeFont.caption.weight(.medium))
                     .foregroundStyle(leg.activity.tint)
             }
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
         // Opaque, not a material: the chart is flattened by `drawingGroup()`,
         // and a blur does not survive being drawn into a bitmap.
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
+        .fouleeCard(cornerRadius: Radius.tag)
     }
 
     @ChartContentBuilder
@@ -198,16 +197,7 @@ struct WorkoutDetailHeartRate: View {
             x: .value("Temps", sample.date),
             y: .value("BPM", sample.bpm)
         )
-        .foregroundStyle(
-            LinearGradient(
-                colors: [
-                    FouleeColor.danger.opacity(0.28),
-                    FouleeColor.danger.opacity(0)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        )
+        .foregroundStyle(FouleeColor.danger.opacity(0.12))
         .interpolationMethod(.catmullRom)
     }
 }

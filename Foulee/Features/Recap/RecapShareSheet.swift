@@ -31,7 +31,7 @@ struct RecapShareSheet: View {
         .padding(.top, 28)
         .padding(.bottom, 20)
         .overlay(alignment: .topTrailing) { SheetCloseButton(action: onClose) }
-        .presentationBackground { SheetBackground() }
+        .presentationBackground { PageBackground() }
         .task(id: format) { image = RecapShareRenderer.image(of: recap, as: format) }
     }
 
@@ -41,8 +41,10 @@ struct RecapShareSheet: View {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .shadow(color: .black.opacity(0.18), radius: 16, y: 8)
+                .clipShape(.rect(cornerRadius: Radius.card))
+                // The image floats over the page: a soft neutral shadow sets
+                // it off.
+                .shadow(color: .black.opacity(0.08), radius: 12, y: 4)
                 .accessibilityLabel("Aperçu de l'image partagée : \(card.summary)")
         } else {
             ProgressView()
@@ -63,8 +65,7 @@ struct RecapShareSheet: View {
                     .font(FouleeFont.headline)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity, minHeight: 50)
-                    .background(FouleeColor.buttonGradient, in: Capsule())
-                    .shadow(color: FouleeColor.accentMid.opacity(0.35), radius: 12, x: 0, y: 8)
+                    .background(FouleeColor.accent, in: .rect(cornerRadius: Radius.control))
             }
             .buttonStyle(.pressable)
         }

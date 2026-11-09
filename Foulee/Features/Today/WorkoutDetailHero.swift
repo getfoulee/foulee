@@ -9,18 +9,14 @@ struct WorkoutDetailHero: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(FouleeColor.accentMid.opacity(0.18))
-                .frame(width: 64, height: 64)
-                .overlay {
-                    Image(systemName: detail.summary.activityIcon)
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundStyle(FouleeColor.accentMid)
-                }
-            Text(dateLabel)
-                .font(FouleeFont.footnote.weight(.semibold))
+            Image(systemName: detail.summary.activityIcon)
+                .font(.system(size: 28, weight: .medium))
                 .foregroundStyle(.secondary)
-                .tracking(1.1)
+                .frame(width: 56, height: 56)
+                .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.row))
+            Text(dateLabel)
+                .font(FouleeFont.footnote.weight(.medium))
+                .foregroundStyle(.secondary)
             // The session clock's own format: hours once past the hour,
             // « 1:06:31 », never « 66:31 ».
             Text(detail.summary.durationSeconds.walkClockText)
@@ -31,9 +27,9 @@ struct WorkoutDetailHero: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 22)
-        .padding(.horizontal, 18)
-        .fouleeGlass(cornerRadius: 26)
+        .padding(.vertical, 24)
+        .padding(.horizontal, 20)
+        .fouleeCard()
         // One element: the clock alone, « 24:10 », is read as a time of day.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityText)
@@ -56,6 +52,6 @@ struct WorkoutDetailHero: View {
         let date = detail.summary.startedAt
         if calendar.isDateInToday(date) { return String(localized: "Aujourd'hui") }
         if calendar.isDateInYesterday(date) { return String(localized: "Hier") }
-        return date.dayText.uppercased()
+        return date.dayText.sentenceCased
     }
 }

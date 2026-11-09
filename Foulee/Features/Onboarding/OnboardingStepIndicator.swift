@@ -10,11 +10,7 @@ struct OnboardingStepIndicator: View {
         HStack(spacing: 6) {
             ForEach(OnboardingStep.allCases, id: \.self) { candidate in
                 Capsule()
-                    .fill(
-                        candidate.rawValue <= step.rawValue
-                            ? AnyShapeStyle(FouleeColor.accentMid)
-                            : AnyShapeStyle(Color.gray.opacity(0.3))
-                    )
+                    .fill(candidate.rawValue <= step.rawValue ? FouleeColor.accent : FouleeColor.raised)
                     .frame(width: candidate == step ? 22 : 8, height: 8)
                     .animation(.easeOut(duration: 0.2), value: step)
             }

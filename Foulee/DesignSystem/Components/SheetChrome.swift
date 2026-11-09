@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// A round glass button for a sheet's top corner (issues #392, #410): the
-/// « × » every sheet closes with, and the actions that sit beside it. One
-/// definition so the sheets stop drifting apart — the shadow keeps it readable
-/// over a map as well as over the sheet gradient.
+/// A round button for a sheet's top corner (issues #392, #410): the « × »
+/// every sheet closes with, and the actions that sit beside it. One definition
+/// so the sheets stop drifting apart — a solid card with a hairline keeps it
+/// readable over a map as well as over the page.
 struct SheetRoundButton: View {
     var systemImage: String
     var accessibilityLabel: LocalizedStringResource
@@ -12,11 +12,11 @@ struct SheetRoundButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: systemImage)
-                .font(.system(size: 16, weight: .bold))
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(.primary)
                 .frame(width: 40, height: 40)
-                .background(.ultraThinMaterial, in: Circle())
-                .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
+                .background(FouleeColor.card, in: Circle())
+                .overlay(Circle().strokeBorder(FouleeColor.hairline, lineWidth: 1))
         }
         .buttonStyle(.pressable)
         .accessibilityLabel(Text(accessibilityLabel))
@@ -34,8 +34,8 @@ struct SheetCloseButton: View {
     }
 }
 
-/// Small caps eyebrow over a large title — the opening line of a sheet
-/// (« RÉCAP / Ton bilan », « HYDRATATION / Aujourd'hui »…).
+/// A quiet eyebrow over a large title — the opening line of a sheet
+/// (« Récap / Ton bilan », « Hydratation / Aujourd'hui »…).
 struct SheetHeader: View {
     var eyebrow: LocalizedStringResource
     var title: LocalizedStringResource
@@ -43,10 +43,8 @@ struct SheetHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(eyebrow)
-                .textCase(.uppercase)
-                .font(FouleeFont.footnote.weight(.semibold))
+                .font(FouleeFont.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
-                .tracking(1.2)
             Text(title)
                 .font(FouleeFont.largeTitle)
                 .accessibilityAddTraits(.isHeader)
@@ -55,9 +53,9 @@ struct SheetHeader: View {
     }
 }
 
-/// A titled glass card: the one way a sheet groups related content. The title
+/// A titled card: the one way a sheet groups related content. The title
 /// sits inside the card, an optional footnote under its content.
-struct GlassSection<Content: View>: View {
+struct CardSection<Content: View>: View {
     var title: LocalizedStringResource?
     var footer: LocalizedStringResource?
     let content: Content
@@ -83,7 +81,7 @@ struct GlassSection<Content: View>: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .fouleeGlass(cornerRadius: 22)
+        .padding(20)
+        .fouleeCard()
     }
 }

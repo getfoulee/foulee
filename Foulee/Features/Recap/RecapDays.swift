@@ -25,10 +25,10 @@ struct RecapDayRing: View {
         ZStack {
             if day.isPlanned || day.minutes > 0 {
                 Circle()
-                    .stroke(Color.gray.opacity(0.18), lineWidth: lineWidth)
+                    .stroke(FouleeColor.raised, lineWidth: lineWidth)
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(FouleeColor.activityGradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                    .stroke(MetricPalette.minutes, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                 if metGoal, isRevealed {
                     Circle()
@@ -75,11 +75,11 @@ struct RecapChangeChip: View {
             } icon: {
                 Image(systemName: percent == 0 ? "equal" : (isUp ? "arrow.up" : "arrow.down"))
             }
-            .font(FouleeFont.caption.weight(.bold))
+            .font(FouleeFont.caption.weight(.medium))
             .foregroundStyle(isUp ? FouleeColor.success : Color.secondary)
             .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            .background((isUp ? FouleeColor.success : Color.gray).opacity(0.14), in: Capsule())
+            .padding(.vertical, 4)
+            .background(isUp ? FouleeColor.success.opacity(0.14) : FouleeColor.raised, in: .rect(cornerRadius: Radius.tag))
             .accessibilityLabel(
                 percent == 0 ? Text("Stable") : isUp ? Text("En hausse de \(abs(percent)) %") : Text("En baisse de \(abs(percent)) %")
             )
@@ -111,8 +111,8 @@ struct RecapDaysView: View {
                         RecapDayRing(day: day, goalMinutes: recap.goalMinutes, lineWidth: 4.5, isRevealed: isRevealed)
                             .motionAnimation(.easeOut(duration: 0.6).delay(Double(index) * 0.05), value: isRevealed)
                         Text(day.date.weekdayInitial.uppercased())
-                            .font(FouleeFont.caption.weight(.semibold))
-                            .foregroundStyle(isSelected ? ReadablePalette.purpleText : .secondary)
+                            .font(FouleeFont.caption.weight(.medium))
+                            .foregroundStyle(isSelected ? FouleeColor.accentInk : .secondary)
                         Text(day.minutes > 0 ? "\(day.minutes)" : "–")
                             .font(FouleeFont.caption.monospacedDigit())
                             .foregroundStyle(day.minutes > 0 ? .primary : .tertiary)
@@ -120,8 +120,8 @@ struct RecapDaysView: View {
                     .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
                     .background {
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(isSelected ? FouleeColor.accentMid.opacity(0.14) : .clear)
+                        RoundedRectangle(cornerRadius: Radius.row, style: .continuous)
+                            .fill(isSelected ? FouleeColor.raised : .clear)
                     }
                 }
             }
@@ -129,7 +129,7 @@ struct RecapDaysView: View {
                 VStack(spacing: 6) {
                     UpcomingDayRing(lineWidth: 4.5)
                     Text(date.weekdayInitial.uppercased())
-                        .font(FouleeFont.caption.weight(.semibold))
+                        .font(FouleeFont.caption.weight(.medium))
                         .foregroundStyle(.tertiary)
                     // Holds the row's height; hidden, or the audit reads an empty
                     // text with no contrast (issue #658).
@@ -152,7 +152,7 @@ struct RecapDaysView: View {
             // position, and two children of a grid can't share an id.
             ForEach(Weekday.allCases, id: \.self) { weekday in
                 Text(weekday.shortLabel)
-                    .font(FouleeFont.caption.weight(.semibold))
+                    .font(FouleeFont.caption.weight(.medium))
                     .foregroundStyle(.secondary)
             }
             ForEach(0..<leading, id: \.self) { _ in Color.clear.aspectRatio(1, contentMode: .fit) }
@@ -163,10 +163,10 @@ struct RecapDaysView: View {
                         .overlay {
                             Text("\(index + 1)")
                                 .font(.system(size: 10, weight: .semibold, design: .rounded))
-                                .foregroundStyle(isSelected ? ReadablePalette.purpleText : .secondary)
+                                .foregroundStyle(isSelected ? FouleeColor.accentInk : .secondary)
                         }
                         .background {
-                            Circle().fill(isSelected ? FouleeColor.accentMid.opacity(0.16) : .clear)
+                            Circle().fill(isSelected ? FouleeColor.raised : .clear)
                         }
                         .motionAnimation(.easeOut(duration: 0.6).delay(Double(index) * 0.012), value: isRevealed)
                 }

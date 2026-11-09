@@ -26,10 +26,9 @@ struct WorkoutDetailMerge: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("FUSION")
-                .font(FouleeFont.footnote.weight(.semibold))
+            Text("Fusion")
+                .font(FouleeFont.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
-                .tracking(1)
             ForEach([options.previous, options.next].compactMap { $0 }) { other in
                 action(.verbatim(Self.mergeTitle(with: other)), icon: FouleeIcon.merge) { proposed = other }
             }
@@ -38,8 +37,8 @@ struct WorkoutDetailMerge: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .fouleeGlass(cornerRadius: 22)
+        .padding(20)
+        .fouleeCard()
         .confirmationDialog(
             "Fusionner les deux sorties ?",
             isPresented: Binding(get: { proposed != nil }, set: { if !$0 { proposed = nil } }),
@@ -56,8 +55,8 @@ struct WorkoutDetailMerge: View {
     private func action(_ title: LocalizedStringResource, icon: String, perform: @escaping () -> Void) -> some View {
         Button(action: perform) {
             Label { Text(title) } icon: { Image(systemName: icon) }
-                .font(FouleeFont.callout.weight(.semibold))
-                .foregroundStyle(FouleeColor.accentMid)
+                .font(FouleeFont.callout.weight(.medium))
+                .foregroundStyle(FouleeColor.accentInk)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .buttonStyle(.pressable)

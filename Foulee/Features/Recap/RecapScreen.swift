@@ -143,7 +143,7 @@ struct RecapScreen: View {
             .navigationDestination(for: WorkoutSummary.self) { WorkoutDetailSheet(summary: $0, merging: mergeOptions(for: $0)) }
         }
         .onChange(of: content?.outings, initial: true) { _, days in openPendingOuting(in: days) }
-        .presentationBackground { SheetBackground() }
+        .presentationBackground { PageBackground() }
         .sensoryFeedback(.selection, trigger: period)
         .task {
             await store.load(goalMinutes: goalMinutes, activeDays: activeDays, waterGoalML: waterGoalML, withHistory: true)
@@ -203,8 +203,8 @@ struct RecapScreen: View {
             UIApplication.shared.open(AppLinks.health)
         } label: {
             Label("Voir dans Santé", systemImage: "heart.fill")
-                .font(FouleeFont.footnote.weight(.semibold))
-                .foregroundStyle(FouleeColor.accentMid)
+                .font(FouleeFont.footnote.weight(.medium))
+                .foregroundStyle(FouleeColor.accentInk)
         }
         .buttonStyle(.pressable)
     }
@@ -248,10 +248,10 @@ private struct RecapPeriodNavigator: View {
     private func chevron(_ icon: String, label: LocalizedStringResource, action: (() -> Void)?) -> some View {
         Button { action?() } label: {
             Image(systemName: icon)
-                .font(.system(size: 14, weight: .bold))
+                .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.primary)
-                .frame(width: 34, height: 34)
-                .background(.ultraThinMaterial, in: Circle())
+                .frame(width: 36, height: 36)
+                .background(FouleeColor.raised, in: Circle())
         }
         .buttonStyle(.pressable)
         .disabled(action == nil)
@@ -287,7 +287,7 @@ private struct RecapContent: View {
                 // period is waiting for instead.
                 emptyState
             } else {
-                GlassSection(daysTitle) {
+                CardSection(daysTitle) {
                     RecapDaysView(recap: recap, selection: $selectedDay, isRevealed: isRevealed)
                     legend
                 }
@@ -297,13 +297,13 @@ private struct RecapContent: View {
                         .id(day.day)
                         .transition(.opacity)
                 }
-                GlassSection(comparisonTitle) {
+                CardSection(comparisonTitle) {
                     RecapComparison(recap: recap, isInProgress: isInProgress, isRevealed: isRevealed)
                 }
                 RecapHighlights(recap: recap)
             }
             if let water {
-                GlassSection("Hydratation") {
+                CardSection("Hydratation") {
                     RecapHydration(water: water, isRevealed: isRevealed)
                 }
             }
@@ -326,7 +326,7 @@ private struct RecapContent: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
-        .fouleeGlass(cornerRadius: 22)
+        .fouleeCard()
     }
 
     private var daysTitle: LocalizedStringResource {

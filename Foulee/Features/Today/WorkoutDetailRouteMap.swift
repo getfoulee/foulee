@@ -54,13 +54,13 @@ struct WorkoutDetailRouteMap: View {
             Button { isExpanded = true } label: {
                 map(interactive: false)
                     .frame(height: 220)
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .clipShape(.rect(cornerRadius: Radius.control))
                     // The map itself must not see the touch — it would claim
                     // the scroll view's drags — but the button must: without a
                     // content shape of its own, a label that refuses hit
                     // testing leaves the button nothing to be tapped on.
                     .allowsHitTesting(false)
-                    .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .contentShape(.rect(cornerRadius: Radius.control))
             }
             .buttonStyle(.pressable)
             .accessibilityLabel("Parcours de la sortie")
@@ -69,8 +69,8 @@ struct WorkoutDetailRouteMap: View {
                 legend
             }
         }
-        .padding(14)
-        .fouleeGlass(cornerRadius: 22)
+        .padding(16)
+        .fouleeCard()
         .sheet(isPresented: $isExpanded, onDismiss: { selectedID = nil }, content: { expanded })
     }
 
@@ -92,7 +92,7 @@ struct WorkoutDetailRouteMap: View {
             if let end = strokes.last?.coordinates.last {
                 Annotation(String(localized: "Arrivée"), coordinate: end) {
                     Image(systemName: "flag.checkered")
-                        .font(.system(size: 12, weight: .bold))
+                        .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.white)
                         .padding(6)
                         .background(Color.black.opacity(0.75), in: Circle())
@@ -135,18 +135,18 @@ struct WorkoutDetailRouteMap: View {
                 }
                 Spacer(minLength: 0)
                 Text(leg.durationSeconds.walkClockText)
-                    .scaledNumericFont(size: 18, weight: .semibold)
+                    .scaledNumericFont(size: 18)
             }
-            .padding(14)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .padding(16)
+            .fouleeCard(cornerRadius: Radius.row)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel([leg.activity.label, OutingBreakdown.legSpokenText(leg)].joined(separator: ", "))
         } else if legs.count > 1 {
             Text("Touche une portion pour son détail")
-                .font(FouleeFont.footnote.weight(.semibold))
-                .padding(.horizontal, 14)
+                .font(FouleeFont.footnote.weight(.medium))
+                .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(.regularMaterial, in: Capsule())
+                .background(FouleeColor.card, in: .rect(cornerRadius: Radius.tag))
         }
     }
 
@@ -163,7 +163,7 @@ struct WorkoutDetailRouteMap: View {
                         .scaledSystemFont(size: 12, weight: .semibold)
                         .foregroundStyle(activity.tint)
                     Text(activity.label)
-                        .font(FouleeFont.footnote.weight(.semibold))
+                        .font(FouleeFont.footnote.weight(.medium))
                         .foregroundStyle(.secondary)
                 }
             }
@@ -207,7 +207,7 @@ private struct KilometrePastille: View {
 
     var body: some View {
         Text("\(number)")
-            .font(.system(size: 10, weight: .bold, design: .rounded))
+            .font(.system(size: 10, weight: .semibold, design: .rounded))
             .monospacedDigit()
             .foregroundStyle(.white)
             .padding(.horizontal, 4)
@@ -225,7 +225,7 @@ private struct RouteArrow: View {
 
     var body: some View {
         Image(systemName: "arrowtriangle.up.fill")
-            .font(.system(size: 9, weight: .bold))
+            .font(.system(size: 9, weight: .semibold))
             .foregroundStyle(.white)
             .shadow(color: .black.opacity(0.45), radius: 1.5)
             .rotationEffect(.degrees(bearing))

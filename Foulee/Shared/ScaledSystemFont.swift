@@ -30,7 +30,7 @@ extension View {
     }
 
     /// Dynamic Type-aware counterpart of `FouleeFont.numeric`.
-    func scaledNumericFont(size: CGFloat, weight: Font.Weight = .bold) -> some View {
+    func scaledNumericFont(size: CGFloat, weight: Font.Weight = .medium) -> some View {
         modifier(ScaledSystemFont(size: size, weight: weight, design: .rounded, numeric: true))
     }
 }

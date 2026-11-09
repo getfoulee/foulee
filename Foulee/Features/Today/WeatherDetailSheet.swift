@@ -15,7 +15,7 @@ struct WeatherDetailSheet: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            SheetBackground()
+            PageBackground()
             content
             SheetCloseButton(action: onClose)
         }
@@ -47,8 +47,8 @@ struct WeatherDetailSheet: View {
         VStack(spacing: 16) {
             Spacer()
             Image(systemName: FouleeIcon.sun)
-                .font(.system(size: 64, weight: .semibold))
-                .foregroundStyle(FouleeColor.streakGradient)
+                .font(.system(size: 64, weight: .medium))
+                .foregroundStyle(FouleeColor.warning)
                 .symbolRenderingMode(.hierarchical)
             Text("\(weather.temperatureCelsius)°C")
                 .scaledNumericFont(size: 64)
@@ -73,21 +73,21 @@ struct WeatherDetailSheet: View {
     private var adviceRow: some View {
         HStack(spacing: 8) {
             Image(systemName: FouleeIcon.mixedCardio)
-                .foregroundStyle(FouleeColor.accentMid)
+                .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             Text("Conseil : \(weather.advice)")
                 .font(FouleeFont.callout.weight(.medium))
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .fouleeGlass(cornerRadius: 16)
+        .padding(.vertical, 12)
+        .fouleeCard(cornerRadius: Radius.row)
     }
 
     private var unavailable: some View {
         VStack(spacing: 16) {
             Image(systemName: "cloud.fill")
-                .font(.system(size: 44, weight: .semibold))
+                .font(.system(size: 44, weight: .medium))
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             DegradedBanner(state: .weather(location: location))

@@ -16,7 +16,7 @@ struct DegradedBanner: View {
             VStack(alignment: .leading, spacing: 6) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: state.title)
-                        .font(FouleeFont.footnote.weight(.semibold))
+                        .font(FouleeFont.footnote.weight(.medium))
                     Text(verbatim: state.message)
                         .font(FouleeFont.caption)
                         .foregroundStyle(.secondary)
@@ -30,7 +30,7 @@ struct DegradedBanner: View {
             Spacer(minLength: 0)
         }
         .padding(12)
-        .fouleeGlass(cornerRadius: 16)
+        .fouleeCard(cornerRadius: Radius.row)
     }
 }
 
@@ -46,8 +46,8 @@ struct RemedyButton: View {
             openURL(remedy.url)
         } label: {
             Text(verbatim: remedy.title)
-                .font(FouleeFont.caption.weight(.semibold))
-                .foregroundStyle(FouleeColor.accentMid)
+                .font(FouleeFont.caption.weight(.medium))
+                .foregroundStyle(FouleeColor.accentInk)
         }
         .buttonStyle(.pressable)
     }

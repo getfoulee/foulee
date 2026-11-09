@@ -9,23 +9,18 @@ struct RecapStreakHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             // The flame above the text at the accessibility sizes: beside it,
-            // « SÉRIE ACTUELLE » broke mid-word (issue #658).
+            // « Série actuelle » broke mid-word (issue #658).
             AdaptiveStack(stacked: VStackLayout(alignment: .leading, spacing: 14), regular: HStackLayout(spacing: 14)) {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(FouleeColor.streakGradient)
+                Image(systemName: FouleeIcon.flame)
+                    .font(.system(size: 28, weight: .medium))
+                    .foregroundStyle(FouleeColor.warning)
                     .frame(width: 56, height: 56)
-                    .overlay {
-                        Image(systemName: FouleeIcon.flame)
-                            .font(.system(size: 28, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-                    .shadow(color: Color(hex: 0xFF6B00).opacity(0.35), radius: 14, y: 6)
+                    .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.row))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("SÉRIE ACTUELLE")
-                        .font(FouleeFont.footnote.weight(.semibold))
+                    Text("Série actuelle")
+                        .font(FouleeFont.footnote.weight(.medium))
                         .foregroundStyle(.secondary)
-                        .tracking(1)
                     HStack(alignment: .firstTextBaseline, spacing: 6) {
                         Text("\(streak.current)")
                             .scaledNumericFont(size: 36)
@@ -44,7 +39,7 @@ struct RecapStreakHeader: View {
                     Spacer()
                     if streak.best > 0 {
                         Text("\(streak.current) / \(streak.best)")
-                            .scaledNumericFont(size: 15, weight: .semibold)
+                            .scaledNumericFont(size: 15)
                             .foregroundStyle(.secondary)
                             .accessibilityLabel(Text("Record : \(streak.best) jours"))
                     }
@@ -53,8 +48,8 @@ struct RecapStreakHeader: View {
                     .frame(height: 8)
             }
         }
-        .padding(18)
-        .fouleeGlass(cornerRadius: 22)
+        .padding(20)
+        .fouleeCard()
     }
 
     private var recordTitle: LocalizedStringResource {
@@ -70,14 +65,14 @@ struct RecapYear: View {
     let streak: StreakSummary
 
     var body: some View {
-        GlassSection("Sur 12 mois") {
+        CardSection("Sur 12 mois") {
             FigureRow {
                 total(value: "\(streak.walks)", label: streak.walks == 1 ? "objectif tenu" : "objectifs tenus")
                 total(value: durationText(minutes: streak.minutes), label: "d'activité")
                 total(value: "\(streak.rate) %", label: "réussite")
             }
         }
-        GlassSection("Tes jours les plus réguliers") {
+        CardSection("Tes jours les plus réguliers") {
             StreakWeekdayBreakdown(stats: streak.weekdays)
         }
     }
@@ -85,7 +80,7 @@ struct RecapYear: View {
     private func total(value: String, label: LocalizedStringResource) -> some View {
         VStack(spacing: 4) {
             Text(value)
-                .scaledNumericFont(size: 20, weight: .semibold)
+                .scaledNumericFont(size: 20)
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
             Text(label)
@@ -106,9 +101,9 @@ private struct RecordBar: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
-                Capsule().fill(Color.gray.opacity(0.16))
+                Capsule().fill(FouleeColor.raised)
                 Capsule()
-                    .fill(FouleeColor.streakGradient)
+                    .fill(FouleeColor.warning)
                     .frame(width: proxy.size.width * progress)
             }
         }

@@ -9,13 +9,8 @@ struct CelebrationBurst: View {
     var pieceCount = 16
     var radius: CGFloat = 130
 
-    private let palette: [Color] = [
-        FouleeColor.accentStart,
-        FouleeColor.accentMid,
-        FouleeColor.accentEnd,
-        FouleeColor.success,
-        FouleeColor.warning
-    ]
+    /// The two rings' colours — the burst is the rings closing, not confetti.
+    private let palette: [Color] = [MetricPalette.steps, MetricPalette.minutes]
 
     @State private var expanded = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion

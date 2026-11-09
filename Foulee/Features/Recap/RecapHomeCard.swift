@@ -25,14 +25,14 @@ struct RecapHomeCard: View {
                     Text("Voir le récap du mois")
                     Image(systemName: "chevron.right")
                 }
-                .font(FouleeFont.footnote.weight(.semibold))
-                .foregroundStyle(FouleeColor.accentMid)
+                .font(FouleeFont.footnote.weight(.medium))
+                .foregroundStyle(FouleeColor.accentInk)
             }
             .buttonStyle(.pressable)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .fouleeGlass(cornerRadius: 22)
+        .padding(20)
+        .fouleeCard()
         .task(id: "\(goalMinutes)-\(activeDays.bitmask)-\(todayMinutes)") {
             await store.load(goalMinutes: goalMinutes, activeDays: activeDays)
         }
@@ -46,7 +46,7 @@ struct RecapHomeCard: View {
                     .foregroundStyle(.primary)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(FouleeFont.footnote.weight(.semibold))
+                    .font(FouleeFont.footnote.weight(.medium))
                     .foregroundStyle(.secondary)
             }
             if let recap = store.recaps[.week] {
@@ -64,7 +64,7 @@ struct RecapHomeCard: View {
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(durationText(minutes: recap.totals.minutes))
-                        .font(FouleeFont.callout.weight(.bold).monospacedDigit())
+                        .font(FouleeFont.callout.weight(.medium).monospacedDigit())
                         .foregroundStyle(.primary)
                     if recap.goalDaysPlanned > 0 {
                         Text("· objectif tenu \(recap.goalDaysMet)/\(recap.goalDaysPlanned)")

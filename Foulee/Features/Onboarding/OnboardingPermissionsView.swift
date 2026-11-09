@@ -25,7 +25,7 @@ struct OnboardingPermissionsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            // Five glass rows plus the heading no longer fit a fixed stack —
+            // Five card rows plus the heading no longer fit a fixed stack —
             // they clipped the title and the button at larger Dynamic Type
             // sizes. Scroll the rows, keep the CTA pinned to the bottom.
             ScrollView {
@@ -56,8 +56,8 @@ struct OnboardingPermissionsView: View {
             // in Garmin Connect, so the guide is offered right where the watch
             // question comes up.
             GarminSetupLink { isShowingGarminGuide = true }
-                .padding(14)
-                .fouleeGlass(cornerRadius: 18)
+                .padding(16)
+                .fouleeCard(cornerRadius: Radius.row)
         }
     }
 
@@ -71,7 +71,7 @@ struct OnboardingPermissionsView: View {
     private var heading: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Connectons\nSanté & ta montre")
-                .scaledSystemFont(size: 30, weight: .bold)
+                .scaledSystemFont(size: 30, weight: .semibold)
                 .lineSpacing(2)
                 .accessibilityAddTraits(.isHeader)
             // No "uniquement": the very next tap shows a Santé sheet listing
@@ -87,7 +87,6 @@ struct OnboardingPermissionsView: View {
         VStack(spacing: 12) {
             PermissionRow(
                 systemIcon: FouleeIcon.heart,
-                color: FouleeColor.danger,
                 title: "Santé (HealthKit)",
                 subtitle: "Pas, distance, calories",
                 isOn: $healthGranted,
@@ -95,7 +94,6 @@ struct OnboardingPermissionsView: View {
             )
             PermissionRow(
                 systemIcon: FouleeIcon.watch,
-                color: Color(hex: 0x0A84FF),
                 title: "Montre",
                 subtitle: "Apple Watch ou Garmin",
                 isOn: .constant(true),
@@ -103,7 +101,6 @@ struct OnboardingPermissionsView: View {
             )
             PermissionRow(
                 systemIcon: FouleeIcon.bell,
-                color: FouleeColor.warning,
                 title: "Notifications",
                 subtitle: "Rappel juste avant ta fenêtre",
                 isOn: $notificationsGranted,
@@ -111,7 +108,6 @@ struct OnboardingPermissionsView: View {
             )
             PermissionRow(
                 systemIcon: FouleeIcon.location,
-                color: FouleeColor.success,
                 title: "Position",
                 subtitle: "Optionnel · pour la météo locale",
                 isOn: $locationGranted,
@@ -122,7 +118,7 @@ struct OnboardingPermissionsView: View {
 
     private var hint: some View {
         HStack(spacing: 8) {
-            Image(systemName: FouleeIcon.sparkle)
+            Image(systemName: "info.circle")
                 .scaledSystemFont(size: 14)
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
@@ -153,7 +149,6 @@ struct OnboardingPermissionsView: View {
 
 private struct PermissionRow: View {
     var systemIcon: String
-    var color: Color
     var title: LocalizedStringResource
     var subtitle: LocalizedStringResource
     @Binding var isOn: Bool
@@ -161,14 +156,11 @@ private struct PermissionRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(color.opacity(0.15))
+            Image(systemName: systemIcon)
+                .font(.system(size: 20, weight: .medium))
+                .foregroundStyle(.secondary)
                 .frame(width: 40, height: 40)
-                .overlay {
-                    Image(systemName: systemIcon)
-                        .font(.system(size: 22))
-                        .foregroundStyle(color)
-                }
+                .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.control))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(FouleeFont.headline)
@@ -182,7 +174,7 @@ private struct PermissionRow: View {
                 .labelsHidden()
                 .accessibilityLabel(Text(title))
                 .accessibilityHint(Text(subtitle))
-                .tint(FouleeColor.success)
+                .tint(FouleeColor.accent)
                 .onChange(of: isOn) { _, new in
                     guard new else { return }
                     Task {
@@ -191,7 +183,7 @@ private struct PermissionRow: View {
                     }
                 }
         }
-        .padding(14)
-        .fouleeGlass(cornerRadius: 18)
+        .padding(16)
+        .fouleeCard(cornerRadius: Radius.row)
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The pages the Réglages home drills into (issue #393), one per theme. Each
-/// carries the glyph and tint its home row draws.
+/// carries the glyph its home row draws.
 enum SettingsPage: Hashable {
     case goals
     case schedule
@@ -34,18 +34,6 @@ enum SettingsPage: Hashable {
         case .about: "info.circle.fill"
         }
     }
-
-    var tint: Color {
-        switch self {
-        case .goals: FouleeColor.success
-        case .schedule: FouleeColor.accentSecondary
-        case .hydration: FouleeColor.water
-        case .notifications: FouleeColor.danger
-        case .access: FouleeColor.warning
-        case .appearance: FouleeColor.accentMid
-        case .about: .gray
-        }
-    }
 }
 
 /// The page behind a `SettingsPage`, pushed on the Réglages stack.
@@ -64,7 +52,7 @@ struct SettingsPageView: View {
             .padding(.top, 12)
             .padding(.bottom, 40)
         }
-        // No background: the stack sits on the sheet's `SheetBackground`,
+        // No background: the stack sits on the sheet's `PageBackground`,
         // as the Bilan's pushed detail does.
         .navigationTitle(page.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -76,7 +64,7 @@ struct SettingsPageView: View {
         switch page {
         case .goals: SettingsGoalsPage(preferences: preferences)
         case .schedule: SettingsSchedulePage(preferences: preferences)
-        case .hydration: GlassSection { HydrationSettingsContent(preferences: preferences) }
+        case .hydration: CardSection { HydrationSettingsContent(preferences: preferences) }
         case .notifications: SettingsNotificationsPage(preferences: preferences, store: permission)
         case .access: SettingsAccessPage(store: access)
         case .appearance: SettingsAppearancePage(preferences: preferences)

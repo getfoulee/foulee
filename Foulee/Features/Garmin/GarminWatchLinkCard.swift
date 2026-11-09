@@ -21,7 +21,7 @@ struct GarminWatchLinkCard: View {
                 .foregroundStyle(.secondary)
             if !devices.isEmpty {
                 Label(devices.map(\.friendlyName).formatted(.list(type: .and).locale(.app)), systemImage: "checkmark.circle.fill")
-                    .font(FouleeFont.footnote.weight(.semibold))
+                    .font(FouleeFont.footnote.weight(.medium))
                     .foregroundStyle(FouleeColor.success)
             }
             PrimaryButton(
@@ -30,9 +30,9 @@ struct GarminWatchLinkCard: View {
                 action: garminConnectIQ.presentDeviceSelection
             )
         }
-        .padding(18)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .fouleeGlass(cornerRadius: 22)
+        .fouleeCard()
         .onAppear(perform: refresh)
         // After `FouleeApp` stored the answer: a task runs once every handler
         // of this URL has.

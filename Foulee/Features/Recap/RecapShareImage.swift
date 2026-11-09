@@ -58,9 +58,9 @@ struct RecapShareImage: View {
             Spacer(minLength: 14)
             stats
             if let bestDay = card.bestDay {
-                Label(bestDay, systemImage: "trophy.fill")
-                    .font(.system(size: format.isStory ? 15 : 13, weight: .semibold, design: .rounded))
-                    .foregroundStyle(FouleeColor.warning)
+                Label(bestDay, systemImage: "trophy")
+                    .font(.system(size: format.isStory ? 15 : 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(.secondary)
                     .padding(.top, 10)
             }
             Spacer(minLength: 12)
@@ -68,15 +68,15 @@ struct RecapShareImage: View {
         }
         .padding(format.isStory ? 28 : 24)
         .frame(width: format.size.width, height: format.size.height, alignment: .topLeading)
-        .background(SheetBackground())
+        .background(PageBackground())
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(card.heading)
-                .font(.system(size: format.isStory ? 34 : 28, weight: .bold, design: .rounded))
+                .font(.system(size: format.isStory ? 34 : 28, weight: .medium, design: .rounded))
             Text(card.periodTitle)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.secondary)
         }
     }
@@ -86,11 +86,10 @@ struct RecapShareImage: View {
             ProgressRing(
                 progress: recap.goalRate,
                 lineWidth: format.isStory ? 12 : 10,
-                gradient: FouleeColor.activityGradient,
-                trackColor: Color.gray.opacity(0.18)
+                tint: MetricPalette.minutes
             ) {
                 Text(recap.goalDaysPlanned > 0 ? "\(recap.goalDaysMet)/\(recap.goalDaysPlanned)" : "–")
-                    .font(.system(size: format.isStory ? 22 : 19, weight: .bold, design: .rounded))
+                    .font(.system(size: format.isStory ? 22 : 19, weight: .medium, design: .rounded))
                     .monospacedDigit()
             }
             .frame(width: format.isStory ? 100 : 84, height: format.isStory ? 100 : 84)
@@ -98,7 +97,7 @@ struct RecapShareImage: View {
                 // No change beside the minutes (#454): on an image, nothing
                 // says what it would be compared with.
                 Text(card.minutes)
-                    .font(.system(size: format.isStory ? 44 : 38, weight: .bold, design: .rounded))
+                    .font(.system(size: format.isStory ? 44 : 38, weight: .medium, design: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
@@ -107,7 +106,7 @@ struct RecapShareImage: View {
                     .foregroundStyle(.secondary)
                 if let goalLine = card.goalLine {
                     Text(goalLine)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(FouleeColor.success)
                 }
             }
@@ -119,10 +118,10 @@ struct RecapShareImage: View {
             ForEach(card.stats) { stat in
                 VStack(alignment: .leading, spacing: 4) {
                     Image(systemName: stat.icon)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(FouleeColor.accentMid)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.secondary)
                     Text(stat.value)
-                        .font(.system(size: format.isStory ? 18 : 16, weight: .bold, design: .rounded))
+                        .font(.system(size: format.isStory ? 18 : 16, weight: .medium, design: .rounded))
                         .monospacedDigit()
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
@@ -131,8 +130,8 @@ struct RecapShareImage: View {
                         .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(10)
-                .background(.white.opacity(0.6), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .padding(12)
+                .fouleeCard(cornerRadius: Radius.row)
             }
         }
     }
@@ -140,9 +139,9 @@ struct RecapShareImage: View {
     private var footer: some View {
         HStack(spacing: 6) {
             Image(systemName: FouleeIcon.mixedCardio)
-                .foregroundStyle(FouleeColor.accentGradient)
+                .foregroundStyle(FouleeColor.accentInk)
             Text("Foulée")
-                .font(.system(size: 15, weight: .bold, design: .rounded))
+                .font(.system(size: 15, weight: .medium, design: .rounded))
         }
         .frame(maxWidth: .infinity, alignment: .trailing)
     }

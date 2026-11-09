@@ -25,8 +25,8 @@ struct WorkoutDetailSheet: View {
     var body: some View {
         // No background here on purpose: this view is pushed inside the
         // Bilan's NavigationStack, which already provides the opaque
-        // `SheetBackground` via `.presentationBackground`. Drawing a second
-        // full-screen gradient here just doubled the work each frame.
+        // `PageBackground` via `.presentationBackground`. Drawing a second
+        // full-screen background here just doubled the work each frame.
         content
             .navigationTitle("Détail")
             .navigationBarTitleDisplayMode(.inline)
@@ -43,7 +43,7 @@ struct WorkoutDetailSheet: View {
         if isLoading {
             ProgressView()
                 .controlSize(.large)
-                .tint(FouleeColor.accentMid)
+                .tint(FouleeColor.accentInk)
         } else if let detail {
             ScrollView {
                 VStack(spacing: 16) {
@@ -105,10 +105,9 @@ struct WorkoutDetailSheet: View {
 
     private func metricsGrid(detail: WorkoutDetail) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("STATS")
-                .font(FouleeFont.footnote.weight(.semibold))
+            Text("Stats")
+                .font(FouleeFont.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
-                .tracking(1)
             AdaptiveGrid(columns: 2, accessibilityColumns: 1, spacing: 12) {
                 metricCard(
                     icon: WalkMetric.distance.icon,
@@ -130,7 +129,7 @@ struct WorkoutDetailSheet: View {
                 )
                 metricCard(
                     icon: FouleeIcon.timer,
-                    tint: FouleeColor.accentSecondary,
+                    tint: .secondary,
                     label: "Allure",
                     value: paceText(detail),
                     spokenValue: detail.paceMinPerKm.map { spokenPaceText(secondsPerKm: $0 * 60) }
@@ -146,7 +145,7 @@ struct WorkoutDetailSheet: View {
         if let climb = detail.summary.climbText {
             metricCard(
                 icon: FouleeIcon.climb,
-                tint: FouleeColor.success,
+                tint: .secondary,
                 label: "D+",
                 value: climb,
                 spokenLabel: "Dénivelé",
@@ -156,7 +155,7 @@ struct WorkoutDetailSheet: View {
         if let descent = detail.summary.descentText {
             metricCard(
                 icon: FouleeIcon.descent,
-                tint: FouleeColor.success,
+                tint: .secondary,
                 label: "D−",
                 value: descent,
                 spokenLabel: "Dénivelé",
@@ -178,20 +177,20 @@ struct WorkoutDetailSheet: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 6) {
                 Image(systemName: icon)
-                    .scaledSystemFont(size: 14, weight: .semibold)
+                    .scaledSystemFont(size: 14, weight: .medium)
                     .foregroundStyle(tint)
                 Text(label)
-                    .font(FouleeFont.footnote.weight(.semibold))
+                    .font(FouleeFont.footnote.weight(.medium))
                     .foregroundStyle(.secondary)
             }
             Text(value)
-                .scaledNumericFont(size: 22, weight: .semibold)
+                .scaledNumericFont(size: 22)
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .fouleeGlass(cornerRadius: 18)
+        .padding(16)
+        .fouleeCard(cornerRadius: Radius.row)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(spokenLabel ?? label))
         .accessibilityValue(spokenValue ?? value)
@@ -219,8 +218,8 @@ struct WorkoutDetailSheet: View {
                 Image(systemName: "heart.fill")
                 Text("Ouvrir dans Santé")
             }
-            .font(FouleeFont.footnote.weight(.semibold))
-            .foregroundStyle(FouleeColor.accentMid)
+            .font(FouleeFont.footnote.weight(.medium))
+            .foregroundStyle(FouleeColor.accentInk)
         }
         .buttonStyle(.pressable)
     }

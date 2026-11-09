@@ -11,6 +11,7 @@ struct SettingsSlider: View {
     @Binding var value: Int
     var range: ClosedRange<Int>
     var step: Int
+    /// The track's fill — the accent, or the water on its own page.
     var tint: Color
     /// The value as the screen says it — « 20 min », « 6 000 pas ».
     var format: (Int) -> String
@@ -18,8 +19,7 @@ struct SettingsSlider: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(format(value))
-                .scaledNumericFont(size: 20, weight: .semibold)
-                .foregroundStyle(tint)
+                .scaledNumericFont(size: 20)
                 .accessibilityHidden(true)
             Slider(
                 value: Binding(

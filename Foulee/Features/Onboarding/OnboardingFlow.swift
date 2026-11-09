@@ -14,7 +14,7 @@ struct OnboardingFlow: View {
 
     var body: some View {
         ZStack {
-            Wallpaper()
+            PageBackground()
             // The step → screen mapping lives in `OnboardingStepScreen`: from
             // in here it would sit behind `@State private var step`, out of
             // reach of any test.

@@ -13,11 +13,11 @@ struct GarminSyncHintCard: View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "arrow.triangle.2.circlepath")
                 .font(.callout)
-                .foregroundStyle(FouleeColor.accentMid)
+                .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Ouvre Garmin Connect pour synchroniser")
-                    .font(FouleeFont.footnote.weight(.semibold))
+                    .font(FouleeFont.footnote.weight(.medium))
                 Text("Ta montre envoie ses données à Santé par rafales, quand tu ouvres l'app Garmin Connect.")
                     .font(FouleeFont.caption)
                     .foregroundStyle(.secondary)
@@ -25,7 +25,7 @@ struct GarminSyncHintCard: View {
             Spacer(minLength: 0)
         }
         .padding(12)
-        .fouleeGlass(cornerRadius: 16)
+        .fouleeCard(cornerRadius: Radius.row)
     }
 }
 

@@ -10,7 +10,7 @@ struct SettingsAboutPage: View {
     @State private var attachesSummary = true
 
     var body: some View {
-        GlassSection(footer: "Appui long sur la version pour la copier.") {
+        CardSection(footer: "Appui long sur la version pour la copier.") {
             row(label: "Version", value: version)
                 .contextMenu {
                     Button("Copier la version", systemImage: "doc.on.doc") {
@@ -22,7 +22,7 @@ struct SettingsAboutPage: View {
             Divider()
             row(label: "Licence", value: "MIT")
         }
-        GlassSection {
+        CardSection {
             link("Politique de confidentialité", icon: "hand.raised.fill", url: AppLinks.privacyPolicy)
             Divider()
             link("Assistance", icon: "lifepreserver.fill", url: AppLinks.support)
@@ -31,7 +31,7 @@ struct SettingsAboutPage: View {
             Divider()
             link("Code source", icon: "chevron.left.forwardslash.chevron.right", url: AppLinks.sourceCode)
         }
-        GlassSection(
+        CardSection(
             "Signaler un problème",
             footer: "Rien ne part sans toi. Le résumé ne contient ni donnée de santé ni position."
         ) {
@@ -92,7 +92,7 @@ struct SettingsAboutPage: View {
     private func label(_ title: LocalizedStringResource, icon: String, trailing: String) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .foregroundStyle(FouleeColor.accentMid)
+                .foregroundStyle(.secondary)
                 .frame(width: 24)
                 .accessibilityHidden(true)
             Text(title)
@@ -100,7 +100,7 @@ struct SettingsAboutPage: View {
                 .foregroundStyle(.primary)
             Spacer(minLength: 0)
             Image(systemName: trailing)
-                .font(.footnote.weight(.semibold))
+                .font(.footnote.weight(.medium))
                 .foregroundStyle(.tertiary)
                 .accessibilityHidden(true)
         }

@@ -160,7 +160,7 @@ For the first WeatherKit build to succeed you also need the App ID `com.eno33.fo
 ├── FouleeKitTests/        # Their tests, on macOS — no simulator
 ├── Foulee/                # iPhone app sources
 │   ├── App/               # Entry point + root view
-│   ├── DesignSystem/      # Colors, typography, glass material, icons
+│   ├── DesignSystem/      # Colors, typography, card surface, icons
 │   ├── Features/          # Today, Active, Stats, Onboarding, Settings
 │   └── Resources/         # Assets, Info.plist
 ├── FouleeTests/           # Unit tests that need the app

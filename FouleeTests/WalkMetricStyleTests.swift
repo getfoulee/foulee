@@ -8,9 +8,9 @@ import Testing
 struct WalkMetricStyleTests {
     @Test("Steps and minutes take the home ring's colours")
     func ringsColours() {
-        // The outer ring is the accent gradient, centred on accentMid; the
-        // inner one the activity gradient, centred on success.
-        #expect(WalkMetric.steps.tint == FouleeColor.accentMid)
+        let rings = DualProgressRing(outerProgress: 0, innerProgress: 0) { EmptyView() }
+        #expect(WalkMetric.steps.tint == rings.outerTint)
+        #expect(WalkMetric.minutes.tint == rings.innerTint)
         #expect(WalkMetric.minutes.tint == FouleeColor.success)
     }
 
@@ -23,7 +23,7 @@ struct WalkMetricStyleTests {
     /// The watch's palette is the brand's, spelled out (#372).
     @Test("The shared palette matches the brand colours")
     func paletteMatchesTheBrand() {
-        #expect(MetricPalette.steps == FouleeColor.accentMid)
+        #expect(MetricPalette.steps == Color(hex: 0xBF5AF2))
         #expect(MetricPalette.minutes == FouleeColor.success)
         #expect(MetricPalette.calories == FouleeColor.warning)
         #expect(MetricPalette.distance == Color(hex: 0x0A84FF))

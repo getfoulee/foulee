@@ -16,8 +16,7 @@ struct RecapHero: View {
             ProgressRing(
                 progress: isRevealed ? recap.goalRate : 0,
                 lineWidth: 14,
-                gradient: FouleeColor.activityGradient,
-                trackColor: Color.gray.opacity(0.18)
+                tint: MetricPalette.minutes
             ) {
                 VStack(spacing: 0) {
                     Text(recap.goalDaysPlanned > 0 ? "\(recap.goalDaysMet)/\(recap.goalDaysPlanned)" : "–")
@@ -45,18 +44,13 @@ struct RecapHero: View {
                     .contentTransition(.numericText())
                     .accessibilityLabel(spokenDurationText(minutes: recap.totals.minutes))
                 Text(verdictText)
-                    .font(FouleeFont.callout.weight(.semibold))
+                    .font(FouleeFont.callout.weight(.medium))
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(18)
-        .background {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(FouleeColor.activityGradient)
-                .opacity(0.12)
-        }
-        .fouleeGlass(cornerRadius: 24, strong: true)
+        .padding(20)
+        .fouleeCard()
     }
 
     private var isWeek: Bool { recap.period.kind == .week }
@@ -73,8 +67,8 @@ struct RecapHero: View {
 }
 
 /// This period against the one before (issue #346), one measure per row: two
-/// bars on a shared scale — this period in the measure's colour, the one
-/// before in grey — and the change.
+/// bars on a shared scale — this period on the accent, the one before on the
+/// neutral — and the change.
 ///
 /// It names the days it compares with (#454). A period still in progress is
 /// never shown as a drop it may yet make up: behind, a row says what is left
@@ -88,7 +82,6 @@ struct RecapComparison: View {
     private struct Row: Identifiable {
         var label: LocalizedStringResource
         var icon: String
-        var tint: AnyShapeStyle
         var now: Double
         var before: Double
         var text: (Double) -> String
@@ -102,19 +95,24 @@ struct RecapComparison: View {
         // The climb only when one of the two periods has one (#537): a source
         // that writes none would otherwise show two empty bars.
         let climb = now.climbMeters > 0 || before.climbMeters > 0
-            ? [Row(label: "Dénivelé", icon: FouleeIcon.climb, tint: AnyShapeStyle(FouleeColor.success),
-                   now: now.climbMeters, before: before.climbMeters) { "\(Int($0.rounded()).groupedText()) m" }]
+            ? [Row(label: "Dénivelé", icon: FouleeIcon.climb, now: now.climbMeters, before: before.climbMeters) {
+                "\(Int($0.rounded()).groupedText()) m"
+            }]
             : []
         return [
-            Row(label: "Minutes", icon: FouleeIcon.timer, tint: AnyShapeStyle(FouleeColor.activityGradient),
-                now: Double(now.minutes), before: Double(before.minutes)) { durationText(minutes: Int($0)) },
-            Row(label: "Pas", icon: FouleeIcon.footsteps, tint: AnyShapeStyle(FouleeColor.accentGradient),
-                now: Double(now.steps), before: Double(before.steps)) { Int($0).groupedText() },
-            Row(label: "Distance", icon: FouleeIcon.distance, tint: AnyShapeStyle(WalkMetric.distance.tint),
-                now: now.distanceKm, before: before.distanceKm) { $0.kmText(fractionDigits: 1) }
+            Row(label: "Minutes", icon: FouleeIcon.timer, now: Double(now.minutes), before: Double(before.minutes)) {
+                durationText(minutes: Int($0))
+            },
+            Row(label: "Pas", icon: FouleeIcon.footsteps, now: Double(now.steps), before: Double(before.steps)) {
+                Int($0).groupedText()
+            },
+            Row(label: "Distance", icon: FouleeIcon.distance, now: now.distanceKm, before: before.distanceKm) {
+                $0.kmText(fractionDigits: 1)
+            }
         ] + climb + [
-            Row(label: "Sorties", icon: "figure.walk", tint: AnyShapeStyle(FouleeColor.accentMid),
-                now: Double(now.outings), before: Double(before.outings)) { "\(Int($0))" }
+            Row(label: "Sorties", icon: "figure.walk", now: Double(now.outings), before: Double(before.outings)) {
+                "\(Int($0))"
+            }
         ]
     }
 
@@ -127,18 +125,18 @@ struct RecapComparison: View {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 6) {
                         Image(systemName: row.icon)
-                            .foregroundStyle(row.tint)
+                            .foregroundStyle(.secondary)
                         Text(row.label)
-                            .font(FouleeFont.footnote.weight(.semibold))
+                            .font(FouleeFont.footnote.weight(.medium))
                         Spacer()
                         Text(row.text(row.now))
-                            .font(FouleeFont.callout.weight(.bold).monospacedDigit())
+                            .font(FouleeFont.callout.weight(.medium).monospacedDigit())
                         if remaining(in: row) == nil {
                             RecapChangeChip(old: row.before, new: row.now)
                         }
                     }
-                    bar(row.now, of: row, style: row.tint)
-                    bar(row.before, of: row, style: AnyShapeStyle(Color.gray.opacity(0.35)))
+                    bar(row.now, of: row, tint: FouleeColor.accent)
+                    bar(row.before, of: row, tint: FouleeColor.raised)
                     caption(for: row)
                 }
                 .accessibilityElement(children: .ignore)
@@ -160,8 +158,8 @@ struct RecapComparison: View {
             if let left = remaining(in: row) {
                 Spacer(minLength: 0)
                 Text("Encore \(row.text(left)) pour égaler")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(FouleeColor.accentMid)
+                    .fontWeight(.medium)
+                    .foregroundStyle(FouleeColor.accentInk)
             }
         }
         .font(FouleeFont.caption)
@@ -175,12 +173,12 @@ struct RecapComparison: View {
     }
 
     /// A bar on the row's shared scale: the larger of the two values fills it.
-    private func bar(_ value: Double, of row: Row, style: AnyShapeStyle) -> some View {
+    private func bar(_ value: Double, of row: Row, tint: Color) -> some View {
         let scale = max(row.now, row.before)
         let fraction = scale > 0 && isRevealed ? value / scale : 0
         return GeometryReader { geo in
             Capsule()
-                .fill(style)
+                .fill(tint)
                 .frame(width: max(fraction * geo.size.width, value > 0 && isRevealed ? 6 : 0))
         }
         .frame(height: 8)
@@ -195,8 +193,7 @@ struct RecapHighlights: View {
         HStack(spacing: 12) {
             if let best = recap.bestDay {
                 tile(
-                    icon: "trophy.fill",
-                    tint: FouleeColor.warning,
+                    icon: "trophy",
                     title: "Meilleur jour",
                     value: durationText(minutes: best.minutes),
                     detail: best.date.shortDayText.capitalized(with: .app)
@@ -204,7 +201,6 @@ struct RecapHighlights: View {
             }
             tile(
                 icon: FouleeIcon.flame,
-                tint: FouleeColor.danger,
                 title: "Énergie",
                 value: "\(recap.totals.calories.groupedText()) kcal",
                 detail: String(localized: "\(recap.totals.outings) sorties")
@@ -212,11 +208,11 @@ struct RecapHighlights: View {
         }
     }
 
-    private func tile(icon: String, tint: Color, title: LocalizedStringResource, value: String, detail: String) -> some View {
+    private func tile(icon: String, title: LocalizedStringResource, value: String, detail: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Label { Text(title) } icon: { Image(systemName: icon) }
-                .font(FouleeFont.footnote.weight(.semibold))
-                .foregroundStyle(tint)
+                .font(FouleeFont.footnote.weight(.medium))
+                .foregroundStyle(.secondary)
             Text(value)
                 .scaledNumericFont(size: 22)
                 .lineLimit(1)
@@ -226,8 +222,8 @@ struct RecapHighlights: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .fouleeGlass(cornerRadius: 20)
+        .padding(16)
+        .fouleeCard(cornerRadius: Radius.row)
         .accessibilityElement(children: .combine)
     }
 }
@@ -261,9 +257,9 @@ struct RecapHydration: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color.gray.opacity(0.18))
+                    Capsule().fill(FouleeColor.raised)
                     Capsule()
-                        .fill(FouleeColor.water.gradient)
+                        .fill(FouleeColor.water)
                         .frame(width: geo.size.width * (isRevealed ? goalRate : 0))
                 }
             }

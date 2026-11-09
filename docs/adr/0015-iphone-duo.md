@@ -36,7 +36,7 @@ L'app avait de bonnes bases : ni `UIScreen.main`, ni test d'idiome, ni barre d'o
 ### D4 — Seuls les fonds débordent, le contenu reste dans les marges de sécurité (#663)
 
 - Les cartes et les fonds peuvent courir jusqu'aux bords (`ignoresSafeArea`). Ce qu'on lit ou qu'on touche, non : la carte d'étape, l'indice et « Tracé en attente » restent dans les marges de sécurité et dans la colonne, même quand la carte elle-même est plein cadre.
-- Les taches du `Wallpaper` s'étirent avec la fenêtre, jamais en dessous de leur taille de téléphone (`FouleeTests/WallpaperTests.swift`).
+- Le fond de page (`PageBackground`) est une teinte unie : il remplit n'importe quelle fenêtre tel quel. Les taches du `Wallpaper`, qu'il fallait étirer avec la fenêtre, ont disparu avec la refonte visuelle.
 
 ### D5 — Passer d'un écran à l'autre ne perd rien (#664)
 

@@ -52,7 +52,7 @@ struct MirroredWalkScreen: View {
                 // than behind « Voir le parcours » (#662).
                 if isRouteDrawable && layout.isSideBySide {
                     WalkRouteMap(strokes: routeStrokes)
-                        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                        .clipShape(.rect(cornerRadius: Radius.card))
                         .padding([.trailing, .bottom], 20)
                 }
             }
@@ -96,7 +96,7 @@ struct MirroredWalkScreen: View {
             }
             .buttonStyle(.bordered)
             // The accent is too light for its text (issue #658).
-            .tint(ReadablePalette.purpleText)
+            .tint(FouleeColor.accentInk)
         }
     }
 
@@ -107,7 +107,7 @@ struct MirroredWalkScreen: View {
             let now = date.now
             VStack(spacing: 4) {
                 Text(elapsed(at: now).walkClockText)
-                    .scaledNumericFont(size: 56, weight: .semibold)
+                    .scaledNumericFont(size: 56)
                 Text(store.figures?.isPaused == true ? String(localized: "En pause") : activityLabel)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -202,7 +202,7 @@ struct MirroredWalkScreen: View {
     private func tile(_ value: String, _ label: LocalizedStringResource, spokenUnit: LocalizedStringResource? = nil) -> some View {
         VStack(spacing: 2) {
             Text(value)
-                .scaledNumericFont(size: 28, weight: .semibold)
+                .scaledNumericFont(size: 28)
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)
             Text(label)
@@ -210,8 +210,8 @@ struct MirroredWalkScreen: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 14)
-        .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(.vertical, 16)
+        .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.row))
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("\(value) \(spokenUnit ?? label)"))
     }

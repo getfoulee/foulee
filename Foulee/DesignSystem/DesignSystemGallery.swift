@@ -22,20 +22,22 @@ struct DesignSystemGallery: View {
             }
             .padding(20)
         }
-        .background(Wallpaper())
+        .background(PageBackground())
     }
 
     private var colors: some View {
         section("Couleurs") {
             HStack(spacing: 12) {
-                swatch("Accent", FouleeColor.accentMid)
+                swatch("Page", FouleeColor.page)
+                swatch("Card", FouleeColor.card)
+                swatch("Raised", FouleeColor.raised)
+            }
+            HStack(spacing: 12) {
+                swatch("Accent", FouleeColor.accent)
                 swatch("Success", FouleeColor.success)
                 swatch("Warning", FouleeColor.warning)
                 swatch("Danger", FouleeColor.danger)
             }
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(FouleeColor.accentGradient)
-                .frame(height: 56)
         }
     }
 
@@ -55,9 +57,7 @@ struct DesignSystemGallery: View {
     private var chips: some View {
         section("Chips") {
             HStack(spacing: 8) {
-                Chip(label: "Départ dans 18 min", systemIcon: FouleeIcon.timer,
-                     tint: FouleeColor.accentMid,
-                     fill: FouleeColor.accentMid.opacity(0.16))
+                Chip(label: "Départ dans 18 min", systemIcon: FouleeIcon.timer)
                 Chip(label: "Terminée", systemIcon: FouleeIcon.check,
                      tint: FouleeColor.success,
                      fill: FouleeColor.success.opacity(0.16))
@@ -72,7 +72,7 @@ struct DesignSystemGallery: View {
                     VStack(spacing: 2) {
                         Image(systemName: FouleeIcon.mixedCardio)
                             .font(.title2)
-                            .foregroundStyle(FouleeColor.accentMid)
+                            .foregroundStyle(.secondary)
                         Text("1 342").font(FouleeFont.numeric(size: 20))
                         Text("pas").font(FouleeFont.caption).foregroundStyle(.secondary)
                     }
@@ -81,8 +81,8 @@ struct DesignSystemGallery: View {
 
                 ProgressRing(progress: 1) {
                     Image(systemName: FouleeIcon.check)
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundStyle(FouleeColor.accentMid)
+                        .font(.system(size: 36, weight: .semibold))
+                        .foregroundStyle(FouleeColor.success)
                 }
                 .frame(width: 132, height: 132)
             }
@@ -91,18 +91,18 @@ struct DesignSystemGallery: View {
 
     private var stats: some View {
         section("Stat blocks") {
-            LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 18) {
+            LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 16) {
                 StatBlock(systemIcon: FouleeIcon.footsteps, label: "Pas",
-                          value: "4 218", sub: "/ 6 000", tint: FouleeColor.accentMid)
+                          value: "4 218", sub: "/ 6 000", tint: WalkMetric.steps.labelTint)
                 StatBlock(systemIcon: FouleeIcon.timer, label: "Minutes",
-                          value: "24", sub: "/ 20", tint: WalkMetric.minutes.tint)
+                          value: "24", sub: "/ 20", tint: WalkMetric.minutes.labelTint)
                 StatBlock(systemIcon: FouleeIcon.distance, label: "Distance",
-                          value: "1,8 km", sub: nil, tint: Color(hex: 0x0A84FF))
+                          value: "1,8 km", sub: nil, tint: WalkMetric.distance.labelTint)
                 StatBlock(systemIcon: FouleeIcon.flame, label: "Calories",
-                          value: "142", sub: "kcal", tint: FouleeColor.warning)
+                          value: "142", sub: "kcal", tint: WalkMetric.calories.labelTint)
             }
-            .padding(18)
-            .fouleeGlass(cornerRadius: 24)
+            .padding(20)
+            .fouleeCard()
         }
     }
 
@@ -112,7 +112,7 @@ struct DesignSystemGallery: View {
                 PrimaryButton(title: "Démarrer ta sortie",
                               systemIcon: FouleeIcon.play) {}
                 SecondaryButton(title: "Voir le bilan",
-                                systemIcon: FouleeIcon.sparkle) {}
+                                systemIcon: "calendar") {}
             }
         }
     }
@@ -124,7 +124,7 @@ struct DesignSystemGallery: View {
                     SheetHeader(eyebrow: "Récap", title: "Ton bilan")
                     SheetCloseButton {}
                 }
-                GlassSection("Cette semaine", footer: "Une note sous le contenu.") {
+                CardSection("Cette semaine", footer: "Une note sous le contenu.") {
                     Text("Le contenu de la section.").font(FouleeFont.body)
                 }
             }
@@ -136,19 +136,19 @@ struct DesignSystemGallery: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title.uppercased())
-                .font(FouleeFont.footnote.weight(.semibold))
+            Text(title)
+                .font(FouleeFont.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
-                .tracking(1.2)
             content()
         }
     }
 
     private func swatch(_ name: String, _ color: Color) -> some View {
         VStack(spacing: 6) {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(color)
+            color
                 .frame(height: 56)
+                .clipShape(.rect(cornerRadius: Radius.control))
+                .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(FouleeColor.hairline, lineWidth: 1))
             Text(name).font(FouleeFont.caption)
         }
     }

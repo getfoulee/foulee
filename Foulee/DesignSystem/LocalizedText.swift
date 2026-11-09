@@ -8,3 +8,13 @@ extension LocalizedStringResource {
         "\(text)"
     }
 }
+
+nonisolated extension String {
+    /// The first letter capitalised and the rest as written, for a line that
+    /// opens with a formatted date: « Vendredi 9 octobre », not « Vendredi 9
+    /// Octobre » like `capitalized` would.
+    var sentenceCased: String {
+        let initial = prefix(1).uppercased()
+        return initial + dropFirst()
+    }
+}

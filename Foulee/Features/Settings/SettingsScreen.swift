@@ -24,7 +24,7 @@ struct SettingsScreen: View {
             ScrollView {
                 VStack(spacing: 16) {
                     SheetHeader(eyebrow: "Foulée", title: "Réglages")
-                    GlassSection {
+                    CardSection {
                         link(.goals, summary: SettingsSummary.goals(
                             mode: preferences.activityMode,
                             minutesGoal: preferences.minutesGoal,
@@ -44,7 +44,7 @@ struct SettingsScreen: View {
                             intervalMinutes: preferences.hydrationIntervalMinutes
                         ))
                     }
-                    GlassSection {
+                    CardSection {
                         link(.notifications, summary: SettingsSummary.notifications(
                             activeCount: preferences.activeReminderCount,
                             blockedByIOS: permission.permission == .denied
@@ -54,12 +54,12 @@ struct SettingsScreen: View {
                         Divider()
                         link(.appearance, summary: preferences.themeMode.label)
                     }
-                    GlassSection {
+                    CardSection {
                         garminRow
                         Divider()
                         link(.about, summary: "Version \(AppVersion.current)")
                     }
-                    GlassSection(footer: "Tes données Santé ne sont pas touchées.") {
+                    CardSection(footer: "Tes données Santé ne sont pas touchées.") {
                         resetRow
                     }
                 }
@@ -105,7 +105,7 @@ struct SettingsScreen: View {
 
     private func link(_ page: SettingsPage, summary: String) -> some View {
         NavigationLink(value: page) {
-            SettingsRow(icon: page.icon, tint: page.tint, title: page.title, summary: summary)
+            SettingsRow(icon: page.icon, title: page.title, summary: summary)
         }
         .buttonStyle(.pressable)
     }
@@ -117,7 +117,6 @@ struct SettingsScreen: View {
         Button { isShowingGarminGuide = true } label: {
             SettingsRow(
                 icon: FouleeIcon.watch,
-                tint: FouleeColor.accentEnd,
                 title: "Montre Garmin",
                 summary: String(localized: "Relier la montre, synchro vers Santé")
             )
@@ -151,7 +150,7 @@ private struct SettingsPreview: View {
     )
     var body: some View {
         ZStack {
-            Wallpaper()
+            PageBackground()
             SettingsScreen(preferences: preferences) {}
         }
     }

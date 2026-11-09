@@ -25,7 +25,7 @@ private struct WhatsNewPresentation: ViewModifier {
             }
             .sheet(item: $release) { release in
                 WhatsNewSheet(release: release) { self.release = nil }
-                    .presentationBackground { SheetBackground() }
+                    .presentationBackground { PageBackground() }
                     .preferredColorScheme(colorScheme)
                     .onAppear { store.markSeen() }
             }
@@ -61,8 +61,8 @@ struct WhatsNewSheet: View {
     private func row(_ item: WhatsNewItem) -> some View {
         HStack(alignment: .top, spacing: 16) {
             Image(systemName: item.icon)
-                .scaledSystemFont(size: 26, weight: .semibold)
-                .foregroundStyle(FouleeColor.accentGradient)
+                .scaledSystemFont(size: 24, weight: .medium)
+                .foregroundStyle(.secondary)
                 .frame(width: 40)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
@@ -80,5 +80,5 @@ struct WhatsNewSheet: View {
 
 #Preview {
     WhatsNewSheet(release: WhatsNewStore.bundled().first ?? WhatsNewRelease(version: "1.59", items: [])) {}
-        .background(SheetBackground())
+        .background(PageBackground())
 }

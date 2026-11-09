@@ -28,12 +28,12 @@ struct HydrationCard: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 8) {
                 Image(systemName: "drop.fill")
-                    .font(.system(.callout, weight: .semibold))
+                    .font(.system(.callout, weight: .medium))
                     .foregroundStyle(FouleeColor.water)
                 Text("Hydratation").font(FouleeFont.headline)
                 Spacer()
                 Text("\(litres(intakeML)) / \(litres(goalML)) L")
-                    .scaledNumericFont(size: 16, weight: .semibold)
+                    .scaledNumericFont(size: 16)
                     .foregroundStyle(reached ? FouleeColor.water : .secondary)
                     .contentTransition(.numericText())
             }
@@ -57,19 +57,23 @@ struct HydrationCard: View {
 
             HStack {
                 Label(pace.text, systemImage: pace.systemImage)
-                    .font(FouleeFont.footnote.weight(reached ? .semibold : .regular))
+                    .font(FouleeFont.footnote.weight(reached ? .medium : .regular))
                     .foregroundStyle(reached ? FouleeColor.water : .secondary)
                     .labelStyle(.titleAndIcon)
                     .contentTransition(.opacity)
                     .accessibilityHidden(true)
                 Spacer(minLength: 8)
                 Button { onDrink(glassML) } label: {
-                    Label("J'ai bu", systemImage: "drop.fill")
-                        .font(FouleeFont.footnote.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(FouleeColor.water, in: Capsule())
+                    Label {
+                        Text("J'ai bu")
+                    } icon: {
+                        Image(systemName: "drop.fill").foregroundStyle(FouleeColor.water)
+                    }
+                    .font(FouleeFont.footnote.weight(.medium))
+                    .foregroundStyle(.primary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.tag))
                 }
                 .buttonStyle(.pressable)
                 .contextMenu {
@@ -89,11 +93,11 @@ struct HydrationCard: View {
                 }
             }
         }
-        .padding(16)
-        .fouleeGlass(cornerRadius: 24)
-        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .padding(20)
+        .fouleeCard()
+        .contentShape(.rect(cornerRadius: Radius.card))
         .onTapGesture(perform: onOpen)
-        .motionAnimation(.spring(duration: 0.6, bounce: 0.25), value: intakeML)
+        .motionAnimation(.easeOut(duration: 0.4), value: intakeML)
         .sensoryFeedback(.increase, trigger: intakeML)
     }
 }
@@ -107,7 +111,7 @@ struct HydrationGlass: View {
             GlassShape()
                 .fill(FouleeColor.water.opacity(0.1))
             Rectangle()
-                .fill(FouleeColor.water.gradient)
+                .fill(FouleeColor.water)
                 .scaleEffect(x: 1, y: fill, anchor: .bottom)
                 .mask(GlassShape())
             GlassShape()

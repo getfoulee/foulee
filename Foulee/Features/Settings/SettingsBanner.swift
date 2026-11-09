@@ -10,7 +10,7 @@ struct SettingsBanner: View {
     let perform: () -> Void
 
     var body: some View {
-        GlassSection {
+        CardSection {
             Label {
                 Text(message).font(FouleeFont.callout)
             } icon: {
@@ -20,9 +20,9 @@ struct SettingsBanner: View {
                 Text(action)
                     .font(FouleeFont.headline)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(FouleeColor.accentMid.opacity(0.16), in: Capsule())
-                    .foregroundStyle(FouleeColor.accentMid)
+                    .padding(.vertical, 12)
+                    .background(FouleeColor.raised, in: .rect(cornerRadius: Radius.control))
+                    .foregroundStyle(.primary)
             }
             .buttonStyle(.pressable)
         }

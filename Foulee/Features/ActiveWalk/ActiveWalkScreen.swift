@@ -2,7 +2,7 @@ import Dependencies
 import FouleeKit
 import SwiftUI
 
-/// Live walk screen — chip "EN COURS" + big timer + progress ring with
+/// Live walk screen — chip "En cours" + big timer + progress ring with
 /// pas/distance/kcal + control row. Renders three distinct presentations
 /// depending on `store.state`.
 struct ActiveWalkScreen: View {
@@ -46,7 +46,7 @@ struct ActiveWalkScreen: View {
 
     var body: some View {
         ZStack {
-            SheetBackground()
+            PageBackground()
             content
         }
         .onAppear { startIfKnown() }
@@ -162,7 +162,7 @@ struct ActiveWalkScreen: View {
                 // than behind the « Carte » button (#662).
                 if layout.isSideBySide {
                     WalkRouteMap(strokes: WalkRouteMap.strokes(route: store.route))
-                        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                        .clipShape(.rect(cornerRadius: Radius.card))
                         .padding(.trailing, 20)
                 }
             }
@@ -178,7 +178,7 @@ struct ActiveWalkScreen: View {
     private func header(paused: Bool) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Chip(
-                label: paused ? "EN PAUSE" : "EN COURS",
+                label: paused ? "En pause" : "En cours",
                 systemIcon: paused ? FouleeIcon.pause : nil,
                 tint: paused ? ReadablePalette.orangeText : ReadablePalette.greenText,
                 fill: (paused ? FouleeColor.warning : FouleeColor.success).opacity(0.16)
@@ -200,16 +200,15 @@ struct ActiveWalkScreen: View {
                 .scaledNumericFont(size: 86, weight: .ultraLight)
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
-            Text("DURÉE")
-                .font(FouleeFont.footnote.weight(.semibold))
+            Text("Durée")
+                .font(FouleeFont.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
-                .tracking(1.2)
         }
         // « 12:34 » alone is read as a time of day.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Durée")
         .accessibilityValue(spokenDurationText(seconds: session.elapsed))
-        .padding(.top, 30)
+        .padding(.top, 32)
     }
 
     private func ring(session: WalkSession) -> some View {
@@ -225,8 +224,8 @@ struct ActiveWalkScreen: View {
                         .scaledNumericFont(size: 56 * layout.scale)
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
-                    Text("PAS")
-                        .font(FouleeFont.footnote.weight(.semibold))
+                    Text("Pas")
+                        .font(FouleeFont.footnote.weight(.medium))
                         .foregroundStyle(.secondary)
                     if !isAccessibilitySize {
                         ringFigures(session: session)
@@ -240,7 +239,7 @@ struct ActiveWalkScreen: View {
                 ringFigures(session: session)
             }
         }
-        .padding(.top, 22)
+        .padding(.top, 24)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Sortie en cours")
         .accessibilityValue(figuresAccessibilityValue(session))
@@ -266,7 +265,7 @@ struct ActiveWalkScreen: View {
     private func metric(value: String, label: LocalizedStringResource) -> some View {
         VStack(spacing: 2) {
             Text(value)
-                .scaledNumericFont(size: 17, weight: .semibold)
+                .scaledNumericFont(size: 17)
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
             // One line, shrunk if needed: the ring is a fixed 232 pt, and at the
@@ -291,7 +290,7 @@ struct ActiveWalkScreen: View {
             Spacer()
         }
         .padding(16)
-        .fouleeGlass(cornerRadius: 22)
+        .fouleeCard()
         .padding(.horizontal, 20)
         .padding(.top, 32)
     }
@@ -306,17 +305,17 @@ private extension ActiveWalkScreen {
                 Task { await store.stop() }
             }
             if paused {
-                controlButton(icon: FouleeIcon.play, color: FouleeColor.accentMid, label: "Reprendre", big: true) {
+                controlButton(icon: FouleeIcon.play, color: .white, label: "Reprendre", big: true) {
                     store.resume()
                 }
             } else {
-                controlButton(icon: FouleeIcon.pause, color: FouleeColor.accentMid, label: "Pause", big: true) {
+                controlButton(icon: FouleeIcon.pause, color: .white, label: "Pause", big: true) {
                     Task { await store.pause() }
                 }
             }
             // The map is already on screen beside the figures.
             if !layout.isSideBySide {
-                controlButton(icon: FouleeIcon.location, color: Color(hex: 0x0A84FF), label: "Carte") {
+                controlButton(icon: FouleeIcon.location, color: .primary, label: "Carte") {
                     showRoute = true
                 }
             }
@@ -335,18 +334,11 @@ private extension ActiveWalkScreen {
             Button(action: action) {
                 Image(systemName: icon)
                     .font(.system(size: big ? 32 : 24, weight: .semibold))
-                    .foregroundStyle(big ? AnyShapeStyle(Color.white) : AnyShapeStyle(color))
-                    .frame(width: big ? 80 : 62, height: big ? 80 : 62)
-                    .background(
-                        big
-                            ? AnyShapeStyle(FouleeColor.accentGradient)
-                            : AnyShapeStyle(.ultraThinMaterial),
-                        in: Circle()
-                    )
-                    .shadow(
-                        color: big ? FouleeColor.accentMid.opacity(0.4) : .black.opacity(0.15),
-                        radius: big ? 18 : 8, x: 0, y: 6
-                    )
+                    .foregroundStyle(color)
+                    .frame(width: big ? 80 : 64, height: big ? 80 : 64)
+                    // The main control on the accent, the others one step
+                    // above the page.
+                    .background(big ? FouleeColor.accent : FouleeColor.raised, in: Circle())
             }
             .buttonStyle(.pressable)
             .accessibilityLabel(label)
@@ -357,7 +349,7 @@ private extension ActiveWalkScreen {
                 Label { Text(label) } icon: { Image(systemName: icon) }
             }
             Text(label)
-                .font(FouleeFont.footnote.weight(.semibold))
+                .font(FouleeFont.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
                 .cappedTextSize()
                 .accessibilityHidden(true)
@@ -375,9 +367,8 @@ private extension ActiveWalkScreen {
             ZStack {
                 CelebrationBurst()
                 Image(systemName: FouleeIcon.check)
-                    .font(.system(size: 84, weight: .bold))
-                    .foregroundStyle(FouleeColor.accentGradient)
-                    .symbolEffect(.bounce, value: isFinishedState)
+                    .font(.system(size: 84, weight: .medium))
+                    .foregroundStyle(FouleeColor.accentInk)
             }
             .accessibilityHidden(true)
             Text("Sortie terminée")

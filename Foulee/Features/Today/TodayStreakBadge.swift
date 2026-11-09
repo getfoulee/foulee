@@ -20,7 +20,7 @@ struct TodayStreakBadge: View {
                     .scaledSystemFont(size: 20, weight: .semibold)
                     .foregroundStyle(FouleeColor.warning)
                 Text("\(streak)")
-                    .scaledNumericFont(size: 22, weight: .semibold)
+                    .scaledNumericFont(size: 22)
             }
         }
         .buttonStyle(.pressable)

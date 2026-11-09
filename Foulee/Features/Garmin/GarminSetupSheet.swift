@@ -32,7 +32,7 @@ struct GarminSetupSheet: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            SheetBackground()
+            PageBackground()
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     header
@@ -53,8 +53,8 @@ struct GarminSetupSheet: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             Image(systemName: FouleeIcon.watch)
-                .scaledSystemFont(size: 34, weight: .semibold)
-                .foregroundStyle(FouleeColor.accentMid)
+                .scaledSystemFont(size: 32, weight: .medium)
+                .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             Text("J'ai une montre Garmin")
                 .font(FouleeFont.largeTitle)
@@ -76,9 +76,9 @@ struct GarminSetupSheet: View {
                 HStack(alignment: .top, spacing: 12) {
                     Text("\(index + 1)")
                         .font(FouleeFont.headline)
-                        .foregroundStyle(.white)
+                        .monospacedDigit()
                         .frame(width: 28, height: 28)
-                        .background(Circle().fill(FouleeColor.accentGradient))
+                        .background(FouleeColor.raised, in: Circle())
                         .accessibilityHidden(true)
                     Text(step)
                         .font(FouleeFont.body)
@@ -86,9 +86,9 @@ struct GarminSetupSheet: View {
                 }
             }
         }
-        .padding(18)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .fouleeGlass(cornerRadius: 22)
+        .fouleeCard()
     }
 
     /// Santé, demoted to verify/repair. Apple lists an app here as soon as it
@@ -116,9 +116,9 @@ struct GarminSetupSheet: View {
                 .font(FouleeFont.footnote)
                 .foregroundStyle(.secondary)
         }
-        .padding(18)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .fouleeGlass(cornerRadius: 22)
+        .fouleeCard()
     }
 
     /// The two honest caveats — both are Garmin behaviours Foulée can't fix,
@@ -144,9 +144,9 @@ struct GarminSetupSheet: View {
                     """
             )
         }
-        .padding(18)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .fouleeGlass(cornerRadius: 22)
+        .fouleeCard()
     }
 
     private func caveat(icon: String, title: LocalizedStringResource, detail: LocalizedStringResource) -> some View {
@@ -184,10 +184,11 @@ struct GarminSetupLink: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 10) {
+            HStack(spacing: 12) {
                 Image(systemName: FouleeIcon.watch)
-                    .scaledSystemFont(size: 18, weight: .semibold)
-                    .foregroundStyle(FouleeColor.accentMid)
+                    .scaledSystemFont(size: 18, weight: .medium)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 28)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("J'ai une montre Garmin")
                         .font(FouleeFont.headline)
@@ -198,7 +199,7 @@ struct GarminSetupLink: View {
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
+                    .font(.footnote.weight(.medium))
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
