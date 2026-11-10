@@ -19,7 +19,7 @@ RESULT_BUNDLE=build/results/smoke.xcresult
 DERIVED_DATA="$HOME/Library/Developer/Xcode/DerivedData/FouleeSmoke"
 rm -rf "$RESULT_BUNDLE" && mkdir -p build/results
 
-source tools/newest_iphone_simulator.sh "Foulee Duo" com.apple.CoreSimulator.SimDeviceType.iPhone-Duo
+source tools/newest_iphone_simulator.sh "Foulee Duo"
 
 # No diagnostics collection (issue #420): the iOS 27 simulator never answers.
 xcodebuild test \
