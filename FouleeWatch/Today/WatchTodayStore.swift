@@ -134,21 +134,23 @@ final class WatchTodayStore {
         async let caloriesValue = sumToday(.activeEnergyBurned, unit: .kilocalorie())
         async let waterValue = sumToday(.dietaryWater, unit: .literUnit(with: .milli))
 
-        let newSteps = Int(await stepsValue)
-        let newMinutes = Int(await minutesValue)
-        let newDistanceKm = await distanceValue / 1_000
-        let newCalories = Int(await caloriesValue)
-        let newWaterML = Int(await waterValue)
+        let newSteps = await stepsValue
+        let newMinutes = await minutesValue
+        let newDistance = await distanceValue
+        let newCalories = await caloriesValue
+        let newWater = await waterValue
 
         // A newer load() started while these reads were in flight — don't let
         // this stale result overwrite it (e.g. logging a glass right after the
         // watch comes to the wrist, which both kick off a load).
         guard generation == loadGeneration else { return }
-        steps = newSteps
-        minutes = newMinutes
-        distanceKm = newDistanceKm
-        calories = newCalories
-        waterML = newWaterML
+        // A read HealthKit refused keeps the figure on screen: drawing a 0
+        // would be a fake value, not an empty one.
+        if let newSteps { steps = Int(newSteps) }
+        if let newMinutes { minutes = Int(newMinutes) }
+        if let newDistance { distanceKm = newDistance / 1_000 }
+        if let newCalories { calories = Int(newCalories) }
+        if let newWater { waterML = Int(newWater) }
     }
 
     /// Refresh only what the session's « Journée » page draws (issue #280).
@@ -190,11 +192,11 @@ final class WatchTodayStore {
         let generation = loadGeneration
         async let stepsValue = sumToday(.stepCount, unit: .count())
         async let minutesValue = sumToday(.appleExerciseTime, unit: .minute())
-        let newSteps = Int(await stepsValue)
-        let newMinutes = Int(await minutesValue)
+        let newSteps = await stepsValue
+        let newMinutes = await minutesValue
         guard generation == loadGeneration else { return }
-        steps = newSteps
-        minutes = newMinutes
+        if let newSteps { steps = Int(newSteps) }
+        if let newMinutes { minutes = Int(newMinutes) }
     }
 
     /// Log one glass (the phone-synced glass size) to Health, then re-read and
@@ -244,9 +246,9 @@ final class WatchTodayStore {
         guard HKHealthStore.isHealthDataAvailable() else { return }
         loadGeneration += 1
         let generation = loadGeneration
-        let value = Int(await sumToday(.dietaryWater, unit: .literUnit(with: .milli)))
-        guard generation == loadGeneration else { return }
-        waterML = value
+        let value = await sumToday(.dietaryWater, unit: .literUnit(with: .milli))
+        guard generation == loadGeneration, let value else { return }
+        waterML = Int(value)
     }
 
     #if DEBUG
@@ -282,20 +284,8 @@ final class WatchTodayStore {
     }
     #endif
 
-    /// Today's cumulative sum for a quantity. Missing data resolves to 0 (no
-    /// error path), so an empty metric never blocks the others.
-    private func sumToday(_ identifier: HKQuantityTypeIdentifier, unit: HKUnit) async -> Double {
-        let start = Calendar.current.startOfDay(for: .now)
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: .now, options: .strictStartDate)
-        return await withCheckedContinuation { continuation in
-            let query = HKStatisticsQuery(
-                quantityType: HKQuantityType(identifier),
-                quantitySamplePredicate: predicate,
-                options: .cumulativeSum
-            ) { _, statistics, _ in
-                continuation.resume(returning: statistics?.sumQuantity()?.doubleValue(for: unit) ?? 0)
-            }
-            store.execute(query)
-        }
+    /// Today's sum for a quantity, or nil when HealthKit can't answer.
+    private func sumToday(_ identifier: HKQuantityTypeIdentifier, unit: HKUnit) async -> Double? {
+        await HealthKitTodaySums.sumIfAvailable(identifier, unit: unit, store: store)
     }
 }

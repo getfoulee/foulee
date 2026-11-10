@@ -62,35 +62,12 @@ nonisolated struct LogWaterIntent: AppIntent {
         // Prefer HealthKit's own sum (it includes watch-logged water); fall
         // back to an optimistic increment when the store can't answer.
         let previousML = SharedStore.read()?.waterML ?? 0
-        let totalML = await todayWaterML(store: store, type: waterType) ?? (previousML + glassML)
+        let measuredML = await HealthKitTodaySums.sumIfAvailable(.dietaryWater, unit: .literUnit(with: .milli), store: store)
+        let totalML = measuredML.map { Int($0) } ?? (previousML + glassML)
         SharedStore.updateWater(intakeML: totalML)
         // Targeted reload: only the hydration ring changed — don't spend the
         // other widgets' refresh budget.
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind.hydration)
         return .result(dialog: "C'est noté : +\(glassML) ml d'eau.")
-    }
-
-    /// Today's cumulative `dietaryWater` in millilitres, or nil when HealthKit
-    /// can't answer. "No samples yet" is a real 0, not a failure.
-    private func todayWaterML(store: HKHealthStore, type: HKQuantityType) async -> Int? {
-        let start = Calendar.current.startOfDay(for: .now)
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: .now, options: .strictStartDate)
-        return await withCheckedContinuation { continuation in
-            let query = HKStatisticsQuery(
-                quantityType: type,
-                quantitySamplePredicate: predicate,
-                options: .cumulativeSum
-            ) { _, statistics, error in
-                if let error, (error as? HKError)?.code == .errorNoData {
-                    continuation.resume(returning: 0)
-                } else if error != nil {
-                    continuation.resume(returning: nil)
-                } else {
-                    let unit = HKUnit.literUnit(with: .milli)
-                    continuation.resume(returning: Int(statistics?.sumQuantity()?.doubleValue(for: unit) ?? 0))
-                }
-            }
-            store.execute(query)
-        }
     }
 }

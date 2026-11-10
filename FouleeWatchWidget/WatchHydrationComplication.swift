@@ -72,27 +72,9 @@ struct WatchHydrationProvider: TimelineProvider {
     /// caller knows when the cache fallback is allowed.
     private static func queriedTodayWaterML() async -> Double? {
         guard HKHealthStore.isHealthDataAvailable() else { return nil }
-        let store = HKHealthStore()
-        let start = Calendar.current.startOfDay(for: .now)
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: .now, options: .strictStartDate)
-        return await withCheckedContinuation { continuation in
-            let query = HKStatisticsQuery(
-                quantityType: HKQuantityType(.dietaryWater),
-                quantitySamplePredicate: predicate,
-                options: .cumulativeSum
-            ) { _, statistics, error in
-                if let statistics {
-                    let milliliters = statistics.sumQuantity()?.doubleValue(for: .literUnit(with: .milli)) ?? 0
-                    continuation.resume(returning: milliliters)
-                } else if (error as? HKError)?.code == .errorNoData {
-                    // No samples today is a legitimate zero, not a failure.
-                    continuation.resume(returning: 0)
-                } else {
-                    continuation.resume(returning: nil)
-                }
-            }
-            store.execute(query)
-        }
+        return await HealthKitTodaySums.sumIfAvailable(
+            .dietaryWater, unit: .literUnit(with: .milli), store: HKHealthStore()
+        )
     }
 }
 

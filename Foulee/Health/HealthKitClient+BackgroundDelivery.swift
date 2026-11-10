@@ -118,7 +118,9 @@ nonisolated private func refreshSnapshotMetrics(store: HKHealthStore, wake: Back
     // install or an update) reads as 0, which at worst buys one extra recompute
     // on the day's first wake.
     let storedMinutes = BackgroundStreakRefresh.lastMeasuredMinutesToday(defaults: defaults, now: now) ?? 0
-    let measured = await measuredCounters(store: store)
+    // The app's own workout minutes: they add the Garmin outings Santé doesn't
+    // have yet (ADR 0009), which the other processes can't read.
+    let measured = await HealthKitTodaySums.counters(store: store) { try await todayWorkoutMinutes(store: $0) }
     let streak = await recomputedBackgroundStreak(
         store: store,
         storedDay: storedDay,
@@ -195,43 +197,6 @@ nonisolated private func refreshSnapshotMetrics(store: HKHealthStore, wake: Back
     ))
 }
 
-/// Today's counters as this wake measured them. A nil leg is a read HealthKit
-/// refused (locked phone), which must keep the stored value rather than
-/// publish a zero.
-nonisolated private struct MeasuredCounters {
-    var steps: Int?
-    var minutes: Int?
-    var distanceKm: Double?
-    var calories: Int?
-    var waterML: Int?
-}
-
-nonisolated private func measuredCounters(store: HKHealthStore) async -> MeasuredCounters {
-    // Independent sums — run concurrently to keep the background wake short.
-    async let steps = backgroundSum(store, .stepCount, .count())
-    async let minutes = backgroundSum(store, .appleExerciseTime, .minute())
-    async let meters = backgroundSum(store, .distanceWalkingRunning, .meter())
-    async let kcal = backgroundSum(store, .activeEnergyBurned, .kilocalorie())
-    async let water = backgroundSum(store, .dietaryWater, .literUnit(with: .milli))
-    // Same max() as the app and the widget (see ActiveMinutes): a background
-    // wake must not overwrite a Garmin user's merged minutes with raw zeros.
-    // Both legs must answer — merging a failed workout read as 0 would do
-    // exactly that overwrite for a Garmin-only user; keep the stored value.
-    async let workoutMinutes = todayWorkoutMinutes(store: store)
-    var counters = MeasuredCounters()
-    if let steps = await steps { counters.steps = Int(steps) }
-    if let minutes = await minutes, let workoutMinutes = try? await workoutMinutes {
-        counters.minutes = ActiveMinutes.merged(
-            appleMinutes: Int(minutes),
-            workoutMinutes: workoutMinutes
-        )
-    }
-    if let meters = await meters { counters.distanceKm = meters / 1_000 }
-    if let kcal = await kcal { counters.calories = Int(kcal) }
-    if let water = await water { counters.waterML = Int(water) }
-    return counters
-}
-
 /// Last dietaryWater total this observer saw, kept in the app's own defaults
 /// — day-stamped so yesterday's total is never a baseline for today. The
 /// shared snapshot can't serve as the "before" value: the widget's
@@ -249,7 +214,9 @@ nonisolated private let observedWaterDayKey = "hydration.observedWaterAt"
 /// are replaced deterministically). Decreases (sample deletions) and the
 /// initial fire at observer registration must not shift anything.
 nonisolated private func reshiftHydrationRemindersIfWaterIncreased(store: HKHealthStore) async {
-    guard let total = await backgroundSum(store, .dietaryWater, .literUnit(with: .milli)) else { return }
+    guard let total = await HealthKitTodaySums.sumIfAvailable(
+        .dietaryWater, unit: .literUnit(with: .milli), store: store
+    ) else { return }
     let defaults = UserDefaults.standard
     let previous = lastObservedWaterToday(defaults: defaults)
     defaults.set(total, forKey: observedWaterTotalKey)
@@ -277,31 +244,4 @@ nonisolated private func lastObservedWaterToday(defaults: UserDefaults) -> Int? 
           Calendar.current.isDate(Date(timeIntervalSince1970: stamp), inSameDayAs: .now)
     else { return nil }
     return Int(defaults.double(forKey: observedWaterTotalKey))
-}
-
-/// Today's cumulative sum, or nil when HealthKit can't answer. "No samples
-/// yet" is a real 0, not a failure.
-nonisolated private func backgroundSum(
-    _ store: HKHealthStore,
-    _ identifier: HKQuantityTypeIdentifier,
-    _ unit: HKUnit
-) async -> Double? {
-    let start = Calendar.current.startOfDay(for: .now)
-    let predicate = HKQuery.predicateForSamples(withStart: start, end: .now, options: .strictStartDate)
-    return await withCheckedContinuation { continuation in
-        let query = HKStatisticsQuery(
-            quantityType: HKQuantityType(identifier),
-            quantitySamplePredicate: predicate,
-            options: .cumulativeSum
-        ) { _, statistics, error in
-            if let error, (error as? HKError)?.code == .errorNoData {
-                continuation.resume(returning: 0)
-            } else if error != nil {
-                continuation.resume(returning: nil)
-            } else {
-                continuation.resume(returning: statistics?.sumQuantity()?.doubleValue(for: unit) ?? 0)
-            }
-        }
-        store.execute(query)
-    }
 }

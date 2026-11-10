@@ -197,26 +197,7 @@ struct WatchStatProvider: AppIntentTimelineProvider {
     /// caller knows when the cache fallback is allowed.
     private static func queriedTodaySum(for metric: WatchStatMetric) async -> Double? {
         guard HKHealthStore.isHealthDataAvailable() else { return nil }
-        let store = HKHealthStore()
-        let start = Calendar.current.startOfDay(for: .now)
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: .now, options: .strictStartDate)
-        return await withCheckedContinuation { continuation in
-            let query = HKStatisticsQuery(
-                quantityType: HKQuantityType(metric.identifier),
-                quantitySamplePredicate: predicate,
-                options: .cumulativeSum
-            ) { _, statistics, error in
-                if let statistics {
-                    continuation.resume(returning: statistics.sumQuantity()?.doubleValue(for: metric.unit) ?? 0)
-                } else if (error as? HKError)?.code == .errorNoData {
-                    // No samples today is a legitimate zero, not a failure.
-                    continuation.resume(returning: 0)
-                } else {
-                    continuation.resume(returning: nil)
-                }
-            }
-            store.execute(query)
-        }
+        return await HealthKitTodaySums.sumIfAvailable(metric.identifier, unit: metric.unit, store: HKHealthStore())
     }
 }
 

@@ -38,10 +38,10 @@ nonisolated extension HealthKitClient {
                 return true
             },
             todayMetrics: {
-                async let steps = sumToday(store: store, type: stepsType, unit: .count())
-                async let distanceMeters = sumToday(store: store, type: distanceType, unit: .meter())
-                async let minutes = sumToday(store: store, type: minutesType, unit: .minute())
-                async let calories = sumToday(store: store, type: caloriesType, unit: .kilocalorie())
+                async let steps = HealthKitTodaySums.sum(.stepCount, unit: .count(), store: store)
+                async let distanceMeters = HealthKitTodaySums.sum(.distanceWalkingRunning, unit: .meter(), store: store)
+                async let minutes = HealthKitTodaySums.sum(.appleExerciseTime, unit: .minute(), store: store)
+                async let calories = HealthKitTodaySums.sum(.activeEnergyBurned, unit: .kilocalorie(), store: store)
                 // Same max() as dailyMinutes (see ActiveMinutes): the hero
                 // ring must move for a Garmin-only user, not just the streak.
                 async let workoutMinutes = todayWorkoutMinutes(store: store)
@@ -133,7 +133,7 @@ nonisolated extension HealthKitClient {
             },
             deleteWater: { try await deleteWaterSample(store: store, id: $0) },
             todayWaterML: {
-                let milliliters = try await sumToday(store: store, type: waterType, unit: .literUnit(with: .milli))
+                let milliliters = try await HealthKitTodaySums.sum(.dietaryWater, unit: .literUnit(with: .milli), store: store)
                 return Int(milliliters)
             },
             waterWriteDenied: {
@@ -380,51 +380,12 @@ nonisolated private func fetchStepsCount(
 ) async throws -> Int {
     try await withThrowingTaskGroup(of: Int.self) { group in
         for window in windows {
-            group.addTask { try await fetchStepsCount(in: window, store: store) }
+            group.addTask {
+                Int(try await HealthKitTodaySums.sum(.stepCount, unit: .count(), in: window, store: store))
+            }
         }
         return try await group.reduce(0, +)
     }
-}
-
-nonisolated private func fetchStepsCount(
-    in window: DateInterval,
-    store: HKHealthStore
-) async throws -> Int {
-    let predicate = HKQuery.predicateForSamples(
-        withStart: window.start,
-        end: window.end,
-        options: .strictStartDate
-    )
-
-    return try await withCheckedThrowingContinuation { continuation in
-        let query = HKStatisticsQuery(
-            quantityType: HKQuantityType(.stepCount),
-            quantitySamplePredicate: predicate,
-            options: .cumulativeSum
-        ) { _, statistics, error in
-            if isNoDataAvailable(error) {
-                continuation.resume(returning: 0)
-                return
-            }
-            if let error {
-                continuation.resume(throwing: error)
-                return
-            }
-            let count = statistics?.sumQuantity()?.doubleValue(for: .count()) ?? 0
-            continuation.resume(returning: Int(count))
-        }
-        store.execute(query)
-    }
-}
-
-/// `HKError.Code.noDataAvailable` (= 11) is the framework's way of
-/// saying "your predicate matched zero samples". Empty result, not a
-/// real failure — bubble it back as the type-appropriate zero value
-/// instead of letting the sheet show "Détail indisponible". Internal:
-/// also used by HealthKitClient+ActiveMinutes.swift.
-nonisolated func isNoDataAvailable(_ error: (any Error)?) -> Bool {
-    guard let hkError = error as? HKError else { return false }
-    return hkError.code == .errorNoData
 }
 
 /// All workouts of a `WorkoutActivityFilter` type (walk, run, hike)
@@ -456,41 +417,6 @@ nonisolated func healthKitWorkoutSummaries(
             let workouts = (samples as? [HKWorkout]) ?? []
             let summaries = workouts.map(WorkoutSummary.init(workout:))
             continuation.resume(returning: summaries)
-        }
-        store.execute(query)
-    }
-}
-
-/// Continuation-based bridge to `HKStatisticsQuery`. Sums the cumulative
-/// quantity between midnight today and now.
-nonisolated private func sumToday(
-    store: HKHealthStore,
-    type: HKQuantityType,
-    unit: HKUnit
-) async throws -> Double {
-    let calendar = Calendar.current
-    let start = calendar.startOfDay(for: .now)
-    let predicate = HKQuery.predicateForSamples(withStart: start, end: .now, options: .strictStartDate)
-
-    return try await withCheckedThrowingContinuation { continuation in
-        let query = HKStatisticsQuery(
-            quantityType: type,
-            quantitySamplePredicate: predicate,
-            options: .cumulativeSum
-        ) { _, statistics, error in
-            // "No samples yet today" (e.g. zero exercise minutes before the
-            // first walk) is reported as `errorNoData` — that's 0, not a
-            // failure, so don't let it set the Today error banner.
-            if isNoDataAvailable(error) {
-                continuation.resume(returning: 0)
-                return
-            }
-            if let error {
-                continuation.resume(throwing: error)
-                return
-            }
-            let value = statistics?.sumQuantity()?.doubleValue(for: unit) ?? 0
-            continuation.resume(returning: value)
         }
         store.execute(query)
     }
