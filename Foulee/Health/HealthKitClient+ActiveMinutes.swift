@@ -161,40 +161,7 @@ nonisolated private func workoutIntervals(
     start: Date,
     end: Date
 ) async throws -> [ActiveMinutes.WorkoutInterval] {
-    let healthKit = try await healthKitWorkoutIntervals(store: store, start: start, end: end)
+    let healthKit = try await HealthKitTodaySums.workoutIntervals(store: store, start: start, end: end)
     let pending = GarminPendingOutingStore.remaining(healthKitWorkouts: healthKit)
     return healthKit + GarminPendingOutings.intervals(pending, startingIn: start..<end)
-}
-
-/// All `HKWorkout`s started in `start..<end`, any activity type, reduced to
-/// the pure `WorkoutInterval` shape. Workouts are sparse — a plain
-/// `HKSampleQuery` over the whole streak window is trivial.
-nonisolated private func healthKitWorkoutIntervals(
-    store: HKHealthStore,
-    start: Date,
-    end: Date
-) async throws -> [ActiveMinutes.WorkoutInterval] {
-    let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
-    return try await withCheckedThrowingContinuation { continuation in
-        let query = HKSampleQuery(
-            sampleType: .workoutType(),
-            predicate: predicate,
-            limit: HKObjectQueryNoLimit,
-            sortDescriptors: nil
-        ) { _, samples, error in
-            if isNoDataAvailable(error) {
-                continuation.resume(returning: [])
-                return
-            }
-            if let error {
-                continuation.resume(throwing: error)
-                return
-            }
-            let workouts = (samples as? [HKWorkout]) ?? []
-            continuation.resume(returning: workouts.map {
-                ActiveMinutes.WorkoutInterval(start: $0.startDate, duration: $0.duration)
-            })
-        }
-        store.execute(query)
-    }
 }

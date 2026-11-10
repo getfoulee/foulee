@@ -189,6 +189,8 @@ let project = Project(
                 // Shared with « Où j'en suis aujourd'hui » (#605), so Siri
                 // answers with the widgets' own figures.
                 "Foulee/Shared/WidgetLiveMetrics.swift",
+                // Today's HealthKit sums, one implementation everywhere (#785).
+                "Foulee/Shared/HealthKitTodaySums.swift",
                 "FouleeWatchWidget/StreakEntry.swift"
             ],
             resources: [
@@ -265,6 +267,8 @@ let project = Project(
                 "Foulee/Shared/ReadablePalette.swift",
                 // Fixed-size counters that follow Dynamic Type (#600).
                 "Foulee/Shared/ScaledSystemFont.swift",
+                // Today's HealthKit sums, read as the phone reads them (#785).
+                "Foulee/Shared/HealthKitTodaySums.swift",
                 // The App Store capture seed (issue #239). Only the
                 // Foundation-only half: the watch board and the phone board
                 // must show the same day, and the way to guarantee that is to
@@ -301,7 +305,9 @@ let project = Project(
                 ]
             ]),
             sources: [
-                "FouleeWatchWidget/**"
+                "FouleeWatchWidget/**",
+                // Today's HealthKit sums, read as the phone reads them (#785).
+                "Foulee/Shared/HealthKitTodaySums.swift"
             ],
             resources: [
                 .glob(
