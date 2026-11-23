@@ -242,6 +242,33 @@ struct ActiveMinutesHourlyTests {
         #expect(curve == [hour(16): 42])
     }
 
+    @Test("A bike ride from Santé, with no Apple minutes, completes the streak day")
+    func anyWorkoutAdvancesStreak() throws {
+        // A Garmin cyclist: no appleExerciseTime, one 35-minute ride today and
+        // a 30-minute walk yesterday. `WorkoutInterval` carries no activity
+        // type, so the ride counts exactly like the walk (#741).
+        let yesterday = try #require(calendar.date(byAdding: .day, value: -1, to: startOfToday))
+        let walk = ActiveMinutes.WorkoutInterval(start: yesterday.addingTimeInterval(9 * 3_600), duration: 30 * 60)
+        let ride = interval(at: "07:30", minutes: 35)
+        let byDay = ActiveMinutes.workoutMinutesByDay([walk, ride], calendar: calendar)
+        let history = [yesterday, startOfToday].map {
+            DailyMinutes(date: $0, minutes: ActiveMinutes.merged(appleMinutes: 0, workoutMinutes: byDay[$0] ?? 0))
+        }
+        let streak = StreakCalculator.current(history: history, goalMinutes: 30, today: today, calendar: calendar)
+        #expect(streak == 2)
+    }
+
+    @Test("A ride recorded by both Garmin and the Apple Watch counts once toward the goal")
+    func duplicatedRideCountsOnce() {
+        // 20 minutes twice must not reach a 30-minute goal.
+        let watch = interval(at: "18:00", minutes: 20)
+        let garmin = ActiveMinutes.WorkoutInterval(start: watch.start.addingTimeInterval(60), duration: 20 * 60)
+        let minutes = ActiveMinutes.workoutMinutesByDay([watch, garmin], calendar: calendar)[startOfToday] ?? 0
+        let history = [DailyMinutes(date: startOfToday, minutes: minutes)]
+        #expect(minutes == 21)
+        #expect(StreakCalculator.current(history: history, goalMinutes: 30, today: today, calendar: calendar) == 0)
+    }
+
     /// Hour bucket key for today at `hour` o'clock.
     private func hour(_ value: Int) -> Date {
         startOfToday.addingTimeInterval(TimeInterval(value * 3_600))

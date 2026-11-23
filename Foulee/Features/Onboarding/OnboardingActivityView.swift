@@ -44,7 +44,7 @@ struct OnboardingActivityView: View {
                 .scaledSystemFont(size: 30, weight: .bold)
                 .lineSpacing(2)
                 .accessibilityAddTraits(.isHeader)
-            Text("On adaptera Foulée à ta pratique.")
+            Text("On adaptera Foulée à ta pratique. Ta série, elle, compte toutes tes activités.")
                 .font(FouleeFont.body)
                 .foregroundStyle(.secondary)
         }
