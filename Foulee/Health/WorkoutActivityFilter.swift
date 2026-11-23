@@ -1,3 +1,4 @@
+import FouleeKit
 import HealthKit
 
 /// Which workout activity types the 7-day résumé reports on.
@@ -16,9 +17,7 @@ nonisolated enum WorkoutActivityFilter {
     /// Walking, running and hiking. All three report their distance under
     /// `.distanceWalkingRunning`, so `WorkoutSummary.init(workout:)` maps
     /// them without a special case.
-    static let summarizedActivityTypes: Set<HKWorkoutActivityType> = [
-        .walking, .running, .hiking
-    ]
+    static let summarizedActivityTypes = Set(SportID.allCases.map(\.hkActivityType))
 
     /// The whole predicate `recentWorkouts` hands to `HKSampleQuery`: an
     /// accepted activity type AND a start date inside the last `daysBack`
