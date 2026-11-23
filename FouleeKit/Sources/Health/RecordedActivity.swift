@@ -31,15 +31,18 @@ nonisolated public enum RecordedActivity: String, Equatable, Hashable, Sendable,
     /// undoing. « Séance » is the honest answer to a question nobody answered.
     case other
 
+    /// The sport it names, `nil` for `.other` (#720).
+    public var sport: SportID? { SportID(rawValue: rawValue) }
+
+    /// Total: a sport the table does not name yet reads as `.other`.
+    public init(sport: SportID?) {
+        self = sport.flatMap { Self(rawValue: $0.rawValue) } ?? .other
+    }
+
     /// How the résumé and the detail name it, in the vocabulary established by
     /// #222: the same « Marche » and « Course » the pickers use.
     public var label: String {
-        switch self {
-        case .walking: kitText("Marche")
-        case .running: kitText("Course")
-        case .hiking: kitText("Randonnée")
-        case .other: kitText("Séance")
-        }
+        sport?.descriptor.label ?? kitText("Séance")
     }
 
     /// The figure drawn next to it.
@@ -47,11 +50,6 @@ nonisolated public enum RecordedActivity: String, Equatable, Hashable, Sendable,
     /// `.other` keeps the neutral walk-and-run glyph the two screens used for
     /// every row before this issue — the right drawing for « we were not told ».
     public var icon: String {
-        switch self {
-        case .walking: ActivityGlyph.walk
-        case .running: ActivityGlyph.run
-        case .hiking: ActivityGlyph.hike
-        case .other: ActivityGlyph.mixedCardio
-        }
+        sport?.descriptor.glyph ?? ActivityGlyph.mixedCardio
     }
 }

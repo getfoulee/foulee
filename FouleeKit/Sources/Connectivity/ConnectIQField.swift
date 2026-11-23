@@ -41,6 +41,6 @@ nonisolated enum ConnectIQField {
 
     /// The session's sport: an unknown one is walking, the phone's own default.
     static func activity(_ value: Any?) -> SessionActivity {
-        (value as? String).flatMap(SessionActivity.init(rawValue:)) ?? .walking
+        (value as? String).flatMap(SportID.init(garminSport:)).flatMap(SessionActivity.init(sport:)) ?? .walking
     }
 }

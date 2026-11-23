@@ -14,11 +14,6 @@ nonisolated extension RecordedActivity {
     /// HealthKit-free, the same split `SessionActivity` / `SessionActivity+HealthKit`
     /// already uses.
     init(_ type: HKWorkoutActivityType) {
-        switch type {
-        case .walking: self = .walking
-        case .running: self = .running
-        case .hiking: self = .hiking
-        default: self = .other
-        }
+        self.init(sport: SportID(type))
     }
 }

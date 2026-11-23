@@ -14,10 +14,7 @@ nonisolated extension SessionActivity {
     /// already uses: the type travels through preferences, the sync payload and
     /// the walk model, none of which should drag the framework behind them.
     var hkActivityType: HKWorkoutActivityType {
-        switch self {
-        case .walking: .walking
-        case .running: .running
-        }
+        sport.hkActivityType
     }
 
     /// The way back, for reading a segment HealthKit recorded (issue #250).
@@ -27,10 +24,7 @@ nonisolated extension SessionActivity {
     /// and naming one of them « marche » would put time nobody spent walking
     /// into a total on screen. Unnameable means unread.
     init?(_ hkActivityType: HKWorkoutActivityType) {
-        switch hkActivityType {
-        case .walking: self = .walking
-        case .running: self = .running
-        default: return nil
-        }
+        guard let sport = SportID(hkActivityType) else { return nil }
+        self.init(sport: sport)
     }
 }

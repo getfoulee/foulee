@@ -17,6 +17,21 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     case walking
     case running
 
+    /// The sport this session records. Same raw value, so the two stay
+    /// interchangeable on disk and on the wire (#720).
+    public var sport: SportID {
+        switch self {
+        case .walking: .walking
+        case .running: .running
+        }
+    }
+
+    /// The recordable sport, `nil` for one Foulée only reads.
+    public init?(sport: SportID) {
+        guard sport.descriptor.isRecordable else { return nil }
+        self.init(rawValue: sport.rawValue)
+    }
+
     /// How the two pickers name this activity — « Marche » and « Course », the
     /// same two words `ActivityMode.label` uses in Réglages and in onboarding
     /// (issues #220, #221). One table rather than one per screen: the phone
@@ -27,10 +42,7 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     /// mode?" and had to invent `.walking` for « les deux » — see
     /// `ActivityStartIntent`, which asks instead of inventing.
     public var label: String {
-        switch self {
-        case .walking: kitText("Marche")
-        case .running: kitText("Course")
-        }
+        sport.descriptor.label
     }
 
     /// The figure the pickers draw. `ActivityGlyph` rather than `FouleeIcon`
@@ -38,10 +50,7 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     /// DesignSystem — the exact cross-target mismatch `ActivityMode+Icon`
     /// documents.
     public var icon: String {
-        switch self {
-        case .walking: ActivityGlyph.walk
-        case .running: ActivityGlyph.run
-        }
+        sport.descriptor.glyph
     }
 
     /// How the app names a session of this activity to the person doing it,
@@ -60,10 +69,7 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     /// caller that can fail to have a `SessionActivity` at all
     /// (`WalkActivityAttributes`, for a payload written before #225).
     public var sessionTitle: String {
-        switch self {
-        case .walking: kitText("Ta marche")
-        case .running: kitText("Ta course")
-        }
+        sport.descriptor.sessionTitle ?? ""
     }
 
     /// Kilocalories per step used by `WalkSession.estimatedCalories`.
@@ -83,9 +89,6 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     /// ~70 kg runner. A watch-recorded session ignores this entirely — it
     /// measures real energy, and `WorkoutSummary` now prefers that.
     public var kcalPerStep: Double {
-        switch self {
-        case .walking: 0.04
-        case .running: 0.09
-        }
+        sport.descriptor.kcalPerStep ?? 0
     }
 }
