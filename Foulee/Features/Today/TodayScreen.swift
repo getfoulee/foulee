@@ -11,6 +11,8 @@ struct TodayScreen: View {
     @State private var store = TodayStore()
     @State private var hydration = HydrationStore()
     @State private var isWalking = false
+    /// An outing iOS kept running while the app was gone (#729), reopened.
+    @State private var recoveredWalk: ActiveWalkStore?
     /// What a shortcut asked to start (issue #604), in place of the store's
     /// `startIntent` for that one session.
     @State private var shortcutIntent: ActivityStartIntent?
@@ -44,6 +46,7 @@ struct TodayScreen: View {
     var body: some View {
         content
             .task { await store.bootstrap() }
+            .task { await reopenRecoveredWalk() }
             .task {
                 hydration.startObserving()
                 await hydration.refresh()
@@ -103,29 +106,7 @@ struct TodayScreen: View {
                 isWalking: $isWalking,
                 scheme: preferredScheme
             )
-            .fullScreenCover(isPresented: $isWalking) {
-                ActiveWalkScreen(
-                    minutesGoal: store.minutesGoal,
-                    // Resolved by the store, not here (issues #223, #224): the
-                    // mode it mirrors is the same one it syncs to the Watch,
-                    // and unlike this body it is reachable from a test. In
-                    // « les deux » it is `.ask`, and the session screen opens
-                    // on the picker.
-                    intent: shortcutIntent ?? store.startIntent,
-                    onDismiss: { session in
-                        isWalking = false
-                        Task {
-                            await store.registerFinishedWalk(session)
-                            review.recordOuting()
-                        }
-                    },
-                    // Backed out of the picker: close, and register nothing.
-                    // The baseline `walkWillStart` captured is simply left
-                    // unused — no `PendingWalk` is created, so the home shows
-                    // the same numbers it already showed.
-                )
-                .preferredColorScheme(preferredScheme)
-            }
+            .fullScreenCover(isPresented: $isWalking) { walkScreen }
             .sheet(
                 item: $selectedMetric,
                 onDismiss: { Task { await store.refresh() } },
@@ -455,3 +436,41 @@ private func previewDefaults(suite: String) -> UserDefaults {
 #Preview("With data") { TodayPreviewWithData() }
 #Preview("Loading") { TodayPreviewLoading() }
 #Preview("Dark") { TodayPreviewDark() }
+
+private extension TodayScreen {
+    /// The session screen, on a fresh store or on one that took back an
+    /// outing the app had lost (#729).
+    var walkScreen: some View {
+        ActiveWalkScreen(
+            minutesGoal: store.minutesGoal,
+            // Resolved by the store, not here (issues #223, #224): the
+            // mode it mirrors is the same one it syncs to the Watch,
+            // and unlike this body it is reachable from a test. In
+            // « les deux » it is `.ask`, and the session screen opens
+            // on the picker.
+            intent: shortcutIntent ?? store.startIntent,
+            store: recoveredWalk ?? ActiveWalkStore(),
+            onDismiss: { session in
+                isWalking = false
+                recoveredWalk = nil
+                Task {
+                    await store.registerFinishedWalk(session)
+                    review.recordOuting()
+                }
+            },
+            // Backed out of the picker: close, and register nothing.
+            // The baseline `walkWillStart` captured is simply left
+            // unused — no `PendingWalk` is created, so the home shows
+            // the same numbers it already showed.
+        )
+        .preferredColorScheme(preferredScheme)
+    }
+
+    /// Back on the session screen when iOS kept the outing's session running
+    /// after the app was killed (#729), rather than on a home that ignores it.
+    func reopenRecoveredWalk() async {
+        guard !isWalking, let walk = await ActiveWalkStore.recovered(minutesGoal: store.minutesGoal) else { return }
+        recoveredWalk = walk
+        isWalking = true
+    }
+}

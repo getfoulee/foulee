@@ -123,6 +123,8 @@ enum ScreenshotMode {
             values.mirroredWorkout = ScreenshotDoubles.mirroredWorkout(outing: wrist == .appleWatch)
             values.pedometer = ScreenshotDoubles.pedometer
             values.altimeter = ScreenshotDoubles.altimeter
+            // No HealthKit session in a capture: outings save nowhere.
+            values.phoneWorkoutSession = .testValue
             values.outingMerges = .localValue
         }
     }

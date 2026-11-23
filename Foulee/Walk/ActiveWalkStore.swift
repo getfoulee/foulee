@@ -34,7 +34,7 @@ final class ActiveWalkStore {
     private(set) var degradedStates: [DegradedState] = []
 
     @ObservationIgnored
-    @Dependency(\.pedometer) private var pedometer
+    @Dependency(\.pedometer) var pedometer
 
     @ObservationIgnored
     @Dependency(\.altimeter) private var altimeter
@@ -45,9 +45,16 @@ final class ActiveWalkStore {
     @ObservationIgnored
     @Dependency(\.healthKit) private var healthKit
 
+    /// The outing's `HKWorkoutSession` (#729), when HealthKit grants one.
+    @ObservationIgnored
+    @Dependency(\.phoneWorkoutSession) private var workoutSession
+
+    /// The session's opening, awaited before anything else asks it to act.
+    @ObservationIgnored private var sessionOpening: Task<Void, Never>?
+
     /// The session's own motion history, read once at `stop()` (issue #246).
     @ObservationIgnored
-    @Dependency(\.motionActivityHistory) private var motionActivityHistory
+    @Dependency(\.motionActivityHistory) var motionActivityHistory
 
     @ObservationIgnored
     @Dependency(\.continuousClock) private var clock
@@ -126,6 +133,11 @@ final class ActiveWalkStore {
         tickerTask = makeTickerTask()
         startLiveActivity(minutesGoal: minutesGoal)
         tellWatch()
+        // A refused session is no reason to refuse the outing: it is then
+        // saved at the end without one, as before #729.
+        sessionOpening = Task { [workoutSession] in
+            try? await workoutSession.start(activity, isUndecided, session.startedAt)
+        }
     }
 
     /// Freeze the clock + pedometer without ending the walk.
@@ -140,6 +152,8 @@ final class ActiveWalkStore {
         session.elevationLossMeters = bankedElevation.descent
         state = .paused(session)
         tellWatch()
+        await sessionOpening?.value
+        await workoutSession.pause()
         await pushLiveActivity(session: session, isPaused: true)
     }
 
@@ -150,7 +164,11 @@ final class ActiveWalkStore {
         state = .active(session)
         tickerTask = makeTickerTask()
         tellWatch()
-        Task { await self.pushLiveActivity(session: session, isPaused: false) }
+        Task {
+            await self.sessionOpening?.value
+            await self.workoutSession.resume()
+            await self.pushLiveActivity(session: session, isPaused: false)
+        }
     }
 
     /// Stop, cancel observers and persist the workout in HealthKit. Works
@@ -181,7 +199,7 @@ final class ActiveWalkStore {
         // Before the save: the workout it writes wakes the Health observer,
         // which must find the outing already told by the end screen (#529).
         sessionNotifications.recordedHere(recorded.startedAt, recorded.endedAt ?? date.now)
-        await runOrTrap { try await healthKit.saveWorkout(recorded) }
+        await save(recorded)
         await endLiveActivity(with: session)
 
         // Today's walk just landed in HealthKit — push the streak +
@@ -327,88 +345,53 @@ final class ActiveWalkStore {
     }
 }
 
-// MARK: - Live Activity
+// MARK: - Saving and recovery
 
 extension ActiveWalkStore {
-    /// The attributes ActivityKit is handed for the session in flight — what
-    /// the Lock Screen and the Dynamic Island then draw (issue #225).
-    ///
-    /// Read off the *session*, so the Lock Screen cannot name the activity
-    /// differently from what Santé will be stamped with. A member rather than
-    /// three lines inside `startLiveActivity`, for the reason #234 pulled
-    /// `ActiveWalkScreen.startIfKnown()` out of its call site: inlined, the step
-    /// that reads `session.activity` could be dropped — back to the hardcoded
-    /// `.walking` this issue removes — with the whole suite green, because
-    /// `Activity.request` needs a live ActivityKit and never runs in a test
-    /// process. As a plain value it is assertable, and `ActiveWalkStoreTests`
-    /// asserts it.
-    ///
-    /// `nil` activity only when nothing is in flight; the sole production
-    /// caller runs immediately after `state` becomes `.active`.
-    /// Read the session's own motion history and settle two different things
-    /// with it (issues #246, #247).
-    ///
-    /// **What the session is recorded as** — only when « les deux » left it
-    /// open. A mode of « Marche » or « Course » is an answer already given, and
-    /// detection is not entitled to contradict it.
-    ///
-    /// **What it cost** — always, whatever the mode. The two are not the same
-    /// question: the label is a claim about the outing, the energy is a sum
-    /// over its stretches. A user who set « Marche » and ran for ten minutes
-    /// chose their label and still ran those ten minutes, and pricing them at
-    /// 0.04 kcal/step rather than 0.09 is simply wrong.
-    ///
-    /// Runs **before** the workout is saved, because both stamps are permanent:
-    /// `HKWorkout` is immutable, Foulée has no delete path, and the phone
-    /// writes no energy samples — so this estimate is the only energy figure
-    /// the session will ever carry.
-    ///
-    /// Internal so a test can drive it without a session in flight.
-    func settled(_ session: WalkSession) async -> WalkSession {
-        guard let endedAt = session.endedAt else { return session }
-        let samples = await motionActivityHistory.samples(session.startedAt, endedAt)
-        let segments = ActivitySegmentation.segments(samples, from: session.startedAt, to: endedAt)
-        var settled = session
-        if session.isActivityUndecided {
-            settled.activity = ActivitySegmentation.dominant(segments)
-            settled.isActivityUndecided = false
+    /// The session's builder saves the outing; without a session, or when
+    /// « les deux » settled on another sport than the one it opened with, the
+    /// outing is saved here under the settled sport (#729).
+    private func save(_ recorded: WalkSession) async {
+        await sessionOpening?.value
+        sessionOpening = nil
+        let savedBySession = (try? await workoutSession.finish(recorded)) ?? false
+        if !savedBySession {
+            await runOrTrap { try await healthKit.saveWorkout(recorded) }
         }
-        settled.stepsByActivity = await stepsByActivity(over: segments)
-        return settled
     }
 
-    /// Steps taken during each activity's own stretches, or `nil` when the
-    /// breakdown would be worse than none.
+    /// Take back an outing whose session iOS kept running while the app was
+    /// gone (#729), instead of the second outing the user would start.
     ///
-    /// Two ways it declines, both deliberate:
-    ///
-    /// * **One activity only.** A homogeneous outing prices identically with
-    ///   and without a breakdown, so the queries would buy nothing.
-    /// * **Any stretch the pedometer will not answer for.** A partial breakdown
-    ///   is not a smaller truth, it is a wrong total — the missing stretch's
-    ///   steps would silently vanish from the estimate. All or the old formula.
-    private func stepsByActivity(over segments: [ActivitySegment]) async -> [SessionActivity: Int]? {
-        guard Set(segments.map(\.activity)).count > 1 else { return nil }
-        var total: [SessionActivity: Int] = [:]
-        for segment in segments {
-            guard let steps = await pedometer.steps(segment.start, segment.end) else { return nil }
-            total[segment.activity, default: 0] += steps
+    /// The steps since the start are read back from the pedometer; the route,
+    /// the distance and the climb measured before the app was killed are lost
+    /// with it, and start again from here.
+    func adopt(_ recovered: RecoveredPhoneWorkout, minutesGoal: Int) async {
+        guard case .idle = state else { return }
+        var session = WalkSession(
+            startedAt: recovered.startedAt,
+            activity: recovered.activity,
+            isActivityUndecided: recovered.isActivityUndecided
+        )
+        bankedElapsed = recovered.elapsed
+        bankedSteps = await pedometer.steps(recovered.startedAt, date.now) ?? 0
+        session.elapsed = bankedElapsed
+        session.steps = bankedSteps
+        route = []
+        routeTask = makeRouteTask()
+        startLiveActivity(minutesGoal: minutesGoal)
+        if recovered.isPaused {
+            state = .paused(session)
+        } else {
+            state = .active(session)
+            beginSegment()
+            tickerTask = makeTickerTask()
         }
-        return total
-    }
-
-    func liveActivityAttributes(minutesGoal: Int) -> WalkActivityAttributes {
-        let activity: SessionActivity? = switch state {
-        case .idle: nil
-        case .active(let session), .paused(let session), .finished(let session):
-            // Nil while « les deux » has not been settled: the Lock Screen then
-            // says « Ta sortie » rather than naming a sport the save is about
-            // to overwrite (issue #246).
-            session.isActivityUndecided ? nil : session.activity
-        }
-        return WalkActivityAttributes(goalMinutes: minutesGoal, activity: activity)
+        tellWatch()
     }
 }
+
+// MARK: - Live Activity
 
 private extension ActiveWalkStore {
     func startLiveActivity(minutesGoal: Int) {
