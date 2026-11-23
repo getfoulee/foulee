@@ -3107,12 +3107,12 @@
         }
       }
     },
-    "On adaptera Foulée à ta pratique." : {
+    "On adaptera Foulée à ta pratique. Ta série, elle, compte toutes tes activités." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foulée will adapt to how you move."
+            "value" : "Foulée will adapt to how you move. Your streak counts every activity."
           }
         }
       }
