@@ -1,5 +1,5 @@
 {
-  "fastestSeconds": 8.94,
-  "recordedOn": "iPhone Duo, iOS 27.1",
-  "tolerancePercent": 30
+  "ratio": 0.9,
+  "recordedOn": "iPhone Duo, iOS 27.2",
+  "tolerancePercent": 12
 }
