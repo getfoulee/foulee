@@ -11,8 +11,8 @@ import XCTest
 /// commit measured 12.6 s and then 10.3 s. Each round therefore also opens
 /// Settings, a system app whose launch Foulée cannot change, right before
 /// Foulée, on the same simulator: a slow runner slows both, a slow app only
-/// one. `tools/launch_time.sh` compares the ratio of the two fastest launches
-/// with `LaunchTimeBudget.json`.
+/// one. `tools/launch_time.sh` compares the median of the rounds' ratios with
+/// `LaunchTimeBudget.json`.
 ///
 /// A wall clock rather than `XCTApplicationLaunchMetric`: on CI's virtual
 /// machines the launch metric launches the app and records nothing. The clock
