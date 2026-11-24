@@ -164,7 +164,7 @@ struct SplitRecorderTests {
 
     @Test("A kilometre's pace is its own time")
     func aKilometresPaceIsItsTime() {
-        let split = WalkSplit(kilometre: 3, duration: 372)
+        let split = KilometreSplit(kilometre: 3, duration: 372)
         #expect(split.paceText == "6'12\"/km")
     }
 }

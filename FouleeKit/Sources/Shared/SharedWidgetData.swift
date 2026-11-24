@@ -35,7 +35,7 @@ nonisolated public struct WidgetSnapshot: Codable, Sendable {
     // Two overlays feed it, and neither is visible from the widget target: the
     // Connect IQ contribution (#189), which lives in the app's own
     // `UserDefaults.standard` and only ever arrives over BLE, and the
-    // post-walk `PendingWalk` target (#158, #203), which lives in `TodayStore`'s
+    // post-walk `PendingSession` target (#158, #203), which lives in `TodayStore`'s
     // memory and covers the minute HealthKit takes to flush a finished walk.
     // Steps and distance take the max of both; minutes only ever see the watch,
     // since the walk overlay deliberately never fakes exercise minutes.
@@ -140,7 +140,7 @@ nonisolated public struct WidgetSnapshot: Codable, Sendable {
     /// **`max` against the travelling floor, not against the stored total.**
     /// Steps, minutes and distance are the three counters the app can have
     /// lifted above raw HealthKit before writing them here — the Connect IQ
-    /// overlay (#189) and the post-walk `PendingWalk` target (#158) — and the
+    /// overlay (#189) and the post-walk `PendingSession` target (#158) — and the
     /// widget process can measure neither, since it only ever talks to
     /// HealthKit. Overwriting them with the live read would discard both on
     /// every render: a Garmin-only user would see numbers lower than the app's

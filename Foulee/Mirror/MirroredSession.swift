@@ -9,7 +9,7 @@ import Foundation
 /// `HKWorkoutSessionType` has exactly two cases — `primary` and `mirrored`.
 /// There is no API for the reverse direction and there will not be one, so a
 /// session measured by the iPhone cannot be shown on the wrist the same way.
-/// `ActiveWalkStore` is the fallback for « no watch », not the other half of a
+/// `ActiveSessionStore` is the fallback for « no watch », not the other half of a
 /// symmetry.
 nonisolated struct MirroredSession: Equatable, Sendable {
     /// When the leg began — **its** start, not the outing's.

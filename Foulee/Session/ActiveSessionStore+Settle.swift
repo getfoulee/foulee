@@ -2,20 +2,20 @@ import FouleeKit
 import Foundation
 
 /// How a finished session is settled before it is saved, and what the Lock
-/// Screen is told it is. Apart from `ActiveWalkStore.swift`, which is at the
+/// Screen is told it is. Apart from `ActiveSessionStore.swift`, which is at the
 /// length SwiftLint allows.
-extension ActiveWalkStore {
+extension ActiveSessionStore {
     /// The attributes ActivityKit is handed for the session in flight — what
     /// the Lock Screen and the Dynamic Island then draw (issue #225).
     ///
     /// Read off the *session*, so the Lock Screen cannot name the activity
     /// differently from what Santé will be stamped with. A member rather than
     /// three lines inside `startLiveActivity`, for the reason #234 pulled
-    /// `ActiveWalkScreen.startIfKnown()` out of its call site: inlined, the step
+    /// `ActiveSessionScreen.startIfKnown()` out of its call site: inlined, the step
     /// that reads `session.activity` could be dropped — back to the hardcoded
     /// `.walking` this issue removes — with the whole suite green, because
     /// `Activity.request` needs a live ActivityKit and never runs in a test
-    /// process. As a plain value it is assertable, and `ActiveWalkStoreTests`
+    /// process. As a plain value it is assertable, and `ActiveSessionStoreTests`
     /// asserts it.
     ///
     /// `nil` activity only when nothing is in flight; the sole production
@@ -39,7 +39,7 @@ extension ActiveWalkStore {
     /// the session will ever carry.
     ///
     /// Internal so a test can drive it without a session in flight.
-    func settled(_ session: WalkSession) async -> WalkSession {
+    func settled(_ session: SessionRecord) async -> SessionRecord {
         guard let endedAt = session.endedAt else { return session }
         let samples = await motionActivityHistory.samples(session.startedAt, endedAt)
         let segments = ActivitySegmentation.segments(samples, from: session.startedAt, to: endedAt)

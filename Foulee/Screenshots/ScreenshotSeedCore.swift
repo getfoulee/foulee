@@ -115,7 +115,7 @@ nonisolated enum ScreenshotSeed {
     ///
     /// On the phone `sessionElapsed` is not a number the session screen is told
     /// — it is the offset `ScreenshotClock` is advanced to when the pedometer
-    /// double emits, so `ActiveWalkStore` computes it exactly as it does in
+    /// double emits, so `ActiveSessionStore` computes it exactly as it does in
     /// production. On the watch it is the elapsed time of the seeded metrics,
     /// because the live workout has no clock of its own to move.
     static let sessionElapsed: TimeInterval = 18 * 60 + 24
@@ -129,7 +129,7 @@ nonisolated enum ScreenshotSeed {
     ///
     /// It does **not** match the phone board's `99 kcal` for the same walk, and
     /// that is the honest answer rather than an oversight: the phone has no
-    /// energy sensor, so `WalkSession.estimatedCalories` multiplies steps by
+    /// energy sensor, so `SessionRecord.estimatedCalories` multiplies steps by
     /// `SessionActivity.kcalPerStep`, while a watch-recorded session carries
     /// measured energy — which is exactly why `WorkoutSummary` prefers the
     /// watch's number over the phone's estimate when both exist.

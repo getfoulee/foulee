@@ -28,10 +28,10 @@ L'app avait de bonnes bases : ni `UIScreen.main`, ni test d'idiome, ni barre d'o
 
 ### D3 — La sortie en cours passe sur deux volets quand la place le permet (#662, #664)
 
-- `LiveWalkLayout` (`Foulee/Features/ActiveWalk/`), commun à `ActiveWalkScreen` et `MirroredWalkScreen`, pose la carte à côté des chiffres **seulement si la fenêtre est plus large que haute et que chaque volet garde au moins 320 pt**, avec 24 pt entre les deux. Sinon, la pile habituelle : une Split View étroite reste empilée.
+- `LiveSessionLayout` (`Foulee/Features/ActiveSession/`), commun à `ActiveSessionScreen` et `MirroredSessionScreen`, pose la carte à côté des chiffres **seulement si la fenêtre est plus large que haute et que chaque volet garde au moins 320 pt**, avec 24 pt entre les deux. Sinon, la pile habituelle : une Split View étroite reste empilée.
 - Sur deux volets, la carte est toujours visible : le bouton « Carte » et « Voir le parcours » disparaissent.
 - L'anneau grandit avec la fenêtre, à partir d'une référence de 440 × 860 pt, jusqu'à 1,4 fois sa taille et dans la colonne de 640 pt. Sur un téléphone, il garde ses 232 pt.
-- La logique est testée sans simulateur (`FouleeTests/LiveWalkLayoutTests.swift`).
+- La logique est testée sans simulateur (`FouleeTests/LiveSessionLayoutTests.swift`).
 
 ### D4 — Seuls les fonds débordent, le contenu reste dans les marges de sécurité (#663)
 
@@ -64,7 +64,7 @@ L'app avait de bonnes bases : ni `UIScreen.main`, ni test d'idiome, ni barre d'o
 ## Conséquences
 
 - Un écran iPhone nouveau pose son contenu avec `screenColumn()` et ne lit jamais l'appareil, l'idiome ni l'orientation.
-- Une taille nouvelle se lit en direct et se teste comme `LiveWalkLayout`, en logique pure.
+- Une taille nouvelle se lit en direct et se teste comme `LiveSessionLayout`, en logique pure.
 - Un changement d'écran met à jour le parcours de `FouleeSmoke` s'il touche à la navigation.
 - Une version proposée à l'App Store a ses planches iPhone Duo, en français et en anglais, prises sur un Mac (`docs/RELEASE.md` § 9).
 - L'app a besoin de Xcode 27.2 au moins, en local comme en CI.

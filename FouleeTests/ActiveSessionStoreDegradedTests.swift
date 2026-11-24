@@ -6,8 +6,8 @@ import Testing
 @testable import Foulee
 
 /// What an outing goes without when iOS refused a permission (issue #611).
-@Suite("ActiveWalkStore degraded states")
-struct ActiveWalkStoreDegradedTests {
+@Suite("ActiveSessionStore degraded states")
+struct ActiveSessionStoreDegradedTests {
     @Test("An outing says what it goes without when iOS refused it")
     func refusedPermissionsAreShown() async {
         await withDependencies {
@@ -22,7 +22,7 @@ struct ActiveWalkStoreDegradedTests {
             motion.access = { .denied }
             $0.motionActivityHistory = motion
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             var spins = 0
             while store.degradedStates.isEmpty, spins < 1_000 {

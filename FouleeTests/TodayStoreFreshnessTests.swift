@@ -112,7 +112,7 @@ struct TodayStoreWalkOverlayStalenessTests {
             let store = TodayStore()
             await store.refresh()
             store.walkWillStart()
-            var session = WalkSession(startedAt: now.value)
+            var session = SessionRecord(startedAt: now.value)
             session.steps = 1_000
             session.distanceMeters = 800
             await store.registerFinishedWalk(session)
@@ -144,7 +144,7 @@ struct TodayStoreWalkOverlayStalenessTests {
             let store = TodayStore()
             await store.refresh()
             store.walkWillStart()
-            var session = WalkSession(startedAt: now.value)
+            var session = SessionRecord(startedAt: now.value)
             session.steps = 2_000
             session.distanceMeters = 1_500
             await store.registerFinishedWalk(session)
@@ -174,7 +174,7 @@ struct TodayStoreWalkOverlayStalenessTests {
             let store = TodayStore()
             await store.refresh()
             store.walkWillStart()
-            var session = WalkSession(startedAt: .now)
+            var session = SessionRecord(startedAt: .now)
             session.steps = 1_000
             session.distanceMeters = 800
             await store.registerFinishedWalk(session)
@@ -204,7 +204,7 @@ struct TodayStoreWalkOverlayStalenessTests {
             await store.refresh()
 
             store.walkWillStart()
-            var first = WalkSession(startedAt: .now)
+            var first = SessionRecord(startedAt: .now)
             first.steps = 500
             first.distanceMeters = 250
             await store.registerFinishedWalk(first)
@@ -214,7 +214,7 @@ struct TodayStoreWalkOverlayStalenessTests {
             // (1 000), not the overlay-inflated snapshot (1 500) — otherwise
             // each walk would stack on the previous one's optimism.
             store.walkWillStart()
-            var second = WalkSession(startedAt: .now)
+            var second = SessionRecord(startedAt: .now)
             second.steps = 500
             second.distanceMeters = 250
             await store.registerFinishedWalk(second)

@@ -19,7 +19,7 @@ import SwiftUI
 ///
 /// That split is the whole design of this screen: the one number that can be
 /// honest in real time is big, and everything that cannot is labelled.
-struct MirroredWalkScreen: View {
+struct MirroredSessionScreen: View {
     let store: MirroredSessionStore
     var onDismiss: () -> Void
 
@@ -30,13 +30,13 @@ struct MirroredWalkScreen: View {
 
     @State private var isShowingRoute = false
     /// Measured, never guessed from the device (#662).
-    @State private var layout = LiveWalkLayout(size: LiveWalkLayout.referenceSize)
+    @State private var layout = LiveSessionLayout(size: LiveSessionLayout.referenceSize)
 
     private var device: MirroredDevice { store.session?.device ?? .appleWatch }
 
     var body: some View {
         NavigationStack {
-            HStack(spacing: LiveWalkLayout.spacing) {
+            HStack(spacing: LiveSessionLayout.spacing) {
                 ScrollView {
                     VStack(spacing: 24) {
                         clock
@@ -51,12 +51,12 @@ struct MirroredWalkScreen: View {
                 // Wider than tall, the route sits beside the figures rather
                 // than behind « Voir le parcours » (#662).
                 if isRouteDrawable && layout.isSideBySide {
-                    WalkRouteMap(strokes: routeStrokes)
+                    SessionRouteMap(strokes: routeStrokes)
                         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
                         .padding([.trailing, .bottom], 20)
                 }
             }
-            .onGeometryChange(for: LiveWalkLayout.self) { LiveWalkLayout(size: $0.size) } action: { layout = $0 }
+            .onGeometryChange(for: LiveSessionLayout.self) { LiveSessionLayout(size: $0.size) } action: { layout = $0 }
             .navigationTitle("Sortie en cours")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -67,7 +67,7 @@ struct MirroredWalkScreen: View {
             .sheet(isPresented: $isShowingRoute) {
                 // Read inside the sheet, so the map grows with each wake
                 // rather than freezing on the route it opened with.
-                WalkRouteMapView(strokes: routeStrokes) { isShowingRoute = false }
+                SessionRouteMapView(strokes: routeStrokes) { isShowingRoute = false }
             }
         }
     }

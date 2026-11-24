@@ -106,7 +106,7 @@ final class TodayStore {
     /// HealthKit reaches it — it can never double-count. Only steps + distance,
     /// which the walk measures directly; minutes/calories stay HealthKit-driven
     /// (faking exercise minutes could falsely complete a streak).
-    private struct PendingWalk {
+    private struct PendingSession {
         var targetSteps: Int
         var targetDistanceKm: Double
         /// startOfDay when the walk was registered — the overlay is only
@@ -114,7 +114,7 @@ final class TodayStore {
         var day: Date
         var registeredAt: Date
     }
-    @ObservationIgnored private var pendingWalk: PendingWalk?
+    @ObservationIgnored private var pendingWalk: PendingSession?
 
     /// The totals the post-walk overlay is currently holding up, or nil when no
     /// walk is pending. Read by `widgetPublication(stored:)`: the overlay lifts
@@ -265,11 +265,11 @@ final class TodayStore {
     }
 
     /// A walk just finished: overlay its steps + distance immediately (see
-    /// `PendingWalk`) and refresh so the home, widgets and Watch reflect it
+    /// `PendingSession`) and refresh so the home, widgets and Watch reflect it
     /// without waiting for the iPhone to flush the walk into HealthKit.
-    func registerFinishedWalk(_ session: WalkSession) async {
+    func registerFinishedWalk(_ session: SessionRecord) async {
         let now = date.now
-        pendingWalk = PendingWalk(
+        pendingWalk = PendingSession(
             targetSteps: walkBaselineSteps + session.steps,
             targetDistanceKm: walkBaselineDistanceKm + session.distanceKm,
             day: Calendar.current.startOfDay(for: now),
@@ -437,7 +437,7 @@ final class TodayStore {
             activeWeekdays: activeDays.calendarWeekdays
         )
         // Apply the optimistic post-walk overlay: show the freshly-walked steps
-        // and distance until HealthKit's own totals reach them (see PendingWalk).
+        // and distance until HealthKit's own totals reach them (see PendingSession).
         let displaySteps = max(metrics.steps, pendingWalk?.targetSteps ?? 0)
         let displayDistanceKm = max(metrics.distanceKm, pendingWalk?.targetDistanceKm ?? 0)
         return TodaySnapshot(

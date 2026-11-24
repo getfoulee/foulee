@@ -10,12 +10,12 @@ import WatchKit
 /// on its own after `shownFor`, or at a touch: the wearer glances, and the
 /// session comes back without a gesture.
 struct WatchKilometreAlertModifier: ViewModifier {
-    let splits: [WalkSplit]
+    let splits: [KilometreSplit]
 
     /// Long enough to raise the wrist after the tap and read four figures.
     static let shownFor: Duration = .seconds(10)
 
-    @State private var shown: WalkSplit?
+    @State private var shown: KilometreSplit?
 
     func body(content: Content) -> some View {
         content
@@ -45,14 +45,14 @@ struct WatchKilometreAlertModifier: ViewModifier {
 
 extension View {
     /// Announce each new kilometre of `splits` (issue #382).
-    func kilometreAlert(_ splits: [WalkSplit]) -> some View {
+    func kilometreAlert(_ splits: [KilometreSplit]) -> some View {
         modifier(WatchKilometreAlertModifier(splits: splits))
     }
 }
 
 /// The kilometre just run: its time first, then how it was run.
 struct WatchKilometreAlert: View {
-    let split: WalkSplit
+    let split: KilometreSplit
 
     var body: some View {
         VStack(spacing: 4) {

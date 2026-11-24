@@ -8,7 +8,7 @@ import CoreGraphics
 /// Decided on the size, never on the device or the orientation (#659): a
 /// phone is locked in portrait and as wide as `referenceSize` at most, so it
 /// keeps the layout it always had.
-nonisolated struct LiveWalkLayout: Equatable {
+nonisolated struct LiveSessionLayout: Equatable {
     /// The widest phone and the height its walk screen has to share: the
     /// space the fixed sizes were drawn for.
     static let referenceSize = CGSize(width: 440, height: 860)

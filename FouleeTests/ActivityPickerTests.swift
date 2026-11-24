@@ -21,18 +21,18 @@ struct ActivityPickerTests {
 
     private func screen(
         _ intent: ActivityStartIntent,
-        store: ActiveWalkStore = ActiveWalkStore()
-    ) -> ActiveWalkScreen {
-        ActiveWalkScreen(minutesGoal: 20, intent: intent, store: store, onDismiss: { _ in })
+        store: ActiveSessionStore = ActiveSessionStore()
+    ) -> ActiveSessionScreen {
+        ActiveSessionScreen(minutesGoal: 20, intent: intent, store: store, onDismiss: { _ in })
     }
 
-    private func session(of store: ActiveWalkStore) -> WalkSession? {
+    private func session(of store: ActiveSessionStore) -> SessionRecord? {
         guard case .active(let session) = store.state else { return nil }
         return session
     }
 
     /// Runs `body` with every sensor the store touches on `start` stubbed —
-    /// the same set `ActiveWalkStoreTests` uses, so nothing here reaches a
+    /// the same set `ActiveSessionStoreTests` uses, so nothing here reaches a
     /// real pedometer, altimeter or Santé.
     private func withStubbedSensors(
         history: MotionActivityHistory = .testValue,
@@ -65,7 +65,7 @@ struct ActivityPickerTests {
 
     @Test("« Les deux » starts straight away, like every other mode")
     func bothStartsWithoutAsking() async {
-        let store = ActiveWalkStore()
+        let store = ActiveSessionStore()
         await withStubbedSensors {
             screen(.ask, store: store).startIfKnown()
         }
@@ -77,7 +77,7 @@ struct ActivityPickerTests {
     @Test("A mode that answers the question is not overruled")
     func aChosenModeStaysChosen() async {
         for activity in SessionActivity.allCases {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             await withStubbedSensors {
                 screen(.start(activity), store: store).startIfKnown()
             }
@@ -92,7 +92,7 @@ struct ActivityPickerTests {
 
     @Test("An unsettled session names no sport, on screen or on the Lock Screen")
     func anUndecidedSessionNamesNothing() async {
-        let store = ActiveWalkStore()
+        let store = ActiveSessionStore()
         await withStubbedSensors {
             screen(.ask, store: store).startIfKnown()
         }
@@ -104,7 +104,7 @@ struct ActivityPickerTests {
 
     @Test("A settled session names its sport everywhere")
     func aDecidedSessionNamesItsSport() async {
-        let store = ActiveWalkStore()
+        let store = ActiveSessionStore()
         await withStubbedSensors {
             screen(.start(.running), store: store).startIfKnown()
         }
@@ -131,16 +131,16 @@ struct ActivityPickerTests {
         )
     }
 
-    private func undecidedSession(endingAfter seconds: TimeInterval) -> WalkSession {
-        var session = WalkSession(startedAt: start, activity: .walking, isActivityUndecided: true)
+    private func undecidedSession(endingAfter seconds: TimeInterval) -> SessionRecord {
+        var session = SessionRecord(startedAt: start, activity: .walking, isActivityUndecided: true)
         session.endedAt = start.addingTimeInterval(seconds)
         return session
     }
 
     @Test("An outing mostly run is recorded as a run")
     func theDominantActivityWins() async {
-        let store = ActiveWalkStore()
-        var decided: WalkSession?
+        let store = ActiveSessionStore()
+        var decided: SessionRecord?
         await withStubbedSensors(history: history(runningAfter: 600)) {
             decided = await store.settled(undecidedSession(endingAfter: 1_800))
         }
@@ -150,8 +150,8 @@ struct ActivityPickerTests {
 
     @Test("An outing mostly walked is recorded as a walk")
     func aMostlyWalkedOutingStaysAWalk() async {
-        let store = ActiveWalkStore()
-        var decided: WalkSession?
+        let store = ActiveSessionStore()
+        var decided: SessionRecord?
         await withStubbedSensors(history: history(runningAfter: 1_500)) {
             decided = await store.settled(undecidedSession(endingAfter: 1_800))
         }
@@ -160,10 +160,10 @@ struct ActivityPickerTests {
 
     @Test("A session the user chose the sport of is handed back untouched")
     func aChosenSessionIsNeverOverridden() async {
-        let store = ActiveWalkStore()
-        var chosen = WalkSession(startedAt: start, activity: .walking)
+        let store = ActiveSessionStore()
+        var chosen = SessionRecord(startedAt: start, activity: .walking)
         chosen.endedAt = start.addingTimeInterval(1_800)
-        var decided: WalkSession?
+        var decided: SessionRecord?
         // A history that screams « course » from end to end.
         await withStubbedSensors(history: history(runningAfter: 0)) {
             decided = await store.settled(chosen)
@@ -175,8 +175,8 @@ struct ActivityPickerTests {
 
     @Test("A device that says nothing leaves the session a walk")
     func asilentDeviceUnderCredits() async {
-        let store = ActiveWalkStore()
-        var decided: WalkSession?
+        let store = ActiveSessionStore()
+        var decided: SessionRecord?
         // `testValue` reports itself unavailable and returns no samples — a
         // simulator, or a phone whose motion permission was refused.
         await withStubbedSensors {
@@ -192,8 +192,8 @@ extension ActivityPickerTests {
 
     @Test("A mixed outing is broken down stretch by stretch")
     func aMixedOutingIsBrokenDown() async {
-        let store = ActiveWalkStore()
-        var settled: WalkSession?
+        let store = ActiveSessionStore()
+        var settled: SessionRecord?
         await withStubbedSensors(history: history(runningAfter: 600), pedometer: countingPedometer) {
             settled = await store.settled(undecidedSession(endingAfter: 1_800))
         }
@@ -203,8 +203,8 @@ extension ActivityPickerTests {
 
     @Test("A homogeneous outing is not broken down at all")
     func aHomogeneousOutingIsLeftAlone() async {
-        let store = ActiveWalkStore()
-        var settled: WalkSession?
+        let store = ActiveSessionStore()
+        var settled: SessionRecord?
         // Running from the first second: one stretch, one rate.
         await withStubbedSensors(history: history(runningAfter: 0), pedometer: countingPedometer) {
             settled = await store.settled(undecidedSession(endingAfter: 1_800))
@@ -217,8 +217,8 @@ extension ActivityPickerTests {
 
     @Test("A pedometer that will not answer leaves the old estimate alone")
     func anUnanswerablePedometerDeclines() async {
-        let store = ActiveWalkStore()
-        var settled: WalkSession?
+        let store = ActiveSessionStore()
+        var settled: SessionRecord?
         // `testValue`'s `steps` returns nil — no step counting on this device.
         await withStubbedSensors(history: history(runningAfter: 600)) {
             settled = await store.settled(undecidedSession(endingAfter: 1_800))
@@ -232,10 +232,10 @@ extension ActivityPickerTests {
 
     @Test("A chosen mode keeps its label and still gets the real breakdown")
     func aChosenModeIsStillPricedHonestly() async {
-        let store = ActiveWalkStore()
-        var chosen = WalkSession(startedAt: start, activity: .walking)
+        let store = ActiveSessionStore()
+        var chosen = SessionRecord(startedAt: start, activity: .walking)
         chosen.endedAt = start.addingTimeInterval(1_800)
-        var settled: WalkSession?
+        var settled: SessionRecord?
         await withStubbedSensors(history: history(runningAfter: 600), pedometer: countingPedometer) {
             settled = await store.settled(chosen)
         }

@@ -9,7 +9,7 @@ extension TodayStore {
     ///
     /// `fetched` is nil when the metrics read was refused, and that decides
     /// everything: the overlay **rides the metrics leg**, exactly like the
-    /// post-walk `PendingWalk` one. A refused read stays `.zero` here, so
+    /// post-walk `PendingSession` one. A refused read stays `.zero` here, so
     /// `isMetricsKnown` is false and `widgetPublication(stored:)` carries the
     /// stored counters forward untouched — a value only the watch measured can
     /// never reach the app group, the Watch or the widgets on its own (#201).

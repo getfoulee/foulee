@@ -7,11 +7,11 @@ import Testing
 
 /// The phone's session, shown and steered from the wrist (issue #342): the
 /// phone stays the only recorder and tells the wrist where it stands.
-@Suite("ActiveWalkStore on the wrist")
-struct ActiveWalkStoreWatchTests {
+@Suite("ActiveSessionStore on the wrist")
+struct ActiveSessionStoreWatchTests {
     private let frozen = Date(timeIntervalSince1970: 1_700_000_000)
 
-    private func withStore(_ body: (ActiveWalkStore, LockedRef<[PhoneSessionSnapshot?]>) async throws -> Void) async throws {
+    private func withStore(_ body: (ActiveSessionStore, LockedRef<[PhoneSessionSnapshot?]>) async throws -> Void) async throws {
         let told = LockedRef<[PhoneSessionSnapshot?]>([])
         try await withDependencies {
             $0.date = .constant(frozen)
@@ -20,7 +20,7 @@ struct ActiveWalkStoreWatchTests {
             $0.continuousClock = TestClock()
             $0.watchLive = WatchLiveClient { told.set(told.value + [$0]) }
         } operation: {
-            try await body(ActiveWalkStore(), told)
+            try await body(ActiveSessionStore(), told)
         }
     }
 
@@ -49,7 +49,7 @@ struct ActiveWalkStoreWatchTests {
             await store.stop()
             store.reset()
             #expect(told.value.last == .some(nil))
-            #expect(ActiveWalkStore.current !== store)
+            #expect(ActiveSessionStore.current !== store)
         }
     }
 
@@ -91,7 +91,7 @@ struct ActiveWalkStoreWatchTests {
     func commandsAreCarriedOut() async throws {
         try await withStore { store, _ in
             store.start()
-            #expect(ActiveWalkStore.current === store)
+            #expect(ActiveSessionStore.current === store)
 
             #expect(await store.perform(.pause))
             guard case .paused = store.state else { Issue.record("expected paused"); return }

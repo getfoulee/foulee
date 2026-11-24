@@ -4,11 +4,11 @@ import Foundation
 import Testing
 @testable import Foulee
 
-@Suite("WalkReminderScheduler")
-struct WalkReminderSchedulerTests {
+@Suite("OutingReminderScheduler")
+struct OutingReminderSchedulerTests {
     @Test("Reminder time is exactly 10 minutes before window start")
     func reminderTimeLead() {
-        let time = WalkReminderScheduler.reminderTime(
+        let time = OutingReminderScheduler.reminderTime(
             forWindowStart: TimeOfDay(hour: 12, minute: 0)
         )
         #expect(time == TimeOfDay(hour: 11, minute: 50))
@@ -16,7 +16,7 @@ struct WalkReminderSchedulerTests {
 
     @Test("Reminder time clamps to 00:00 if window start is earlier than the lead")
     func reminderTimeClamp() {
-        let time = WalkReminderScheduler.reminderTime(
+        let time = OutingReminderScheduler.reminderTime(
             forWindowStart: TimeOfDay(hour: 0, minute: 5)
         )
         #expect(time == TimeOfDay(hour: 0, minute: 0))
@@ -28,7 +28,7 @@ struct WalkReminderSchedulerTests {
         prefs.activeDays = [.tuesday, .friday, .monday]
         prefs.walkWindowStart = TimeOfDay(hour: 12, minute: 30)
 
-        let reminders = WalkReminderScheduler.reminders(for: prefs)
+        let reminders = OutingReminderScheduler.reminders(for: prefs)
 
         #expect(reminders.map(\.weekday) == [.monday, .tuesday, .friday])
         #expect(reminders.allSatisfy { $0.time == TimeOfDay(hour: 12, minute: 20) })
@@ -37,11 +37,11 @@ struct WalkReminderSchedulerTests {
 
     @Test("Sync sends the computed schedule to the notifications client")
     func syncCallsClient() async {
-        let captured = LockedRef<[WalkReminder]>([])
+        let captured = LockedRef<[OutingReminder]>([])
         await withDependencies {
             $0.notifications = NotificationsClient(
                 requestAuthorization: { true },
-                replaceWalkReminders: { captured.set($0) },
+                replaceOutingReminders: { captured.set($0) },
                 scheduleSnooze: { _ in }
             )
         } operation: {
@@ -49,7 +49,7 @@ struct WalkReminderSchedulerTests {
             prefs.activeDays = [.monday, .wednesday]
             prefs.walkWindowStart = TimeOfDay(hour: 12, minute: 0)
 
-            let scheduler = WalkReminderScheduler()
+            let scheduler = OutingReminderScheduler()
             await scheduler.sync(with: prefs)
 
             #expect(captured.value.map(\.weekday) == [.monday, .wednesday])
@@ -62,7 +62,7 @@ struct WalkReminderSchedulerTests {
         let prefs = UserPreferences(defaults: cleanDefaults())
         prefs.notificationsEnabled = false
         prefs.activeDays = [.monday, .tuesday]
-        #expect(WalkReminderScheduler.reminders(for: prefs).isEmpty)
+        #expect(OutingReminderScheduler.reminders(for: prefs).isEmpty)
     }
 
     @Test("A throwing client is swallowed at the scheduler boundary")
@@ -71,12 +71,12 @@ struct WalkReminderSchedulerTests {
         await withDependencies {
             $0.notifications = NotificationsClient(
                 requestAuthorization: { true },
-                replaceWalkReminders: { _ in throw Boom() },
+                replaceOutingReminders: { _ in throw Boom() },
                 scheduleSnooze: { _ in }
             )
         } operation: {
             let prefs = UserPreferences(defaults: cleanDefaults())
-            await WalkReminderScheduler().sync(with: prefs)
+            await OutingReminderScheduler().sync(with: prefs)
             // No assertion needed: the test passes by not propagating.
         }
     }
@@ -87,13 +87,13 @@ struct WalkReminderSchedulerTests {
         await withDependencies {
             $0.notifications = NotificationsClient(
                 requestAuthorization: { requested.set(true); return true },
-                replaceWalkReminders: { _ in },
+                replaceOutingReminders: { _ in },
                 scheduleSnooze: { _ in }
             )
         } operation: {
             let prefs = UserPreferences(defaults: cleanDefaults())
             prefs.notificationsEnabled = true
-            await WalkReminderScheduler().sync(with: prefs)
+            await OutingReminderScheduler().sync(with: prefs)
             #expect(requested.value)
         }
     }
@@ -104,13 +104,13 @@ struct WalkReminderSchedulerTests {
         await withDependencies {
             $0.notifications = NotificationsClient(
                 requestAuthorization: { requested.set(true); return true },
-                replaceWalkReminders: { _ in },
+                replaceOutingReminders: { _ in },
                 scheduleSnooze: { _ in }
             )
         } operation: {
             let prefs = UserPreferences(defaults: cleanDefaults())
             prefs.notificationsEnabled = false
-            await WalkReminderScheduler().sync(with: prefs)
+            await OutingReminderScheduler().sync(with: prefs)
             #expect(!requested.value)
         }
     }
@@ -121,11 +121,11 @@ struct WalkReminderSchedulerTests {
         await withDependencies {
             $0.notifications = NotificationsClient(
                 requestAuthorization: { true },
-                replaceWalkReminders: { _ in },
+                replaceOutingReminders: { _ in },
                 scheduleSnooze: { interval in captured.set(interval) }
             )
         } operation: {
-            await WalkReminderScheduler().snooze(after: 1_800)
+            await OutingReminderScheduler().snooze(after: 1_800)
             #expect(captured.value == 1_800)
         }
     }
@@ -136,11 +136,11 @@ struct WalkReminderSchedulerTests {
         await withDependencies {
             $0.notifications = NotificationsClient(
                 requestAuthorization: { true },
-                replaceWalkReminders: { _ in },
+                replaceOutingReminders: { _ in },
                 scheduleSnooze: { _ in throw Boom() }
             )
         } operation: {
-            await WalkReminderScheduler().snooze(after: 30)
+            await OutingReminderScheduler().snooze(after: 30)
             // Passes by not propagating.
         }
     }

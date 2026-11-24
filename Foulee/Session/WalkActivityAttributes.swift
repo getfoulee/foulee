@@ -11,8 +11,14 @@ import Foundation
 /// app-group entitlement (`FouleeLiveActivity.entitlements` is empty), so the
 /// snapshot the Série and Aujourd'hui widgets read is out of reach and nothing
 /// else can tell it what the session in flight is (issue #225).
+///
+/// The one type that kept its « Walk » name when the others became sport-
+/// neutral (#722). ActivityKit finds a running activity by its attributes
+/// type, and both clean-up sweeps reach a stranded one only through
+/// `Activity<WalkActivityAttributes>.activities`: renamed, an activity left by
+/// the previous build would be out of reach of everything that can end it.
 nonisolated struct WalkActivityAttributes: ActivityAttributes {
-    typealias ContentState = WalkActivityState
+    typealias ContentState = SessionState
 
     var goalMinutes: Int
 
@@ -73,7 +79,7 @@ nonisolated struct WalkActivityAttributes: ActivityAttributes {
 
     /// Pushed on walk events (start, pause, resume, pedometer samples) —
     /// the clock itself runs system-side off `timerBasis`.
-    nonisolated struct WalkActivityState: Codable, Hashable, Sendable {
+    nonisolated struct SessionState: Codable, Hashable, Sendable {
         /// Virtual start of the walk: now minus accumulated elapsed,
         /// recomputed on every push so `Text(timerInterval:)` keeps the
         /// clock running while the app is suspended.
@@ -124,7 +130,7 @@ nonisolated extension WalkActivityAttributes {
     ///
     /// The failure it is insurance against: both sweeps that clean up a
     /// stranded activity — `FouleeApp.endOrphanedWalkActivitiesOnce` at
-    /// process start and `ActiveWalkStore.startLiveActivity` before requesting
+    /// process start and `ActiveSessionStore.startLiveActivity` before requesting
     /// a new one — reach an activity only by enumerating
     /// `Activity<WalkActivityAttributes>.activities`, and ActivityKit offers no
     /// documented way to end an activity whose attributes it cannot rebuild.

@@ -57,7 +57,7 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     /// while it runs: « Ta marche » / « Ta course ».
     ///
     /// Spelled here rather than on either surface because two of them show it
-    /// at the same moment — `ActiveWalkScreen`'s header on the phone and the
+    /// at the same moment — `ActiveSessionScreen`'s header on the phone and the
     /// Live Activity's row on the Lock Screen — and #222 asked for one voice
     /// across the surfaces a user sees during a session. A literal in each
     /// would let them drift, which is exactly what happened when #225 moved
@@ -72,7 +72,7 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
         sport.descriptor.sessionTitle ?? ""
     }
 
-    /// Kilocalories per step used by `WalkSession.estimatedCalories`.
+    /// Kilocalories per step used by `SessionRecord.estimatedCalories`.
     ///
     /// The phone deliberately writes no `activeEnergyBurned` samples (they
     /// would double-count the daily total — see `HealthKitClient+Live`), so for

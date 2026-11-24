@@ -47,7 +47,7 @@ struct TodayStoreWalkBaselineTests {
             #expect(store.lastError == "Santé verrouillée")
 
             store.walkWillStart()
-            var session = WalkSession(startedAt: .now)
+            var session = SessionRecord(startedAt: .now)
             session.steps = 1_200
             session.distanceMeters = 1_000
             await store.registerFinishedWalk(session)
@@ -84,7 +84,7 @@ struct TodayStoreWalkBaselineTests {
             // Keeping the baseline on failure is a fallback, never a latch:
             // the walk starts from the freshest measurement.
             store.walkWillStart()
-            var first = WalkSession(startedAt: .now)
+            var first = SessionRecord(startedAt: .now)
             first.steps = 1_000
             first.distanceMeters = 800
             await store.registerFinishedWalk(first)
@@ -95,7 +95,7 @@ struct TodayStoreWalkBaselineTests {
             hkSteps.set(2_000)
             await store.refresh()
             store.walkWillStart()
-            var second = WalkSession(startedAt: .now)
+            var second = SessionRecord(startedAt: .now)
             second.steps = 1_000
             second.distanceMeters = 800
             await store.registerFinishedWalk(second)
@@ -128,7 +128,7 @@ struct TodayStoreWalkBaselineTests {
             let store = TodayStore()
             await store.refresh()
             store.walkWillStart()
-            var session = WalkSession(startedAt: now.value)
+            var session = SessionRecord(startedAt: now.value)
             session.steps = 1_000
             session.distanceMeters = 800
             await store.registerFinishedWalk(session)
@@ -164,7 +164,7 @@ struct TodayStoreWalkBaselineTests {
             let store = TodayStore()
             await store.refresh()
             store.walkWillStart()
-            var session = WalkSession(startedAt: .now)
+            var session = SessionRecord(startedAt: .now)
             session.steps = 30
             session.distanceMeters = 25
             await store.registerFinishedWalk(session)
@@ -205,7 +205,7 @@ struct TodayStoreWalkBaselineTests {
             failing.set(true)
             await store.refresh()
             store.walkWillStart()
-            var session = WalkSession(startedAt: now.value)
+            var session = SessionRecord(startedAt: now.value)
             session.steps = 1_000
             session.distanceMeters = 800
             await store.registerFinishedWalk(session)
@@ -249,7 +249,7 @@ struct TodayStoreWalkBaselineTests {
             let store = TodayStore()
             await store.refresh()
             store.walkWillStart()
-            var session = WalkSession(startedAt: .now)
+            var session = SessionRecord(startedAt: .now)
             session.steps = 1_200
             session.distanceMeters = 1_000
             await store.registerFinishedWalk(session)

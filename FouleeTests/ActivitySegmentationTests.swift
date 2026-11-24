@@ -202,8 +202,8 @@ struct ActivitySegmentationTests {
 struct SegmentedCaloriesTests {
     private let start = Date(timeIntervalSince1970: 1_754_000_000)
 
-    private func session(steps: Int, activity: SessionActivity) -> WalkSession {
-        var session = WalkSession(startedAt: start, activity: activity)
+    private func session(steps: Int, activity: SessionActivity) -> SessionRecord {
+        var session = SessionRecord(startedAt: start, activity: activity)
         session.steps = steps
         return session
     }

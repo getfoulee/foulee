@@ -13,11 +13,11 @@ extension View {
         scheme: ColorScheme
     ) -> some View {
         fullScreenCover(isPresented: isPresented) {
-            MirroredWalkScreen(store: store, onDismiss: { isPresented.wrappedValue = false })
+            MirroredSessionScreen(store: store, onDismiss: { isPresented.wrappedValue = false })
                 .preferredColorScheme(scheme)
         }
         // A mirror arriving *during* a phone walk: the watch wins. Closing the
-        // cover is the whole of it — `ActiveWalkScreen` owns the walk's store
+        // cover is the whole of it — `ActiveSessionScreen` owns the walk's store
         // and already calls `reset()` on disappear, which cancels the sensors
         // and ends the Live Activity. A `discard()` of our own would duplicate
         // an exit path that is already correct.

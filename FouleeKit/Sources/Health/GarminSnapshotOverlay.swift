@@ -17,7 +17,7 @@ import Foundation
 ///    the same day later; a sample written from this channel would sit next to
 ///    it forever and double-count the user's own Health data, with no way for
 ///    Foulée to take it back. The snapshot lives only as this local overlay —
-///    the same shape as the post-walk `PendingWalk` overlay.
+///    the same shape as the post-walk `PendingSession` overlay.
 /// 2. **Channels are never added — per metric, per day, a `max`.** Garmin's
 ///    intensity minutes and the workouts Garmin Connect writes into Santé are
 ///    usually the very same activity; summing them would invent minutes the

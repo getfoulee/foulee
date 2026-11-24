@@ -17,7 +17,7 @@ nonisolated enum ScreenshotDoubles {
     static let healthKit = HealthKitClient(
         requestAuthorization: { true },
         todayMetrics: { ScreenshotSeed.todayMetrics },
-        // Deliberately a no-op: the session capture runs `ActiveWalkStore.stop()`,
+        // Deliberately a no-op: the session capture runs `ActiveSessionStore.stop()`,
         // which is the app's only workout write. Here it persists nothing.
         saveWorkout: { _ in },
         dailyMinutes: { ScreenshotSeed.dailyMinutes(daysBack: $0) },
@@ -63,7 +63,7 @@ nonisolated enum ScreenshotDoubles {
         // "authorized" so the hero bell renders enabled rather than the
         // "refusées dans Réglages" warning state.
         authorizationStatus: { .authorized },
-        replaceWalkReminders: { _ in },
+        replaceOutingReminders: { _ in },
         scheduleSnooze: { _ in },
         configureHydrationCategory: { _ in },
         replaceHydrationReminders: { _ in },

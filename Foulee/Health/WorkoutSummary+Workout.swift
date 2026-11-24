@@ -22,7 +22,7 @@ nonisolated extension WorkoutSummary {
         // metadata second — the reverse of distance above (issue #223).
         //
         // Our metadata number is not a measurement: it is
-        // `WalkSession.estimatedCalories`, kilocalories-per-step times steps.
+        // `SessionRecord.estimatedCalories`, kilocalories-per-step times steps.
         // Preferring it over a real `activeEnergyBurned` total meant an
         // estimate could overwrite something HealthKit actually measured, and
         // the estimate is stored in the workout forever. In practice this

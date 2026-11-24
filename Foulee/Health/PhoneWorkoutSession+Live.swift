@@ -48,7 +48,7 @@ private actor PhoneWorkoutSessionHolder {
 
     func resume() { session?.resume() }
 
-    func finish(_ outing: WalkSession) async throws -> Bool {
+    func finish(_ outing: SessionRecord) async throws -> Bool {
         guard let session, let builder, let endedAt = outing.endedAt else { return false }
         var saved = false
         defer {

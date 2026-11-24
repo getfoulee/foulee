@@ -13,8 +13,8 @@ import Testing
 /// hop no test can hold is the `HKWorkoutConfiguration` itself
 /// (`HealthKitClient.liveValue` builds a real `HKWorkoutBuilder`); it is
 /// covered by `SessionActivityTests.healthKitMapping` on one side and
-/// `ActiveWalkStoreTests.stopSavesTheStartedActivity` on the other, which meet
-/// at `WalkSession.activity`.
+/// `ActiveSessionStoreTests.stopSavesTheStartedActivity` on the other, which meet
+/// at `SessionRecord.activity`.
 @Suite("TodayStore activity")
 struct TodayStoreActivityTests {
     /// Runs `body` with preferences backed by a throwaway suite, so nothing
@@ -38,7 +38,7 @@ struct TodayStoreActivityTests {
             store.apply(preferences: preferences)
             #expect(store.startIntent == .start(.walking))
 
-            // This is what `TodayScreen` hands `ActiveWalkScreen`, which hands
+            // This is what `TodayScreen` hands `ActiveSessionScreen`, which hands
             // it to the session, which the live client turns into
             // `HKWorkoutConfiguration.activityType`. Before #223 the phone
             // wrote `.walking` here whatever the user had chosen.

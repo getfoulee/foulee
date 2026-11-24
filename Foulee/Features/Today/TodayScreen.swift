@@ -12,7 +12,7 @@ struct TodayScreen: View {
     @State private var hydration = HydrationStore()
     @State private var isWalking = false
     /// An outing iOS kept running while the app was gone (#729), reopened.
-    @State private var recoveredWalk: ActiveWalkStore?
+    @State private var recoveredWalk: ActiveSessionStore?
     /// What a shortcut asked to start (issue #604), in place of the store's
     /// `startIntent` for that one session.
     @State private var shortcutIntent: ActivityStartIntent?
@@ -32,7 +32,7 @@ struct TodayScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.colorScheme) private var systemColorScheme
     @Environment(\.openURL) private var openURL
-    private let scheduler = WalkReminderScheduler()
+    private let scheduler = OutingReminderScheduler()
 
     /// The app theme, applied to every modal — sheets/covers don't inherit the
     /// root `.preferredColorScheme`, so without this they'd render in the
@@ -441,7 +441,7 @@ private extension TodayScreen {
     /// The session screen, on a fresh store or on one that took back an
     /// outing the app had lost (#729).
     var walkScreen: some View {
-        ActiveWalkScreen(
+        ActiveSessionScreen(
             minutesGoal: store.minutesGoal,
             // Resolved by the store, not here (issues #223, #224): the
             // mode it mirrors is the same one it syncs to the Watch,
@@ -449,7 +449,7 @@ private extension TodayScreen {
             // « les deux » it is `.ask`, and the session screen opens
             // on the picker.
             intent: shortcutIntent ?? store.startIntent,
-            store: recoveredWalk ?? ActiveWalkStore(),
+            store: recoveredWalk ?? ActiveSessionStore(),
             onDismiss: { session in
                 isWalking = false
                 recoveredWalk = nil
@@ -460,7 +460,7 @@ private extension TodayScreen {
             },
             // Backed out of the picker: close, and register nothing.
             // The baseline `walkWillStart` captured is simply left
-            // unused — no `PendingWalk` is created, so the home shows
+            // unused — no `PendingSession` is created, so the home shows
             // the same numbers it already showed.
         )
         .preferredColorScheme(preferredScheme)
@@ -469,7 +469,7 @@ private extension TodayScreen {
     /// Back on the session screen when iOS kept the outing's session running
     /// after the app was killed (#729), rather than on a home that ignores it.
     func reopenRecoveredWalk() async {
-        guard !isWalking, let walk = await ActiveWalkStore.recovered(minutesGoal: store.minutesGoal) else { return }
+        guard !isWalking, let walk = await ActiveSessionStore.recovered(minutesGoal: store.minutesGoal) else { return }
         recoveredWalk = walk
         isWalking = true
     }

@@ -75,7 +75,7 @@ nonisolated struct SessionNotifier {
     }
 }
 
-/// What `ActiveWalkStore` tells the notifier, injectable so its tests leave
+/// What `ActiveSessionStore` tells the notifier, injectable so its tests leave
 /// the defaults alone.
 nonisolated struct SessionNotificationsClient: Sendable {
     var recordedHere: @Sendable (_ start: Date, _ end: Date) -> Void

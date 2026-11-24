@@ -7,15 +7,15 @@ import Testing
 
 /// The outing on the iPhone's `HKWorkoutSession` (#729): who saves it, and
 /// how one that outlived the app comes back.
-@Suite("ActiveWalkStore session")
-struct ActiveWalkStoreSessionTests {
+@Suite("ActiveSessionStore session")
+struct ActiveSessionStoreSessionTests {
     private let frozen = Date(timeIntervalSince1970: 1_700_000_000)
 
     /// A session double recording what it was asked, finishing with `saves`.
     private func session(
         saves: Bool,
         started: LockedRef<[String]>,
-        finished: LockedRef<WalkSession?>,
+        finished: LockedRef<SessionRecord?>,
         recovered: RecoveredPhoneWorkout? = nil
     ) -> PhoneWorkoutSessionClient {
         PhoneWorkoutSessionClient(
@@ -32,7 +32,7 @@ struct ActiveWalkStoreSessionTests {
         )
     }
 
-    private func healthKit(saved: LockedRef<WalkSession?>) -> HealthKitClient {
+    private func healthKit(saved: LockedRef<SessionRecord?>) -> HealthKitClient {
         var client = HealthKitClient.testValue
         client.saveWorkout = { saved.set($0) }
         return client
@@ -41,7 +41,7 @@ struct ActiveWalkStoreSessionTests {
     @Test("The session opens with the sport the outing starts with")
     func startOpensTheSession() async {
         let started = LockedRef<[String]>([])
-        let finished = LockedRef<WalkSession?>(nil)
+        let finished = LockedRef<SessionRecord?>(nil)
         await withDependencies {
             $0.date = .constant(frozen)
             $0.pedometer = .testValue
@@ -49,7 +49,7 @@ struct ActiveWalkStoreSessionTests {
             $0.continuousClock = TestClock()
             $0.phoneWorkoutSession = session(saves: true, started: started, finished: finished)
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start(activity: .running)
             await store.stop()
             #expect(started.value == ["running false"])
@@ -58,8 +58,8 @@ struct ActiveWalkStoreSessionTests {
 
     @Test("When the session's builder saves the outing, it is not saved a second time")
     func sessionSavesOnce() async {
-        let saved = LockedRef<WalkSession?>(nil)
-        let finished = LockedRef<WalkSession?>(nil)
+        let saved = LockedRef<SessionRecord?>(nil)
+        let finished = LockedRef<SessionRecord?>(nil)
         await withDependencies {
             $0.date = .constant(frozen)
             $0.pedometer = .testValue
@@ -67,7 +67,7 @@ struct ActiveWalkStoreSessionTests {
             $0.continuousClock = TestClock()
             $0.phoneWorkoutSession = session(saves: true, started: LockedRef([]), finished: finished)
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             await store.stop()
             #expect(finished.value?.startedAt == frozen)
@@ -78,7 +78,7 @@ struct ActiveWalkStoreSessionTests {
 
     @Test("Without a session that saved it, the outing is saved as before")
     func fallbackSave() async {
-        let saved = LockedRef<WalkSession?>(nil)
+        let saved = LockedRef<SessionRecord?>(nil)
         await withDependencies {
             $0.date = .constant(frozen)
             $0.pedometer = .testValue
@@ -86,7 +86,7 @@ struct ActiveWalkStoreSessionTests {
             $0.continuousClock = TestClock()
             $0.phoneWorkoutSession = session(saves: false, started: LockedRef([]), finished: LockedRef(nil))
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start(activity: .running)
             await store.stop()
             #expect(saved.value?.activity == .running)
@@ -113,7 +113,7 @@ struct ActiveWalkStoreSessionTests {
                 saves: true, started: LockedRef([]), finished: LockedRef(nil), recovered: recovered
             )
         } operation: {
-            let store = await ActiveWalkStore.recovered(minutesGoal: 20)
+            let store = await ActiveSessionStore.recovered(minutesGoal: 20)
             guard case .active(let session) = store?.state else {
                 Issue.record("expected an active outing, got \(String(describing: store?.state))")
                 return
@@ -143,7 +143,7 @@ struct ActiveWalkStoreSessionTests {
                 saves: true, started: LockedRef([]), finished: LockedRef(nil), recovered: recovered
             )
         } operation: {
-            let store = await ActiveWalkStore.recovered(minutesGoal: 20)
+            let store = await ActiveSessionStore.recovered(minutesGoal: 20)
             guard case .paused(let session) = store?.state else {
                 Issue.record("expected a paused outing, got \(String(describing: store?.state))")
                 return
@@ -158,7 +158,7 @@ struct ActiveWalkStoreSessionTests {
         await withDependencies {
             $0.phoneWorkoutSession = .testValue
         } operation: {
-            #expect(await ActiveWalkStore.recovered(minutesGoal: 20) == nil)
+            #expect(await ActiveSessionStore.recovered(minutesGoal: 20) == nil)
         }
     }
 }

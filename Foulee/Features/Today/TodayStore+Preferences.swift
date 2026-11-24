@@ -13,7 +13,7 @@ extension TodayStore {
     /// store rather than in `TodayScreen`: a `View` body is not reachable from
     /// a test process, so with the `mode -> intent` step inlined there the
     /// whole phone path could go back to stamping walks with the suite green.
-    /// `TodayScreen` only forwards this value to `ActiveWalkScreen`.
+    /// `TodayScreen` only forwards this value to `ActiveSessionScreen`.
     var startIntent: ActivityStartIntent { ActivityStartIntent(mode: activityMode) }
 
     /// What « Commencer une sortie » starts (issue #604): the sport the

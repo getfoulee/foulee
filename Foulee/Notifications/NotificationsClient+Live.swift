@@ -3,7 +3,7 @@ import Foundation
 @preconcurrency import UserNotifications
 
 nonisolated extension NotificationsClient {
-    /// `UNUserNotificationCenter`-backed implementation. `replaceWalkReminders`
+    /// `UNUserNotificationCenter`-backed implementation. `replaceOutingReminders`
     /// always wipes the previous Foulée requests first so the user's pending
     /// queue can't drift out of sync with their preferences.
     static let liveValue: NotificationsClient = {
@@ -15,7 +15,7 @@ nonisolated extension NotificationsClient {
             authorizationStatus: {
                 await center.notificationSettings().authorizationStatus
             },
-            replaceWalkReminders: { reminders in
+            replaceOutingReminders: { reminders in
                 let existing = await center.pendingNotificationRequests()
                 let toRemove = existing
                     .map(\.identifier)
@@ -25,7 +25,7 @@ nonisolated extension NotificationsClient {
                 for reminder in reminders {
                     let content = UNMutableNotificationContent()
                     content.title = "Foulée"
-                    content.body = WalkReminder.body
+                    content.body = OutingReminder.body
                     content.sound = .default
 
                     var components = DateComponents()
@@ -48,7 +48,7 @@ nonisolated extension NotificationsClient {
             scheduleSnooze: { interval in
                 let content = UNMutableNotificationContent()
                 content.title = "Foulée"
-                content.body = WalkReminder.body
+                content.body = OutingReminder.body
                 content.sound = .default
 
                 let trigger = UNTimeIntervalNotificationTrigger(

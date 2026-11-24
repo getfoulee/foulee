@@ -130,7 +130,7 @@ nonisolated final class PhoneWatchSync: NSObject, WCSessionDelegate, @unchecked 
             return
         }
         Task { @MainActor in
-            let done = await ActiveWalkStore.current?.perform(command) ?? false
+            let done = await ActiveSessionStore.current?.perform(command) ?? false
             FouleeLog.session.notice(
                 "commande Watch \(raw, privacy: .public) : \(done ? "exécutée" : "sans séance", privacy: .public)"
             )

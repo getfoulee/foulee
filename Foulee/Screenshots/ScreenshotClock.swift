@@ -6,7 +6,7 @@ import os
 ///
 /// Frozen at `ScreenshotSeed.instant`, with exactly one permitted move: the
 /// session double advances it to a **fixed** offset so the running-session
-/// screen shows a real duration instead of `00:00`. `ActiveWalkStore` computes
+/// screen shows a real duration instead of `00:00`. `ActiveSessionStore` computes
 /// the elapsed time as `date.now - segmentStart`, so with a clock that never
 /// moves the timer would read zero — and a clock that followed real time would
 /// make the capture depend on how fast the UI test tapped.

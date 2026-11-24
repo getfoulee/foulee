@@ -3,7 +3,7 @@ import Toybox.Math;
 
 //! The arithmetic of a session, apart from any screen or sensor (ADR 0009,
 //! D9): the clock, the pace and the kilometre alert, stated the way the Apple
-//! Watch states them (`WalkFormatting.swift`, `WatchWorkoutStore+Pace.swift`).
+//! Watch states them (`SessionFormatting.swift`, `WatchWorkoutStore+Pace.swift`).
 module SessionMath {
 
     //! Under 50 m a pace is the division amplifying a distance estimate into a

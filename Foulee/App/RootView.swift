@@ -12,7 +12,7 @@ struct RootView: View {
     private let whatsNew: WhatsNewStore
     private let cloud: SettingsKeyValueStore?
     @Environment(\.scenePhase) private var scenePhase
-    private let scheduler = WalkReminderScheduler()
+    private let scheduler = OutingReminderScheduler()
     private let hydrationScheduler = HydrationReminderScheduler()
     private let recapScheduler = RecapReminderScheduler()
 

@@ -100,7 +100,7 @@ nonisolated public struct WatchSessionSnapshot: Codable, Equatable, Sendable {
         route = (try? container.decodeIfPresent([MirroredRoutePortion].self, forKey: .route)) ?? []
     }
 
-    /// Drawn by `MirroredWalkScreen` — the phone's only view of a distance it
+    /// Drawn by `MirroredSessionScreen` — the phone's only view of a distance it
     /// did not measure.
     public var distanceKm: Double { distanceMeters / 1_000 }
 

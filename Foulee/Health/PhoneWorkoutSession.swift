@@ -33,7 +33,7 @@ nonisolated struct PhoneWorkoutSessionClient: Sendable {
     /// outing settled on is not the one the session opened with (« les
     /// deux »): the session is then discarded, and the caller saves the outing
     /// itself under the right sport, because a stamp in Santé is permanent.
-    var finish: @Sendable (WalkSession) async throws -> Bool
+    var finish: @Sendable (SessionRecord) async throws -> Bool
     /// Take back the session iOS kept running while the app was gone.
     var recover: @Sendable () async -> RecoveredPhoneWorkout?
 }

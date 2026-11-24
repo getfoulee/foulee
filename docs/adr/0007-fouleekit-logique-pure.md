@@ -41,7 +41,7 @@ Le code partagé entre les cibles était compilé plusieurs fois. Chaque extensi
    - **Recap** : le Bilan (`Recap`, `RecapPeriod`, `RecapWater`, `OutingDay`), avec `Weekday` (Preferences) et `HydrationMath` (Hydration) qu'il utilise. Restent dans l'app le store et la carte de partage, qui dessine en SwiftUI.
    - **Streak** : le calcul de la série (`StreakCalculator`) et son année (`StreakSummary`, `WeekdayStat`), qu'affiche le Bilan (ADR 0004, D12).
    - **Preferences** : `TimeOfDay`, l'heure et les plages horaires des réglages. `UserPreferences` reste dans l'app : c'est un store `@Observable` adossé à `UserDefaults`. `ThemeMode` aussi, qui importe SwiftUI.
-   - **Walk** : `WalkSession`, la séance en cours et son estimation d'énergie. Restent dans l'app `ActiveWalkStore`, les clients `Pedometer` et `Altimeter` (swift-dependencies, CoreMotion) et `WalkActivityAttributes` (ActivityKit).
+   - **Session** : `SessionRecord`, la séance en cours et son estimation d'énergie. Restent dans l'app `ActiveSessionStore`, les clients `Pedometer` et `Altimeter` (swift-dependencies, CoreMotion) et `WalkActivityAttributes` (ActivityKit).
 
 Restent listés dans `Project.swift`, parce qu'ils dépendent d'un framework absent de macOS ou de l'état de l'app :
 

@@ -2,7 +2,7 @@ import Foundation
 
 /// Immutable-ish snapshot of an in-flight or finished walk. The store mutates
 /// a `var` of this; the view reads it directly.
-nonisolated public struct WalkSession: Equatable, Sendable {
+nonisolated public struct SessionRecord: Equatable, Sendable {
     public var startedAt: Date
     public var endedAt: Date?
     public var elapsed: TimeInterval = 0
@@ -16,7 +16,7 @@ nonisolated public struct WalkSession: Equatable, Sendable {
     /// What this session is, and what Santé will record it as (issue #223).
     /// Defaults to `.walking`: it is what every session the app ever wrote was
     /// stamped with, so a caller that doesn't set it keeps the old behaviour
-    /// rather than getting a surprise. `ActiveWalkStore.start` sets it from the
+    /// rather than getting a surprise. `ActiveSessionStore.start` sets it from the
     /// user's `ActivityMode`.
     public var activity: SessionActivity = .walking
 

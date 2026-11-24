@@ -8,12 +8,12 @@ import SwiftUI
 /// One line per stretch, in that stretch's colour: a single stroke for the
 /// phone's own walk, one per portion for an outing mirrored from the wrist
 /// (issue #334).
-struct WalkRouteMapView: View {
+struct SessionRouteMapView: View {
     let strokes: [RouteLines.Stroke]
     var onClose: () -> Void
 
     init(route: [Coordinate], onClose: @escaping () -> Void) {
-        self.strokes = WalkRouteMap.strokes(route: route)
+        self.strokes = SessionRouteMap.strokes(route: route)
         self.onClose = onClose
     }
 
@@ -24,7 +24,7 @@ struct WalkRouteMapView: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            WalkRouteMap(strokes: strokes, isFullBleed: true)
+            SessionRouteMap(strokes: strokes, isFullBleed: true)
             SheetCloseButton(accessibilityLabel: "Fermer la carte", action: onClose)
         }
     }
@@ -33,7 +33,7 @@ struct WalkRouteMapView: View {
 /// The route itself, or a friendly wait until there is a line to draw: the
 /// sheet's content, and the map beside the figures on a screen wider than
 /// tall (#662).
-struct WalkRouteMap: View {
+struct SessionRouteMap: View {
     let strokes: [RouteLines.Stroke]
     /// The map runs under the bars and the screen's margins; the wait stays
     /// in the safe area, clear of the camera and the hinge (#663).
@@ -99,7 +99,7 @@ struct WalkRouteMap: View {
 }
 
 #Preview("Route") {
-    WalkRouteMapView(
+    SessionRouteMapView(
         route: [
             Coordinate(latitude: 48.8634, longitude: 2.3270),
             Coordinate(latitude: 48.8638, longitude: 2.3285),
@@ -111,5 +111,5 @@ struct WalkRouteMap: View {
 }
 
 #Preview("Empty") {
-    WalkRouteMapView(route: [], onClose: {})
+    SessionRouteMapView(route: [], onClose: {})
 }

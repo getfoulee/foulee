@@ -3,7 +3,7 @@ import Testing
 @testable import FouleeKit
 
 @Suite("WalkFormatting")
-struct WalkFormattingTests {
+struct SessionFormattingTests {
     /// A source that wrote no climb shows none, not « ↑ 0 m » (#534).
     @Test("A climb reads « ↑ 1 250 m », and none under a metre")
     func climbText() {

@@ -1,4 +1,4 @@
-// Same as `ActiveWalkStore` and `FouleeApp`: `Activity` predates Sendable
+// Same as `ActiveSessionStore` and `FouleeApp`: `Activity` predates Sendable
 // annotations, and this type only ever touches it from the main actor.
 @preconcurrency import ActivityKit
 import FouleeKit
@@ -73,14 +73,14 @@ final class MirroredLiveActivity {
         figures: WatchSessionSnapshot?,
         outingStartedAt: Date,
         device: MirroredDevice = .appleWatch
-    ) -> WalkActivityAttributes.WalkActivityState {
+    ) -> WalkActivityAttributes.SessionState {
         guard let figures else {
-            return WalkActivityAttributes.WalkActivityState(
+            return WalkActivityAttributes.SessionState(
                 timerBasis: outingStartedAt, pausedAt: nil, elapsed: 0,
                 steps: 0, distanceKm: 0, activeCalories: 0
             )
         }
-        return WalkActivityAttributes.WalkActivityState(
+        return WalkActivityAttributes.SessionState(
             timerBasis: figures.outingStartedAt,
             pausedAt: figures.isPaused ? figures.sentAt : nil,
             elapsed: figures.elapsed(at: figures.sentAt),
@@ -92,7 +92,7 @@ final class MirroredLiveActivity {
         )
     }
 
-    private func start(with state: WalkActivityAttributes.WalkActivityState) {
+    private func start(with state: WalkActivityAttributes.SessionState) {
         let appState = Self.describe(UIApplication.shared.applicationState)
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
             FouleeLog.liveActivity.notice("miroir : Live Activities désactivées dans Réglages (app \(appState, privacy: .public))")
@@ -137,7 +137,7 @@ final class MirroredLiveActivity {
     }
 
     /// The activities this type starts: no sport in their attributes, where
-    /// the phone's own walk always names one (`ActiveWalkStore`).
+    /// the phone's own walk always names one (`ActiveSessionStore`).
     private static func mirroredActivities() -> [Activity<WalkActivityAttributes>] {
         Activity<WalkActivityAttributes>.activities.filter { $0.attributes.activity == nil }
     }
