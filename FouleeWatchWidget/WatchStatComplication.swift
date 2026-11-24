@@ -26,24 +26,6 @@ enum WatchStatMetric: String, AppEnum {
         ]
     }
 
-    var identifier: HKQuantityTypeIdentifier {
-        switch self {
-        case .steps: .stepCount
-        case .minutes: .appleExerciseTime
-        case .distance: .distanceWalkingRunning
-        case .calories: .activeEnergyBurned
-        }
-    }
-
-    var unit: HKUnit {
-        switch self {
-        case .steps: .count()
-        case .minutes: .minute()
-        case .distance: .meter()
-        case .calories: .kilocalorie()
-        }
-    }
-
     /// Goal for the circular gauge (steps/minutes only; 0 = no gauge).
     var goal: Double {
         switch self {
@@ -53,17 +35,11 @@ enum WatchStatMetric: String, AppEnum {
         }
     }
 
-    var icon: String {
-        switch self {
-        case .steps: "shoeprints.fill"
-        case .minutes: "timer"
-        case .distance: "ruler.fill"
-        case .calories: "flame.fill"
-        }
-    }
-
-    /// The kit's metric: its unit on screen, its figure in words for VoiceOver.
-    var walkMetric: WalkMetric {
+    /// The kit's metric behind this case: its source, symbol, unit and every
+    /// way of writing its figure (#721). The cases themselves stay here: an
+    /// App Intent's display names must be literals in its own target, and the
+    /// type keeps its name so configured complications keep their metric.
+    var metricID: MetricID {
         switch self {
         case .steps: .steps
         case .minutes: .minutes
@@ -197,7 +173,7 @@ struct WatchStatProvider: AppIntentTimelineProvider {
     /// caller knows when the cache fallback is allowed.
     private static func queriedTodaySum(for metric: WatchStatMetric) async -> Double? {
         guard HKHealthStore.isHealthDataAvailable() else { return nil }
-        return await HealthKitTodaySums.sumIfAvailable(metric.identifier, unit: metric.unit, store: HKHealthStore())
+        return await HealthKitTodaySums.sumIfAvailable(metric.metricID, store: HKHealthStore())
     }
 }
 
@@ -231,7 +207,7 @@ struct WatchStatComplicationView: View {
         // « 8,2k » and « kcal » are read letter by letter (issue #600).
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(entry.metric.name))
-        .accessibilityValue(entry.metric.walkMetric.spokenText(entry.value))
+        .accessibilityValue(entry.metric.metricID.spokenText(entry.value))
     }
 
     private var circular: some View {
@@ -239,13 +215,13 @@ struct WatchStatComplicationView: View {
             if entry.metric.goal > 0 {
                 Gauge(
                     value: min(entry.value / entry.metric.goal, 1),
-                    label: { Image(systemName: entry.metric.icon) },
+                    label: { Image(systemName: entry.metric.metricID.glyph) },
                     currentValueLabel: { Text(compactValue).minimumScaleFactor(0.5) }
                 )
                 .gaugeStyle(.accessoryCircular)
             } else {
                 VStack(spacing: 1) {
-                    Image(systemName: entry.metric.icon).font(.system(size: 12, weight: .bold))
+                    Image(systemName: entry.metric.metricID.glyph).font(.system(size: 12, weight: .bold))
                     Text(compactValue).font(.system(size: 15, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.5)
                 }
@@ -255,29 +231,19 @@ struct WatchStatComplicationView: View {
 
     private var rectangular: some View {
         HStack(spacing: 6) {
-            Image(systemName: entry.metric.icon).font(.system(size: 20, weight: .bold))
+            Image(systemName: entry.metric.metricID.glyph).font(.system(size: 20, weight: .bold))
             VStack(alignment: .leading, spacing: 0) {
                 Text(valueText)
                     .font(.system(size: 18, weight: .bold, design: .rounded)).monospacedDigit()
-                Text(entry.metric.walkMetric.unit).font(.system(size: 11)).foregroundStyle(.secondary)
+                Text(entry.metric.metricID.unit).font(.system(size: 11)).foregroundStyle(.secondary)
             }
         }
     }
 
     private var inline: some View {
-        Label("\(valueText) \(entry.metric.walkMetric.unit)", systemImage: entry.metric.icon)
+        Label("\(valueText) \(entry.metric.metricID.unit)", systemImage: entry.metric.metricID.glyph)
     }
 
-    private var valueText: String {
-        entry.metric == .distance ? entry.value.decimalText() : Int(entry.value).groupedText()
-    }
-
-    private var compactValue: String {
-        switch entry.metric {
-        case .steps, .calories:
-            entry.value >= 1_000 ? (entry.value / 1_000).decimalText() + "k" : "\(Int(entry.value))"
-        case .minutes: "\(Int(entry.value))"
-        case .distance: entry.value.decimalText()
-        }
-    }
+    private var valueText: String { entry.metric.metricID.formatted(entry.value) }
+    private var compactValue: String { entry.metric.metricID.compactText(entry.value) }
 }

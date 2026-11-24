@@ -49,7 +49,7 @@ struct WalkLiveActivity: Widget {
                         Text(context.state.distanceKm.kmText())
                             .font(.system(.title3, design: .rounded, weight: .semibold))
                             .monospacedDigit()
-                            .accessibilityLabel(WalkMetric.distance.spokenText(context.state.distanceKm))
+                            .accessibilityLabel(MetricID.distance.spokenText(context.state.distanceKm))
                         // The climb under the distance, when there is one
                         // (issue #576); never in the compact views.
                         if let elevation = context.state.elevation, let text = elevation.text {
@@ -66,15 +66,15 @@ struct WalkLiveActivity: Widget {
                         statCell(
                             value: context.state.steps.groupedText(),
                             label: "pas",
-                            icon: "shoe",
-                            spoken: Text(WalkMetric.steps.spokenText(Double(context.state.steps)))
+                            icon: MetricID.steps.glyph,
+                            spoken: Text(MetricID.steps.spokenText(Double(context.state.steps)))
                         )
                         statCell(
                             value: context.state.activeCalories.map { "\($0)" } ?? "—",
                             label: "kcal",
-                            icon: "flame.fill",
+                            icon: MetricID.calories.glyph,
                             spoken: context.state.activeCalories
-                                .map { Text(WalkMetric.calories.spokenText(Double($0))) }
+                                .map { Text(MetricID.calories.spokenText(Double($0))) }
                                 ?? Text("Calories indisponibles")
                         )
                         statCell(
@@ -171,7 +171,7 @@ struct LockScreenView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .accessibilityLabel(Text(
-                        "\(WalkMetric.steps.spokenText(Double(state.steps))), \(WalkMetric.distance.spokenText(state.distanceKm))"
+                        "\(MetricID.steps.spokenText(Double(state.steps))), \(MetricID.distance.spokenText(state.distanceKm))"
                     ))
                 // Its own line: beside the steps and the distance it would
                 // truncate on a small phone (issue #576).

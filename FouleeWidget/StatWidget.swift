@@ -25,8 +25,10 @@ enum StatMetric: String, AppEnum {
         ]
     }
 
-    /// The kit's twin of this case, which spells its figures for VoiceOver.
-    var walkMetric: WalkMetric {
+    /// The kit's metric behind this case, which holds its symbol, its source
+    /// and every way of writing its figure (#721). The cases themselves stay
+    /// here: an App Intent's display names must be literals in its own target.
+    var metricID: MetricID {
         switch self {
         case .steps: .steps
         case .minutes: .minutes
@@ -165,12 +167,12 @@ struct StatWidgetView: View {
     /// The families that draw a `FreshnessStamp`, which VoiceOver then reads.
     private var showsStamp: Bool { family == .accessoryRectangular || family == .systemSmall }
 
-    private var summaryLabel: Text { Text(entry.metric.walkMetric.title) }
+    private var summaryLabel: Text { Text(entry.metric.metricID.title) }
 
     /// « 8 240 pas sur 10 000 pas », « 4,2 kilomètres »: « 4,2k » and
     /// « 8 240 / 10 000 » are read as written (issue #601).
     private var spokenValue: String {
-        let metric = entry.metric.walkMetric
+        let metric = entry.metric.metricID
         return hasGoal ? metric.spokenText(entry.value, goal: entry.goal) : metric.spokenText(entry.value)
     }
 
@@ -241,14 +243,7 @@ struct StatWidgetView: View {
     private var hasGoal: Bool { entry.goal > 0 }
     private var progress: Double { entry.goal > 0 ? min(entry.value / entry.goal, 1) : 0 }
 
-    private var icon: String {
-        switch entry.metric {
-        case .steps: "shoeprints.fill"
-        case .minutes: "timer"
-        case .distance: "ruler.fill"
-        case .calories: "flame.fill"
-        }
-    }
+    private var icon: String { entry.metric.metricID.glyph }
 
     /// The value and its unit, one phrase per metric so the unit is translated
     /// with the number around it.
@@ -279,21 +274,8 @@ struct StatWidgetView: View {
         }
     }
 
-    private var valueText: String {
-        entry.metric == .distance ? entry.value.decimalText() : Int(entry.value).groupedText()
-    }
-
-    private var goalText: String {
-        entry.metric == .distance ? entry.goal.decimalText() : Int(entry.goal).groupedText()
-    }
-
+    private var valueText: String { entry.metric.metricID.formatted(entry.value) }
+    private var goalText: String { entry.metric.metricID.formatted(entry.goal) }
     /// Shorter form for the tight Lock Screen circle (e.g. `4,2k`).
-    private var compactValue: String {
-        switch entry.metric {
-        case .steps, .calories:
-            entry.value >= 1_000 ? (entry.value / 1_000).decimalText() + "k" : "\(Int(entry.value))"
-        case .minutes: "\(Int(entry.value))"
-        case .distance: entry.value.decimalText()
-        }
-    }
+    private var compactValue: String { entry.metric.metricID.compactText(entry.value) }
 }

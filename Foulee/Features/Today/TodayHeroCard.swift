@@ -136,7 +136,7 @@ struct TodayHeroCard: View {
                     tint: ReadablePalette.greenText,
                     fill: FouleeColor.success.opacity(0.16)
                 )
-                Text("Bravo, \(Text(durationText(minutes: snapshot.minutes)).foregroundStyle(WalkMetric.minutes.tint)) d'activité")
+                Text("Bravo, \(Text(durationText(minutes: snapshot.minutes)).foregroundStyle(MetricID.minutes.tint)) d'activité")
                     .font(FouleeFont.title3)
                     .accessibilityLabel("Bravo, \(spokenDurationText(minutes: snapshot.minutes)) d'activité")
                 // The weather stays once the outing is done, in one line —
@@ -170,7 +170,7 @@ struct TodayHeroCard: View {
                 )
                 // Same shape as « Bravo » once done: what the day is at, then
                 // the weather on one line.
-                Text("Encore \(Text(durationText(minutes: minutesToGo)).foregroundStyle(WalkMetric.minutes.tint)) d'activité")
+                Text("Encore \(Text(durationText(minutes: minutesToGo)).foregroundStyle(MetricID.minutes.tint)) d'activité")
                     .font(FouleeFont.title3)
                     .accessibilityLabel("Encore \(spokenDurationText(minutes: minutesToGo)) d'activité")
                 windowDetail

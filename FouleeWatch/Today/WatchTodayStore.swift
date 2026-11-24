@@ -44,13 +44,7 @@ final class WatchTodayStore {
     /// message tells the user what matters: it didn't count.
     private static let saveFailedMessage = String(localized: "Verre non enregistré — réessaie")
 
-    private static let readTypes: Set<HKObjectType> = [
-        HKQuantityType(.stepCount),
-        HKQuantityType(.appleExerciseTime),
-        HKQuantityType(.distanceWalkingRunning),
-        HKQuantityType(.activeEnergyBurned),
-        waterType
-    ]
+    private static let readTypes = Set<HKObjectType>(MetricID.allCases.map(\.quantityType)).union([waterType])
 
     init() {
         // The hydration banner's "J'ai bu" action saves from another object
@@ -128,11 +122,11 @@ final class WatchTodayStore {
         _ = try? await store.requestAuthorization(toShare: [Self.waterType], read: Self.readTypes)
         waterDenied = store.authorizationStatus(for: Self.waterType) == .sharingDenied
 
-        async let stepsValue = sumToday(.stepCount, unit: .count())
-        async let minutesValue = sumToday(.appleExerciseTime, unit: .minute())
-        async let distanceValue = sumToday(.distanceWalkingRunning, unit: .meter())
-        async let caloriesValue = sumToday(.activeEnergyBurned, unit: .kilocalorie())
-        async let waterValue = sumToday(.dietaryWater, unit: .literUnit(with: .milli))
+        async let stepsValue = sumToday(.steps)
+        async let minutesValue = sumToday(.minutes)
+        async let distanceValue = sumToday(.distance)
+        async let caloriesValue = sumToday(.calories)
+        async let waterValue = HealthKitTodaySums.sumIfAvailable(.dietaryWater, unit: .literUnit(with: .milli), store: store)
 
         let newSteps = await stepsValue
         let newMinutes = await minutesValue
@@ -148,7 +142,7 @@ final class WatchTodayStore {
         // would be a fake value, not an empty one.
         if let newSteps { steps = Int(newSteps) }
         if let newMinutes { minutes = Int(newMinutes) }
-        if let newDistance { distanceKm = newDistance / 1_000 }
+        if let newDistance { distanceKm = newDistance }
         if let newCalories { calories = Int(newCalories) }
         if let newWater { waterML = Int(newWater) }
     }
@@ -190,8 +184,8 @@ final class WatchTodayStore {
         // observer can land in the middle of this one.
         loadGeneration += 1
         let generation = loadGeneration
-        async let stepsValue = sumToday(.stepCount, unit: .count())
-        async let minutesValue = sumToday(.appleExerciseTime, unit: .minute())
+        async let stepsValue = sumToday(.steps)
+        async let minutesValue = sumToday(.minutes)
         let newSteps = await stepsValue
         let newMinutes = await minutesValue
         guard generation == loadGeneration else { return }
@@ -246,7 +240,7 @@ final class WatchTodayStore {
         guard HKHealthStore.isHealthDataAvailable() else { return }
         loadGeneration += 1
         let generation = loadGeneration
-        let value = await sumToday(.dietaryWater, unit: .literUnit(with: .milli))
+        let value = await HealthKitTodaySums.sumIfAvailable(.dietaryWater, unit: .literUnit(with: .milli), store: store)
         guard generation == loadGeneration, let value else { return }
         waterML = Int(value)
     }
@@ -284,8 +278,8 @@ final class WatchTodayStore {
     }
     #endif
 
-    /// Today's sum for a quantity, or nil when HealthKit can't answer.
-    private func sumToday(_ identifier: HKQuantityTypeIdentifier, unit: HKUnit) async -> Double? {
-        await HealthKitTodaySums.sumIfAvailable(identifier, unit: unit, store: store)
+    /// Today's total of `metric`, or nil when HealthKit can't answer.
+    private func sumToday(_ metric: MetricID) async -> Double? {
+        await HealthKitTodaySums.sumIfAvailable(metric, store: store)
     }
 }

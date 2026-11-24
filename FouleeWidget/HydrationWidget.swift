@@ -233,15 +233,6 @@ struct HydrationWidgetView: View {
     }
 
     private func ring(lineWidth: CGFloat) -> some View {
-        ZStack {
-            Circle().stroke(.gray.opacity(0.25), lineWidth: lineWidth)
-            Circle()
-                .trim(from: 0, to: progress > 0 ? max(progress, 0.03) : 0)
-                .stroke(HydrationWidget.waterGradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                // The ring takes the accent colour in the tinted and accented
-                // Home Screen modes, where the teal would turn white (#601).
-                .widgetAccentable()
-        }
+        WidgetRing(progress: progress, lineWidth: lineWidth, gradient: HydrationWidget.waterGradient)
     }
 }

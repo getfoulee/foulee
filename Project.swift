@@ -264,6 +264,7 @@ let project = Project(
                 "Foulee/Shared/ActivityPalette.swift",
                 "Foulee/Shared/SessionActivity+Tint.swift",
                 "Foulee/Shared/MetricPalette.swift",
+                "Foulee/Shared/MetricID+Style.swift",
                 // Their light-mode shades (#599); the watch keeps the dark ones.
                 "Foulee/Shared/ReadablePalette.swift",
                 // Fixed-size counters that follow Dynamic Type (#600).

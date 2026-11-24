@@ -37,7 +37,7 @@ nonisolated public func spokenDayText(
     goals: (steps: Int, minutes: Int)? = nil,
     locale: Locale = .app
 ) -> String {
-    let figures = [(WalkMetric.steps, steps, goals?.steps), (WalkMetric.minutes, minutes, goals?.minutes)]
+    let figures = [(MetricID.steps, steps, goals?.steps), (MetricID.minutes, minutes, goals?.minutes)]
     return figures.map { metric, value, goal in
         goal.map { metric.spokenText(Double(value), goal: Double($0), locale: locale) }
             ?? metric.spokenText(Double(value), locale: locale)

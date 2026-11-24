@@ -35,15 +35,11 @@ struct WatchSessionDayPage: View {
                 streak
                 goal(
                     .steps,
-                    icon: "shoeprints.fill",
-                    tint: MetricPalette.steps,
                     value: today.steps,
                     goal: today.stepsGoal
                 )
                 goal(
                     .minutes,
-                    icon: "timer",
-                    tint: MetricPalette.minutes,
                     value: today.minutes,
                     goal: today.minutesGoal
                 )
@@ -85,12 +81,12 @@ struct WatchSessionDayPage: View {
     /// already validated draws a full bar instead of overflowing.
     ///
     /// VoiceOver hears « 8 240 pas sur 10 000 pas » (issue #600).
-    private func goal(_ metric: WalkMetric, icon: String, tint: Color, value: Int, goal: Int) -> some View {
+    private func goal(_ metric: MetricID, value: Int, goal: Int) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: 4) {
-                Image(systemName: icon)
+                Image(systemName: metric.glyph)
                     .scaledSystemFont(size: 11, weight: .bold)
-                    .foregroundStyle(tint)
+                    .foregroundStyle(metric.tint)
                 Text("\(value.groupedText()) / \(goal.groupedText()) \(metric.unit)")
                     .font(.caption2)
                     .monospacedDigit()
@@ -100,7 +96,7 @@ struct WatchSessionDayPage: View {
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
             }
             ProgressView(value: Self.fraction(value, of: goal))
-                .tint(tint)
+                .tint(metric.tint)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(metric.spokenText(Double(value), goal: Double(goal)))

@@ -126,11 +126,6 @@ struct TodayProvider: TimelineProvider {
 }
 
 struct TodayProgressView: View {
-    /// The steps line gets the footprints glyph rather than a walking figure
-    /// (issue #222): it labels a step count, which a run produces just as well,
-    /// and it is already what `StatWidget` and the watch's Today grid use for
-    /// the same number.
-    private static let stepsIcon = "shoeprints.fill"
     /// The activity figure for the circular family, where the symbol stands for
     /// the app rather than for a metric — so it follows the user's mode, like
     /// the app's own ring (issue #222). It comes from the app-group snapshot,
@@ -189,8 +184,8 @@ struct TodayProgressView: View {
         HStack(spacing: 8) {
             rings(lineWidth: 4, inset: 5).frame(width: 34, height: 34)
             VStack(alignment: .leading, spacing: 1) {
-                Label("\(entry.steps.groupedText()) / \(entry.stepsGoal.groupedText())", systemImage: Self.stepsIcon)
-                Label("\(entry.minutes) / \(entry.minutesGoal) min", systemImage: "timer")
+                Label("\(entry.steps.groupedText()) / \(entry.stepsGoal.groupedText())", systemImage: MetricID.steps.glyph)
+                Label("\(entry.minutes) / \(entry.minutesGoal) min", systemImage: MetricID.minutes.glyph)
                 FreshnessStamp(fetchedAt: entry.fetchedAt).foregroundStyle(.secondary)
             }
             .font(.system(size: 12, weight: .semibold))
@@ -198,7 +193,7 @@ struct TodayProgressView: View {
     }
 
     private var inlineView: some View {
-        Label("\(entry.steps.groupedText()) pas · \(entry.minutes) min", systemImage: Self.stepsIcon)
+        Label("\(entry.steps.groupedText()) pas · \(entry.minutes) min", systemImage: MetricID.steps.glyph)
     }
 
     private var smallView: some View {
@@ -232,20 +227,12 @@ struct TodayProgressView: View {
     /// colour and the minutes ring stays white, so the two still part.
     private func rings(lineWidth: CGFloat, inset: CGFloat) -> some View {
         ZStack {
-            arc(stepsProgress, lineWidth: lineWidth, gradient: TodayProgressWidget.stepsGradient, accentable: true)
-            arc(minutesProgress, lineWidth: lineWidth, gradient: TodayProgressWidget.minutesGradient)
+            WidgetRing(progress: stepsProgress, lineWidth: lineWidth, gradient: TodayProgressWidget.stepsGradient)
+            WidgetRing(
+                progress: minutesProgress, lineWidth: lineWidth,
+                gradient: TodayProgressWidget.minutesGradient, accentable: false
+            )
                 .padding(inset)
-        }
-    }
-
-    private func arc(_ progress: Double, lineWidth: CGFloat, gradient: LinearGradient, accentable: Bool = false) -> some View {
-        ZStack {
-            Circle().stroke(.gray.opacity(0.25), lineWidth: lineWidth)
-            Circle()
-                .trim(from: 0, to: progress > 0 ? max(progress, 0.03) : 0)
-                .stroke(gradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                .widgetAccentable(accentable)
         }
     }
 }

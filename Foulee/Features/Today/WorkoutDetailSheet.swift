@@ -111,20 +111,20 @@ struct WorkoutDetailSheet: View {
                 .tracking(1)
             AdaptiveGrid(columns: 2, accessibilityColumns: 1, spacing: 12) {
                 metricCard(
-                    icon: WalkMetric.distance.icon,
-                    tint: WalkMetric.distance.tint,
+                    icon: MetricID.distance.glyph,
+                    tint: MetricID.distance.tint,
                     label: "Distance",
                     value: detail.summary.distanceKm.kmText()
                 )
                 metricCard(
-                    icon: WalkMetric.steps.icon,
-                    tint: WalkMetric.steps.tint,
+                    icon: MetricID.steps.glyph,
+                    tint: MetricID.steps.tint,
                     label: "Pas",
                     value: detail.stepsCount.groupedText()
                 )
                 metricCard(
-                    icon: WalkMetric.calories.icon,
-                    tint: WalkMetric.calories.tint,
+                    icon: MetricID.calories.glyph,
+                    tint: MetricID.calories.tint,
                     label: "Calories",
                     value: detail.summary.caloriesText
                 )

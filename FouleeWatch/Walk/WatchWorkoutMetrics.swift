@@ -196,9 +196,9 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
             let totals = activityTotals
             figures += [
                 spokenDurationText(seconds: totals.elapsed),
-                WalkMetric.steps.spokenText(Double(totals.steps)),
-                WalkMetric.distance.spokenText(totals.distanceKm),
-                WalkMetric.calories.spokenText(Double(totals.activeCalories))
+                MetricID.steps.spokenText(Double(totals.steps)),
+                MetricID.distance.spokenText(totals.distanceKm),
+                MetricID.calories.spokenText(Double(totals.activeCalories))
             ]
         }
         guard !figures.isEmpty else { return activity.label }

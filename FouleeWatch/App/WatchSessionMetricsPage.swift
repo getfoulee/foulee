@@ -41,25 +41,25 @@ struct WatchSessionMetricsPage: View {
                 HStack(spacing: 10) {
                     metric(
                         value: metrics.steps.groupedText(),
-                        label: WalkMetric.steps.unit,
-                        spoken: WalkMetric.steps.spokenText(Double(metrics.steps)),
-                        icon: "shoe",
+                        label: MetricID.steps.unit,
+                        spoken: MetricID.steps.spokenText(Double(metrics.steps)),
+                        icon: MetricID.steps.glyph,
                         tint: MetricPalette.steps
                     )
                     metric(
                         value: metrics.distanceKm.kmValue(),
-                        label: WalkMetric.distance.unit,
-                        spoken: WalkMetric.distance.spokenText(metrics.distanceKm),
-                        icon: "location.fill",
+                        label: MetricID.distance.unit,
+                        spoken: MetricID.distance.spokenText(metrics.distanceKm),
+                        icon: MetricID.distance.glyph,
                         tint: MetricPalette.distance
                     )
                 }
                 HStack(spacing: 10) {
                     metric(
                         value: "\(metrics.activeCalories)",
-                        label: WalkMetric.calories.unit,
-                        spoken: WalkMetric.calories.spokenText(Double(metrics.activeCalories)),
-                        icon: "flame.fill",
+                        label: MetricID.calories.unit,
+                        spoken: MetricID.calories.spokenText(Double(metrics.activeCalories)),
+                        icon: MetricID.calories.glyph,
                         tint: MetricPalette.calories
                     )
                     metric(
