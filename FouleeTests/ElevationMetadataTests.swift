@@ -2,7 +2,6 @@ import FouleeHealth
 import FouleeKit
 import HealthKit
 import Testing
-@testable import Foulee
 
 /// What a workout is stamped with for its climb and descent (issue #564).
 @Suite("Elevation metadata")

@@ -1,4 +1,3 @@
-import FouleeHealth
 import FouleeKit
 import HealthKit
 

@@ -2,7 +2,6 @@ import FouleeHealth
 import FouleeKit
 import HealthKit
 import Testing
-@testable import Foulee
 
 /// The one mapping between a day metric and HealthKit (#721).
 @Suite("Metric ↔ HealthKit")
