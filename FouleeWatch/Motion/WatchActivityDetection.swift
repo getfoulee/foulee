@@ -1,3 +1,4 @@
+import FouleeHealth
 import FouleeKit
 import Foundation
 
@@ -27,8 +28,8 @@ final class WatchActivityDetection {
     /// did — and a frozen figure would claim a rhythm nobody is keeping.
     static let cadenceShelfLife: TimeInterval = 10
 
-    private let source: MotionActivitySource
-    private let pedometer: PedometerSource
+    private let source: MotionActivityClient
+    private let pedometer: PedometerClient
     private let confirmations: Int
 
     private var detector: ActivitySwitchDetector?
@@ -45,8 +46,8 @@ final class WatchActivityDetection {
     ///   whose own default is the shipped value. Surfaced here so a test can
     ///   demand more of it without this file having an opinion about how many.
     init(
-        source: MotionActivitySource = .live(),
-        pedometer: PedometerSource = .live(),
+        source: MotionActivityClient = .live(),
+        pedometer: PedometerClient = .live(),
         confirmations: Int = ActivitySwitchDetector.defaultConfirmations
     ) {
         self.source = source
@@ -71,7 +72,7 @@ final class WatchActivityDetection {
             startedAs: activity,
             at: date,
             confirmations: confirmations,
-            runningNeedsPedometer: pedometer.isAvailable()
+            runningNeedsPedometer: pedometer.isRhythmAvailable()
         )
         sessionStart = date
         self.onSwitch = onSwitch
@@ -185,7 +186,7 @@ final class WatchActivityDetection {
                 Task { @MainActor in self?.ingest(estimate) }
             }
         }
-        if !isStreamingPedometer, pedometer.isAvailable() {
+        if !isStreamingPedometer, pedometer.isRhythmAvailable() {
             isStreamingPedometer = true
             pedometer.openStream(sessionStart) { [weak self] reading in
                 Task { @MainActor in self?.ingest(reading) }

@@ -1,4 +1,5 @@
 #if DEBUG
+import FouleeHealth
 import FouleeKit
 import Foundation
 
@@ -121,43 +122,38 @@ nonisolated enum ScreenshotDoubles {
     /// single yield would race — after moving `ScreenshotClock` to the fixed
     /// session offset. Both halves are idempotent, so the screen settles on
     /// exactly one set of numbers and stays there.
-    static let pedometer = Pedometer(
-        startUpdates: { _ in
-            AsyncStream { continuation in
-                Task {
-                    while !Task.isCancelled {
-                        ScreenshotClock.shared.advance(toOffset: ScreenshotSeed.sessionElapsed)
-                        continuation.yield(
-                            PedometerSample(
-                                steps: ScreenshotSeed.sessionSteps,
-                                distanceMeters: ScreenshotSeed.sessionDistanceMeters
-                            )
-                        )
-                        try? await Task.sleep(for: .milliseconds(250))
-                    }
-                    continuation.finish()
+    static let pedometer = PedometerClient(
+        isRhythmAvailable: { false },
+        openStream: { _, handler in
+            // Capture mode only, for the life of the process: nothing to close.
+            Task {
+                while !Task.isCancelled {
+                    ScreenshotClock.shared.advance(toOffset: ScreenshotSeed.sessionElapsed)
+                    handler(PedometerReading(
+                        date: .now,
+                        steps: ScreenshotSeed.sessionSteps,
+                        distanceMeters: ScreenshotSeed.sessionDistanceMeters
+                    ))
+                    try? await Task.sleep(for: .milliseconds(250))
                 }
             }
         },
-        stop: {},
+        closeStream: {},
         // Capture mode records nothing, so nothing ever asks — and a number
         // here would be a step count no seeded screen shows.
         steps: { _, _ in nil }
     )
 
-    static let altimeter = Altimeter(
-        startUpdates: {
-            AsyncStream { continuation in
-                Task {
-                    while !Task.isCancelled {
-                        continuation.yield(Elevation(ascent: ScreenshotSeed.sessionElevationMeters, descent: 0))
-                        try? await Task.sleep(for: .milliseconds(250))
-                    }
-                    continuation.finish()
+    static let altitude = AltitudeClient {
+        AsyncStream { continuation in
+            Task {
+                while !Task.isCancelled {
+                    continuation.yield(Elevation(ascent: ScreenshotSeed.sessionElevationMeters, descent: 0))
+                    try? await Task.sleep(for: .milliseconds(250))
                 }
+                continuation.finish()
             }
-        },
-        stop: {}
-    )
+        }
+    }
 }
 #endif

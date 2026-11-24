@@ -1,5 +1,6 @@
 import Clocks
 import Dependencies
+import FouleeHealth
 import FouleeKit
 import Foundation
 import Testing
@@ -104,7 +105,7 @@ struct ActiveSessionStoreSessionTests {
         )
         await withDependencies {
             $0.date = .constant(frozen)
-            var pedometer = Pedometer.testValue
+            var pedometer = PedometerClient.testValue
             pedometer.steps = { _, _ in 1_200 }
             $0.pedometer = pedometer
             $0.healthKit = .testValue

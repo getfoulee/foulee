@@ -1,6 +1,6 @@
+import FouleeHealth
 import Foundation
 import Testing
-@testable import FouleeWatch
 
 /// The CoreMotion boundary of the pedometer (issue #338).
 ///
@@ -8,13 +8,13 @@ import Testing
 /// inherited the main actor's isolation was checked on entry by Swift 6 and
 /// killed the app at the first update of every outing on foot — a crash no
 /// simulator showed, since none has a pedometer.
-@Suite("Pedometer source")
-struct PedometerSourceTests {
+@Suite("Pedometer client")
+struct PedometerClientTests {
     /// Called the way CoreMotion calls it: off the main actor. A handler
     /// isolated to the main actor traps right here.
     @Test("CoreMotion's own queue may call the handler")
     func callableOffTheMainActor() async {
-        let handler = PedometerSource.updateHandler { _ in
+        let handler = PedometerClient.updateHandler { _ in
             Issue.record("no data must forward no reading")
         }
         await withCheckedContinuation { continuation in

@@ -100,13 +100,17 @@ let project = Project(
             resources: ["FouleeKit/Resources/**"],
             settings: kitMacSigning
         ),
-        // The HealthKit adapters the apps and extensions share (issue #725):
-        // the kit stays free of HealthKit (ADR 0007), this module holds what
-        // reads and writes it in the same way on both devices.
+        // The HealthKit and CoreMotion adapters the apps and extensions share
+        // (issues #725, #726): the kit stays free of both (ADR 0007), this
+        // module holds what reads and writes them the same way on each device.
         sharedFramework(
             name: "FouleeHealth",
             bundleSuffix: "health",
-            dependencies: [.target(name: "FouleeKit"), .sdk(name: "HealthKit", type: .framework)]
+            dependencies: [
+                .target(name: "FouleeKit"),
+                .sdk(name: "HealthKit", type: .framework),
+                .sdk(name: "CoreMotion", type: .framework)
+            ]
         ),
         .target(
             name: "FouleeKitTests",

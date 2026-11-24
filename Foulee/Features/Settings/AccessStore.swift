@@ -1,4 +1,5 @@
 import Dependencies
+import FouleeHealth
 import FouleeKit
 import Observation
 
@@ -12,7 +13,7 @@ final class AccessStore {
     private(set) var refused: [DegradedState]?
 
     @ObservationIgnored @Dependency(\.location) private var location
-    @ObservationIgnored @Dependency(\.motionActivityHistory) private var motion
+    @ObservationIgnored @Dependency(\.motionActivity) private var motion
     @ObservationIgnored @Dependency(\.healthKit) private var healthKit
 
     func refresh() async {

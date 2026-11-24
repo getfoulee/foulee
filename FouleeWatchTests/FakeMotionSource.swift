@@ -1,3 +1,4 @@
+import FouleeHealth
 import FouleeKit
 import Foundation
 import Testing
@@ -21,8 +22,8 @@ final class FakeMotionSource {
     private(set) var closes = 0
     private var handler: (@Sendable (MotionActivityEstimate) -> Void)?
 
-    var source: MotionActivitySource {
-        MotionActivitySource(
+    var source: MotionActivityClient {
+        MotionActivityClient(
             isAvailable: { [self] in
                 reads += 1
                 if let threshold = becomesAvailableOnRead, reads >= threshold { isAvailable = true }
@@ -68,7 +69,7 @@ func motionEstimate(
     )
 }
 
-extension MotionActivitySource {
+extension MotionActivityClient {
     /// A device with no motion hardware at all: available to nobody, opening
     /// nothing.
     ///
@@ -76,7 +77,7 @@ extension MotionActivitySource {
     /// would build the real `.live()` source, which on a simulator answers
     /// « unavailable » anyway — but only after a background retry loop has
     /// woken up thirty times per test.
-    static let inert = MotionActivitySource(
+    static let inert = MotionActivityClient(
         isAvailable: { false },
         openStream: { _ in },
         closeStream: {}
@@ -106,9 +107,9 @@ final class FakePedometerSource {
     private(set) var openedFrom: Date?
     private var handler: (@Sendable (PedometerReading) -> Void)?
 
-    var source: PedometerSource {
-        PedometerSource(
-            isAvailable: { [self] in isAvailable },
+    var source: PedometerClient {
+        PedometerClient(
+            isRhythmAvailable: { [self] in isAvailable },
             openStream: { [self] start, handler in
                 opens += 1
                 openedFrom = start
@@ -129,11 +130,11 @@ final class FakePedometerSource {
     var isStreaming: Bool { handler != nil }
 }
 
-extension PedometerSource {
+extension PedometerClient {
     /// A device without a pedometer: available to nobody, opening nothing.
     /// The default for suites that are not about the cadence.
-    static let inert = PedometerSource(
-        isAvailable: { false },
+    static let inert = PedometerClient(
+        isRhythmAvailable: { false },
         openStream: { _, _ in },
         closeStream: {}
     )

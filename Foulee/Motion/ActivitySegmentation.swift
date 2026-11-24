@@ -1,19 +1,6 @@
 import FouleeKit
 import Foundation
 
-/// One CoreMotion estimate as the history query hands it over (issue #246).
-///
-/// No `receivedAt`, unlike the watch's live estimate: a historical query
-/// reports what the device concluded and when the activity *began*, not when
-/// anyone was told. Freshness is not a question one can ask of the past.
-nonisolated struct MotionHistorySample: Equatable, Sendable {
-    /// When the device says this activity began.
-    var startDate: Date
-    var confidence: MotionActivityConfidence
-    var walking: Bool
-    var running: Bool
-}
-
 /// A stretch of one activity inside a session.
 nonisolated struct ActivitySegment: Equatable, Sendable {
     var activity: SessionActivity

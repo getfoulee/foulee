@@ -1,3 +1,4 @@
+import FouleeHealth
 import FouleeKit
 import Foundation
 
@@ -41,7 +42,7 @@ extension ActiveSessionStore {
     /// Internal so a test can drive it without a session in flight.
     func settled(_ session: SessionRecord) async -> SessionRecord {
         guard let endedAt = session.endedAt else { return session }
-        let samples = await motionActivityHistory.samples(session.startedAt, endedAt)
+        let samples = await motionActivity.history(session.startedAt, endedAt)
         let segments = ActivitySegmentation.segments(samples, from: session.startedAt, to: endedAt)
         var settled = session
         if session.isActivityUndecided {
