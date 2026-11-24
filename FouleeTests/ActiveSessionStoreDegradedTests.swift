@@ -1,5 +1,6 @@
 import Clocks
 import Dependencies
+import FouleeHealth
 import FouleeKit
 import Foundation
 import Testing
@@ -18,9 +19,9 @@ struct ActiveSessionStoreDegradedTests {
             var location = LocationClient.testValue
             location.access = { .denied }
             $0.location = location
-            var motion = MotionActivityHistory.testValue
+            var motion = MotionActivityClient.testValue
             motion.access = { .denied }
-            $0.motionActivityHistory = motion
+            $0.motionActivity = motion
         } operation: {
             let store = ActiveSessionStore()
             store.start()

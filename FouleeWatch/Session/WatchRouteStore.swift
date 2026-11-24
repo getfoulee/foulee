@@ -5,7 +5,7 @@ import Observation
 /// The app's contact with CoreLocation during an outing, as two closures
 /// (issue #312).
 ///
-/// Hand-written for the same reason as `MotionActivitySource`: the watch
+/// Hand-written for the same reason as `MotionActivityClient`: the watch
 /// target links no dependency container, and through the real CoreLocation
 /// the store's lifetime rules would only be reachable on a wrist.
 nonisolated struct WatchRouteSource: Sendable {

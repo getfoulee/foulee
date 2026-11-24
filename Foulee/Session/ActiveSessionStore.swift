@@ -1,5 +1,6 @@
 @preconcurrency import ActivityKit
 import Dependencies
+import FouleeHealth
 import FouleeKit
 import Foundation
 import Observation
@@ -37,7 +38,7 @@ final class ActiveSessionStore {
     @Dependency(\.pedometer) var pedometer
 
     @ObservationIgnored
-    @Dependency(\.altimeter) private var altimeter
+    @Dependency(\.altitude) private var altitude
 
     @ObservationIgnored
     @Dependency(\.location) private var location
@@ -54,7 +55,7 @@ final class ActiveSessionStore {
 
     /// The session's own motion history, read once at `stop()` (issue #246).
     @ObservationIgnored
-    @Dependency(\.motionActivityHistory) var motionActivityHistory
+    @Dependency(\.motionActivity) var motionActivity
 
     @ObservationIgnored
     @Dependency(\.continuousClock) private var clock
@@ -266,13 +267,12 @@ final class ActiveSessionStore {
         pedometerTask?.cancel()
         altimeterTask?.cancel()
         tickerTask?.cancel()
-        pedometer.stop()
-        altimeter.stop()
+        pedometer.closeStream()
     }
 
     private func makePedometerTask(from start: Date) -> Task<Void, Never> {
         Task { [pedometer] in
-            for await sample in pedometer.startUpdates(start) {
+            for await sample in pedometer.updates(from: start) {
                 await MainActor.run {
                     guard case .active(var session) = self.state else { return }
                     self.segmentSteps = sample.steps
@@ -289,8 +289,8 @@ final class ActiveSessionStore {
     }
 
     private func makeAltimeterTask() -> Task<Void, Never> {
-        Task { [altimeter] in
-            for await elevation in altimeter.startUpdates() {
+        Task { [altitude] in
+            for await elevation in altitude.updates() {
                 await MainActor.run {
                     guard case .active(var session) = self.state else { return }
                     self.segmentElevation = elevation
@@ -308,7 +308,7 @@ final class ActiveSessionStore {
         // drain it off the hot path, appending each fix back on the main actor.
         let updates = location.routeUpdates()
         let locationAccess = location.access
-        let motionAccess = motionActivityHistory.access
+        let motionAccess = motionActivity.access
         return Task {
             let missing = DegradedState.permissions(location: await locationAccess(), motion: motionAccess())
             await MainActor.run { self.degradedStates = missing }

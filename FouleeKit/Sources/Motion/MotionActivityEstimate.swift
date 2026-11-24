@@ -1,10 +1,9 @@
-import FouleeKit
 import Foundation
 
 /// One `CMMotionActivity`, flattened into values.
 ///
 /// This is the whole vocabulary the rest of the app has for "what is the wrist
-/// doing" — nothing above `MotionActivitySource` imports CoreMotion, so every
+/// doing" — nothing above `MotionActivityClient` (FouleeHealth) imports CoreMotion, so every
 /// consumer (the live detection of issue #249, the device probe of issue #248)
 /// is exercisable on a simulator, where `CMMotionActivityManager` reports
 /// itself unavailable and would otherwise deliver nothing at all.
@@ -36,10 +35,38 @@ import Foundation
 /// they are not mutually exclusive and can both be false, so collapsing them is
 /// a decision, and it belongs to `ActivitySwitchDetector` where it is stated
 /// once and tested.
-nonisolated struct MotionActivityEstimate: Equatable, Sendable {
-    var startDate: Date
-    var receivedAt: Date
-    var confidence: MotionActivityConfidence
-    var walking: Bool
-    var running: Bool
+nonisolated public struct MotionActivityEstimate: Equatable, Sendable {
+    public var startDate: Date
+    public var receivedAt: Date
+    public var confidence: MotionActivityConfidence
+    public var walking: Bool
+    public var running: Bool
+
+    public init(startDate: Date, receivedAt: Date, confidence: MotionActivityConfidence, walking: Bool, running: Bool) {
+        self.startDate = startDate
+        self.receivedAt = receivedAt
+        self.confidence = confidence
+        self.walking = walking
+        self.running = running
+    }
+}
+
+/// One CoreMotion estimate as the history query hands it over (issue #246).
+///
+/// No `receivedAt`, unlike the watch's live estimate: a historical query
+/// reports what the device concluded and when the activity *began*, not when
+/// anyone was told. Freshness is not a question one can ask of the past.
+nonisolated public struct MotionHistorySample: Equatable, Sendable {
+    /// When the device says this activity began.
+    public var startDate: Date
+    public var confidence: MotionActivityConfidence
+    public var walking: Bool
+    public var running: Bool
+
+    public init(startDate: Date, confidence: MotionActivityConfidence, walking: Bool, running: Bool) {
+        self.startDate = startDate
+        self.confidence = confidence
+        self.walking = walking
+        self.running = running
+    }
 }

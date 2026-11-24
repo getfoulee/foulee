@@ -1,5 +1,6 @@
 import Clocks
 import Dependencies
+import FouleeHealth
 import FouleeKit
 import SwiftUI
 import Testing
@@ -35,15 +36,15 @@ struct ActivityPickerTests {
     /// the same set `ActiveSessionStoreTests` uses, so nothing here reaches a
     /// real pedometer, altimeter or Santé.
     private func withStubbedSensors(
-        history: MotionActivityHistory = .testValue,
-        pedometer: Pedometer = .testValue,
+        history: MotionActivityClient = .testValue,
+        pedometer: PedometerClient = .testValue,
         _ body: () async throws -> Void
     ) async rethrows {
         try await withDependencies {
             $0.date = .constant(start)
             $0.pedometer = pedometer
             $0.healthKit = .testValue
-            $0.motionActivityHistory = history
+            $0.motionActivity = history
             $0.continuousClock = TestClock()
         } operation: {
             try await body()
@@ -53,10 +54,11 @@ struct ActivityPickerTests {
     /// A pedometer that answers every interval with one step per second — so a
     /// stretch's step count *is* its duration, and the arithmetic below is
     /// readable.
-    private var countingPedometer: Pedometer {
-        Pedometer(
-            startUpdates: { _ in AsyncStream { $0.finish() } },
-            stop: {},
+    private var countingPedometer: PedometerClient {
+        PedometerClient(
+            isRhythmAvailable: { false },
+            openStream: { _, _ in },
+            closeStream: {},
             steps: { from, to in Int(to.timeIntervalSince(from)) }
         )
     }
@@ -115,9 +117,12 @@ struct ActivityPickerTests {
 
     /// A history the test writes: `walking` for the first `runningAfter`
     /// seconds, running from there to the end.
-    private func history(runningAfter: TimeInterval) -> MotionActivityHistory {
-        MotionActivityHistory(
-            samples: { from, _ in
+    private func history(runningAfter: TimeInterval) -> MotionActivityClient {
+        MotionActivityClient(
+            isAvailable: { true },
+            openStream: { _ in },
+            closeStream: {},
+            history: { from, _ in
                 [
                     MotionHistorySample(startDate: from, confidence: .high, walking: true, running: false),
                     MotionHistorySample(

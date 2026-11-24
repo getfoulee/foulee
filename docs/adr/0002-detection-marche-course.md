@@ -82,7 +82,7 @@ Attendre ne coûte aucune précision, puisque la coupure est datée de la fronti
 
 Depuis #267, la source rapide divisait deux sommes cumulées de `HKLiveWorkoutBuilder` (pas, distance), lues **à leur réception**, sur une fenêtre de 3 s. C'était faux par construction : HealthKit livre les pas **par paquets irréguliers**, et l'heure de livraison n'est pas l'heure des foulées. Une fenêtre pouvait ne contenir que deux secondes de pas — une course à 2,8 pas/s lue 1,8 pas/s, donc **marche**, sur un tronçon couru. Le retour à la course, lui, exigeait une vitesse tirée de la distance (GPS), livrée par d'autres paquets : souvent vétoée.
 
-Le classifieur lit désormais **`CMPedometer.currentCadence` et `currentPace`** (`PedometerSource`, `PedometerReading`) : la cadence et l'allure instantanées que le système calcule lui-même, datées par leur propre `endDate`. Aucune permission nouvelle — « Mouvements et forme » couvre le podomètre comme la reconnaissance d'activité. Les pas, la distance et l'énergie **enregistrés** restent ceux de HealthKit : rien ne change dans Santé.
+Le classifieur lit désormais **`CMPedometer.currentCadence` et `currentPace`** (`PedometerClient` dans FouleeHealth, `PedometerReading`) : la cadence et l'allure instantanées que le système calcule lui-même, datées par leur propre `endDate`. Aucune permission nouvelle — « Mouvements et forme » couvre le podomètre comme la reconnaissance d'activité. Les pas, la distance et l'énergie **enregistrés** restent ceux de HealthKit : rien ne change dans Santé.
 
 Deux règles l'accompagnent :
 
