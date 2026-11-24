@@ -13,7 +13,7 @@ nonisolated extension SessionActivity {
     /// HealthKit-free, the same split `HealthKitClient` / `HealthKitClient+Live`
     /// already uses: the type travels through preferences, the sync payload and
     /// the walk model, none of which should drag the framework behind them.
-    var hkActivityType: HKWorkoutActivityType {
+    public var hkActivityType: HKWorkoutActivityType {
         sport.hkActivityType
     }
 
@@ -23,7 +23,7 @@ nonisolated extension SessionActivity {
     /// carry activities this app did not open — watchOS adds some of its own —
     /// and naming one of them « marche » would put time nobody spent walking
     /// into a total on screen. Unnameable means unread.
-    init?(_ hkActivityType: HKWorkoutActivityType) {
+    public init?(_ hkActivityType: HKWorkoutActivityType) {
         guard let sport = SportID(hkActivityType) else { return nil }
         self.init(sport: sport)
     }

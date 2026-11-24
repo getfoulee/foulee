@@ -1,3 +1,4 @@
+import FouleeHealth
 import FouleeKit
 @preconcurrency import HealthKit
 import SwiftUI

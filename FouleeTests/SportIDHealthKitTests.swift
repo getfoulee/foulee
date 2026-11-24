@@ -1,7 +1,7 @@
+import FouleeHealth
 import FouleeKit
 import HealthKit
 import Testing
-@testable import Foulee
 
 /// The one mapping between a sport and HealthKit's activity type (#720).
 @Suite("Sport ↔ HealthKit")

@@ -4,25 +4,28 @@ import Foundation
 
 /// Today's HealthKit sums, read the same way by the app, its widgets, the
 /// watch and its complications (issue #785). HealthKit stays out of the kit
-/// (ADR 0007), so this file is compiled into each target that reads them.
+/// (ADR 0007), so they live in FouleeHealth, which each of those targets links
+/// (issue #725).
 ///
 /// One error policy for every caller: "no samples yet" (`errorNoData`) is a
 /// real 0; any other failure (locked device, no authorization) stays a failure
 /// — thrown, or nil — and never turns into a 0 that would overwrite a known
 /// value.
-nonisolated enum HealthKitTodaySums {
+nonisolated public enum HealthKitTodaySums {
     /// Today's counters. A nil leg is a read HealthKit refused: the caller
     /// keeps the value it already has rather than publishing a zero.
-    struct Counters: Sendable {
-        var steps: Int?
-        var minutes: Int?
-        var distanceKm: Double?
-        var calories: Int?
-        var waterML: Int?
+    public struct Counters: Sendable {
+        public var steps: Int?
+        public var minutes: Int?
+        public var distanceKm: Double?
+        public var calories: Int?
+        public var waterML: Int?
+
+        public init() {}
     }
 
     /// Today's cumulative sum of `identifier`, from midnight to now.
-    static func sum(
+    public static func sum(
         _ identifier: HKQuantityTypeIdentifier,
         unit: HKUnit,
         store: HKHealthStore
@@ -32,7 +35,7 @@ nonisolated enum HealthKitTodaySums {
     }
 
     /// The cumulative sum of `identifier` over the samples started in `window`.
-    static func sum(
+    public static func sum(
         _ identifier: HKQuantityTypeIdentifier,
         unit: HKUnit,
         in window: DateInterval,
@@ -64,7 +67,7 @@ nonisolated enum HealthKitTodaySums {
     }
 
     /// `sum`, or nil when HealthKit can't answer.
-    static func sumIfAvailable(
+    public static func sumIfAvailable(
         _ identifier: HKQuantityTypeIdentifier,
         unit: HKUnit,
         store: HKHealthStore
@@ -74,12 +77,12 @@ nonisolated enum HealthKitTodaySums {
 
     /// Today's total of `metric`, from its HealthKit quantity and in its
     /// display unit.
-    static func sum(_ metric: MetricID, store: HKHealthStore) async throws -> Double {
+    public static func sum(_ metric: MetricID, store: HKHealthStore) async throws -> Double {
         try await sum(metric.quantityIdentifier, unit: metric.healthKitUnit, store: store)
     }
 
     /// `sum(_:store:)`, or nil when HealthKit can't answer.
-    static func sumIfAvailable(_ metric: MetricID, store: HKHealthStore) async -> Double? {
+    public static func sumIfAvailable(_ metric: MetricID, store: HKHealthStore) async -> Double? {
         try? await sum(metric, store: store)
     }
 
@@ -91,7 +94,7 @@ nonisolated enum HealthKitTodaySums {
     /// merging a failed workout read as 0 would overwrite that user's merged
     /// minutes with raw zeros. `workoutMinutes` lets the app add the Garmin
     /// outings Santé doesn't have yet, which only its process can read.
-    static func counters(
+    public static func counters(
         store: HKHealthStore,
         workoutMinutes: @escaping @Sendable (HKHealthStore) async throws -> Int = {
             try await HealthKitTodaySums.todayWorkoutMinutes(store: $0)
@@ -116,7 +119,7 @@ nonisolated enum HealthKitTodaySums {
 
     /// Today's workout minutes from Santé alone (any activity type, attributed
     /// by `startDate`).
-    static func todayWorkoutMinutes(store: HKHealthStore) async throws -> Int {
+    public static func todayWorkoutMinutes(store: HKHealthStore) async throws -> Int {
         let calendar = Calendar.current
         let start = calendar.startOfDay(for: .now)
         let intervals = try await workoutIntervals(store: store, start: start, end: .now)
@@ -126,7 +129,7 @@ nonisolated enum HealthKitTodaySums {
     /// All `HKWorkout`s started in `start..<end`, any activity type, reduced to
     /// the pure `WorkoutInterval` shape. Workouts are sparse — a plain
     /// `HKSampleQuery` over a whole streak window is trivial.
-    static func workoutIntervals(
+    public static func workoutIntervals(
         store: HKHealthStore,
         start: Date,
         end: Date
@@ -160,7 +163,7 @@ nonisolated enum HealthKitTodaySums {
 /// `HKError.Code.noDataAvailable` (= 11) is the framework's way of saying
 /// "your predicate matched zero samples". Empty result, not a real failure —
 /// callers bubble it back as the type-appropriate zero value.
-nonisolated func isNoDataAvailable(_ error: (any Error)?) -> Bool {
+nonisolated public func isNoDataAvailable(_ error: (any Error)?) -> Bool {
     guard let hkError = error as? HKError else { return false }
     return hkError.code == .errorNoData
 }
@@ -172,13 +175,13 @@ nonisolated extension MetricID {
     /// HealthKit (ADR 0007). The app's and the watch's day reads, the series, the
     /// widgets' sums and the watch complication all read through these members, in the display unit:
     /// a distance comes back in kilometres, never in metres to divide.
-    var quantityIdentifier: HKQuantityTypeIdentifier {
+    public var quantityIdentifier: HKQuantityTypeIdentifier {
         HKQuantityTypeIdentifier(rawValue: healthKitSource.quantityIdentifier)
     }
 
-    var quantityType: HKQuantityType { HKQuantityType(quantityIdentifier) }
+    public var quantityType: HKQuantityType { HKQuantityType(quantityIdentifier) }
 
-    var healthKitUnit: HKUnit {
+    public var healthKitUnit: HKUnit {
         HKUnit(from: healthKitSource.unit)
     }
 }

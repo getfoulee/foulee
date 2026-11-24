@@ -1,4 +1,5 @@
 @preconcurrency import CoreLocation
+import FouleeHealth
 import FouleeKit
 @preconcurrency import HealthKit
 
