@@ -1,4 +1,5 @@
 import Dependencies
+import FouleeHealth
 import FouleeKit
 import Foundation
 import HealthKit

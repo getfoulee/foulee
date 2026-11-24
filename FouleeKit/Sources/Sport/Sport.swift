@@ -31,7 +31,7 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
     ///
     /// The kit stays free of HealthKit (ADR 0007), so the mapping is kept as
     /// raw values here and read through the one extension
-    /// `SportID+HealthKit` in each app.
+    /// `SportID+HealthKit` in FouleeHealth.
     public init?(healthKitActivityRawValue rawValue: UInt) {
         guard let sport = Self.allCases.first(where: { $0.descriptor.healthKitActivityRawValue == rawValue }) else {
             return nil

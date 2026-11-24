@@ -91,32 +91,22 @@ let project = Project(
         // 0007): one module, compiled once per platform, instead of the same
         // files listed in each target. macOS is there for the tests alone:
         // they run on the runner itself, with no simulator to boot.
-        .target(
+        sharedFramework(
             name: "FouleeKit",
-            destinations: [.iPhone, .appleWatch, .mac],
-            product: .framework,
-            bundleId: "\(bundleIdBase).kit",
-            deploymentTargets: .multiplatform(iOS: "26.0", macOS: "15.0", watchOS: "26.0"),
-            sources: ["FouleeKit/Sources/**"],
+            bundleSuffix: "kit",
+            onMac: true,
             // The text the kit writes itself — activity names, highlights —
             // read through `kitText` (issue #587).
             resources: ["FouleeKit/Resources/**"],
-            settings: .settings(base: kitMacSigning.merging([
-                // Linked by the widgets and the Live Activity.
-                "APPLICATION_EXTENSION_API_ONLY": "YES",
-                // The iPhone app embeds the framework, and so does the watch
-                // app it carries: two bundles under one iOS app. App Store
-                // Connect rejects two bundles with one identifier there
-                // (ITMS-90685), so the watch's copy takes its own.
-                "PRODUCT_BUNDLE_IDENTIFIER[sdk=watchos*]": "\(bundleIdBase).kit.watch",
-                "PRODUCT_BUNDLE_IDENTIFIER[sdk=watchsimulator*]": "\(bundleIdBase).kit.watch",
-                // Signed when the apps embed it (Code Sign On Copy), with
-                // their identity. Signing it on its own needs a development
-                // certificate in the keychain, which a framework cannot get
-                // from cloud signing: the release archive failed on it.
-                "CODE_SIGNING_ALLOWED[sdk=iphoneos*]": "NO",
-                "CODE_SIGNING_ALLOWED[sdk=watchos*]": "NO"
-            ]) { $1 })
+            settings: kitMacSigning
+        ),
+        // The HealthKit adapters the apps and extensions share (issue #725):
+        // the kit stays free of HealthKit (ADR 0007), this module holds what
+        // reads and writes it in the same way on both devices.
+        sharedFramework(
+            name: "FouleeHealth",
+            bundleSuffix: "health",
+            dependencies: [.target(name: "FouleeKit"), .sdk(name: "HealthKit", type: .framework)]
         ),
         .target(
             name: "FouleeKitTests",
@@ -148,6 +138,7 @@ let project = Project(
             entitlements: .file(path: "Foulee/Resources/Foulee.entitlements"),
             dependencies: [
                 .target(name: "FouleeKit"),
+                .target(name: "FouleeHealth"),
                 .package(product: "Dependencies"),
                 // iPhone app only — the widget and watch targets must never
                 // link the Connect IQ framework (iOS-only binary, and the
@@ -189,8 +180,6 @@ let project = Project(
                 // Shared with « Où j'en suis aujourd'hui » (#605), so Siri
                 // answers with the widgets' own figures.
                 "Foulee/Shared/WidgetLiveMetrics.swift",
-                // Today's HealthKit sums, one implementation everywhere (#785).
-                "Foulee/Shared/HealthKitTodaySums.swift",
                 "FouleeWatchWidget/StreakEntry.swift"
             ],
             resources: [
@@ -201,7 +190,8 @@ let project = Project(
             ],
             entitlements: .file(path: "FouleeWidget/Resources/FouleeWidget.entitlements"),
             dependencies: [
-                .target(name: "FouleeKit")
+                .target(name: "FouleeKit"),
+                .target(name: "FouleeHealth")
             ]
         ),
         .target(
@@ -252,12 +242,6 @@ let project = Project(
                 // #312): one accuracy rule, one stream lifetime, one place
                 // that asks for location. Main-actor state, so not in the kit.
                 "Foulee/Location/RouteRecorder.swift",
-                // The watch writes its own workouts, with the phone's mapping
-                // to HealthKit (issue #223). HealthKit stays out of the kit.
-                "Foulee/Shared/SessionActivity+HealthKit.swift",
-                "Foulee/Shared/SportID+HealthKit.swift",
-                // Its climb and descent too, under the same keys (issue #564).
-                "Foulee/Shared/Elevation+HealthKit.swift",
                 // The colours an outing is drawn in by sport, shared with the
                 // phone's detail (issue #320), and the colour of each daily
                 // metric, the phone's rings' (#372). SwiftUI, so not in the kit.
@@ -269,8 +253,6 @@ let project = Project(
                 "Foulee/Shared/ReadablePalette.swift",
                 // Fixed-size counters that follow Dynamic Type (#600).
                 "Foulee/Shared/ScaledSystemFont.swift",
-                // Today's HealthKit sums, read as the phone reads them (#785).
-                "Foulee/Shared/HealthKitTodaySums.swift",
                 // The App Store capture seed (issue #239). Only the
                 // Foundation-only half: the watch board and the phone board
                 // must show the same day, and the way to guarantee that is to
@@ -288,6 +270,7 @@ let project = Project(
             entitlements: .file(path: "FouleeWatch/Resources/FouleeWatch.entitlements"),
             dependencies: [
                 .target(name: "FouleeKit"),
+                .target(name: "FouleeHealth"),
                 .target(name: "FouleeWatchWidget")
             ],
             settings: .settings(base: mainActorByDefault)
@@ -307,9 +290,7 @@ let project = Project(
                 ]
             ]),
             sources: [
-                "FouleeWatchWidget/**",
-                // Today's HealthKit sums, read as the phone reads them (#785).
-                "Foulee/Shared/HealthKitTodaySums.swift"
+                "FouleeWatchWidget/**"
             ],
             resources: [
                 .glob(
@@ -319,7 +300,8 @@ let project = Project(
             ],
             entitlements: .file(path: "FouleeWatchWidget/Resources/FouleeWatchWidget.entitlements"),
             dependencies: [
-                .target(name: "FouleeKit")
+                .target(name: "FouleeKit"),
+                .target(name: "FouleeHealth")
             ]
         ),
         .target(

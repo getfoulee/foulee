@@ -17,7 +17,7 @@ Foulée ne connaissait que la marche et la course, et chaque fait sur un sport v
 
 ### D2 — Une seule correspondance avec HealthKit, gardée hors du kit
 
-- Le kit reste sans HealthKit (ADR 0007) : le descripteur garde la valeur brute de `HKWorkoutActivityType`. La seule traduction se trouve dans `Foulee/Shared/SportID+HealthKit.swift`, compilé par l'iPhone et par la montre.
+- Le kit reste sans HealthKit (ADR 0007) : le descripteur garde la valeur brute de `HKWorkoutActivityType`. La seule traduction se trouve dans `FouleeHealth/Sources/SportID+HealthKit.swift`, dans le module FouleeHealth que l'iPhone et la montre lient (#725).
 - L'écriture (`SessionActivity.hkActivityType`), la lecture (`RecordedActivity(_:)`, `SessionActivity(_:)`) et le filtre du résumé (`WorkoutActivityFilter`) passent par elle. Le filtre accepte désormais exactement les sports du tableau.
 
 ### D3 — `SessionActivity` et `RecordedActivity` restent, adossés au tableau

@@ -1,4 +1,5 @@
 import AppIntents
+import FouleeHealth
 import FouleeKit
 @preconcurrency import HealthKit
 import WidgetKit

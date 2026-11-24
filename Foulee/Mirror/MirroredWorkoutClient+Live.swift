@@ -1,3 +1,4 @@
+import FouleeHealth
 import FouleeKit
 import os
 @preconcurrency import HealthKit
