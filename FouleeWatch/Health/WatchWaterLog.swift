@@ -1,3 +1,4 @@
+import FouleeHealth
 import FouleeKit
 @preconcurrency import HealthKit
 import WidgetKit
@@ -8,50 +9,26 @@ import WidgetKit
 /// `WatchTodayStore`, which owns the card, so both tell it through the same
 /// signals.
 nonisolated enum WatchWaterLog {
-    enum Outcome: Equatable {
-        case logged(milliliters: Int)
-        case unavailable
-        case denied
-        /// Never answered: only the app, on screen, can show the question.
-        case notDetermined
-        case failed
-    }
-
     /// Log the phone-synced glass to the watch's HealthKit, then nudge the
     /// home to re-read so the card and haptic reflect it. A denied
     /// authorization or a failed save posts the matching failure signal
     /// instead — the glass didn't count, and only `WatchTodayStore` can say so
     /// on the card.
-    static func logGlass(store: HKHealthStore) async -> Outcome {
-        guard HKHealthStore.isHealthDataAvailable() else { return .unavailable }
-        let waterType = HKQuantityType(.dietaryWater)
-        _ = try? await store.requestAuthorization(toShare: [waterType], read: [waterType])
-        switch store.authorizationStatus(for: waterType) {
-        case .sharingDenied:
+    static func logGlass(store: HKHealthStore) async -> WaterLogOutcome {
+        let glassML = WatchSyncStore.read()?.hydrationGlassML ?? WaterGlass.defaultML
+        let outcome = await WaterLog.logGlass(glassML, store: store, asksAccess: true)
+        switch outcome {
+        case .logged:
+            WidgetCenter.shared.reloadAllTimelines()
+            await post(HydrationNotification.actionHandled)
+        case .denied:
             await post(.watchHydrationActionDenied)
-            return .denied
-        case .notDetermined:
+        case .notDetermined, .failed:
             await post(.watchHydrationActionFailed)
-            return .notDetermined
-        default:
+        case .unavailable:
             break
         }
-        let glassML = WatchSyncStore.read()?.hydrationGlassML ?? 250
-        let sample = HKQuantitySample(
-            type: waterType,
-            quantity: HKQuantity(unit: .literUnit(with: .milli), doubleValue: Double(glassML)),
-            start: .now,
-            end: .now
-        )
-        do {
-            try await store.save(sample)
-        } catch {
-            await post(.watchHydrationActionFailed)
-            return .failed
-        }
-        WidgetCenter.shared.reloadAllTimelines()
-        await post(HydrationNotification.actionHandled)
-        return .logged(milliliters: glassML)
+        return outcome
     }
 
     /// Observers rely on these signals arriving on the main actor.

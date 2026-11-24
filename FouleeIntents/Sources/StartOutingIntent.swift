@@ -5,13 +5,13 @@ import Observation
 /// « Commencer une sortie » for Siri, Raccourcis and Spotlight (issue #604),
 /// and the Control Center and Action button control (#606). Opens Foulée and
 /// starts the outing the way the home button does: the intent only hands the
-/// request to the home, which owns the session. Compiled into the widget
-/// extension too, so the control can name it; being a foreground intent, the
-/// system still runs it in the app.
-struct StartOutingIntent: AppIntent {
-    static var title: LocalizedStringResource { "Commencer une sortie" }
+/// request to the home, which owns the session. Registered by the widget
+/// extension too (`FouleeIntentsPackage`), so the control can name it; being a
+/// foreground intent, the system still runs it in the app.
+public struct StartOutingIntent: AppIntent {
+    public static var title: LocalizedStringResource { "Commencer une sortie" }
     // periphery:ignore - read by the AppIntents runtime, never from code.
-    static var description: IntentDescription {
+    public static var description: IntentDescription {
         IntentDescription(
             "Ouvre Foulée et démarre une sortie.",
             categoryName: "Sortie",
@@ -19,34 +19,34 @@ struct StartOutingIntent: AppIntent {
         )
     }
     // periphery:ignore - read by the AppIntents runtime, never from code.
-    static var supportedModes: IntentModes { .foreground }
+    public static var supportedModes: IntentModes { .foreground }
 
     /// Left empty, the user's own mode decides, as on the home button.
     @Parameter(title: "Sport")
-    var activity: OutingActivity?
+    public var activity: OutingActivity?
 
-    init() {}
+    public init() {}
 
-    init(activity: OutingActivity?) {
+    public init(activity: OutingActivity?) {
         self.activity = activity
     }
 
     @MainActor
-    func perform() async throws -> some IntentResult {
+    public func perform() async throws -> some IntentResult {
         SessionStartRouter.shared.start(activity?.mode)
         return .result()
     }
 }
 
 /// The sport as Raccourcis lists it and Siri hears it.
-nonisolated enum OutingActivity: String, AppEnum {
+nonisolated public enum OutingActivity: String, AppEnum {
     case walking
     case running
     case automatic
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation { "Sport" }
+    public static var typeDisplayRepresentation: TypeDisplayRepresentation { "Sport" }
 
-    static var caseDisplayRepresentations: [OutingActivity: DisplayRepresentation] {
+    public static var caseDisplayRepresentations: [OutingActivity: DisplayRepresentation] {
         [
             .walking: DisplayRepresentation(title: "Marche"),
             .running: DisplayRepresentation(title: "Course"),
@@ -59,7 +59,7 @@ nonisolated enum OutingActivity: String, AppEnum {
 
     /// « Automatique » is « les deux »: the session's own motion history
     /// settles the sport at the end (#246).
-    var mode: ActivityMode {
+    public var mode: ActivityMode {
         switch self {
         case .walking: .walking
         case .running: .running
@@ -70,26 +70,25 @@ nonisolated enum OutingActivity: String, AppEnum {
 
 /// A start asked for by a shortcut, carried to the home that presents the
 /// session — the intent runs before any screen may be mounted.
-nonisolated struct SessionStartRequest: Equatable {
+nonisolated public struct SessionStartRequest: Equatable {
     /// `nil` when the shortcut named no sport: the user's own mode decides.
-    let mode: ActivityMode?
+    public let mode: ActivityMode?
 }
 
-/// Main-actor spelled out: the widget extension compiles this file without the
-/// app's default isolation.
+/// Main-actor spelled out: the framework has no default isolation.
 @MainActor
 @Observable
-final class SessionStartRouter {
-    static let shared = SessionStartRouter()
+public final class SessionStartRouter {
+    public static let shared = SessionStartRouter()
 
-    private(set) var pending: SessionStartRequest?
+    public private(set) var pending: SessionStartRequest?
 
-    func start(_ mode: ActivityMode?) {
+    public func start(_ mode: ActivityMode?) {
         pending = SessionStartRequest(mode: mode)
     }
 
     /// Read and clear, so a rebuild of the home does not start twice.
-    func take() -> SessionStartRequest? {
+    public func take() -> SessionStartRequest? {
         guard let request = pending else { return nil }
         pending = nil
         return request

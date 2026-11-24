@@ -44,6 +44,7 @@ jobs:
               - Foulee/**
               - FouleeAccessibilityAudit/**
               - FouleeHealth/**
+              - FouleeIntents/**
               - FouleeKit/**
               - FouleeKitTests/**
               - FouleeLaunchTime/**
@@ -74,6 +75,7 @@ jobs:
               - .github/actions/report-test-failure/**
               - Foulee/**
               - FouleeHealth/**
+              - FouleeIntents/**
               - FouleeKit/**
               - FouleeScreenshots/ScreenshotCapture.swift
               - FouleeSmoke/**

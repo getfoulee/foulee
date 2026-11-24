@@ -5,8 +5,8 @@ import ProjectDescription
 // Out of `Project.swift` so the manifest stays under SwiftLint's file length as
 // the modules multiply.
 
-/// A shared framework for the iPhone and the watch, and the Mac when its tests
-/// run there.
+/// A shared framework for the iPhone, the watch unless `onWatch` is false, and
+/// the Mac when its tests run there.
 ///
 /// - Parameter name: the module, whose sources are `<name>/Sources/**`.
 /// - Parameter bundleSuffix: appended to `bundleIdBase`. The watch's copy takes
@@ -16,6 +16,7 @@ import ProjectDescription
 public func sharedFramework(
     name: String,
     bundleSuffix: String,
+    onWatch: Bool = true,
     onMac: Bool = false,
     resources: ResourceFileElements? = nil,
     dependencies: [TargetDependency] = [],
@@ -35,12 +36,14 @@ public func sharedFramework(
     ]
     return .target(
         name: name,
-        destinations: onMac ? [.iPhone, .appleWatch, .mac] : [.iPhone, .appleWatch],
+        destinations: Set([.iPhone] + (onWatch ? [.appleWatch] : []) + (onMac ? [.mac] : [])),
         product: .framework,
         bundleId: "\(bundleIdBase).\(bundleSuffix)",
-        deploymentTargets: onMac
-            ? .multiplatform(iOS: "26.0", macOS: "15.0", watchOS: "26.0")
-            : .multiplatform(iOS: "26.0", watchOS: "26.0"),
+        deploymentTargets: .multiplatform(
+            iOS: "26.0",
+            macOS: onMac ? "15.0" : nil,
+            watchOS: onWatch ? "26.0" : nil
+        ),
         sources: ["\(name)/Sources/**"],
         resources: resources,
         dependencies: dependencies,
