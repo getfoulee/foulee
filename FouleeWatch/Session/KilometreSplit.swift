@@ -2,7 +2,7 @@ import FouleeKit
 import Foundation
 
 /// One kilometre of an outing, and what it cost (issue #301).
-nonisolated struct WalkSplit: Equatable, Sendable, Identifiable {
+nonisolated struct KilometreSplit: Equatable, Sendable, Identifiable {
     /// 1 for the first kilometre, 2 for the second — the boundary that was
     /// crossed, not an index.
     var kilometre: Int
@@ -63,7 +63,7 @@ nonisolated struct WalkSplit: Equatable, Sendable, Identifiable {
 /// A pure value, driven by the caller's clock: every rule below is arithmetic
 /// over the two numbers `applyOutingTotals` already computes.
 nonisolated struct SplitRecorder: Equatable, Sendable {
-    private(set) var splits: [WalkSplit] = []
+    private(set) var splits: [KilometreSplit] = []
     /// One reading of the outing's counters.
     private struct Reading: Equatable, Sendable {
         var distanceMeters: Double
@@ -121,7 +121,7 @@ nonisolated struct SplitRecorder: Equatable, Sendable {
             let reached = previous.elapsed + fraction * took
             let stepsAtBoundary = Double(previous.steps) + fraction * stepped
             splits.append(
-                WalkSplit(
+                KilometreSplit(
                     kilometre: splits.count + 1,
                     duration: reached - lastBoundaryElapsed,
                     steps: max(Int((stepsAtBoundary - lastBoundarySteps).rounded()), 0),

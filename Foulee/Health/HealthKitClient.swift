@@ -19,12 +19,12 @@ nonisolated struct HealthKitClient: Sendable {
     var todayMetrics: @Sendable () async throws -> HealthMetrics
 
     /// Persists a finished session as an `HKWorkout` (location: outdoor).
-    /// The activity type travels on the session (`WalkSession.activity`) — it
+    /// The activity type travels on the session (`SessionRecord.activity`) — it
     /// used to be the literal `.walking` here, which is what stamped every
     /// session Foulée ever wrote as a walk (issue #223). Idempotent at the call
     /// site — duplicate saves on the same session are caller-controlled, not
     /// deduplicated here.
-    var saveWorkout: @Sendable (_ session: WalkSession) async throws -> Void
+    var saveWorkout: @Sendable (_ session: SessionRecord) async throws -> Void
 
     /// Active minutes per calendar day for the last `daysBack` days,
     /// including today. Returns entries from oldest to newest with `0`

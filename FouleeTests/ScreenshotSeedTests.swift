@@ -255,7 +255,7 @@ struct ScreenshotSeedTests {
     @Test("Both session boards' calories come from a rule, not from a guess")
     func sessionCaloriesAreDerivedOnBothDevices() {
         // Phone: steps × the activity's per-step estimate (no energy sensor).
-        let phone = WalkSession(
+        let phone = SessionRecord(
             startedAt: ScreenshotSeed.instant,
             steps: ScreenshotSeed.sessionSteps,
             distanceMeters: ScreenshotSeed.sessionDistanceMeters,

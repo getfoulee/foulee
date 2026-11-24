@@ -7,7 +7,7 @@ import Foundation
 /// The phone stays the only recorder — one session, one workout in Santé. The
 /// wrist is told the session's state and sends commands back; nothing here
 /// waits for it.
-extension ActiveWalkStore {
+extension ActiveSessionStore {
     /// How often a session in flight is retold while nothing else changes.
     /// The clock runs on its own at the wrist from `timerBasis`; this only
     /// carries the counters and the route.
@@ -18,7 +18,7 @@ extension ActiveWalkStore {
     /// The store belongs to the screen that shows it; a message from the watch
     /// lands in `PhoneWatchSync`, which has no screen. Weak, so a closed
     /// screen leaves nothing behind to steer.
-    private(set) static weak var current: ActiveWalkStore?
+    private(set) static weak var current: ActiveSessionStore?
 
     /// Tell the wrist where the session stands — now, whatever the interval.
     /// Called at every change of phase.
@@ -48,7 +48,7 @@ extension ActiveWalkStore {
 
     /// The session as the wrist shows it, or `nil` when there is none.
     func watchSnapshot(at now: Date) -> PhoneSessionSnapshot? {
-        let session: WalkSession
+        let session: SessionRecord
         let phase: PhoneSessionSnapshot.Phase
         switch state {
         case .idle:

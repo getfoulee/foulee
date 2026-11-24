@@ -2,11 +2,11 @@ import Dependencies
 import FouleeKit
 import Foundation
 
-/// Computes the set of `WalkReminder`s implied by the current
+/// Computes the set of `OutingReminder`s implied by the current
 /// `UserPreferences` and pushes them to `NotificationsClient`. Pure logic
 /// helpers (`reminders(for:)`, `reminderTime(forWindowStart:)`) are
 /// `static` so they can be unit-tested without spinning up the client.
-struct WalkReminderScheduler {
+struct OutingReminderScheduler {
     @Dependency(\.notifications) private var notifications
 
     /// Minutes before `walkWindowStart` the reminder fires.
@@ -23,13 +23,13 @@ struct WalkReminderScheduler {
     /// (the module default) because `UserPreferences` is main-isolated. Returns an empty array when the
     /// user has flipped notifications off — the live client then wipes the
     /// pending queue on the next `sync(with:)`.
-    static func reminders(for preferences: UserPreferences) -> [WalkReminder] {
+    static func reminders(for preferences: UserPreferences) -> [OutingReminder] {
         guard preferences.notificationsEnabled else { return [] }
         let time = reminderTime(forWindowStart: preferences.walkWindowStart)
         return preferences.activeDays
             .sorted(by: { $0.rawValue < $1.rawValue })
             .map { day in
-                WalkReminder(weekday: day, time: time)
+                OutingReminder(weekday: day, time: time)
             }
     }
 
@@ -46,7 +46,7 @@ struct WalkReminderScheduler {
         }
         let reminders = Self.reminders(for: preferences)
         do {
-            try await notifications.replaceWalkReminders(reminders)
+            try await notifications.replaceOutingReminders(reminders)
         } catch {
             // Intentionally silent: there is no UX surface for a scheduling
             // failure at the moment the app launches.

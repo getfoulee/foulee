@@ -6,8 +6,8 @@ import Testing
 
 /// The end of an outing recorded on the iPhone (issues #529, #531): told by
 /// its own screen, never by a notification.
-@Suite("ActiveWalkStore — end of the outing")
-struct ActiveWalkStoreHighlightTests {
+@Suite("ActiveSessionStore — end of the outing")
+struct ActiveSessionStoreHighlightTests {
     private static let frozen = Date(timeIntervalSince1970: 1_700_000_000)
 
     private func walk(endingDaysAgo days: Double, km: Double) -> WorkoutSummary {
@@ -32,7 +32,7 @@ struct ActiveWalkStoreHighlightTests {
             $0.healthKit.recentWorkouts = { _ in workouts }
             $0.sessionNotifications.recordedHere = { start, end in recorded.set([start, end]) }
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             await store.stop()
             return store.highlight

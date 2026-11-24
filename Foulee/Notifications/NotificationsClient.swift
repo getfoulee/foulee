@@ -6,7 +6,7 @@ import UserNotifications
 /// Recurring weekly reminder description — one notification per `Weekday`
 /// firing at `time` local. Identifier is derived so reschedules are
 /// idempotent (replacing the old request for the same day).
-nonisolated struct WalkReminder: Equatable, Sendable {
+nonisolated struct OutingReminder: Equatable, Sendable {
     var weekday: Weekday
     var time: TimeOfDay
 
@@ -31,7 +31,7 @@ nonisolated struct NotificationsClient: Sendable {
     var authorizationStatus: @Sendable () async -> UNAuthorizationStatus
         = { .notDetermined }
 
-    var replaceWalkReminders: @Sendable (_ reminders: [WalkReminder]) async throws -> Void
+    var replaceOutingReminders: @Sendable (_ reminders: [OutingReminder]) async throws -> Void
 
     /// One-shot reminder fired after `interval` seconds, independent of
     /// the recurring weekly schedule. Used by the bell "snooze" menu so
@@ -70,13 +70,13 @@ nonisolated extension NotificationsClient: DependencyKey {
     static let previewValue = NotificationsClient(
         requestAuthorization: { true },
         authorizationStatus: { .authorized },
-        replaceWalkReminders: { _ in },
+        replaceOutingReminders: { _ in },
         scheduleSnooze: { _ in }
     )
 
     static let testValue = NotificationsClient(
         requestAuthorization: { false },
-        replaceWalkReminders: { _ in },
+        replaceOutingReminders: { _ in },
         scheduleSnooze: { _ in }
     )
 }

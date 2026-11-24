@@ -12,7 +12,7 @@ import Testing
 /// The phone's own write can't be exercised end to end — `HealthKitClient.
 /// liveValue` builds a real `HKHealthStore` and `HKWorkoutBuilder`, neither of
 /// which works in a test process. So the seam is covered in two halves that
-/// meet at `WalkSession.activity`: `ActiveWalkStoreTests` asserts the session
+/// meet at `SessionRecord.activity`: `ActiveSessionStoreTests` asserts the session
 /// reaching the client carries the started activity, and the mapping below
 /// asserts what the client turns that into. The watch, whose HealthKit facade
 /// *is* injectable, gets the real end-to-end assertion on the configuration
@@ -48,9 +48,9 @@ struct SessionActivityTests {
     @Test("The calorie estimate is activity-aware, and walking is untouched")
     func estimatedCaloriesFollowTheActivity() {
         let started = Date(timeIntervalSince1970: 1_700_000_000)
-        var walk = WalkSession(startedAt: started, steps: 5_000)
+        var walk = SessionRecord(startedAt: started, steps: 5_000)
         walk.activity = .walking
-        var run = WalkSession(startedAt: started, steps: 5_000)
+        var run = SessionRecord(startedAt: started, steps: 5_000)
         run.activity = .running
 
         // 0.04 kcal/step, the figure every walk already in Santé was written
@@ -69,7 +69,7 @@ struct SessionActivityTests {
 
     @Test("One title per activity, shared by the live screen and the Lock Screen")
     func sessionTitleIsTheOneSpelling() {
-        // Read by `ActiveWalkScreen`'s header and, through
+        // Read by `ActiveSessionScreen`'s header and, through
         // `WalkActivityAttributes.title(isPaused:)`, by the Live Activity's row
         // — both visible at the same moment, so a literal in each would let
         // them drift (#222's one-voice rule, which #225 nearly broke by moving
@@ -85,6 +85,6 @@ struct SessionActivityTests {
 
     @Test("A session defaults to walking when no activity is given")
     func defaultsToWalking() {
-        #expect(WalkSession(startedAt: .now).activity == .walking)
+        #expect(SessionRecord(startedAt: .now).activity == .walking)
     }
 }

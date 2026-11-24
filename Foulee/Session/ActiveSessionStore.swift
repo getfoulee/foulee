@@ -13,12 +13,12 @@ import WidgetKit
 /// declaratively (no flag soup). Errors funnel through a single
 /// `runOrTrap` boundary; the rest of the file is happy-path.
 @Observable
-final class ActiveWalkStore {
+final class ActiveSessionStore {
     nonisolated enum State: Equatable {
         case idle
-        case active(WalkSession)
-        case paused(WalkSession)
-        case finished(WalkSession)
+        case active(SessionRecord)
+        case paused(SessionRecord)
+        case finished(SessionRecord)
     }
 
     private(set) var state: State = .idle
@@ -117,7 +117,7 @@ final class ActiveWalkStore {
         isUndecided: Bool = false
     ) {
         guard case .idle = state else { return }
-        let session = WalkSession(
+        let session = SessionRecord(
             startedAt: date.now,
             activity: activity,
             isActivityUndecided: isUndecided
@@ -174,7 +174,7 @@ final class ActiveWalkStore {
     /// Stop, cancel observers and persist the workout in HealthKit. Works
     /// from both the active and paused states.
     func stop() async {
-        let session: WalkSession
+        let session: SessionRecord
         switch state {
         case .active(var live):
             bankSegment()
@@ -347,11 +347,11 @@ final class ActiveWalkStore {
 
 // MARK: - Saving and recovery
 
-extension ActiveWalkStore {
+extension ActiveSessionStore {
     /// The session's builder saves the outing; without a session, or when
     /// « les deux » settled on another sport than the one it opened with, the
     /// outing is saved here under the settled sport (#729).
-    private func save(_ recorded: WalkSession) async {
+    private func save(_ recorded: SessionRecord) async {
         await sessionOpening?.value
         sessionOpening = nil
         let savedBySession = (try? await workoutSession.finish(recorded)) ?? false
@@ -368,7 +368,7 @@ extension ActiveWalkStore {
     /// with it, and start again from here.
     func adopt(_ recovered: RecoveredPhoneWorkout, minutesGoal: Int) async {
         guard case .idle = state else { return }
-        var session = WalkSession(
+        var session = SessionRecord(
             startedAt: recovered.startedAt,
             activity: recovered.activity,
             isActivityUndecided: recovered.isActivityUndecided
@@ -393,7 +393,7 @@ extension ActiveWalkStore {
 
 // MARK: - Live Activity
 
-private extension ActiveWalkStore {
+private extension ActiveSessionStore {
     func startLiveActivity(minutesGoal: Int) {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         // A crash/force-quit mid-walk can leave a stray activity behind; end
@@ -406,7 +406,7 @@ private extension ActiveWalkStore {
             Task { await stray.end(nil, dismissalPolicy: .immediate) }
         }
         let attributes = liveActivityAttributes(minutesGoal: minutesGoal)
-        let state = WalkActivityAttributes.WalkActivityState(
+        let state = WalkActivityAttributes.SessionState(
             timerBasis: date.now,
             pausedAt: nil,
             elapsed: 0,
@@ -434,7 +434,7 @@ private extension ActiveWalkStore {
         }
     }
 
-    func pushLiveActivity(session: WalkSession, isPaused: Bool) async {
+    func pushLiveActivity(session: SessionRecord, isPaused: Bool) async {
         guard let liveActivity else { return }
         await liveActivity.update(
             ActivityContent(
@@ -444,7 +444,7 @@ private extension ActiveWalkStore {
         )
     }
 
-    func endLiveActivity(with session: WalkSession) async {
+    func endLiveActivity(with session: SessionRecord) async {
         guard let liveActivity else { return }
         await liveActivity.end(
             ActivityContent(
@@ -457,11 +457,11 @@ private extension ActiveWalkStore {
     }
 
     func activityState(
-        for session: WalkSession,
+        for session: SessionRecord,
         isPaused: Bool
-    ) -> WalkActivityAttributes.WalkActivityState {
+    ) -> WalkActivityAttributes.SessionState {
         let now = date.now
-        return WalkActivityAttributes.WalkActivityState(
+        return WalkActivityAttributes.SessionState(
             timerBasis: now.addingTimeInterval(-session.elapsed),
             pausedAt: isPaused ? now : nil,
             elapsed: session.elapsed,

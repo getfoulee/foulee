@@ -5,7 +5,7 @@ import SwiftUI
 /// Live walk screen — chip "EN COURS" + big timer + progress ring with
 /// pas/distance/kcal + control row. Renders three distinct presentations
 /// depending on `store.state`.
-struct ActiveWalkScreen: View {
+struct ActiveSessionScreen: View {
     let minutesGoal: Int
     /// What Santé will record this session as (issue #223) — or `.ask` when
     /// the user is in « les deux » and only they can say (issue #224).
@@ -13,16 +13,16 @@ struct ActiveWalkScreen: View {
     /// Resolved by `TodayStore`, not here: a `View` body is out of reach of the
     /// test process, and this is the value the stamp is made of.
     let intent: ActivityStartIntent
-    var onDismiss: (WalkSession) -> Void
+    var onDismiss: (SessionRecord) -> Void
     /// Backed out of the picker without starting anything. Distinct from
     /// `onDismiss`, which carries a finished session for the home to overlay —
     /// there is no session here, and registering an empty one would move the
 
-    @State private var store: ActiveWalkStore
+    @State private var store: ActiveSessionStore
     @State private var showRoute = false
     /// Measured, never guessed from the device (#662): the phone's layout
     /// until the first measure says otherwise.
-    @State private var layout = LiveWalkLayout(size: LiveWalkLayout.referenceSize)
+    @State private var layout = LiveSessionLayout(size: LiveSessionLayout.referenceSize)
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     /// The store is a defaulted parameter for the same reason `WatchIdleScreen`
@@ -35,8 +35,8 @@ struct ActiveWalkScreen: View {
     init(
         minutesGoal: Int,
         intent: ActivityStartIntent,
-        store: ActiveWalkStore = ActiveWalkStore(),
-        onDismiss: @escaping (WalkSession) -> Void
+        store: ActiveSessionStore = ActiveSessionStore(),
+        onDismiss: @escaping (SessionRecord) -> Void
     ) {
         self.minutesGoal = minutesGoal
         self.intent = intent
@@ -52,7 +52,7 @@ struct ActiveWalkScreen: View {
         .onAppear { startIfKnown() }
         .onDisappear { store.reset() }
         .sheet(isPresented: $showRoute) {
-            WalkRouteMapView(route: store.route) { showRoute = false }
+            SessionRouteMapView(route: store.route) { showRoute = false }
         }
         // Haptics: a tap when the walk starts or resumes, a success buzz when
         // it's finished. The closure form fires only on the rising edge.
@@ -99,7 +99,7 @@ struct ActiveWalkScreen: View {
     /// literal in each would let them drift, which is what happened when #225
     /// moved only the Lock Screen. Read off the session in flight rather than
     /// off what this screen was handed, for the reason
-    /// `ActiveWalkStore.liveActivityAttributes` is: the session is what Santé
+    /// `ActiveSessionStore.liveActivityAttributes` is: the session is what Santé
     /// gets stamped with. « Ta sortie » stays for the states where there is no
     /// session to name.
     private var sessionTitle: String {
@@ -137,9 +137,9 @@ struct ActiveWalkScreen: View {
         }
     }
 
-    private func walkBody(session: WalkSession, paused: Bool) -> some View {
+    private func walkBody(session: SessionRecord, paused: Bool) -> some View {
         VStack(spacing: 0) {
-            HStack(spacing: LiveWalkLayout.spacing) {
+            HStack(spacing: LiveSessionLayout.spacing) {
                 // Scrolls above the controls once the text is too large for the
                 // screen (#597): it used to push the title under the status bar
                 // and the controls' labels off the bottom.
@@ -161,7 +161,7 @@ struct ActiveWalkScreen: View {
                 // Wider than tall, the route sits beside the figures rather
                 // than behind the « Carte » button (#662).
                 if layout.isSideBySide {
-                    WalkRouteMap(strokes: WalkRouteMap.strokes(route: store.route))
+                    SessionRouteMap(strokes: SessionRouteMap.strokes(route: store.route))
                         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
                         .padding(.trailing, 20)
                 }
@@ -170,7 +170,7 @@ struct ActiveWalkScreen: View {
         }
         // The whole space the walk is given, inside the safe area: on the
         // inner screen the hinge and the camera take their margins from it.
-        .onGeometryChange(for: LiveWalkLayout.self) { LiveWalkLayout(size: $0.size) } action: { layout = $0 }
+        .onGeometryChange(for: LiveSessionLayout.self) { LiveSessionLayout(size: $0.size) } action: { layout = $0 }
         .padding(.top, 60)
         .padding(.bottom, 56)
     }
@@ -193,7 +193,7 @@ struct ActiveWalkScreen: View {
         .padding(.horizontal, 20)
     }
 
-    private func timer(session: WalkSession) -> some View {
+    private func timer(session: SessionRecord) -> some View {
         VStack(spacing: 6) {
             Text(session.elapsed.walkClockText)
                 .kerning(-2)
@@ -212,7 +212,7 @@ struct ActiveWalkScreen: View {
         .padding(.top, 30)
     }
 
-    private func ring(session: WalkSession) -> some View {
+    private func ring(session: SessionRecord) -> some View {
         let goalSeconds = TimeInterval(minutesGoal * 60)
         let progress = goalSeconds > 0 ? session.elapsed / goalSeconds : 0
         // The three figures leave the ring at the accessibility sizes: the
@@ -246,13 +246,13 @@ struct ActiveWalkScreen: View {
         .accessibilityValue(figuresAccessibilityValue(session))
     }
 
-    private func figuresAccessibilityValue(_ session: WalkSession) -> Text {
+    private func figuresAccessibilityValue(_ session: SessionRecord) -> Text {
         let (steps, distance) = (session.steps.groupedText(), session.distanceKm.kmText(fractionDigits: 1))
         let (kcal, up, down) = (session.estimatedCalories, Int(session.elevationGainMeters), Int(session.elevationLossMeters))
         return Text("\(steps) pas, \(distance), \(kcal) kilocalories, \(up) mètres de montée, \(down) mètres de descente")
     }
 
-    private func ringFigures(session: WalkSession) -> some View {
+    private func ringFigures(session: SessionRecord) -> some View {
         FigureRow(spacing: 12, ruleHeight: 28) {
             metric(value: session.distanceKm.kmText(fractionDigits: 1), label: "Distance")
             metric(value: "\(session.estimatedCalories) kcal", label: "Énergie")
@@ -299,7 +299,7 @@ struct ActiveWalkScreen: View {
 
 /// The control row. In an extension so the screen's own type body stays
 /// inside the length budget.
-private extension ActiveWalkScreen {
+private extension ActiveSessionScreen {
     func controls(paused: Bool) -> some View {
         HStack(spacing: 28) {
             controlButton(icon: FouleeIcon.stop, color: FouleeColor.danger, label: "Arrêter") {
@@ -368,8 +368,8 @@ private extension ActiveWalkScreen {
 /// The end-of-session presentation. In an extension so the screen's own
 /// type body stays inside the length budget — and it reads as one piece:
 /// nothing here decides anything, it draws a session that is already over.
-private extension ActiveWalkScreen {
-    func finishedBody(session: WalkSession) -> some View {
+private extension ActiveSessionScreen {
+    func finishedBody(session: SessionRecord) -> some View {
         VStack(spacing: 24) {
             Spacer()
             ZStack {
@@ -425,7 +425,7 @@ private extension ActiveWalkScreen {
 
     /// « 4 321 pas · 3,20 km · ↑ 42 m » — or, `spoken`, the duration first
     /// and the climb in words, since the arrows are read as arrows.
-    func finishedSummary(session: WalkSession, spoken: Bool = false) -> String {
+    func finishedSummary(session: SessionRecord, spoken: Bool = false) -> String {
         let elevation = Elevation(ascent: session.elevationGainMeters, descent: session.elevationLossMeters)
         let parts = [
             spoken ? spokenDurationText(seconds: session.elapsed) : nil,
@@ -437,7 +437,7 @@ private extension ActiveWalkScreen {
     }
 }
 
-private struct ActiveWalkPreview: View {
+private struct ActiveSessionPreview: View {
     init() {
         prepareDependencies {
             $0.healthKit = .previewValue
@@ -445,8 +445,8 @@ private struct ActiveWalkPreview: View {
         }
     }
     var body: some View {
-        ActiveWalkScreen(minutesGoal: 20, intent: .start(.walking), onDismiss: { _ in })
+        ActiveSessionScreen(minutesGoal: 20, intent: .start(.walking), onDismiss: { _ in })
     }
 }
 
-#Preview("Active") { ActiveWalkPreview() }
+#Preview("Active") { ActiveSessionPreview() }

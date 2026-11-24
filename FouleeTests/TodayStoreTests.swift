@@ -351,7 +351,7 @@ struct TodayStoreWalkOverlayTests {
 
             // Walk 1 200 steps / 1 km while HealthKit still reports 3 000.
             store.walkWillStart()
-            var session = WalkSession(startedAt: .now)
+            var session = SessionRecord(startedAt: .now)
             session.steps = 1_200
             session.distanceMeters = 1_000
             await store.registerFinishedWalk(session)

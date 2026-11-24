@@ -5,7 +5,7 @@
 
 ## Contexte
 
-Une sortie peut être mesurée par l'iPhone (`ActiveWalkStore`) ou par l'Apple Watch (`WatchWorkoutStore`), et l'utilisateur veut la suivre sur les deux appareils. Les décisions de l'épic #272 n'étaient consignées que dans l'issue ; cet ADR les fixe et accueille celles qui suivent.
+Une sortie peut être mesurée par l'iPhone (`ActiveSessionStore`) ou par l'Apple Watch (`WatchWorkoutStore`), et l'utilisateur veut la suivre sur les deux appareils. Les décisions de l'épic #272 n'étaient consignées que dans l'issue ; cet ADR les fixe et accueille celles qui suivent.
 
 Trois faits d'Apple cadrent tout :
 
@@ -17,7 +17,7 @@ Trois faits d'Apple cadrent tout :
 
 ### D1 — La montre est le moteur ; l'iPhone, une télécommande
 
-Une sortie mesurée à la montre est **la meilleure** des deux : vrais échantillons HealthKit, fréquence cardiaque, découpage en portions (ADR 0002). L'iPhone l'affiche (#279), peut l'arrêter (#282) et peut la démarrer (#283, `startWatchApp(toHandle:)`), mais ne mesure jamais à sa place. `ActiveWalkStore` reste le repli « pas de montre au poignet ».
+Une sortie mesurée à la montre est **la meilleure** des deux : vrais échantillons HealthKit, fréquence cardiaque, découpage en portions (ADR 0002). L'iPhone l'affiche (#279), peut l'arrêter (#282) et peut la démarrer (#283, `startWatchApp(toHandle:)`), mais ne mesure jamais à sa place. `ActiveSessionStore` reste le repli « pas de montre au poignet ».
 
 ### D2 — Un état complet, daté, jamais un delta
 
@@ -95,4 +95,4 @@ Le pendant de D1 dans l'autre sens : pour une séance lancée sur l'iPhone, **l'
 - **L'arrivée du signal de fin** (D6) : le snapshot final et la fin de la session miroir ne sont promis par aucune doc à une app iPhone en arrière-plan. Si l'activité restait encore affichée, le journal le dira (`log stream --predicate 'subsystem == "com.eno33.foulee" AND category == "live-activity"' --info`) : sans « miroir : Live Activity terminée », le signal n'est pas arrivé, et un `WCSession.sendMessage` de la montre, qui réveille l'iPhone, deviendrait la voie de fin.
 - **Le coût CPU** de l'allègement toutes les 8 s sur une longue sortie : linéaire, jamais mesuré au poignet.
 - **La cause du gel de la `TimelineView`** sur la SE (D8) : jamais reproduite hors de cette montre. Les lignes de la page « Jambes » en dépendent encore ; si elles restaient figées, elles prendraient le même chemin.
-- **Le coût en batterie** d'un `sendMessage` toutes les 3 s pendant une séance iPhone, des deux côtés. C'est le réglage à allonger (`ActiveWalkStore.watchInterval`) si la montre s'en ressent.
+- **Le coût en batterie** d'un `sendMessage` toutes les 3 s pendant une séance iPhone, des deux côtés. C'est le réglage à allonger (`ActiveSessionStore.watchInterval`) si la montre s'en ressent.

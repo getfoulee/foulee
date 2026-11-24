@@ -258,7 +258,7 @@ struct TodayStoreGarminOverlayTests {
             let store = try StreakTestSupport.everyDayStore()
             await store.refresh()
             store.walkWillStart()
-            var session = WalkSession(startedAt: Self.noon)
+            var session = SessionRecord(startedAt: Self.noon)
             session.steps = 1_200
             session.distanceMeters = 1_000
             await store.registerFinishedWalk(session)

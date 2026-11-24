@@ -144,7 +144,7 @@ struct WatchAbandonedLegCallbackTests {
     /// test in this suite passing: verified by doing it.
     @Test("The metrics path is wired to the same filter")
     func ingestIsFiltered() throws {
-        let source = try Self.strippedSource(at: "FouleeWatch/Walk/WatchWorkoutStore.swift")
+        let source = try Self.strippedSource(at: "FouleeWatch/Session/WatchWorkoutStore.swift")
         let ingest = try #require(source.range(of: "func ingest(builder:"))
         let body = source[ingest.lowerBound...].prefix(400)
         #expect(body.contains("isCurrentLeg(builder: ObjectIdentifier(builder))"))

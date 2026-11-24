@@ -98,7 +98,7 @@ struct ScreenshotModeTests {
     @Test("The capture doubles' write closures are no-ops")
     func doublesNeverWrite() async throws {
         let health = ScreenshotDoubles.healthKit
-        try await health.saveWorkout(WalkSession(startedAt: ScreenshotSeed.instant))
+        try await health.saveWorkout(SessionRecord(startedAt: ScreenshotSeed.instant))
         _ = try await health.logWater(500)
         try await health.deleteWater(UUID())
         let water = try await health.todayWaterML()

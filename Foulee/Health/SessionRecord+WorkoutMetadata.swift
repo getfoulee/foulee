@@ -1,7 +1,7 @@
 import FouleeKit
 import Foundation
 
-nonisolated extension WalkSession {
+nonisolated extension SessionRecord {
     /// What a phone-recorded outing writes on its workout: its own measured
     /// steps, distance and calories, and its climb under the standard keys.
     ///

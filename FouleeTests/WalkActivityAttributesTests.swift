@@ -9,12 +9,12 @@ import Testing
 /// nothing else:
 /// * **covered here** — what a given attributes value says: its title, its
 ///   glyph, and its decoding of a payload written by another build.
-/// * **covered next door** — that `ActiveWalkStore` builds that value off the
+/// * **covered next door** — that `ActiveSessionStore` builds that value off the
 ///   session's own activity rather than a constant
-///   (`ActiveWalkStoreTests.liveActivityCarriesTheStartedActivity`). Without
+///   (`ActiveSessionStoreTests.liveActivityCarriesTheStartedActivity`). Without
 ///   that test, the wiring could go back to a hardcoded `.walking` with every
 ///   expectation below still green.
-/// * **not covered** — the four reads in `FouleeLiveActivity.WalkLiveActivity`
+/// * **not covered** — the four reads in `FouleeLiveActivity.SessionLiveActivity`
 ///   (Lock Screen row, Dynamic Island expanded/compact/minimal). They live in a
 ///   `Widget`, which WidgetKit renders out of process, and no test target can
 ///   instantiate one. The title and the glyph were pulled onto this value type
@@ -183,20 +183,20 @@ struct WalkActivityAttributesTests {
 
 /// The climb on the Lock Screen (issue #576).
 @Suite("Live Activity state — climb")
-struct WalkActivityStateClimbTests {
+struct SessionStateClimbTests {
     @Test("A state written before the climb decodes, with none to draw")
     func legacyStateDecodes() throws {
         let legacy = Data("""
         {"timerBasis": 0, "elapsed": 600, "steps": 1200, "distanceKm": 2.5, "activeCalories": 140}
         """.utf8)
-        let state = try JSONDecoder().decode(WalkActivityAttributes.WalkActivityState.self, from: legacy)
+        let state = try JSONDecoder().decode(WalkActivityAttributes.SessionState.self, from: legacy)
         #expect(state.steps == 1_200)
         #expect(state.elevation == nil)
     }
 
     @Test("A measured climb and descent read « ↑ 120 m · ↓ 115 m », a flat outing nothing")
     func elevationText() {
-        var state = WalkActivityAttributes.WalkActivityState(
+        var state = WalkActivityAttributes.SessionState(
             timerBasis: .distantPast, pausedAt: nil, elapsed: 0,
             steps: 0, distanceKm: 0, activeCalories: 0,
             climbMeters: 120, descentMeters: 115

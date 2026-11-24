@@ -12,7 +12,7 @@ Demande d'origine : *« lancer l'activité au début et ne plus s'en soucier jus
 Deux faits cadrent tout le reste :
 
 1. **`HKWorkout` est immuable et Foulée n'appelle jamais `HKHealthStore.delete`.** Un sport mal enregistré l'est définitivement.
-2. **Le téléphone n'écrit aucun échantillon d'énergie** (ils double-compteraient le total du jour, cf. `HealthKitClient+Live`). `WalkSession.estimatedCalories` — pas × `kcalPerStep`, **0,04 en marche contre 0,09 en course** — est donc la seule donnée d'énergie qu'une séance téléphone portera jamais.
+2. **Le téléphone n'écrit aucun échantillon d'énergie** (ils double-compteraient le total du jour, cf. `HealthKitClient+Live`). `SessionRecord.estimatedCalories` — pas × `kcalPerStep`, **0,04 en marche contre 0,09 en course** — est donc la seule donnée d'énergie qu'une séance téléphone portera jamais.
 
 Une erreur de classification est ainsi **invisible, coûteuse et définitive** à la fois.
 

@@ -5,8 +5,8 @@ import Foundation
 import Testing
 @testable import Foulee
 
-@Suite("ActiveWalkStore")
-struct ActiveWalkStoreTests {
+@Suite("ActiveSessionStore")
+struct ActiveSessionStoreTests {
     @Test("start transitions idle → active and assigns the start date")
     func startTransitions() async {
         let frozen = Date(timeIntervalSince1970: 1_700_000_000)
@@ -16,10 +16,10 @@ struct ActiveWalkStoreTests {
             $0.healthKit = .testValue
             $0.continuousClock = TestClock()
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
 
-            #expect(store.state == .active(WalkSession(startedAt: frozen)))
+            #expect(store.state == .active(SessionRecord(startedAt: frozen)))
         }
     }
 
@@ -32,7 +32,7 @@ struct ActiveWalkStoreTests {
             $0.healthKit = .testValue
             $0.continuousClock = TestClock()
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             let first = store.state
             store.start()
@@ -44,7 +44,7 @@ struct ActiveWalkStoreTests {
     @Test("stop finalises the session and saves it through HealthKit")
     func stopSavesWorkout() async {
         let frozen = Date(timeIntervalSince1970: 1_700_000_000)
-        let saved = LockedRef<WalkSession?>(nil)
+        let saved = LockedRef<SessionRecord?>(nil)
         await withDependencies {
             $0.date = .constant(frozen)
             $0.pedometer = .testValue
@@ -60,7 +60,7 @@ struct ActiveWalkStoreTests {
                 }
             )
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             await store.stop()
 
@@ -77,7 +77,7 @@ struct ActiveWalkStoreTests {
     @Test("The session handed to HealthKit carries the activity it was started with")
     func stopSavesTheStartedActivity() async {
         let frozen = Date(timeIntervalSince1970: 1_700_000_000)
-        let saved = LockedRef<WalkSession?>(nil)
+        let saved = LockedRef<SessionRecord?>(nil)
         await withDependencies {
             $0.date = .constant(frozen)
             $0.pedometer = .testValue
@@ -93,7 +93,7 @@ struct ActiveWalkStoreTests {
                 }
             )
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start(activity: .running)
             await store.stop()
 
@@ -120,7 +120,7 @@ struct ActiveWalkStoreTests {
             // since `Activity.request` needs a live ActivityKit and cannot run
             // here. What stays uncovered is the four reads in
             // `FouleeLiveActivity`, which WidgetKit renders out of process.
-            let run = ActiveWalkStore()
+            let run = ActiveSessionStore()
             run.start(minutesGoal: 30, activity: .running)
             let running = run.liveActivityAttributes(minutesGoal: 30)
 
@@ -129,7 +129,7 @@ struct ActiveWalkStoreTests {
             #expect(running.title(isPaused: false) == "Ta course")
             #expect(running.glyph == "figure.run")
 
-            let walk = ActiveWalkStore()
+            let walk = ActiveSessionStore()
             walk.start(minutesGoal: 20, activity: .walking)
             let walking = walk.liveActivityAttributes(minutesGoal: 20)
 
@@ -160,7 +160,7 @@ struct ActiveWalkStoreTests {
                 }
             )
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             await store.stop()
 
@@ -182,13 +182,13 @@ struct ActiveWalkStoreTests {
             $0.healthKit = .testValue
             $0.continuousClock = TestClock()
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             await store.pause()
-            #expect(store.state == .paused(WalkSession(startedAt: frozen)))
+            #expect(store.state == .paused(SessionRecord(startedAt: frozen)))
 
             store.resume()
-            #expect(store.state == .active(WalkSession(startedAt: frozen)))
+            #expect(store.state == .active(SessionRecord(startedAt: frozen)))
         }
     }
 
@@ -200,7 +200,7 @@ struct ActiveWalkStoreTests {
             $0.healthKit = .testValue
             $0.continuousClock = TestClock()
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             await store.pause()
             #expect(store.state == .idle)
 
@@ -234,7 +234,7 @@ struct ActiveWalkStoreTests {
                 }
             )
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             // Drain the immediate, finite route stream.
             var spins = 0
@@ -249,7 +249,7 @@ struct ActiveWalkStoreTests {
     @Test("stop from a paused session still finalises and saves it")
     func stopFromPausedSaves() async {
         let frozen = Date(timeIntervalSince1970: 1_700_000_000)
-        let saved = LockedRef<WalkSession?>(nil)
+        let saved = LockedRef<SessionRecord?>(nil)
         await withDependencies {
             $0.date = .constant(frozen)
             $0.pedometer = .testValue
@@ -265,7 +265,7 @@ struct ActiveWalkStoreTests {
                 }
             )
         } operation: {
-            let store = ActiveWalkStore()
+            let store = ActiveSessionStore()
             store.start()
             await store.pause()
             await store.stop()

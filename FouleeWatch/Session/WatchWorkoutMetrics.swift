@@ -50,7 +50,7 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     var recentPaceSecondsPerKm: TimeInterval?
     /// Each kilometre of the outing and what it cost (issue #301). Empty until
     /// the first is crossed.
-    var splits: [WalkSplit] = []
+    var splits: [KilometreSplit] = []
     /// The outing is paused: the clock stands still and « Reprendre » takes
     /// the place of « Pause » (issue #384).
     var isPaused = false

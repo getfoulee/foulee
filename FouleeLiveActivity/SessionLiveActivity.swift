@@ -18,7 +18,7 @@ import WidgetKit
 /// and `ActivityGlyph.mixedCardio` that #222 put here stay for one payload
 /// only: an activity started by a build older than #225, which never recorded
 /// what it was.
-struct WalkLiveActivity: Widget {
+struct SessionLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: WalkActivityAttributes.self) { context in
             LockScreenView(
@@ -134,7 +134,7 @@ struct WalkLiveActivity: Widget {
 }
 
 struct LockScreenView: View {
-    let state: WalkActivityAttributes.WalkActivityState
+    let state: WalkActivityAttributes.SessionState
     let attributes: WalkActivityAttributes
 
     private var progress: Double {
@@ -212,7 +212,7 @@ private extension View {
     /// The session clock for VoiceOver (issue #601): « 18:24 » is read as a
     /// time of day. Running, a `.relative` text the system ticks like the
     /// timer itself, « 18 min 24 s »; paused, the frozen duration in words.
-    func sessionClockAccessibility(_ state: WalkActivityAttributes.WalkActivityState) -> some View {
+    func sessionClockAccessibility(_ state: WalkActivityAttributes.SessionState) -> some View {
         accessibilityLabel(Text("Durée"))
             .accessibilityValue(
                 state.isPaused
