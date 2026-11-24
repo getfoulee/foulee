@@ -238,4 +238,47 @@ struct OutingMergeTests {
         let data = try JSONEncoder().encode([merge])
         #expect(try JSONDecoder().decode([OutingMerge].self, from: data) == [merge])
     }
+
+    // MARK: - Sport (#731)
+
+    @Test("A merge written before #731 reads back with no sport")
+    func mergeWithoutSportDecodes() throws {
+        let id = UUID()
+        let json = #"[{"id":"\#(id.uuidString)","workoutIDs":[],"startedAt":0}]"#
+        let merges = try JSONDecoder().decode([OutingMerge].self, from: Data(json.utf8))
+        let merge = try #require(merges.first)
+        #expect(merge.sport == nil)
+    }
+
+    @Test("A sport this build cannot name reads as none and is written back untouched")
+    func unknownSportSurvives() throws {
+        let json = #"[{"id":"\#(UUID().uuidString)","workoutIDs":[],"startedAt":0,"sport":"cycling"}]"#
+        let merges = try JSONDecoder().decode([OutingMerge].self, from: Data(json.utf8))
+        #expect(try #require(merges.first).sport == nil)
+        let written = try #require(String(data: JSONEncoder().encode(merges), encoding: .utf8))
+        #expect(written.contains(#""sport":"cycling""#))
+    }
+
+    @Test("A merge that names a sport reads every part as that sport")
+    func mergeSportStampsParts() throws {
+        let first = outing(.walking, from: 480, lasting: 30)
+        let second = outing(.walking, from: 515, lasting: 20)
+        let merge = OutingMerge(workoutIDs: [first.id, second.id], startedAt: first.startedAt, sport: .running)
+
+        let row = try #require(rows([first, second], merges: [merge]).first)
+
+        #expect(row.activity == .running)
+    }
+
+    @Test("A sport chosen for a merge survives merging a third outing into it")
+    func absorbedMergeKeepsItsSport() throws {
+        let first = outing(from: 480, lasting: 30)
+        let second = outing(from: 515, lasting: 20)
+        let third = outing(from: 540, lasting: 10)
+        let chosen = OutingMerge(workoutIDs: [first.id, second.id], startedAt: first.startedAt, sport: .running)
+
+        let merges = OutingMerges.merging(second, third, in: [chosen])
+
+        #expect(try #require(merges.first).sport == .running)
+    }
 }

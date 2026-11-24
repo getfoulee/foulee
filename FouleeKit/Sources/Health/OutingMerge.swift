@@ -17,11 +17,27 @@ nonisolated public struct OutingMerge: Codable, Hashable, Sendable {
     /// When the first part began: what a merge is forgotten by, once no read
     /// can reach it any more.
     var startedAt: Date
+    /// The sport the whole outing is read as, when one was chosen for it;
+    /// `nil` keeps each part's own (issue #731).
+    ///
+    /// Kept as the raw string, so a sport a newer build names and this one
+    /// does not reads as `nil` here and is written back untouched. The merges
+    /// travel through iCloud and are decoded as one list: a value this build
+    /// could not decode would otherwise lose every merge with it.
+    fileprivate var sportRawValue: String?
 
-    public init(id: UUID = UUID(), workoutIDs: Set<UUID>, startedAt: Date) {
+    var sport: SportID? { sportRawValue.flatMap(SportID.init(rawValue:)) }
+
+    public init(id: UUID = UUID(), workoutIDs: Set<UUID>, startedAt: Date, sport: SportID? = nil) {
         self.id = id
         self.workoutIDs = workoutIDs
         self.startedAt = startedAt
+        self.sportRawValue = sport?.rawValue
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, workoutIDs, startedAt
+        case sportRawValue = "sport"
     }
 }
 
@@ -83,11 +99,14 @@ nonisolated public enum OutingMerges {
     ) -> [OutingMerge] {
         let parts = workoutIDs(of: first).union(workoutIDs(of: second))
         let absorbed = merges.filter { !$0.workoutIDs.isDisjoint(with: parts) }
-        let merged = OutingMerge(
+        var merged = OutingMerge(
             id: id,
             workoutIDs: absorbed.reduce(parts) { $0.union($1.workoutIDs) },
             startedAt: ([first.startedAt, second.startedAt] + absorbed.map(\.startedAt)).min() ?? first.startedAt
         )
+        // A sport chosen for a merge it absorbs stays chosen, even one this
+        // build cannot name.
+        merged.sportRawValue = absorbed.lazy.compactMap(\.sportRawValue).first
         return merges.filter { $0.workoutIDs.isDisjoint(with: parts) } + [merged]
     }
 
@@ -111,15 +130,18 @@ nonisolated public enum OutingMerges {
     ///
     /// The stamp replaces a watch outing's own: every leg of it belongs to the
     /// merge too, and one identifier is what ties them all together. Nothing
-    /// is lost, since the stamp only lives in what was read.
+    /// is lost, since the stamp only lives in what was read. A merge that names
+    /// a sport stamps it on every part the same way.
     public static func applying(_ merges: [OutingMerge], to workouts: [WorkoutSummary]) -> [WorkoutSummary] {
         var legs: [UUID: OutingLeg] = [:]
+        var sports: [UUID: SportID] = [:]
         for merge in merges {
             let parts = workouts
                 .filter { merge.workoutIDs.contains($0.id) }
                 .sorted { ($0.startedAt, $0.id.uuidString) < ($1.startedAt, $1.id.uuidString) }
             for (index, part) in parts.enumerated() {
                 legs[part.id] = OutingLeg(outingID: merge.id, index: index)
+                sports[part.id] = merge.sport
             }
         }
         guard !legs.isEmpty else { return workouts }
@@ -127,6 +149,7 @@ nonisolated public enum OutingMerges {
             guard let leg = legs[workout.id] else { return workout }
             var stamped = workout
             stamped.outing = leg
+            if let sport = sports[workout.id] { stamped.activity = RecordedActivity(sport: sport) }
             return stamped
         }
     }

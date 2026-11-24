@@ -78,7 +78,7 @@ nonisolated enum BackgroundStreakRefresh {
 
     private static let minutesGoalKey = "preferences.minutesGoal"
     private static let activeDaysKey = "preferences.activeDays"
-    private static let activityModeKey = "preferences.activityMode"
+    private static let activityModeKey = FavoriteSportsPreference.modeKey
     private static let lastRecomputeKey = "streak.lastBackgroundRecomputeAt"
     private static let pendingCrossingKey = "streak.pendingGoalCrossingAt"
     private static let measuredMinutesKey = "streak.lastMeasuredMinutes"
@@ -91,6 +91,8 @@ nonisolated enum BackgroundStreakRefresh {
         return Preferences(
             goalMinutes: goal,
             activeDays: days ?? Weekday.workWeek,
+            // The mode, not the favourite sports: it is written by every build,
+            // and a background wake may come before the first launch migrates.
             // Same fallback as `UserPreferences`: an install that never wrote
             // the key is a walking install.
             activityMode: mode ?? .walking

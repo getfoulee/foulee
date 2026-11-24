@@ -208,6 +208,25 @@ struct UserPreferencesTests {
         #expect(cloud.object(forKey: CloudSettingsSync.modifiedAtKey) as? Double == 1_000)
     }
 
+    /// #731: an install that stored only the mode keeps its choice as
+    /// favourite sports, and every change still writes the mode older builds
+    /// read.
+    @Test("A pre-#731 install keeps its mode as favourite sports")
+    func legacyModeBecomesFavoriteSports() {
+        let defaults = cleanDefaults()
+        defaults.set("running", forKey: "preferences.activityMode")
+
+        let preferences = UserPreferences(defaults: defaults)
+
+        #expect(preferences.favoriteSports == [.running])
+        #expect(preferences.activityMode == .running)
+        #expect(defaults.stringArray(forKey: "preferences.favoriteSports") == ["running"])
+
+        preferences.activityMode = .both
+        #expect(defaults.stringArray(forKey: "preferences.favoriteSports") == ["running", "walking"])
+        #expect(defaults.string(forKey: "preferences.activityMode") == "both")
+    }
+
     private func cleanDefaults() -> UserDefaults {
         let suiteName = "foulee-tests-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!

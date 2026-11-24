@@ -27,3 +27,26 @@ nonisolated public enum ActivityMode: String, CaseIterable, Codable, Sendable, I
         }
     }
 }
+
+nonisolated public extension ActivityMode {
+    /// The mode a set of favourite sports reads as, for the screens and the
+    /// watch and Garmin messages that still speak in modes (issue #731):
+    /// walking and running both → « les deux », running alone → running,
+    /// anything else → walking, the app's original scope.
+    init(favorites: Set<SportID>) {
+        switch (favorites.contains(.walking), favorites.contains(.running)) {
+        case (true, true): self = .both
+        case (false, true): self = .running
+        default: self = .walking
+        }
+    }
+
+    /// The favourite sports this mode stands for.
+    var favoriteSports: Set<SportID> {
+        switch self {
+        case .walking: [.walking]
+        case .running: [.running]
+        case .both: [.walking, .running]
+        }
+    }
+}
