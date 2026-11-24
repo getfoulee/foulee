@@ -8,6 +8,7 @@ included:
   - FouleeLiveActivity
   - FouleeKit
   - FouleeHealth
+  - FouleeIntents
   - FouleeKitTests
   - Project.swift
   - Tuist

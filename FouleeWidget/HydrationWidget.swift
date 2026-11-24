@@ -1,4 +1,6 @@
 import AppIntents
+import FouleeIntents
+import FouleeHealth
 import FouleeKit
 import SwiftUI
 import WidgetKit

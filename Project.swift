@@ -112,6 +112,14 @@ let project = Project(
                 .sdk(name: "CoreMotion", type: .framework)
             ]
         ),
+        // The App Intents the app and its widget extension both run (#724):
+        // declared once, registered by each through `FouleeIntentsPackage`.
+        sharedFramework(
+            name: "FouleeIntents",
+            bundleSuffix: "intents",
+            onWatch: false,
+            dependencies: [.target(name: "FouleeKit"), .target(name: "FouleeHealth")]
+        ),
         .target(
             name: "FouleeKitTests",
             destinations: [.mac],
@@ -143,6 +151,7 @@ let project = Project(
             dependencies: [
                 .target(name: "FouleeKit"),
                 .target(name: "FouleeHealth"),
+                .target(name: "FouleeIntents"),
                 .package(product: "Dependencies"),
                 // iPhone app only — the widget and watch targets must never
                 // link the Connect IQ framework (iOS-only binary, and the
@@ -177,13 +186,9 @@ let project = Project(
             ]),
             sources: [
                 "FouleeWidget/**",
-                // The intents the app registers too: an App Intent is declared
-                // in each process that runs it, not linked.
-                "Foulee/Shared/LogWaterIntent.swift",
+                // Declared in each process rather than in FouleeIntents: Siri's
+                // training of its phrases needs its `AppEnum` in the app (#724).
                 "Foulee/Shared/StartOutingIntent.swift",
-                // Shared with « Où j'en suis aujourd'hui » (#605), so Siri
-                // answers with the widgets' own figures.
-                "Foulee/Shared/WidgetLiveMetrics.swift",
                 "FouleeWatchWidget/StreakEntry.swift"
             ],
             resources: [
@@ -195,7 +200,8 @@ let project = Project(
             entitlements: .file(path: "FouleeWidget/Resources/FouleeWidget.entitlements"),
             dependencies: [
                 .target(name: "FouleeKit"),
-                .target(name: "FouleeHealth")
+                .target(name: "FouleeHealth"),
+                .target(name: "FouleeIntents")
             ]
         ),
         .target(

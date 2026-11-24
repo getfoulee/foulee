@@ -369,6 +369,16 @@
         }
       }
     },
+    "C'est noté : +%lld ml d'eau." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noted: +%lld ml of water."
+          }
+        }
+      }
+    },
     "Calories" : {
       "localizations" : {},
       "shouldTranslate" : false
@@ -379,6 +389,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Run"
+          }
+        }
+      }
+    },
+    "Foulée n'a pas l'autorisation d'écrire dans Santé. Active l'eau dans Santé > Profil > Apps > Foulée." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foulée isn’t allowed to write to Health. Turn on water in Health > Profile > Apps > Foulée."
+          }
+        }
+      }
+    },
+    "Ouvre d'abord Foulée pour autoriser l'accès à Santé." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Foulée first to allow access to Health."
+          }
+        }
+      }
+    },
+    "Santé n'est pas disponible sur cet appareil." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Health isn’t available on this device."
+          }
+        }
+      }
+    },
+    "Verre non enregistré — réessaie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glass not saved — try again"
           }
         }
       }

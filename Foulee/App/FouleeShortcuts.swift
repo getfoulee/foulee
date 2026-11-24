@@ -1,4 +1,5 @@
 import AppIntents
+import FouleeIntents
 
 // periphery:ignore - discovered by the AppIntents runtime at install, never referenced from code.
 /// Exposes "J'ai bu un verre", « Commencer une sortie » and « Où j'en suis

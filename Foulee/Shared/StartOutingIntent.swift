@@ -8,6 +8,10 @@ import Observation
 /// request to the home, which owns the session. Compiled into the widget
 /// extension too, so the control can name it; being a foreground intent, the
 /// system still runs it in the app.
+///
+/// Not in FouleeIntents with `LogWaterIntent` (#724): Siri's training of the
+/// App Shortcut phrases « Commence une \(sport) avec Foulée » only resolves a
+/// parameter whose `AppEnum` the app declares itself.
 struct StartOutingIntent: AppIntent {
     static var title: LocalizedStringResource { "Commencer une sortie" }
     // periphery:ignore - read by the AppIntents runtime, never from code.
