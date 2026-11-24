@@ -19,7 +19,7 @@ nonisolated enum TodayAccessibility {
     static let streakCard = "today.card.streak"
     static let weatherCard = "today.card.weather"
 
-    static func metricCard(_ metric: WalkMetric) -> String {
+    static func metricCard(_ metric: MetricID) -> String {
         "today.card.metric.\(metric.rawValue)"
     }
 }

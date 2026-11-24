@@ -12,10 +12,8 @@ nonisolated extension HealthKitClient {
         let store = HKHealthStore()
         let garminDetector = GarminSourceDetector()
 
-        let stepsType = HKQuantityType(.stepCount)
-        let distanceType = HKQuantityType(.distanceWalkingRunning)
-        let minutesType = HKQuantityType(.appleExerciseTime)
-        let caloriesType = HKQuantityType(.activeEnergyBurned)
+        let dayTypes = MetricID.allCases.map(\.quantityType)
+        let minutesType = MetricID.minutes.quantityType
         let heartRateType = HKQuantityType(.heartRate)
         let workoutType = HKWorkoutType.workoutType()
         let waterType = HKQuantityType(.dietaryWater)
@@ -25,10 +23,9 @@ nonisolated extension HealthKitClient {
         // workoutDetail query fails with "Authorization not determined".
         // Water is read+write for the hydration tracker. Routes are read for
         // the detail map (#319) — refusing them costs the map and nothing else.
-        let readTypes: Set<HKObjectType> = [
-            stepsType, distanceType, minutesType, caloriesType,
+        let readTypes = Set<HKObjectType>(dayTypes).union([
             heartRateType, workoutType, waterType, HKSeriesType.workoutRoute()
-        ]
+        ])
         let writeTypes: Set<HKSampleType> = [workoutType, waterType]
 
         return HealthKitClient(
@@ -38,17 +35,17 @@ nonisolated extension HealthKitClient {
                 return true
             },
             todayMetrics: {
-                async let steps = HealthKitTodaySums.sum(.stepCount, unit: .count(), store: store)
-                async let distanceMeters = HealthKitTodaySums.sum(.distanceWalkingRunning, unit: .meter(), store: store)
-                async let minutes = HealthKitTodaySums.sum(.appleExerciseTime, unit: .minute(), store: store)
-                async let calories = HealthKitTodaySums.sum(.activeEnergyBurned, unit: .kilocalorie(), store: store)
+                async let steps = HealthKitTodaySums.sum(.steps, store: store)
+                async let distanceKm = HealthKitTodaySums.sum(.distance, store: store)
+                async let minutes = HealthKitTodaySums.sum(.minutes, store: store)
+                async let calories = HealthKitTodaySums.sum(.calories, store: store)
                 // Same max() as dailyMinutes (see ActiveMinutes): the hero
                 // ring must move for a Garmin-only user, not just the streak.
                 async let workoutMinutes = todayWorkoutMinutes(store: store)
 
                 return try await HealthMetrics(
                     steps: Int(steps),
-                    distanceKm: distanceMeters / 1_000,
+                    distanceKm: distanceKm,
                     activeMinutes: ActiveMinutes.merged(appleMinutes: Int(minutes), workoutMinutes: workoutMinutes),
                     activeCalories: Int(calories)
                 )
@@ -106,7 +103,7 @@ nonisolated extension HealthKitClient {
                 try await metricHourlyToday(store: store, metric: metric)
             },
             observeChanges: {
-                healthChangeStream(store: store, types: [stepsType, distanceType, minutesType, caloriesType])
+                healthChangeStream(store: store, types: dayTypes)
             },
             observeWaterChanges: {
                 healthChangeStream(store: store, types: [waterType])
@@ -142,35 +139,28 @@ nonisolated extension HealthKitClient {
     }()
 }
 
-/// HealthKit quantity type, unit and scale factor for a `WalkMetric` — or for
-/// water (`HealthKitClient+Water`). The scale converts the raw HK unit into the
-/// display unit (distance: metres → km).
+/// HealthKit quantity type and unit for a `MetricID` — or for water
+/// (`HealthKitClient+Water`). The unit is already the display unit.
 nonisolated struct HKMetricMapping {
     let type: HKQuantityType
     let unit: HKUnit
-    let scale: Double
 }
 
-nonisolated private func hkMapping(for metric: WalkMetric) -> HKMetricMapping {
-    switch metric {
-    case .steps: HKMetricMapping(type: HKQuantityType(.stepCount), unit: .count(), scale: 1)
-    case .minutes: HKMetricMapping(type: HKQuantityType(.appleExerciseTime), unit: .minute(), scale: 1)
-    case .distance: HKMetricMapping(type: HKQuantityType(.distanceWalkingRunning), unit: .meter(), scale: 1.0 / 1_000)
-    case .calories: HKMetricMapping(type: HKQuantityType(.activeEnergyBurned), unit: .kilocalorie(), scale: 1)
-    }
+nonisolated private func hkMapping(for metric: MetricID) -> HKMetricMapping {
+    HKMetricMapping(type: HKQuantityType(metric.quantityIdentifier), unit: metric.healthKitUnit)
 }
 
 /// Daily buckets of `metric` over the last `daysBack` days (today included).
 nonisolated private func metricCollection(
     store: HKHealthStore,
-    metric: WalkMetric,
+    metric: MetricID,
     daysBack: Int
 ) async throws -> [MetricPoint] {
     // The stats "minutes" series must match the hero and the streak: route
     // through the source-agnostic merge instead of raw appleExerciseTime.
     if metric == .minutes {
         let merged = try await mergedDailyMinutes(
-            store: store, minutesType: HKQuantityType(.appleExerciseTime), daysBack: daysBack
+            store: store, minutesType: MetricID.minutes.quantityType, daysBack: daysBack
         )
         return merged.map { MetricPoint(date: $0.date, value: Double($0.minutes)) }
     }
@@ -188,13 +178,13 @@ nonisolated private func metricCollection(
 /// Hourly buckets of `metric` from midnight today through now.
 nonisolated private func metricHourlyToday(
     store: HKHealthStore,
-    metric: WalkMetric
+    metric: MetricID
 ) async throws -> [MetricPoint] {
     // Same reason as `metricCollection`: raw appleExerciseTime would show a
     // Garmin-only user an empty hourly curve under a non-zero daily bar.
     if metric == .minutes {
         return try await mergedHourlyMinutesToday(
-            store: store, minutesType: HKQuantityType(.appleExerciseTime)
+            store: store, minutesType: MetricID.minutes.quantityType
         )
     }
     let calendar = Calendar.current
@@ -237,7 +227,7 @@ nonisolated func statisticsCollection(
             }
             var output: [MetricPoint] = []
             results?.enumerateStatistics(from: start, to: end) { statistic, _ in
-                let value = (statistic.sumQuantity()?.doubleValue(for: mapping.unit) ?? 0) * mapping.scale
+                let value = statistic.sumQuantity()?.doubleValue(for: mapping.unit) ?? 0
                 output.append(MetricPoint(date: statistic.startDate, value: value))
             }
             continuation.resume(returning: output)

@@ -86,20 +86,18 @@ struct WatchTodayView: View {
         return LazyVGrid(columns: columns, spacing: 8) {
             // Steps + minutes show progress toward the phone-synced goals,
             // like the hydration card does; distance/calories have no goal.
-            stat(.steps, icon: "shoeprints.fill", tint: MetricPalette.steps,
-                 value: Double(store.steps), goal: Double(store.stepsGoal))
-            stat(.minutes, icon: "timer", tint: MetricPalette.minutes,
-                 value: Double(store.minutes), goal: Double(store.minutesGoal))
-            stat(.distance, icon: "ruler.fill", tint: MetricPalette.distance, value: store.distanceKm)
-            stat(.calories, icon: "flame.fill", tint: MetricPalette.calories, value: Double(store.calories))
+            stat(.steps, value: Double(store.steps), goal: Double(store.stepsGoal))
+            stat(.minutes, value: Double(store.minutes), goal: Double(store.minutesGoal))
+            stat(.distance, value: store.distanceKm)
+            stat(.calories, value: Double(store.calories))
         }
     }
 
     /// One VoiceOver element per tile, its figures in words: « 8 240 pas sur
     /// 10 000 pas », « 4,2 kilomètres » (issue #600).
-    private func stat(_ metric: WalkMetric, icon: String, tint: Color, value: Double, goal: Double? = nil) -> some View {
+    private func stat(_ metric: MetricID, value: Double, goal: Double? = nil) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Image(systemName: icon).scaledSystemFont(size: 13, weight: .bold).foregroundStyle(tint)
+            Image(systemName: metric.glyph).scaledSystemFont(size: 13, weight: .bold).foregroundStyle(metric.tint)
             Text(metric.formatted(value))
                 .scaledNumericFont(size: 18, weight: .bold).minimumScaleFactor(0.6).lineLimit(1)
             Text(goal.map { "/ \(metric.formatted($0)) \(metric.unit)" } ?? metric.unit)

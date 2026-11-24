@@ -24,7 +24,7 @@ struct TodayScreen: View {
     private let mirroredSession = MirroredSessionStore.shared
     private let review = ReviewPromptStore.shared
     @State private var isShowingSettings = false
-    @State private var selectedMetric: WalkMetric?
+    @State private var selectedMetric: MetricID?
     @State private var isShowingWeather = false
     @State private var scrollToHydration = false
 
@@ -326,7 +326,7 @@ struct TodayScreen: View {
     }
 
     /// Only steps + minutes have a daily goal to draw on the stats chart.
-    private func dailyGoal(for metric: WalkMetric) -> Double? {
+    private func dailyGoal(for metric: MetricID) -> Double? {
         switch metric {
         case .steps: Double(store.stepsGoal)
         case .minutes: Double(store.minutesGoal)

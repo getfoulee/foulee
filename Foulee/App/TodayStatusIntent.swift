@@ -50,9 +50,9 @@ private struct TodayStatusSnippet: View {
         .padding()
     }
 
-    private func tile(_ metric: WalkMetric, _ value: Int, goal: Int) -> some View {
+    private func tile(_ metric: MetricID, _ value: Int, goal: Int) -> some View {
         StatBlock(
-            systemIcon: metric.icon,
+            systemIcon: metric.glyph,
             label: .verbatim(metric.title),
             value: value.groupedText(),
             sub: "/ \(goal.groupedText())",

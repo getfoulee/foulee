@@ -110,7 +110,7 @@ struct RecapComparison: View {
                 now: Double(now.minutes), before: Double(before.minutes)) { durationText(minutes: Int($0)) },
             Row(label: "Pas", icon: FouleeIcon.footsteps, tint: AnyShapeStyle(FouleeColor.accentGradient),
                 now: Double(now.steps), before: Double(before.steps)) { Int($0).groupedText() },
-            Row(label: "Distance", icon: FouleeIcon.distance, tint: AnyShapeStyle(WalkMetric.distance.tint),
+            Row(label: "Distance", icon: FouleeIcon.distance, tint: AnyShapeStyle(MetricID.distance.tint),
                 now: now.distanceKm, before: before.distanceKm) { $0.kmText(fractionDigits: 1) }
         ] + climb + [
             Row(label: "Sorties", icon: "figure.walk", tint: AnyShapeStyle(FouleeColor.accentMid),

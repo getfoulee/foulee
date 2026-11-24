@@ -49,12 +49,12 @@ nonisolated struct HealthKitClient: Sendable {
     /// metric's display unit (steps, minutes, km, kcal). Drives the per-metric
     /// stats charts for the Week/Month ranges. Defaults to empty so existing
     /// test stubs that don't care about it compile unchanged.
-    var metricSeries: @Sendable (_ metric: WalkMetric, _ daysBack: Int) async throws -> [MetricPoint]
+    var metricSeries: @Sendable (_ metric: MetricID, _ daysBack: Int) async throws -> [MetricPoint]
         = { _, _ in [] }
 
     /// Hourly totals of `metric` for today (00:00 → now), one point per hour.
     /// Drives the "Aujourd'hui" curve.
-    var hourlyToday: @Sendable (_ metric: WalkMetric) async throws -> [MetricPoint]
+    var hourlyToday: @Sendable (_ metric: MetricID) async throws -> [MetricPoint]
         = { _ in [] }
 
     /// Emits whenever the user's step/distance/exercise/energy data changes, so
@@ -232,7 +232,7 @@ nonisolated extension HealthKitClient: DependencyKey {
 
     /// Deterministic per-metric daily history for `#Preview`s — mild variation
     /// per day, no randomness.
-    private static func previewMetricSeries(metric: WalkMetric, daysBack: Int) -> [MetricPoint] {
+    private static func previewMetricSeries(metric: MetricID, daysBack: Int) -> [MetricPoint] {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: .now)
         return (0..<daysBack).reversed().map { offset in
@@ -250,7 +250,7 @@ nonisolated extension HealthKitClient: DependencyKey {
 
     /// Deterministic hourly curve for `#Preview`s — activity concentrated
     /// around the midday walk, from 00:00 up to the current hour.
-    private static func previewHourlyToday(metric: WalkMetric) -> [MetricPoint] {
+    private static func previewHourlyToday(metric: MetricID) -> [MetricPoint] {
         let calendar = Calendar.current
         let start = calendar.startOfDay(for: .now)
         let currentHour = calendar.component(.hour, from: .now)

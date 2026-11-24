@@ -111,8 +111,8 @@ struct WatchFinishedView: View {
     var summarySpokenText: String {
         [
             spokenDurationText(seconds: metrics.elapsed),
-            WalkMetric.steps.spokenText(Double(metrics.steps)),
-            WalkMetric.distance.spokenText(metrics.distanceKm),
+            MetricID.steps.spokenText(Double(metrics.steps)),
+            MetricID.distance.spokenText(metrics.distanceKm),
             Elevation(ascent: metrics.climbMeters, descent: metrics.descentMeters).spokenText
         ]
         .compactMap { $0 }

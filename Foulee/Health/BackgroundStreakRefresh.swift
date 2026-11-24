@@ -290,7 +290,7 @@ nonisolated private func historyWithinDeadline(store: HKHealthStore) async -> [D
         Task {
             settle(try? await mergedDailyMinutes(
                 store: store,
-                minutesType: HKQuantityType(.appleExerciseTime),
+                minutesType: MetricID.minutes.quantityType,
                 daysBack: StreakCalculator.historyWindowDays
             ))
             deadline.cancel()

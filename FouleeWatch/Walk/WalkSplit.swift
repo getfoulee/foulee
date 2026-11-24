@@ -31,7 +31,7 @@ nonisolated struct WalkSplit: Equatable, Sendable, Identifiable {
         [
             String(localized: "Kilomètre \(kilometre) en \(spokenDurationText(seconds: duration))"),
             activityText,
-            WalkMetric.steps.spokenText(Double(steps)),
+            MetricID.steps.spokenText(Double(steps)),
             spokenCadenceText(steps: steps, over: duration)
         ]
         .compactMap { $0 }

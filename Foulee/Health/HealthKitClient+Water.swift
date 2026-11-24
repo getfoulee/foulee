@@ -43,7 +43,7 @@ nonisolated func dailyWater(store: HKHealthStore, daysBack: Int) async throws ->
     else { return [] }
     return try await statisticsCollection(
         store: store,
-        mapping: HKMetricMapping(type: waterType, unit: milliliter, scale: 1),
+        mapping: HKMetricMapping(type: waterType, unit: milliliter),
         start: start,
         end: end,
         interval: DateComponents(day: 1)

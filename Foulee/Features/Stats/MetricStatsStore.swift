@@ -32,12 +32,12 @@ enum MetricRange: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
-/// Loads one `WalkMetric`'s series for the active range (hourly for today,
+/// Loads one `MetricID`'s series for the active range (hourly for today,
 /// daily for week/month) and derives the headline summary. Mirrors the
 /// `runOrTrap` single-boundary error handling of the other stores.
 @Observable
 final class MetricStatsStore {
-    let metric: WalkMetric
+    let metric: MetricID
     private(set) var points: [MetricPoint] = []
     private(set) var isLoading = false
     private(set) var lastError: String?
@@ -51,7 +51,7 @@ final class MetricStatsStore {
     @ObservationIgnored
     @Dependency(\.healthKit) private var healthKit
 
-    init(metric: WalkMetric) {
+    init(metric: MetricID) {
         self.metric = metric
     }
 

@@ -16,7 +16,7 @@ struct TodayStatsGrid: View {
     }
 
     var snapshot: TodaySnapshot
-    var onSelectMetric: (WalkMetric) -> Void
+    var onSelectMetric: (MetricID) -> Void
 
     @Dependency(\.healthKit) private var healthKit
     @State private var period: Period = .day
@@ -77,10 +77,10 @@ struct TodayStatsGrid: View {
     }
 
     /// A metric's tile, in its ring's colour (#366).
-    private func tile(_ metric: WalkMetric, _ value: String, sub: String? = nil, spoken: String? = nil) -> some View {
+    private func tile(_ metric: MetricID, _ value: String, sub: String? = nil, spoken: String? = nil) -> some View {
         metricButton(metric) {
             StatBlock(
-                systemIcon: metric.icon,
+                systemIcon: metric.glyph,
                 label: .verbatim(metric.title),
                 value: value,
                 sub: sub,
@@ -110,7 +110,7 @@ struct TodayStatsGrid: View {
     }
 
     private func metricButton<Content: View>(
-        _ metric: WalkMetric,
+        _ metric: MetricID,
         @ViewBuilder content: () -> Content
     ) -> some View {
         Button { onSelectMetric(metric) } label: {

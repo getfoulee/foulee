@@ -7,7 +7,7 @@ import SwiftUI
 /// control switches the chart between Aujourd'hui (hourly curve), Semaine and
 /// Mois (daily bars). Presented as a sheet.
 struct MetricStatsScreen: View {
-    let metric: WalkMetric
+    let metric: MetricID
     /// Daily goal for steps/minutes (draws a reference line); nil otherwise.
     var dailyGoal: Double?
     var onClose: () -> Void
@@ -15,7 +15,7 @@ struct MetricStatsScreen: View {
     @State private var store: MetricStatsStore
     @State private var selectedDate: Date?
 
-    init(metric: WalkMetric, dailyGoal: Double?, onClose: @escaping () -> Void) {
+    init(metric: MetricID, dailyGoal: Double?, onClose: @escaping () -> Void) {
         self.metric = metric
         self.dailyGoal = dailyGoal
         self.onClose = onClose
@@ -47,7 +47,7 @@ struct MetricStatsScreen: View {
     /// « STATISTIQUES » broke into syllables.
     private var header: some View {
         AdaptiveStack(stacked: VStackLayout(alignment: .leading, spacing: 8), regular: HStackLayout(spacing: 12)) {
-            Image(systemName: metric.icon)
+            Image(systemName: metric.glyph)
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundStyle(metric.tint)
                 .frame(width: 46, height: 46)
@@ -284,7 +284,7 @@ private extension MetricStatsScreen {
     /// « Aucune donnée ».
     var emptyChart: some View {
         ContentUnavailableView {
-            Label("Pas encore de données", systemImage: metric.icon)
+            Label("Pas encore de données", systemImage: metric.glyph)
         } description: {
             if store.range == .today {
                 Text("Rien n'est encore enregistré aujourd'hui. Choisis une autre période pour voir tes jours passés.")

@@ -105,13 +105,13 @@ nonisolated extension ScreenshotSeed {
         }
     }
 
-    static func metricSeries(_ metric: WalkMetric, daysBack: Int) -> [MetricPoint] {
+    static func metricSeries(_ metric: MetricID, daysBack: Int) -> [MetricPoint] {
         (0..<max(daysBack, 0)).reversed().map { offset in
             MetricPoint(date: day(offset: offset), value: dailyValue(metric, offset: offset))
         }
     }
 
-    private static func dailyValue(_ metric: WalkMetric, offset: Int) -> Double {
+    private static func dailyValue(_ metric: MetricID, offset: Int) -> Double {
         switch metric {
         case .steps: Double(steps(offset: offset))
         case .minutes: Double(minutes(offset: offset))
@@ -129,7 +129,7 @@ nonisolated extension ScreenshotSeed {
         0.28, 0.13, 0.06, 0.05, 0.04, 0.03, 0.03, 0.02, 0.02, 0.01, 0.01, 0
     ]
 
-    static func hourlyToday(_ metric: WalkMetric) -> [MetricPoint] {
+    static func hourlyToday(_ metric: MetricID) -> [MetricPoint] {
         let hour = calendar.component(.hour, from: instant)
         let weights = Array(hourWeights.prefix(hour + 1))
         let sum = weights.reduce(0, +)

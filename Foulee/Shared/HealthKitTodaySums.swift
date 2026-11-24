@@ -72,6 +72,17 @@ nonisolated enum HealthKitTodaySums {
         try? await sum(identifier, unit: unit, store: store)
     }
 
+    /// Today's total of `metric`, from its HealthKit quantity and in its
+    /// display unit.
+    static func sum(_ metric: MetricID, store: HKHealthStore) async throws -> Double {
+        try await sum(metric.quantityIdentifier, unit: metric.healthKitUnit, store: store)
+    }
+
+    /// `sum(_:store:)`, or nil when HealthKit can't answer.
+    static func sumIfAvailable(_ metric: MetricID, store: HKHealthStore) async -> Double? {
+        try? await sum(metric, store: store)
+    }
+
     /// The five counters the rings and widgets draw, read concurrently so a
     /// widget provider or a background wake stays inside its time budget.
     ///
@@ -86,10 +97,10 @@ nonisolated enum HealthKitTodaySums {
             try await HealthKitTodaySums.todayWorkoutMinutes(store: $0)
         }
     ) async -> Counters {
-        async let steps = sumIfAvailable(.stepCount, unit: .count(), store: store)
-        async let minutes = sumIfAvailable(.appleExerciseTime, unit: .minute(), store: store)
-        async let meters = sumIfAvailable(.distanceWalkingRunning, unit: .meter(), store: store)
-        async let kcal = sumIfAvailable(.activeEnergyBurned, unit: .kilocalorie(), store: store)
+        async let steps = sumIfAvailable(.steps, store: store)
+        async let minutes = sumIfAvailable(.minutes, store: store)
+        async let distanceKm = sumIfAvailable(.distance, store: store)
+        async let kcal = sumIfAvailable(.calories, store: store)
         async let water = sumIfAvailable(.dietaryWater, unit: .literUnit(with: .milli), store: store)
         async let workouts = try? workoutMinutes(store)
         var counters = Counters()
@@ -97,7 +108,7 @@ nonisolated enum HealthKitTodaySums {
         if let minutes = await minutes, let workouts = await workouts {
             counters.minutes = ActiveMinutes.merged(appleMinutes: Int(minutes), workoutMinutes: workouts)
         }
-        counters.distanceKm = (await meters).map { $0 / 1_000 }
+        counters.distanceKm = await distanceKm
         counters.calories = (await kcal).map { Int($0) }
         counters.waterML = (await water).map { Int($0) }
         return counters
@@ -152,4 +163,22 @@ nonisolated enum HealthKitTodaySums {
 nonisolated func isNoDataAvailable(_ error: (any Error)?) -> Bool {
     guard let hkError = error as? HKError else { return false }
     return hkError.code == .errorNoData
+}
+
+nonisolated extension MetricID {
+    /// The one mapping between a day metric and HealthKit (#721).
+    ///
+    /// The kit keeps the raw strings in `healthKitSource` so it stays free of
+    /// HealthKit (ADR 0007). The app's and the watch's day reads, the series, the
+    /// widgets' sums and the watch complication all read through these members, in the display unit:
+    /// a distance comes back in kilometres, never in metres to divide.
+    var quantityIdentifier: HKQuantityTypeIdentifier {
+        HKQuantityTypeIdentifier(rawValue: healthKitSource.quantityIdentifier)
+    }
+
+    var quantityType: HKQuantityType { HKQuantityType(quantityIdentifier) }
+
+    var healthKitUnit: HKUnit {
+        HKUnit(from: healthKitSource.unit)
+    }
 }

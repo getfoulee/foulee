@@ -1,15 +1,55 @@
 import Foundation
 
-/// A walk metric the user can drill into from the Today cards. Pure model
-/// (no HealthKit, no SwiftUI) — the HK mapping lives in `HealthKitClient+Live`
-/// and the icon/colour mapping in the stats views.
-nonisolated public enum WalkMetric: String, CaseIterable, Identifiable, Sendable {
+/// A day metric, and the one place each of its facts lives (issue #721):
+/// where its total comes from, its symbol, its unit, how it is written in full,
+/// in short and aloud.
+///
+/// Pure model (no HealthKit, no SwiftUI), so every target reads the same
+/// table: the app, the watch, the widgets, the complications and the Live
+/// Activity. HealthKit types are resolved from `healthKitSource` by the one
+/// extension in `HealthKitTodaySums`, colours by `MetricID+Style`.
+///
+/// The raw values are stored — the watch complication caches its last read
+/// under them — so they never change.
+nonisolated public enum MetricID: String, CaseIterable, Identifiable, Sendable {
     case steps
     case minutes
     case distance
     case calories
 
     public var id: String { rawValue }
+
+    /// The HealthKit quantity a day's total is summed from, kept as raw
+    /// strings because the kit stays free of HealthKit (ADR 0007).
+    public struct HealthKitSource: Equatable, Sendable {
+        /// `HKQuantityTypeIdentifier.rawValue`.
+        public let quantityIdentifier: String
+        /// An `HKUnit` unit string, already the display unit: the sum needs no
+        /// scaling, so no reader can forget one (issue #774 showed metres as km).
+        public let unit: String
+    }
+
+    /// The HealthKit quantity this metric's daily total is read from. Minutes
+    /// also count workouts on top (`ActiveMinutes.merged`).
+    public var healthKitSource: HealthKitSource {
+        switch self {
+        case .steps: HealthKitSource(quantityIdentifier: "HKQuantityTypeIdentifierStepCount", unit: "count")
+        case .minutes: HealthKitSource(quantityIdentifier: "HKQuantityTypeIdentifierAppleExerciseTime", unit: "min")
+        case .distance: HealthKitSource(quantityIdentifier: "HKQuantityTypeIdentifierDistanceWalkingRunning", unit: "km")
+        case .calories: HealthKitSource(quantityIdentifier: "HKQuantityTypeIdentifierActiveEnergyBurned", unit: "kcal")
+        }
+    }
+
+    /// The SF Symbol drawn next to the figure, the same on every screen.
+    /// `FouleeIcon` re-exports these names for the app's own views.
+    public var glyph: String {
+        switch self {
+        case .steps: "shoe"
+        case .minutes: "timer"
+        case .distance: "location"
+        case .calories: "flame.fill"
+        }
+    }
 
     /// Title of the card and the stats screen.
     public var title: String {
@@ -41,6 +81,13 @@ nonisolated public enum WalkMetric: String, CaseIterable, Identifiable, Sendable
     public func formatted(_ value: Double, locale: Locale = .app) -> String {
         guard fractionDigits > 0 else { return Int(value.rounded()).groupedText(locale: locale) }
         return value.decimalText(fractionDigits: fractionDigits, locale: locale)
+    }
+
+    /// The short form for a tight Lock Screen circle or complication: a whole
+    /// count past a thousand as `8,2k`, the rest as `formatted`.
+    public func compactText(_ value: Double, locale: Locale = .app) -> String {
+        guard fractionDigits == 0, value >= 1_000 else { return formatted(value, locale: locale) }
+        return (value / 1_000).decimalText(locale: locale) + "k"
     }
 
     /// A chart axis graduation (issue #370): the bare figure, but minutes as a

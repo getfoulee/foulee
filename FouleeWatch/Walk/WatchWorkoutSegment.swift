@@ -193,7 +193,7 @@ nonisolated struct WatchActivityTotals: Equatable, Sendable {
 nonisolated func spokenStretchText(duration: TimeInterval, distanceKm: Double, cadence: String?) -> String {
     [
         spokenDurationText(seconds: duration),
-        WalkMetric.distance.spokenText(distanceKm),
+        MetricID.distance.spokenText(distanceKm),
         duration.spokenPaceText(overKm: distanceKm),
         cadence
     ]

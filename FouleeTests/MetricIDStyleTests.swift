@@ -5,19 +5,19 @@ import Testing
 
 /// A metric is drawn in the colour of its ring everywhere (issue #366).
 @Suite("Metric colours")
-struct WalkMetricStyleTests {
+struct MetricIDStyleTests {
     @Test("Steps and minutes take the home ring's colours")
     func ringsColours() {
         // The outer ring is the accent gradient, centred on accentMid; the
         // inner one the activity gradient, centred on success.
-        #expect(WalkMetric.steps.tint == FouleeColor.accentMid)
-        #expect(WalkMetric.minutes.tint == FouleeColor.success)
+        #expect(MetricID.steps.tint == FouleeColor.accentMid)
+        #expect(MetricID.minutes.tint == FouleeColor.success)
     }
 
     @Test("Every metric has its own colour")
     func distinctColours() {
-        let tints = WalkMetric.allCases.map(\.tint)
-        #expect(Set(tints.map(\.description)).count == WalkMetric.allCases.count)
+        let tints = MetricID.allCases.map(\.tint)
+        #expect(Set(tints.map(\.description)).count == MetricID.allCases.count)
     }
 
     /// The watch's palette is the brand's, spelled out (#372).
