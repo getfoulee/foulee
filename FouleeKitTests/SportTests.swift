@@ -83,4 +83,19 @@ struct SportTests {
         }
         #expect(RecordedActivity(sport: nil) == .other)
     }
+
+    @Test("The benchmark rules come from the table: a hike leads with its climb and keeps its pace to itself")
+    func benchmarkRules() {
+        #expect(SportID.walking.descriptor.benchmarks == .paced)
+        #expect(SportID.running.descriptor.benchmarks == .paced)
+        #expect(SportID.hiking.descriptor.benchmarks == .climbing)
+        #expect(RecordedActivity.other.benchmarks == .paced)
+    }
+
+    @Test("Every sport has its own word inside a sentence")
+    func nounsAreDistinct() {
+        let nouns = SportID.allCases.map(\.descriptor.noun)
+        #expect(Set(nouns).count == SportID.allCases.count)
+        #expect(RecordedActivity.running.verb == "tu cours")
+    }
 }

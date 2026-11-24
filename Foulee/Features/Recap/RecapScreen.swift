@@ -300,6 +300,11 @@ private struct RecapContent: View {
                 GlassSection(comparisonTitle) {
                     RecapComparison(recap: recap, isInProgress: isInProgress, isRevealed: isRevealed)
                 }
+                if !recap.sports.isEmpty {
+                    GlassSection("Par sport") {
+                        RecapSports(sports: recap.sports)
+                    }
+                }
                 RecapHighlights(recap: recap)
             }
             if let water {

@@ -279,3 +279,61 @@ struct RecapHydration: View {
         ))
     }
 }
+
+/// The period sport by sport (issue #742): one line each, drawn only when the
+/// period mixed sports. A sport told by its climb shows it.
+struct RecapSports: View {
+    let sports: [Recap.SportTotals]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            ForEach(sports) { sport in
+                HStack(spacing: 10) {
+                    Image(systemName: sport.activity.icon)
+                        .foregroundStyle(sport.activity.tint)
+                        .frame(width: 24)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(sport.activity.label)
+                            .font(FouleeFont.footnote.weight(.semibold))
+                        Text(Self.figures(of: sport).joined(separator: " · "))
+                            .font(FouleeFont.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(verbatim: ([sport.activity.label] + Self.spokenFigures(of: sport)).joined(separator: ", ")))
+            }
+        }
+    }
+
+    /// « 4 sorties », « 3 h 10 », « 14,2 km », and « ↑ 640 m » for a sport
+    /// told by its climb.
+    static func figures(of sport: Recap.SportTotals) -> [String] {
+        [
+            String(localized: "\(sport.outings) sorties"),
+            durationText(minutes: minutes(of: sport)),
+            sport.distanceKm.kmText(fractionDigits: 1),
+        ] + [climb(of: sport)?.text].compactMap { $0 }
+    }
+
+    /// The same figures as VoiceOver says them: « 3 heures et 10 minutes »,
+    /// « 14,2 kilomètres », « 640 mètres de montée ».
+    static func spokenFigures(of sport: Recap.SportTotals) -> [String] {
+        [
+            String(localized: "\(sport.outings) sorties"),
+            spokenDurationText(minutes: minutes(of: sport)),
+            MetricID.distance.spokenText(sport.distanceKm),
+        ] + [climb(of: sport)?.spokenText].compactMap { $0 }
+    }
+
+    private static func minutes(of sport: Recap.SportTotals) -> Int {
+        Int((sport.durationSeconds / 60).rounded())
+    }
+
+    /// The climb of a sport told by it; `Elevation` leaves out one under a
+    /// metre.
+    private static func climb(of sport: Recap.SportTotals) -> Elevation? {
+        sport.activity.benchmarks.leadingRecord == .climb ? Elevation(ascent: sport.climbMeters, descent: 0) : nil
+    }
+}
