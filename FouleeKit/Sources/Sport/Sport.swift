@@ -51,8 +51,7 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
 /// One sport's configuration: what it is, where it happens, which sensors it
 /// uses, how its speed reads, and how HealthKit and Garmin name it.
 ///
-/// Live and summary metrics belong to the metric catalog (#721) and the
-/// benchmark rules to #742; both will hang off this type.
+/// Live and summary metrics belong to the metric catalog (#721).
 nonisolated public struct SportDescriptor: Sendable {
     /// The broad kind of effort, which decides the session's shape.
     public enum Family: Equatable, Sendable {
@@ -69,6 +68,29 @@ nonisolated public struct SportDescriptor: Sendable {
     public enum SpeedDisplay: Equatable, Sendable {
         /// Minutes per kilometre, « 6'12" /km ».
         case pace
+    }
+
+    /// The record told first when an outing beats several (#742).
+    public enum LeadingRecord: Equatable, Sendable {
+        /// The longest: a walk or a run is told by its distance.
+        case distance
+        /// The biggest climb: a hike is told by it.
+        case climb
+    }
+
+    /// How an outing of this sport stands against the earlier ones (#742):
+    /// what the session notification and the Bilan say about it.
+    public struct Benchmarks: Equatable, Sendable {
+        /// Whether the pace says something about the person. A hike's depends
+        /// on the slope more than on the walker, so it is never compared.
+        public let comparesPace: Bool
+        public let leadingRecord: LeadingRecord
+
+        /// A walk's or a run's: paced, told by its distance. Also the rule
+        /// for an activity Foulée cannot name.
+        public static let paced = Benchmarks(comparesPace: true, leadingRecord: .distance)
+        /// A hike's: told by its climb, its pace left alone.
+        public static let climbing = Benchmarks(comparesPace: false, leadingRecord: .climb)
     }
 
     /// The sensors a session of this sport reads.
@@ -105,9 +127,19 @@ nonisolated public struct SportDescriptor: Sendable {
     /// Kilocalories per step for a phone-recorded session, the only energy
     /// figure it will ever have (see `SessionActivity.kcalPerStep`).
     public let kcalPerStep: Double?
+    public let benchmarks: Benchmarks
+    let nounResource: LocalizedStringResource
+    let verbResource: LocalizedStringResource
 
     /// The pickers' and the résumé's word for it: « Marche ».
     public var label: String { kitText(labelResource) }
+
+    /// The word inside a sentence: « Ta plus longue marche ». Every sport
+    /// Foulée names is feminine, which the sentences around it rely on.
+    public var noun: String { kitText(nounResource) }
+
+    /// What the person does, inside a sentence: « tu marches 15 s/km plus vite ».
+    public var verb: String { kitText(verbResource) }
 
     /// How a session in progress is named to the person doing it: « Ta marche ».
     /// `nil` for a sport Foulée does not record.
@@ -127,7 +159,10 @@ nonisolated extension SportDescriptor {
         glyph: ActivityGlyph.walk,
         healthKitActivityRawValue: 52,
         garminSport: "walking",
-        kcalPerStep: 0.04
+        kcalPerStep: 0.04,
+        benchmarks: .paced,
+        nounResource: "marche",
+        verbResource: "tu marches"
     )
 
     static let running = SportDescriptor(
@@ -142,7 +177,10 @@ nonisolated extension SportDescriptor {
         glyph: ActivityGlyph.run,
         healthKitActivityRawValue: 37,
         garminSport: "running",
-        kcalPerStep: 0.09
+        kcalPerStep: 0.09,
+        benchmarks: .paced,
+        nounResource: "course",
+        verbResource: "tu cours"
     )
 
     static let hiking = SportDescriptor(
@@ -157,6 +195,9 @@ nonisolated extension SportDescriptor {
         glyph: ActivityGlyph.hike,
         healthKitActivityRawValue: 24,
         garminSport: nil,
-        kcalPerStep: nil
+        kcalPerStep: nil,
+        benchmarks: .climbing,
+        nounResource: "randonnée",
+        verbResource: "tu marches"
     )
 }

@@ -52,4 +52,20 @@ nonisolated public enum RecordedActivity: String, Equatable, Hashable, Sendable,
     public var icon: String {
         sport?.descriptor.glyph ?? ActivityGlyph.mixedCardio
     }
+
+    /// How it is compared to the earlier outings (#742). An activity Foulée
+    /// cannot name is compared as it always was: paced, by its distance.
+    public var benchmarks: SportDescriptor.Benchmarks {
+        sport?.descriptor.benchmarks ?? .paced
+    }
+
+    /// « Ta plus longue marche »; « sortie » for an activity Foulée cannot name.
+    var noun: String {
+        sport?.descriptor.noun ?? kitText("sortie")
+    }
+
+    /// « tu marches 15 s/km plus vite ».
+    var verb: String {
+        sport?.descriptor.verb ?? kitText("tu marches")
+    }
 }

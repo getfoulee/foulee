@@ -75,12 +75,12 @@ nonisolated public struct SessionHighlight: Equatable, Sendable {
     // MARK: - Angles
 
     /// The longest, the biggest climb, the fastest: the climb first for a
-    /// hike, which is told by it.
+    /// sport told by it, as its descriptor says.
     private static func record(_ benchmark: SessionBenchmark) -> SessionHighlight? {
         guard let activity = benchmark.activity, let records = benchmark.records else { return nil }
         let distance = distanceRecord(benchmark, records)
         let climb = climbRecord(benchmark, records)
-        let ordered = activity == .hiking ? [climb, distance] : [distance, climb]
+        let ordered = activity.benchmarks.leadingRecord == .climb ? [climb, distance] : [distance, climb]
         return (ordered + [paceRecord(benchmark)]).compactMap { $0 }.first
     }
 
@@ -101,7 +101,7 @@ nonisolated public struct SessionHighlight: Equatable, Sendable {
               climb >= minimumClimbMeters, climb - highest >= 10 else { return nil }
         return SessionHighlight(
             angle: .record,
-            title: activity == .hiking
+            title: activity.benchmarks.leadingRecord == .climb
                 ? kitText("Ton plus gros dénivelé depuis 6 mois")
                 : kitText("Ta \(activity.noun) la plus vallonnée depuis 6 mois"),
             body: kitText("\(meters(climb)) de dénivelé aujourd'hui. Le précédent record : \(meters(highest)).")
@@ -253,24 +253,6 @@ nonisolated public struct SessionHighlight: Equatable, Sendable {
 }
 
 nonisolated private extension RecordedActivity {
-    /// « Ta plus longue marche » — every sport Foulée names is feminine.
-    var noun: String {
-        switch self {
-        case .walking: kitText("marche")
-        case .running: kitText("course")
-        case .hiking: kitText("randonnée")
-        case .other: kitText("sortie")
-        }
-    }
-
-    /// « tu marches 15 s/km plus vite ». Only paced sports reach it.
-    var verb: String {
-        switch self {
-        case .running: kitText("tu cours")
-        default: kitText("tu marches")
-        }
-    }
-
     var recordedLabel: String {
         kitText("\(label) enregistrée")
     }

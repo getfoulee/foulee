@@ -36,6 +36,34 @@ nonisolated public struct Recap: Equatable, Sendable {
         }
     }
 
+    /// What one sport added up to over the period (#742).
+    nonisolated public struct SportTotals: Equatable, Sendable, Identifiable {
+        public var activity: RecordedActivity
+        /// Outings with this sport in them: an outing that changed sport
+        /// counts once for each.
+        public var outings: Int
+        /// Only this sport's legs of a mixed outing.
+        public var durationSeconds: TimeInterval
+        public var distanceKm: Double
+        public var climbMeters: Double
+
+        public var id: RecordedActivity { activity }
+
+        public init(
+            activity: RecordedActivity,
+            outings: Int = 0,
+            durationSeconds: TimeInterval = 0,
+            distanceKm: Double = 0,
+            climbMeters: Double = 0
+        ) {
+            self.activity = activity
+            self.outings = outings
+            self.durationSeconds = durationSeconds
+            self.distanceKm = distanceKm
+            self.climbMeters = climbMeters
+        }
+    }
+
     /// One day of the period.
     nonisolated public struct Day: Equatable, Sendable, Identifiable {
         public var date: Date
@@ -77,6 +105,9 @@ nonisolated public struct Recap: Equatable, Sendable {
     public var previous: Totals
     /// Every day of the period, zero-filled, in order.
     public var days: [Day]
+    /// The period sport by sport, the most time first. Empty unless it holds
+    /// two sports or more: one sport's totals are already the period's.
+    public var sports: [SportTotals]
     public var goalMinutes: Int
     /// Active days of the period on which the minutes goal was reached.
     public var goalDaysMet: Int
@@ -174,10 +205,34 @@ nonisolated public struct Recap: Equatable, Sendable {
             totals: totals(in: period),
             previous: totals(in: period.previous(calendar: calendar)),
             days: days,
+            sports: sportTotals(of: outings.filter { period.contains($0.startedAt) }),
             goalMinutes: goalMinutes,
             goalDaysMet: planned.filter { $0.minutes >= goalMinutes }.count,
             goalDaysPlanned: planned.count
         )
+    }
+
+    /// `outings` sport by sport, each mixed outing through its legs, the way
+    /// `OutingBreakdown` splits one outing.
+    static func sportTotals(of outings: [WorkoutSummary]) -> [SportTotals] {
+        var bySport: [RecordedActivity: SportTotals] = [:]
+        for outing in outings {
+            let parts = outing.legs.isEmpty ? [outing] : outing.legs
+            for activity in outing.activities {
+                bySport[activity, default: SportTotals(activity: activity)].outings += 1
+            }
+            for part in parts {
+                var totals = bySport[part.activity, default: SportTotals(activity: part.activity)]
+                totals.durationSeconds += part.durationSeconds
+                totals.distanceKm += part.distanceKm
+                totals.climbMeters += part.elevationMeters
+                bySport[part.activity] = totals
+            }
+        }
+        guard bySport.count > 1 else { return [] }
+        return bySport.values.sorted {
+            ($0.durationSeconds, $1.activity.rawValue) > ($1.durationSeconds, $0.activity.rawValue)
+        }
     }
 
     /// The change from `old` to `new`, as a fraction: 0.12 for +12 %. `nil`
@@ -199,6 +254,7 @@ nonisolated public struct Recap: Equatable, Sendable {
         totals: Totals,
         previous: Totals,
         days: [Day],
+        sports: [SportTotals] = [],
         goalMinutes: Int,
         goalDaysMet: Int,
         goalDaysPlanned: Int
@@ -207,6 +263,7 @@ nonisolated public struct Recap: Equatable, Sendable {
         self.totals = totals
         self.previous = previous
         self.days = days
+        self.sports = sports
         self.goalMinutes = goalMinutes
         self.goalDaysMet = goalDaysMet
         self.goalDaysPlanned = goalDaysPlanned

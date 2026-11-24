@@ -61,7 +61,8 @@ nonisolated struct SessionBenchmark: Equatable, Sendable {
     /// The sport compared on, `nil` for an outing that changed sport: a walk
     /// and run together has no « usual » to stand against.
     var activity: RecordedActivity?
-    /// `nil` when pace says nothing: a hike, a mixed outing, a short one.
+    /// `nil` when pace says nothing: a sport that does not compare it (a
+    /// hike), a mixed outing, a short one.
     var pace: Pace?
     /// `nil` for a mixed outing.
     var records: Records?
@@ -126,9 +127,9 @@ nonisolated struct SessionBenchmark: Equatable, Sendable {
         against earlier: [WorkoutSummary],
         calendar: Calendar
     ) -> Pace? {
-        // A hike is told by its distance and its climb: its pace depends on
-        // the slope more than on the walker.
-        guard activity != .hiking, let current = pace(of: outing) else { return nil }
+        // Whether pace says something is the sport's to say: a hike's depends
+        // on the slope more than on the walker.
+        guard activity.benchmarks.comparesPace, let current = pace(of: outing) else { return nil }
         let paced = earlier.filter { pace(of: $0) != nil }
         let recentStart = calendar.date(byAdding: .day, value: -recentDays, to: outing.startedAt) ?? outing.startedAt
         let recent = paced.filter { $0.startedAt >= recentStart } + [outing]
