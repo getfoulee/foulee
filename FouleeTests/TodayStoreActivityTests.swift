@@ -1,5 +1,4 @@
 import Dependencies
-import FouleeIntents
 import FouleeKit
 import Foundation
 import Testing

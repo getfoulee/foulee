@@ -186,6 +186,9 @@ let project = Project(
             ]),
             sources: [
                 "FouleeWidget/**",
+                // Declared in each process rather than in FouleeIntents: Siri's
+                // training of its phrases needs its `AppEnum` in the app (#724).
+                "Foulee/Shared/StartOutingIntent.swift",
                 "FouleeWatchWidget/StreakEntry.swift"
             ],
             resources: [
