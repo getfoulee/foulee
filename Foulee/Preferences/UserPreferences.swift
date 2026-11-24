@@ -67,10 +67,21 @@ final class UserPreferences {
     var hydrationSnoozeMinutes: Int {
         didSet { save(hydrationSnoozeMinutes, forKey: Keys.hydrationSnoozeMinutes) }
     }
-    /// Which activity the app supports. Defaults to walking so existing
-    /// installs — which never wrote this key — stay exactly where they are.
+    /// The sports the app proposes (issue #731). Defaults to walking so
+    /// existing installs, which never wrote a choice, stay exactly where they
+    /// are. The mode is written beside them, derived: see
+    /// `FavoriteSportsPreference`.
+    var favoriteSports: Set<SportID> {
+        didSet {
+            FavoriteSportsPreference.write(favoriteSports, to: defaults)
+            save(ActivityMode(favorites: favoriteSports).rawValue, forKey: Keys.activityMode)
+        }
+    }
+    /// The favourite sports as the walk / run / both choice the onboarding and
+    /// Settings still offer, until the sport picker replaces it (#743).
     var activityMode: ActivityMode {
-        didSet { save(activityMode.rawValue, forKey: Keys.activityMode) }
+        get { ActivityMode(favorites: favoriteSports) }
+        set { favoriteSports = newValue.favoriteSports }
     }
     /// The Monday and 1st-of-the-month recap notifications (issue #344). On
     /// unless turned off: the recap is the point of having one.
@@ -145,8 +156,8 @@ final class UserPreferences {
         )
         self.hydrationIntervalMinutes = (defaults.object(forKey: Keys.hydrationIntervalMinutes) as? Int) ?? 120
         self.hydrationSnoozeMinutes = (defaults.object(forKey: Keys.hydrationSnoozeMinutes) as? Int) ?? 15
-        let rawActivity = defaults.string(forKey: Keys.activityMode)
-        self.activityMode = rawActivity.flatMap(ActivityMode.init(rawValue:)) ?? .walking
+        FavoriteSportsPreference.migrate(defaults)
+        self.favoriteSports = FavoriteSportsPreference.favoriteSports(in: defaults)
         self.recapNotificationsEnabled = (defaults.object(forKey: Keys.recapNotificationsEnabled) as? Bool) ?? true
         self.sessionNotificationsEnabled = SessionNotifier.isEnabled(defaults)
     }
@@ -211,7 +222,7 @@ extension UserPreferences {
         hydrationWindowEnd = fresh.hydrationWindowEnd
         hydrationIntervalMinutes = fresh.hydrationIntervalMinutes
         hydrationSnoozeMinutes = fresh.hydrationSnoozeMinutes
-        activityMode = fresh.activityMode
+        favoriteSports = fresh.favoriteSports
         recapNotificationsEnabled = fresh.recapNotificationsEnabled
         sessionNotificationsEnabled = fresh.sessionNotificationsEnabled
     }
@@ -249,7 +260,9 @@ private enum Keys {
     static let hydrationWindowEnd = "preferences.hydrationWindowEnd"
     static let hydrationIntervalMinutes = "preferences.hydrationIntervalMinutes"
     static let hydrationSnoozeMinutes = "preferences.hydrationSnoozeMinutes"
-    static let activityMode = "preferences.activityMode"
+    static let activityMode = FavoriteSportsPreference.modeKey
+    static let favoriteSports = FavoriteSportsPreference.key
+    static let schemaVersion = FavoriteSportsPreference.schemaVersionKey
     static let recapNotificationsEnabled = "preferences.recapNotificationsEnabled"
     static let sessionNotificationsEnabled = SessionNotifier.enabledKey
 
@@ -260,6 +273,7 @@ private enum Keys {
         notificationsEnabled, themeMode, hydrationEnabled, hydrationGoalML,
         hydrationGlassML, hydrationRemindersEnabled, hydrationWindowStart,
         hydrationWindowEnd, hydrationIntervalMinutes, hydrationSnoozeMinutes,
-        activityMode, recapNotificationsEnabled, sessionNotificationsEnabled,
+        activityMode, favoriteSports, schemaVersion, recapNotificationsEnabled,
+        sessionNotificationsEnabled,
     ]
 }
