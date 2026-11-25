@@ -112,6 +112,14 @@ let project = Project(
                 .sdk(name: "CoreMotion", type: .framework)
             ]
         ),
+        // The colours, type, icons and palettes every screen draws with (#725):
+        // the phone, its widgets and the watch read one table, so a figure
+        // cannot change colour between the wrist and the home screen.
+        sharedFramework(
+            name: "FouleeDesignSystem",
+            bundleSuffix: "designsystem",
+            dependencies: [.target(name: "FouleeKit")]
+        ),
         // The App Intents the app and its widget extension both run (#724):
         // declared once, registered by each through `FouleeIntentsPackage`.
         sharedFramework(
@@ -152,6 +160,7 @@ let project = Project(
             entitlements: .file(path: "Foulee/Resources/Foulee.entitlements"),
             dependencies: [
                 .target(name: "FouleeKit"),
+                .target(name: "FouleeDesignSystem"),
                 .target(name: "FouleeHealth"),
                 .target(name: "FouleeIntents"),
                 .package(product: "Dependencies"),
@@ -202,6 +211,7 @@ let project = Project(
             entitlements: .file(path: "FouleeWidget/Resources/FouleeWidget.entitlements"),
             dependencies: [
                 .target(name: "FouleeKit"),
+                .target(name: "FouleeDesignSystem"),
                 .target(name: "FouleeHealth"),
                 .target(name: "FouleeIntents")
             ]
@@ -254,17 +264,6 @@ let project = Project(
                 // #312): one accuracy rule, one stream lifetime, one place
                 // that asks for location. Main-actor state, so not in the kit.
                 "Foulee/Location/RouteRecorder.swift",
-                // The colours an outing is drawn in by sport, shared with the
-                // phone's detail (issue #320), and the colour of each daily
-                // metric, the phone's rings' (#372). SwiftUI, so not in the kit.
-                "Foulee/Shared/ActivityPalette.swift",
-                "Foulee/Shared/SessionActivity+Tint.swift",
-                "Foulee/Shared/MetricPalette.swift",
-                "Foulee/Shared/MetricID+Style.swift",
-                // Their light-mode shades (#599); the watch keeps the dark ones.
-                "Foulee/Shared/ReadablePalette.swift",
-                // Fixed-size counters that follow Dynamic Type (#600).
-                "Foulee/Shared/ScaledSystemFont.swift",
                 // The App Store capture seed (issue #239). Only the
                 // Foundation-only half: the watch board and the phone board
                 // must show the same day, and the way to guarantee that is to
@@ -282,6 +281,7 @@ let project = Project(
             entitlements: .file(path: "FouleeWatch/Resources/FouleeWatch.entitlements"),
             dependencies: [
                 .target(name: "FouleeKit"),
+                .target(name: "FouleeDesignSystem"),
                 .target(name: "FouleeHealth"),
                 .target(name: "FouleeWatchWidget")
             ],

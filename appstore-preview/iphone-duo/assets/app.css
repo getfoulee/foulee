@@ -1,7 +1,7 @@
 /* Foulée's light theme, redrawn in CSS for the iPhone Duo preview.
    One CSS pixel is one point of the Duo's inner screen (669 × 951 pt,
    2007 × 2853 px at 3x), so every size below is the app's own point size.
-   Colours come from Foulee/DesignSystem/FouleeColor.swift and the web site's
+   Colours come from FouleeDesignSystem/Sources/FouleeColor.swift and the web site's
    light palette (getfoulee/web src/styles/global.css). */
 
 :root {

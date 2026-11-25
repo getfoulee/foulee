@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// Circular progress ring with a gradient stroke and a centred label slot.

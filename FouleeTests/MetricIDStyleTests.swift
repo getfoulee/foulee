@@ -1,7 +1,8 @@
+import FouleeDesignSystem
 import FouleeKit
 import SwiftUI
 import Testing
-@testable import Foulee
+import UIKit
 
 /// A metric is drawn in the colour of its ring everywhere (issue #366).
 @Suite("Metric colours")
@@ -20,7 +21,7 @@ struct MetricIDStyleTests {
         #expect(Set(tints.map(\.description)).count == MetricID.allCases.count)
     }
 
-    /// The watch's palette is the brand's, spelled out (#372).
+    /// The watch draws from the same palette as the phone (#372).
     @Test("The shared palette matches the brand colours")
     func paletteMatchesTheBrand() {
         #expect(MetricPalette.steps == FouleeColor.accentMid)
@@ -28,5 +29,20 @@ struct MetricIDStyleTests {
         #expect(MetricPalette.calories == FouleeColor.warning)
         #expect(MetricPalette.distance == Color(hex: 0x0A84FF))
         #expect(MetricPalette.heartRate == FouleeColor.danger)
+    }
+
+    /// The widgets sit on a night background in every mode (#725): their
+    /// figures keep the bright shade the phone shows in dark mode.
+    @Test("On the widgets' night background, a metric keeps its dark-mode shade")
+    func brightTintIsTheDarkShade() {
+        let light = UITraitCollection(userInterfaceStyle: .light)
+        let dark = UITraitCollection(userInterfaceStyle: .dark)
+        for metric in MetricID.allCases {
+            #expect(
+                UIColor(metric.brightTint).resolvedColor(with: light)
+                    == UIColor(metric.tint).resolvedColor(with: dark),
+                "\(metric)"
+            )
+        }
     }
 }

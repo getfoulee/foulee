@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// A warning with the one button that acts on it, at the top of a Réglages

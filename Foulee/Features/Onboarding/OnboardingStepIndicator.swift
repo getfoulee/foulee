@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// One progress dot per `OnboardingStep`; the active one stretches into a

@@ -21,7 +21,7 @@ private struct ScaledSystemFont: ViewModifier {
 
 extension View {
     /// System font frozen at a design point size, rescaled with Dynamic Type.
-    func scaledSystemFont(
+    public func scaledSystemFont(
         size: CGFloat,
         weight: Font.Weight = .regular,
         design: Font.Design = .default
@@ -30,7 +30,7 @@ extension View {
     }
 
     /// Dynamic Type-aware counterpart of `FouleeFont.numeric`.
-    func scaledNumericFont(size: CGFloat, weight: Font.Weight = .bold) -> some View {
+    public func scaledNumericFont(size: CGFloat, weight: Font.Weight = .bold) -> some View {
         modifier(ScaledSystemFont(size: size, weight: weight, design: .rounded, numeric: true))
     }
 }

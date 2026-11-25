@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import FouleeKit
 import SwiftUI
 import WidgetKit
@@ -39,7 +40,7 @@ struct StreakWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: Self.kind, provider: StreakSnapshotProvider()) { entry in
             StreakWidgetView(entry: entry)
-                .containerBackground(StreakWidget.containerBackground, for: .widget)
+                .containerBackground(FouleeColor.nightGradient, for: .widget)
         }
         .configurationDisplayName("Série Foulée")
         // Gallery text is compile-time: it cannot follow the activity
@@ -56,15 +57,6 @@ struct StreakWidget: Widget {
             .systemMedium
         ])
     }
-
-    fileprivate static let containerBackground = LinearGradient(
-        colors: [
-            Color(red: 0x2A / 255, green: 0x0A / 255, blue: 0x4A / 255),
-            Color(red: 0x1A / 255, green: 0x0A / 255, blue: 0x3A / 255)
-        ],
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
-    )
 }
 
 struct StreakWidgetView: View {

@@ -1,4 +1,5 @@
 import AppIntents
+import FouleeDesignSystem
 import FouleeHealth
 import FouleeKit
 import SwiftUI
@@ -133,18 +134,12 @@ struct StatWidget: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: Self.kind, intent: StatWidgetIntent.self, provider: StatProvider()) { entry in
             StatWidgetView(entry: entry)
-                .containerBackground(Self.containerBackground, for: .widget)
+                .containerBackground(FouleeColor.nightGradient, for: .widget)
         }
         .configurationDisplayName("Statistique Foulée")
         .description("Une donnée du jour : pas, activité, distance ou calories.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .systemSmall])
     }
-
-    static let containerBackground = LinearGradient(
-        colors: [Color(red: 0x2A / 255, green: 0x0A / 255, blue: 0x4A / 255),
-                 Color(red: 0x1A / 255, green: 0x0A / 255, blue: 0x3A / 255)],
-        startPoint: .topLeading, endPoint: .bottomTrailing
-    )
 }
 
 struct StatWidgetView: View {
@@ -266,14 +261,7 @@ struct StatWidgetView: View {
         }
     }
 
-    private var tint: Color {
-        switch entry.metric {
-        case .steps: Color(red: 0xBF / 255, green: 0x5A / 255, blue: 0xF2 / 255)
-        case .minutes: Color(red: 0x30 / 255, green: 0xD1 / 255, blue: 0x58 / 255)
-        case .distance: Color(red: 0x0A / 255, green: 0x84 / 255, blue: 0xFF / 255)
-        case .calories: Color(red: 0xFF / 255, green: 0x9F / 255, blue: 0x0A / 255)
-        }
-    }
+    private var tint: Color { entry.metric.metricID.brightTint }
 
     private var valueText: String { entry.metric.metricID.formatted(entry.value) }
     private var goalText: String { entry.metric.metricID.formatted(entry.goal) }

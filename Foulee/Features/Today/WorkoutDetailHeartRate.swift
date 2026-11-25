@@ -1,4 +1,5 @@
 import Charts
+import FouleeDesignSystem
 import FouleeKit
 import SwiftUI
 

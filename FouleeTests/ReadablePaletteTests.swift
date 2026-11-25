@@ -1,7 +1,7 @@
+import FouleeDesignSystem
 import SwiftUI
 import Testing
 import UIKit
-@testable import Foulee
 
 /// The brand's bright shades stay readable on a light background (issue #599).
 @Suite("Readable palette")

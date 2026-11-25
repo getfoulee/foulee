@@ -1,4 +1,5 @@
 import AppIntents
+import FouleeDesignSystem
 import FouleeIntents
 import FouleeHealth
 import FouleeKit
@@ -16,7 +17,7 @@ struct HydrationWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: Self.kind, provider: HydrationProvider()) { entry in
             HydrationWidgetView(entry: entry)
-                .containerBackground(TodayProgressWidget.containerBackground, for: .widget)
+                .containerBackground(FouleeColor.nightGradient, for: .widget)
                 .widgetURL(URL(string: "foulee://hydration"))
         }
         .configurationDisplayName("Hydratation")

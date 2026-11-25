@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// Icon + label + big value (+ optional subtitle) — the unit cell of the

@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// One line of the Réglages home: a tinted glyph, the setting's name, its

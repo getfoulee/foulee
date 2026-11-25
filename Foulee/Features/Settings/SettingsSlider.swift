@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// A goal or rhythm set with a slider (issue #395): its value printed large

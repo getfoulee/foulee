@@ -43,6 +43,7 @@ jobs:
               - .github/actions/report-test-failure/**
               - Foulee/**
               - FouleeAccessibilityAudit/**
+              - FouleeDesignSystem/**
               - FouleeHealth/**
               - FouleeIntents/**
               - FouleeKit/**
@@ -74,6 +75,7 @@ jobs:
               - .github/actions/prepare-project/**
               - .github/actions/report-test-failure/**
               - Foulee/**
+              - FouleeDesignSystem/**
               - FouleeHealth/**
               - FouleeIntents/**
               - FouleeKit/**

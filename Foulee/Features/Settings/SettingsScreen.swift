@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// Réglages (issue #393): a home of summarised rows, each opening the page for

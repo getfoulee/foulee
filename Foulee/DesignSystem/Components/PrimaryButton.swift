@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// Pill-shaped CTA with the button gradient — "Démarrer ta sortie",

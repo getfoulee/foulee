@@ -1,4 +1,5 @@
 import Dependencies
+import FouleeDesignSystem
 import SwiftUI
 
 /// Links the Foulée watch app to the iPhone (ADR 0009): the Connect IQ SDK

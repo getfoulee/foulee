@@ -11,27 +11,26 @@ import UIKit
 /// background, and « Augmenter le contraste » a deeper one still, at least
 /// 4.5:1, the threshold for text. Dark mode keeps the bright shade, and so
 /// does the watch, whose screen is always dark.
-///
-/// SwiftUI-only, like `ActivityPalette` and `MetricPalette`, so the watch
-/// compiles the same table.
-nonisolated enum ReadablePalette {
+nonisolated public enum ReadablePalette {
     /// Minutes, success, hiking.
-    static let green = Color.readable(
+    public static let green = Color.readable(
         dark: brightGreen,
         light: 0x239F42,
         increasedContrast: 0x1C7F35
     )
     /// Walking. The system cyan in dark mode, as before.
-    static let cyan = Color.readable(dark: .cyan, light: 0x0097B7, increasedContrast: 0x007891)
+    public static let cyan = Color.readable(dark: .cyan, light: 0x0097B7, increasedContrast: 0x007891)
     /// Calories, warnings, running, the streak.
-    static let orange = Color.readable(
+    public static let orange = Color.readable(
         dark: brightOrange,
         light: 0xD96C00,
         increasedContrast: 0xA84E00
     )
 
-    private static let brightGreen = Color(.sRGB, red: 48 / 255, green: 209 / 255, blue: 88 / 255)
-    private static let brightOrange = Color(.sRGB, red: 255 / 255, green: 159 / 255, blue: 10 / 255)
+    /// The dark-mode shades, in every mode: for a surface that is always
+    /// dark, the widgets' `FouleeColor.nightGradient` (#725).
+    public static let brightGreen = Color(.sRGB, red: 48 / 255, green: 209 / 255, blue: 88 / 255)
+    public static let brightOrange = Color(.sRGB, red: 255 / 255, green: 159 / 255, blue: 10 / 255)
 
     // MARK: Small text (issue #658)
 
@@ -40,29 +39,29 @@ nonisolated enum ReadablePalette {
     // shades above reach 3:1: light mode takes a deeper one still, the same
     // with « Augmenter le contraste ». Dark mode keeps the bright shade.
 
-    static let greenText = Color.readable(
+    public static let greenText = Color.readable(
         dark: brightGreen,
         light: 0x15632A,
         increasedContrast: 0x15632A
     )
-    static let orangeText = Color.readable(
+    public static let orangeText = Color.readable(
         dark: brightOrange,
         light: 0x894000,
         increasedContrast: 0x894000
     )
     /// Steps, and the accent on text.
-    static let purpleText = Color.readable(
+    public static let purpleText = Color.readable(
         dark: Color(.sRGB, red: 191 / 255, green: 90 / 255, blue: 242 / 255),
         light: 0x751BC9,
         increasedContrast: 0x751BC9
     )
-    static let blueText = Color.readable(
+    public static let blueText = Color.readable(
         dark: Color(.sRGB, red: 10 / 255, green: 132 / 255, blue: 255 / 255),
         light: 0x0050A5,
         increasedContrast: 0x0050A5
     )
     /// The rest day's indigo.
-    static let indigoText = Color.readable(
+    public static let indigoText = Color.readable(
         dark: Color(.sRGB, red: 94 / 255, green: 92 / 255, blue: 230 / 255),
         light: 0x3230DF,
         increasedContrast: 0x3230DF

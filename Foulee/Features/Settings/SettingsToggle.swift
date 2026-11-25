@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// A Réglages switch: its title, and one line saying what it changes.
