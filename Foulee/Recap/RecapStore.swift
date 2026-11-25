@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 import Observation
 

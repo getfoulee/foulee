@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Each metric's colour, in one place (issue #366): the home's tiles, the

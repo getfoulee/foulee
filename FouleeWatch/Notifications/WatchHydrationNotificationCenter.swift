@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 @preconcurrency import HealthKit
 @preconcurrency import UserNotifications
 

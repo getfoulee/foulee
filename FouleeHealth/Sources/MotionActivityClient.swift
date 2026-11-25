@@ -1,5 +1,5 @@
 @preconcurrency import CoreMotion
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The app's only contact with `CMMotionActivityManager`, on the iPhone and

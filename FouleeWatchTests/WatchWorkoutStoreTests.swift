@@ -1,5 +1,5 @@
 import CoreLocation
-import FouleeKit
+import FouleeDomain
 import Foundation
 import HealthKit
 import Testing

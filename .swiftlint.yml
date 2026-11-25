@@ -6,11 +6,11 @@ included:
   - FouleeWatchWidget
   - FouleeWidget
   - FouleeLiveActivity
-  - FouleeKit
+  - FouleeDomain
   - FouleeDesignSystem
   - FouleeHealth
   - FouleeIntents
-  - FouleeKitTests
+  - FouleeDomainTests
   - Project.swift
   - Tuist
   - Tuist.swift

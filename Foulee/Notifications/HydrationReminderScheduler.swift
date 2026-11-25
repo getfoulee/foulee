@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Turns the hydration prefs into a set of daily reminder times and pushes them

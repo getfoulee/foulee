@@ -1,5 +1,5 @@
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The outing's climb and descent over time (issues #535, #564): the screen

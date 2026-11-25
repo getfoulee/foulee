@@ -1,5 +1,5 @@
 import Combine
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Top-level container. Gates onboarding, shows the home screen once the user

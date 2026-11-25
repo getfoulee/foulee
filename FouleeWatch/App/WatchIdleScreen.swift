@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// The watch's idle route: the home screen, or the activity question when

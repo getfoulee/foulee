@@ -1,5 +1,5 @@
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import HealthKit
 
 /// Which workout activity types the 7-day résumé reports on.

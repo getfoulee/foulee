@@ -1,5 +1,5 @@
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import os
 @preconcurrency import HealthKit
 @preconcurrency import WatchConnectivity

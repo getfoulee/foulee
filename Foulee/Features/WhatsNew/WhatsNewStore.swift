@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The « Nouveautés » to show at this opening (issue #621), read from the

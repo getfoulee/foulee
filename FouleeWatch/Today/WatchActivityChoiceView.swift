@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// « Les deux » : which activity is this session? (issue #224)

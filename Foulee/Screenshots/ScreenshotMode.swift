@@ -1,6 +1,6 @@
 #if DEBUG
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Deterministic capture mode for the App Store screenshots (issue #235).

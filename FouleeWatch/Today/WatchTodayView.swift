@@ -1,6 +1,6 @@
 import Combine
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Watch home: today's streak + key numbers, and the "Démarrer" CTA. Replaces

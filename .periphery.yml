@@ -2,7 +2,7 @@ project: Foulee.xcworkspace
 schemes:
   - Foulee
   - FouleeWatch
-  - FouleeKit
+  - FouleeDomain
 index_exclude:
   # Tuist-generated asset accessors — not hand-written code.
   - "Derived/**"
@@ -12,7 +12,7 @@ retain_files:
   # it showcases (e.g. SecondaryButton) from being reported as unused.
   - "**/DesignSystemGallery.swift"
 # Every scheme + every target they build are indexed, so shared code
-# (FouleeKit, FouleeHealth, FouleeDesignSystem) isn't flagged just because its consumer lives
+# (FouleeDomain, FouleeHealth, FouleeDesignSystem) isn't flagged just because its consumer lives
 # in another target. Regenerate the project with `tuist generate` before scanning.
 #
 # CI runs `periphery scan --baseline .periphery.baseline.json --strict`: the

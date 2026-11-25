@@ -1,6 +1,6 @@
 import AppIntents
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 @preconcurrency import HealthKit
 import WidgetKit
 

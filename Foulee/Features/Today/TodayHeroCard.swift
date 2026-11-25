@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// The big top card of the Today screen. Switches between

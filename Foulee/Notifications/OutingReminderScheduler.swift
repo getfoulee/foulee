@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Computes the set of `OutingReminder`s implied by the current

@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 import WidgetKit
 

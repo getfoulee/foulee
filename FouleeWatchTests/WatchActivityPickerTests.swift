@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import HealthKit
 import SwiftUI
 import Testing

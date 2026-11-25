@@ -1,5 +1,5 @@
 import ActivityKit
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Shape of the data the Live Activity surfaces. Imported by both the

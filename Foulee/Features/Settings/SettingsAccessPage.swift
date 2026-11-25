@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Autorisations (issue #611): every permission iOS refused, each with what

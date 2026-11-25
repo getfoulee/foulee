@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Second onboarding screen — marche, course, ou les deux.

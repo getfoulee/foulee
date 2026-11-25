@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Objectifs: what the user moves at, and how much a day.

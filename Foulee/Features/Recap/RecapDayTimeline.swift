@@ -1,6 +1,6 @@
 import Dependencies
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// The day picked in the Bilan (issues #348, #350, #361): how it went against

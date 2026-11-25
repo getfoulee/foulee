@@ -1,6 +1,6 @@
 import Dependencies
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Live walk screen — chip "EN COURS" + big timer + progress ring with

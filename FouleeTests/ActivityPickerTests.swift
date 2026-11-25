@@ -1,7 +1,7 @@
 import Clocks
 import Dependencies
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 import Testing
 @testable import Foulee

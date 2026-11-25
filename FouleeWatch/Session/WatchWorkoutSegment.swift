@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// One recorded stretch of an outing — its own `HKWorkout` (issues #250, #265).

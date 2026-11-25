@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The phone's session as the wrist is told of it (issue #342), as an

@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// A start and an end time on one line (issue #395) — the outing window, the

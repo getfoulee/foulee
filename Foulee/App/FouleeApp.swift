@@ -1,7 +1,7 @@
 @preconcurrency import ActivityKit
 @preconcurrency import BackgroundTasks
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 import WidgetKit
 

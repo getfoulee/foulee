@@ -1,5 +1,5 @@
 @preconcurrency import CoreLocation
-import FouleeKit
+import FouleeDomain
 
 /// Continuous fix recorder that draws an outing's route — on the phone's map
 /// sheet and on the watch's « Plan » page (issue #312).

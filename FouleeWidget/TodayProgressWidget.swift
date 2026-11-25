@@ -1,6 +1,6 @@
 import FouleeDesignSystem
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 import WidgetKit
 

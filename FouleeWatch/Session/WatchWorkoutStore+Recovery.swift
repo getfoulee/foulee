@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// A session that outlived the app (issue #554).

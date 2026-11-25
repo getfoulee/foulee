@@ -1,6 +1,6 @@
 #if DEBUG
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The dependency doubles the capture mode installs. Same struct-of-closures

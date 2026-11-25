@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// What a shared Bilan says (issue #410): the period's headline figures,

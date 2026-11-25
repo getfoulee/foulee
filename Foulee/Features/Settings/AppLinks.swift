@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Every page the app links to (issue #396), in one place: fixed https

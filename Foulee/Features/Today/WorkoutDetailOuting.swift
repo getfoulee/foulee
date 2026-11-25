@@ -1,6 +1,6 @@
 import Charts
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// The outing, sport by sport (issue #318): a timeline of its legs, then what

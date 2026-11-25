@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The traces the watch sent (#727), kept on this iPhone until shared. Each is

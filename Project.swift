@@ -92,12 +92,13 @@ let project = Project(
         // files listed in each target. macOS is there for the tests alone:
         // they run on the runner itself, with no simulator to boot.
         sharedFramework(
-            name: "FouleeKit",
+            name: "FouleeDomain",
+            // Its name before #725: the identifier stays, as every shipped one does.
             bundleSuffix: "kit",
             onMac: true,
             // The text the kit writes itself — activity names, highlights —
             // read through `kitText` (issue #587).
-            resources: ["FouleeKit/Resources/**"],
+            resources: ["FouleeDomain/Resources/**"],
             settings: kitMacSigning
         ),
         // The HealthKit and CoreMotion adapters the apps and extensions share
@@ -107,7 +108,7 @@ let project = Project(
             name: "FouleeHealth",
             bundleSuffix: "health",
             dependencies: [
-                .target(name: "FouleeKit"),
+                .target(name: "FouleeDomain"),
                 .sdk(name: "HealthKit", type: .framework),
                 .sdk(name: "CoreMotion", type: .framework)
             ]
@@ -118,7 +119,7 @@ let project = Project(
         sharedFramework(
             name: "FouleeDesignSystem",
             bundleSuffix: "designsystem",
-            dependencies: [.target(name: "FouleeKit")]
+            dependencies: [.target(name: "FouleeDomain")]
         ),
         // The App Intents the app and its widget extension both run (#724):
         // declared once, registered by each through `FouleeIntentsPackage`.
@@ -126,19 +127,19 @@ let project = Project(
             name: "FouleeIntents",
             bundleSuffix: "intents",
             onWatch: false,
-            dependencies: [.target(name: "FouleeKit"), .target(name: "FouleeHealth")]
+            dependencies: [.target(name: "FouleeDomain"), .target(name: "FouleeHealth")]
         ),
         .target(
-            name: "FouleeKitTests",
+            name: "FouleeDomainTests",
             destinations: [.mac],
             product: .unitTests,
             bundleId: "\(bundleIdBase).kit.tests",
             deploymentTargets: .macOS("15.0"),
-            sources: ["FouleeKitTests/**"],
+            sources: ["FouleeDomainTests/**"],
             // Recorded outings the detection is replayed against (#727).
-            resources: ["FouleeKitTests/Traces/**"],
+            resources: ["FouleeDomainTests/Traces/**"],
             dependencies: [
-                .target(name: "FouleeKit")
+                .target(name: "FouleeDomain")
             ],
             settings: .settings(base: kitMacSigning.merging([
                 // No host app embeds the framework on macOS: the bundle finds
@@ -159,7 +160,7 @@ let project = Project(
             ],
             entitlements: .file(path: "Foulee/Resources/Foulee.entitlements"),
             dependencies: [
-                .target(name: "FouleeKit"),
+                .target(name: "FouleeDomain"),
                 .target(name: "FouleeDesignSystem"),
                 .target(name: "FouleeHealth"),
                 .target(name: "FouleeIntents"),
@@ -210,7 +211,7 @@ let project = Project(
             ],
             entitlements: .file(path: "FouleeWidget/Resources/FouleeWidget.entitlements"),
             dependencies: [
-                .target(name: "FouleeKit"),
+                .target(name: "FouleeDomain"),
                 .target(name: "FouleeDesignSystem"),
                 .target(name: "FouleeHealth"),
                 .target(name: "FouleeIntents")
@@ -235,7 +236,7 @@ let project = Project(
             ]),
             sources: [
                 "FouleeLiveActivity/**",
-                // ActivityKit, which FouleeKit does not import: macOS has none.
+                // ActivityKit, which FouleeDomain does not import: macOS has none.
                 // `SessionActivity+HealthKit` stays out of this extension too,
                 // so no HealthKit is pulled into a process that writes nothing.
                 "Foulee/Session/WalkActivityAttributes.swift"
@@ -248,7 +249,7 @@ let project = Project(
             ],
             entitlements: .file(path: "FouleeLiveActivity/Resources/FouleeLiveActivity.entitlements"),
             dependencies: [
-                .target(name: "FouleeKit")
+                .target(name: "FouleeDomain")
             ]
         ),
         .target(
@@ -280,7 +281,7 @@ let project = Project(
             ],
             entitlements: .file(path: "FouleeWatch/Resources/FouleeWatch.entitlements"),
             dependencies: [
-                .target(name: "FouleeKit"),
+                .target(name: "FouleeDomain"),
                 .target(name: "FouleeDesignSystem"),
                 .target(name: "FouleeHealth"),
                 .target(name: "FouleeWatchWidget")
@@ -312,7 +313,7 @@ let project = Project(
             ],
             entitlements: .file(path: "FouleeWatchWidget/Resources/FouleeWatchWidget.entitlements"),
             dependencies: [
-                .target(name: "FouleeKit"),
+                .target(name: "FouleeDomain"),
                 .target(name: "FouleeHealth")
             ]
         ),
@@ -438,10 +439,10 @@ let project = Project(
     schemes: [
         // The kit's tests, on macOS (issue #425): no simulator, seconds.
         .scheme(
-            name: "FouleeKit",
+            name: "FouleeDomain",
             shared: true,
-            buildAction: .buildAction(targets: ["FouleeKit"]),
-            testAction: .targets(["FouleeKitTests"], options: frenchTests)
+            buildAction: .buildAction(targets: ["FouleeDomain"]),
+            testAction: .targets(["FouleeDomainTests"], options: frenchTests)
         ),
         .scheme(
             name: "Foulee",

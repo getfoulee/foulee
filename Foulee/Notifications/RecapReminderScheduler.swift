@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Keeps the recap notifications in step with the preference (issue #344).

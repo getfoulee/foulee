@@ -1,5 +1,5 @@
 import AppIntents
-import FouleeKit
+import FouleeDomain
 import Observation
 
 /// « Commencer une sortie » for Siri, Raccourcis and Spotlight (issue #604),

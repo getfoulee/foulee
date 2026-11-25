@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 
 /// The phone-computed state every watch shows: the streak, the goals, the
 /// activity mode and the hydration settings. The Apple Watch gets it over

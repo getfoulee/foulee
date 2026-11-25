@@ -1,5 +1,5 @@
 import CoreMotion
-import FouleeKit
+import FouleeDomain
 import Foundation
 import Testing
 

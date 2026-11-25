@@ -1,5 +1,5 @@
 import AppIntents
-import FouleeKit
+import FouleeDomain
 
 /// « Commencer une sortie » for Siri on the watch (issue #607). The phone's
 /// intent of the same name, minus « Automatique »: the watch writes its own

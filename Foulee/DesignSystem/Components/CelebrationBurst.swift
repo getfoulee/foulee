@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// A one-shot radial burst of little dots — a tasteful "you did it" flourish

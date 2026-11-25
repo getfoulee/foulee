@@ -2,7 +2,7 @@ import AppIntents
 import FouleeDesignSystem
 import FouleeIntents
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 import WidgetKit
 

@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import WidgetKit
 
 /// Feeds the Série complication. The streak is computed on the phone (the only
