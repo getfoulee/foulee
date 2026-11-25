@@ -95,6 +95,12 @@ final class WatchWorkoutStore: NSObject {
     @ObservationIgnored let route: WatchRouteStore
     /// The outing's climb, stamped on each leg as it is saved (issue #535).
     @ObservationIgnored let climb: WatchClimbStore
+    /// The outing's sensors, kept when the hidden switch asks for it (#727).
+    @ObservationIgnored var trace: DetectionTrace?
+    /// Where a finished trace goes: the iPhone, through WatchConnectivity.
+    @ObservationIgnored var sendTrace: (DetectionTrace) -> Void = DetectionTraceTransfer.send
+    /// Whether the iPhone's hidden switch is on, read as each outing starts.
+    @ObservationIgnored var recordsTraces: () -> Bool = { WatchSyncStore.read()?.recordsDetectionTraces == true }
     /// The watch's charge, read at every batch (issue #614).
     @ObservationIgnored let battery: @MainActor () -> BatteryReading
     /// The outing was stopped before the battery could stop it (issue #614).
@@ -173,6 +179,7 @@ final class WatchWorkoutStore: NSObject {
         route.stop()
         climb.stop()
         let end = clock()
+        finishTrace()
         // Close the leg in flight so every leg of the outing has an end, and
         // the summary can give each sport its own figures (issue #265).
         finishedLegs.append(legInFlight(endingAt: end))
@@ -222,6 +229,7 @@ final class WatchWorkoutStore: NSObject {
     /// Return to idle so a new session can start.
     func reset() {
         detection.stop()
+        finishTrace()
         route.reset()
         sessionHandle = nil
         finishedLegs = []
@@ -250,6 +258,7 @@ final class WatchWorkoutStore: NSObject {
         let now = clock()
         outingID = UUID()
         let leg = OutingLeg(outingID: outingID, index: 0)
+        startTrace(activity: activity, at: now)
         let handle = await runOrTrap("ouverture de la séance") {
             try await healthKit.startSession(Self.configuration(for: activity), now, leg, self)
         }
@@ -341,6 +350,7 @@ final class WatchWorkoutStore: NSObject {
         // streams go.
         detection.stop()
         route.stop()
+        finishTrace()
         guard case .active(let metrics) = state else { return }
         state = .ended(metrics, saveFailed: true)
         // Same debt again — a session that died on its own (issue #278).

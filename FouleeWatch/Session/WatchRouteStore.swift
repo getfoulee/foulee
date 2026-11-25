@@ -36,6 +36,8 @@ final class WatchRouteStore {
     /// Every usable fix of the outing, oldest first. Whole `CLLocation`s, not
     /// coordinates: Santé wants each fix's time, accuracy and altitude.
     private(set) var locations: [CLLocation] = []
+    /// Hears each fix kept, for a trace (#727).
+    var onFix: ((CLLocation) -> Void)?
     /// The wearer refused location access — the page says so instead of
     /// waiting forever for a first fix.
     private(set) var isDenied = false
@@ -62,6 +64,7 @@ final class WatchRouteStore {
             }
             for await fix in source.updates() {
                 self?.locations.append(fix)
+                self?.onFix?(fix)
             }
         }
     }

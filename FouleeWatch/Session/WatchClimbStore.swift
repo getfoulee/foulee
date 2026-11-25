@@ -11,6 +11,8 @@ import Foundation
 /// goes on.
 final class WatchClimbStore {
     private(set) var trail = ClimbTrail()
+    /// Hears each reading, for a trace (#727).
+    var onRecord: ((Elevation, Date) -> Void)?
 
     private let source: AltitudeClient
     private var recording: Task<Void, Never>?
@@ -33,6 +35,7 @@ final class WatchClimbStore {
     /// The outing's climb and descent as of `date`.
     func record(_ elevation: Elevation, at date: Date) {
         trail.record(elevation, at: date)
+        onRecord?(elevation, date)
     }
 
     /// Stop measuring and keep what was climbed. Idempotent.
