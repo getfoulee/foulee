@@ -1,7 +1,7 @@
 import Charts
 import Dependencies
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Per-metric stats, opened by tapping a card on the Today screen. A segmented

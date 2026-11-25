@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import WatchKit
 
 /// End the outing before the battery does (issue #614).

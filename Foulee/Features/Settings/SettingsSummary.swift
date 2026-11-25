@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The one-line values the Réglages home prints under each row (issue #393),

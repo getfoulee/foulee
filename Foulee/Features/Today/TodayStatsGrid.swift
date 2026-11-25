@@ -1,6 +1,6 @@
 import Dependencies
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Glass card holding the day's or the week's 4 stat blocks (pas / minutes /

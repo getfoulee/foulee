@@ -1,6 +1,6 @@
 import Dependencies
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Foundation
 import HealthKit
 

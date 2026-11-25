@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// What a session notification carries, and what its tap opens (issue #530):

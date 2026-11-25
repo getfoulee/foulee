@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import StoreKit
 import SwiftUI
 import UIKit

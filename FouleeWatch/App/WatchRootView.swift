@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Owns the workout store and routes to home / active / ended screens.

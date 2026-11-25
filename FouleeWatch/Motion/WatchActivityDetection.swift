@@ -1,5 +1,5 @@
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Runs `ActivitySwitchDetector` against the live motion streams for the

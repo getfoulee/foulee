@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import HealthKit
 
 nonisolated extension RecordedActivity {

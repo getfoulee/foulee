@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 @preconcurrency import UserNotifications
 import WidgetKit
 

@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// What the wrist tells the phone, and how often (issues #278, #334).

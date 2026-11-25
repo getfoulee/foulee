@@ -1,7 +1,7 @@
 import AppIntents
 import FouleeDesignSystem
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// « Où j'en suis aujourd'hui » for Siri, Raccourcis and Spotlight (issue #605).

@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Each leg's share of the outing's climb and descent (issues #535, #564).

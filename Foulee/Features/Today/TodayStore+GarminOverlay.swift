@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Where the Connect IQ snapshot enters the Today pass (issue #189). Split out

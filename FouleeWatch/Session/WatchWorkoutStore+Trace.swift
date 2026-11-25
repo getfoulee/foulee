@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The hidden recorder of #727: with the switch on, every reading the outing's

@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// « Partager mon bilan » (issue #410): pick the shape, see the picture, send

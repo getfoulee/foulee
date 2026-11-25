@@ -1,6 +1,6 @@
 import Dependencies
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// The Bilan: the streak, the week or the month, and the year (issues #344,

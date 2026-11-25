@@ -1,5 +1,5 @@
 import CoreGraphics
-import FouleeKit
+import FouleeDomain
 import Foundation
 import Testing
 @testable import Foulee

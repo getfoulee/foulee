@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 @preconcurrency import HealthKit
 
 /// The two HealthKit delegates the store answers to.

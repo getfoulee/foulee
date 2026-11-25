@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// SF Symbol names used across screens, mapped to the design's icon vocabulary

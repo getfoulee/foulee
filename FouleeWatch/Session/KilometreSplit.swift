@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// One kilometre of an outing, and what it cost (issue #301).
@@ -22,7 +22,7 @@ nonisolated struct KilometreSplit: Equatable, Sendable, Identifiable {
     var paceText: String? { duration.paceText(overKm: 1) }
 
     /// « 160 pas/min », or `nil` when no step was counted.
-    var cadenceText: String? { FouleeKit.cadenceText(steps: steps, over: duration) }
+    var cadenceText: String? { FouleeDomain.cadenceText(steps: steps, over: duration) }
 
     /// The kilometre as VoiceOver says it (issue #600): « Kilomètre 2 en
     /// 9 minutes et 12 secondes, Marche, 1 180 pas, 125 pas par minute ».

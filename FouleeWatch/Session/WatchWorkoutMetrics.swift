@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// Live snapshot from `HKLiveWorkoutBuilder` — the view binds against

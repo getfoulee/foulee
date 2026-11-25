@@ -4,7 +4,7 @@
 // (`hyperframes render --variables '{"locale":"en"}'`).
 //
 // Numbers, decimals and durations follow the app: « 4 218 », « 3,1 »,
-// « 2 h 52 » in French (FouleeKit DurationFormatting.swift writes French by
+// « 2 h 52 » in French (FouleeDomain DurationFormatting.swift writes French by
 // hand), « 4,218 », « 3.1 », « 2 hr, 52 min » in US English (the system's
 // abbreviated units).
 (function () {

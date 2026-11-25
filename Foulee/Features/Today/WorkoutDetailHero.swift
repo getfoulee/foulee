@@ -1,5 +1,5 @@
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Hero card at the top of `WorkoutDetailSheet` — the session's own figure,

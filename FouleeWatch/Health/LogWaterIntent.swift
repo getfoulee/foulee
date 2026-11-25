@@ -1,5 +1,5 @@
 import AppIntents
-import FouleeKit
+import FouleeDomain
 @preconcurrency import HealthKit
 
 /// « J'ai bu un verre » for Siri on the watch (issue #607). The phone's intent

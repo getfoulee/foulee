@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The outings the wearer merged (issue #549). The rules are `OutingMerges`;

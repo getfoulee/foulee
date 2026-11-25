@@ -1,5 +1,5 @@
 @preconcurrency import CoreMotion
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The barometer during an outing, on the iPhone and the watch alike (issues

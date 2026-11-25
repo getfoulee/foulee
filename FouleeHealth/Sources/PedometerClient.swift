@@ -1,5 +1,5 @@
 @preconcurrency import CoreMotion
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The app's only contact with `CMPedometer`, on the iPhone and the watch

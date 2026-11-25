@@ -1,6 +1,6 @@
 import Dependencies
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// The way into the Bilan from the home (issues #344, #346, #350, #363): the

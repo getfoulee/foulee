@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 @preconcurrency import MetricKit
 import os

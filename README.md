@@ -133,7 +133,7 @@ open Foulee.xcworkspace
 Then pick the **Foulee** scheme and run on an iOS 26 simulator.
 
 Before pushing, `tools/check_build.sh` compiles what CI compiles — SwiftLint,
-the FouleeKit tests on macOS, the iPhone app with its extensions and tests, the
+the FouleeDomain tests on macOS, the iPhone app with its extensions and tests, the
 watch app with its tests — and prints only the errors.
 
 ### Signing (required for WeatherKit)
@@ -156,8 +156,8 @@ For the first WeatherKit build to succeed you also need the App ID `com.eno33.fo
 .
 ├── Project.swift          # Tuist manifest (targets, deps, settings)
 ├── Tuist.swift            # Tuist global config
-├── FouleeKit/             # Shared models and pure logic (iOS, watchOS, macOS)
-├── FouleeKitTests/        # Their tests, on macOS — no simulator
+├── FouleeDomain/          # Shared models and pure logic (iOS, watchOS, macOS)
+├── FouleeDomainTests/     # Their tests, on macOS — no simulator
 ├── Foulee/                # iPhone app sources
 │   ├── App/               # Entry point + root view
 │   ├── DesignSystem/      # Colors, typography, glass material, icons
@@ -179,7 +179,7 @@ app side and the Garmin side, and each job below runs only when its side is
 touched (a change to `ci.yml` itself counts as both). The app side is
 **Lint**, **Kit**, **iOS**, **Accessibility audit**, **Launch time**, **iPhone Duo**, **watchOS** and **Dead code**
 (**iPhone Duo** only when the iPhone app itself changes); the Garmin side is
-**Connect IQ** and **Connect IQ build**. **Kit** runs the FouleeKit tests on macOS, with
+**Connect IQ** and **Connect IQ build**. **Kit** runs the FouleeDomain tests on macOS, with
 no simulator. The two simulator jobs compile once each (`build-for-testing`,
 then `test-without-building`). **Dead code** builds the three schemes for their
 index only and runs the Periphery scan on it, beside the test jobs instead of
@@ -282,7 +282,7 @@ where to read it:
 | Launch time | CI, **Launch time** job, `launch-time` artifact | Fails `Build & Test` when the fastest of seven launches exceeds `FouleeLaunchTime/LaunchTimeBudget.json` by more than its tolerance (see [CI](#ci)) |
 | Watch outing stopped on low battery | Unified log, `session` category | « batterie critique, sortie arrêtée » |
 
-- Every degraded state is a case of `DegradedState` (`FouleeKit`), shown by
+- Every degraded state is a case of `DegradedState` (`FouleeDomain`), shown by
   `DegradedBanner`; Réglages › « Autorisations » lists the refused ones.
 - No log line and no report holds a health value or a position.
 
@@ -290,7 +290,7 @@ where to read it:
 
 Strings are localized via **String Catalogs** (`.xcstrings`) — one per target:
 - `Foulee/Resources/Localizable.xcstrings` (iPhone app, French and English)
-- `FouleeKit/Resources/Localizable.xcstrings` (text the kit writes itself — activity names, highlights — French and English)
+- `FouleeDomain/Resources/Localizable.xcstrings` (text the kit writes itself — activity names, highlights — French and English)
 - `FouleeWatch/Resources/Localizable.xcstrings` (Watch app)
 - `FouleeWatchWidget/Resources/Localizable.xcstrings` (Watch widget)
 - `FouleeWidget/Resources/Localizable.xcstrings` and `FouleeLiveActivity/Resources/Localizable.xcstrings` (iPhone widgets and Live Activity, French and English), with an `InfoPlist.xcstrings` each for the extension's name
@@ -303,7 +303,7 @@ Strings are localized via **String Catalogs** (`.xcstrings`) — one per target:
 Source language is **French**. The rules that keep a string translatable:
 
 - A component takes its text as `LocalizedStringResource`, never `String`: `Text(someString)` is shown verbatim. Text already in the screen's language (a figure, a label the kit wrote) goes through `.verbatim(_:)`.
-- Text built outside a view is `String(localized: "…")` in the apps, `kitText("…")` in FouleeKit. `kitText` reads the kit's catalog in `Locale.app`, the language of the app showing it, so an English iPhone and a French-only watch never mix.
+- Text built outside a view is `String(localized: "…")` in the apps, `kitText("…")` in FouleeDomain. `kitText` reads the kit's catalog in `Locale.app`, the language of the app showing it, so an English iPhone and a French-only watch never mix.
 - One literal per sentence: `"a " + "b"` is never extracted. Counts are plural variations in the catalog (`%lld jours` → « 1 jour », "1 day"), not `count > 1 ? "s" : ""`.
 - `Locale.app` follows the languages whose `Localizable` table the app actually ships, plus French, the source: a target speaks English once its catalog does.
 
@@ -331,7 +331,7 @@ secrets the workflows need.
 - **PRs** — small, focused, one PR per task
 - **Style** — SwiftLint + `swift-format` (CI-enforced)
 - **Errors** — no `try`/`catch` blocks; use `throws` + propagation, `Result`, or `do { try await … }` at the highest sensible boundary only
-- **Shared code** — models and pure logic go in `FouleeKit`, tested on macOS; what other targets use is `public` ([ADR 0007](docs/adr/0007-fouleekit-logique-pure.md))
+- **Shared code** — models and pure logic go in `FouleeDomain`, tested on macOS; what other targets use is `public` ([ADR 0007](docs/adr/0007-fouleekit-logique-pure.md))
 - **Concurrency** — the iPhone and watch apps are main-actor by default: data types, pure logic and system clients are `nonisolated`, heavy async work is `@concurrent` ([ADR 0006](docs/adr/0006-isolation-main-actor-par-defaut.md))
 - **Watch screens** — one main action per screen, pinned at the bottom; a choice closes with the system's close button; session pages follow the Exercice app's order ([ADR 0008](docs/adr/0008-interface-montre.md)). On Garmin, the same content with the native activity app's buttons and system components ([ADR 0009](docs/adr/0009-app-garmin-seance.md))
 - **Tests** — never read the real clock: inject it (`@Dependency(\.date)` on the phone, `clock:` on the watch's workout store); a precondition is `try #require(…)`, not a `guard` that records an issue and returns

@@ -1,7 +1,7 @@
 @preconcurrency import ActivityKit
 import Dependencies
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Foundation
 import Observation
 import WidgetKit

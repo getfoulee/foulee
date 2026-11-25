@@ -1,4 +1,4 @@
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The outings saved on the Garmin watch that Santé doesn't have yet (ADR 0009,

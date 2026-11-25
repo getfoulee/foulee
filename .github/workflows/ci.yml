@@ -46,8 +46,8 @@ jobs:
               - FouleeDesignSystem/**
               - FouleeHealth/**
               - FouleeIntents/**
-              - FouleeKit/**
-              - FouleeKitTests/**
+              - FouleeDomain/**
+              - FouleeDomainTests/**
               - FouleeLaunchTime/**
               - FouleeLiveActivity/**
               - FouleeScreenshots/**
@@ -78,7 +78,7 @@ jobs:
               - FouleeDesignSystem/**
               - FouleeHealth/**
               - FouleeIntents/**
-              - FouleeKit/**
+              - FouleeDomain/**
               - FouleeScreenshots/ScreenshotCapture.swift
               - FouleeSmoke/**
               - Tuist/**
@@ -235,12 +235,12 @@ jobs:
 
       # The architecture is named: « My Mac » matches arm64 and x86_64, and
       # xcodebuild would otherwise pick one with a warning.
-      - name: Test (FouleeKit, macOS)
+      - name: Test (FouleeDomain, macOS)
         run: |
           set -o pipefail
           xcodebuild \
             -workspace Foulee.xcworkspace \
-            -scheme FouleeKit \
+            -scheme FouleeDomain \
             -destination 'platform=macOS,arch=arm64' \
             -configuration Debug \
             -derivedDataPath build/dd \
@@ -550,7 +550,7 @@ jobs:
       #
       # 1. The iPhone app, its extensions, the embedded watch app, FouleeTests.
       # 2. FouleeWatchTests, on top of the watch app built in 1.
-      # 3. FouleeKitTests, on macOS: a declaration only the kit's tests reach
+      # 3. FouleeDomainTests, on macOS: a declaration only the kit's tests reach
       #    would otherwise be reported as dead.
       - name: Index the project for the dead-code scan
         run: |
@@ -567,7 +567,7 @@ jobs:
           }
           index Foulee 'generic/platform=iOS Simulator'
           index FouleeWatch 'generic/platform=watchOS Simulator'
-          index FouleeKit 'platform=macOS,arch=arm64'
+          index FouleeDomain 'platform=macOS,arch=arm64'
 
       - name: Install Periphery 3.8.0
         env:

@@ -1,5 +1,5 @@
 #if DEBUG
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The phone half of the one set of numbers every App Store capture is made of

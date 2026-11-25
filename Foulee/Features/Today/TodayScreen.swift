@@ -1,7 +1,7 @@
 import AppIntents
 import Dependencies
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 import UIKit
 

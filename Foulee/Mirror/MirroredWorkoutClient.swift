@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// The phone's half of workout-session mirroring (issue #277), as an injectable

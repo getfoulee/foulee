@@ -1,5 +1,5 @@
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 @preconcurrency import HealthKit
 
 /// Which leg is which.

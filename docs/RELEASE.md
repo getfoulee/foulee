@@ -78,7 +78,7 @@ Associated Domains carries the universal links of `getfoulee.app` and
 `<team id>.com.eno33.foulee` and its paths (getfoulee/web); until then the
 links open Safari.
 
-The `FouleeKit` framework needs no App ID: it is signed with the app that
+The `FouleeDomain` framework (named FouleeKit until #725) needs no App ID: it is signed with the app that
 embeds it. It is embedded twice, in the iPhone app and in the watch app, under
 two identifiers (`com.eno33.foulee.kit`, `com.eno33.foulee.kit.watch`): App
 Store Connect rejects two bundles with one identifier under an iOS app

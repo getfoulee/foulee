@@ -7,7 +7,7 @@
 # Four passes, logged into build/check (gitignored):
 #
 #   1. SwiftLint, strict, when it is installed.
-#   2. FouleeKit's tests on macOS — no simulator, a few seconds.
+#   2. FouleeDomain's tests on macOS — no simulator, a few seconds.
 #   3. The iPhone app, its extensions, the embedded watch app and FouleeTests
 #      (`build-for-testing`, iOS Simulator).
 #   4. The watch app and FouleeWatchTests (`build-for-testing`, watchOS
@@ -64,7 +64,7 @@ else
 fi
 
 pass kit xcodebuild test \
-    -workspace Foulee.xcworkspace -scheme FouleeKit \
+    -workspace Foulee.xcworkspace -scheme FouleeDomain \
     -destination "platform=macOS,arch=$arch" \
     -derivedDataPath "$dd"
 

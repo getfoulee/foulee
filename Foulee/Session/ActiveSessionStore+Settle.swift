@@ -1,5 +1,5 @@
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// How a finished session is settled before it is saved, and what the Lock

@@ -1,6 +1,6 @@
 import Combine
 import FouleeDesignSystem
-import FouleeKit
+import FouleeDomain
 import SwiftUI
 
 /// Floating confirmation shown when the app was opened by a hydration

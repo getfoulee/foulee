@@ -1,6 +1,6 @@
 import Dependencies
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Observation
 
 /// The permissions iOS refused Foulée, for the Réglages page that lists them

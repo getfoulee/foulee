@@ -1,6 +1,6 @@
 import Dependencies
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 // The shared CoreMotion clients (FouleeHealth, issue #726) as the phone's

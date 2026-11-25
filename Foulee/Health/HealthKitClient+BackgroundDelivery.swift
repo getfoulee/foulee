@@ -1,5 +1,5 @@
 import FouleeHealth
-import FouleeKit
+import FouleeDomain
 import Foundation
 @preconcurrency import HealthKit
 import os

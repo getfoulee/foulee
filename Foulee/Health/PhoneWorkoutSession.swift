@@ -1,5 +1,5 @@
 import Dependencies
-import FouleeKit
+import FouleeDomain
 import Foundation
 
 /// A session that outlived the app, as HealthKit gives it back (#729).

@@ -1,5 +1,5 @@
 @preconcurrency import ConnectIQ
-import FouleeKit
+import FouleeDomain
 import Foundation
 import os
 
