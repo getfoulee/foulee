@@ -57,7 +57,24 @@ nonisolated final class PhoneWatchSync: NSObject, WCSessionDelegate, @unchecked 
     }
 
     func send(_ payload: WatchSyncPayload) {
-        update { $0.payload = payload }
+        var stamped = payload
+        // Stamped here rather than by each producer: whatever sends the
+        // payload, the watch must keep hearing the hidden recorder's setting
+        // (#727), which lives in this iPhone's defaults alone.
+        stamped.recordsDetectionTraces = Self.recordsDetectionTraces
+        let sent = stamped
+        update { $0.payload = sent }
+    }
+
+    /// The hidden recorder was switched (#727): the last payload goes again,
+    /// carrying it, rather than waiting for the next refresh.
+    func resendRecordingSetting() {
+        let isOn = Self.recordsDetectionTraces
+        update { $0.payload?.recordsDetectionTraces = isOn }
+    }
+
+    private static var recordsDetectionTraces: Bool {
+        UserDefaults.standard.bool(forKey: DetectionTrace.recordingSettingKey)
     }
 
     /// The phone's session in flight, or `nil` once there is none (#342).
@@ -150,6 +167,12 @@ nonisolated final class PhoneWatchSync: NSObject, WCSessionDelegate, @unchecked 
         // Fires when `isWatchAppInstalled` flips — resend so installing the
         // watch app after the fact syncs without reopening the iPhone app.
         pushPendingPayloadIfPossible()
+    }
+
+    /// A trace from the hidden recorder (#727). Any other file is ignored.
+    func session(_ session: WCSession, didReceive file: WCSessionFile) {
+        guard file.metadata?["kind"] as? String == DetectionTrace.transferMetadata["kind"] else { return }
+        DetectionTraceFiles.keep(file.fileURL)
     }
 
     func sessionDidBecomeInactive(_ session: WCSession) {}

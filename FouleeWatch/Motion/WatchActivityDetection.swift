@@ -33,6 +33,8 @@ final class WatchActivityDetection {
     private let confirmations: Int
 
     private var core: ActivityDetectionCore?
+    /// Hears every reading the detection hears, for a trace (#727).
+    var onReading: ((DetectionTrace.Event) -> Void)?
     private var onSwitch: ((ActivitySwitchDetector.Switch) -> Void)?
     private var opening: Task<Void, Never>?
     private var sessionStart = Date.distantPast
@@ -83,6 +85,9 @@ final class WatchActivityDetection {
     /// Close the streams and forget the session. Idempotent — `start` calls it
     /// too, so a session that somehow begins twice cannot leave two streams
     /// open.
+    /// Whether the pedometer gives a live cadence on this device.
+    var hasPedometerRhythm: Bool { pedometer.isRhythmAvailable() }
+
     func stop() {
         opening?.cancel()
         opening = nil
@@ -112,11 +117,15 @@ final class WatchActivityDetection {
     /// Internal rather than private so the whole rule — stream to store — is
     /// drivable from a test without any motion.
     func ingest(_ estimate: MotionActivityEstimate) {
+        guard core != nil else { return }
+        onReading?(.motion(estimate))
         guard let step = core?.ingest(estimate) else { return }
         record(step, from: "coremotion")
     }
 
     func ingest(_ reading: PedometerReading) {
+        guard core != nil else { return }
+        onReading?(.pedometer(reading))
         guard let step = core?.ingest(reading) else { return }
         record(step, from: "podomètre")
     }

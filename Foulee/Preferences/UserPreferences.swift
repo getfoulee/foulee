@@ -94,6 +94,12 @@ final class UserPreferences {
         didSet { save(sessionNotificationsEnabled, forKey: Keys.sessionNotificationsEnabled) }
     }
 
+    /// The hidden recorder of #727: seven taps on the version, in À propos.
+    /// This iPhone's alone, never synced — a trace is wanted from one wrist.
+    var recordsDetectionTraces: Bool {
+        didSet { defaults.set(recordsDetectionTraces, forKey: DetectionTrace.recordingSettingKey) }
+    }
+
     @ObservationIgnored
     private let defaults: UserDefaults
     @ObservationIgnored
@@ -160,6 +166,7 @@ final class UserPreferences {
         self.favoriteSports = FavoriteSportsPreference.favoriteSports(in: defaults)
         self.recapNotificationsEnabled = (defaults.object(forKey: Keys.recapNotificationsEnabled) as? Bool) ?? true
         self.sessionNotificationsEnabled = SessionNotifier.isEnabled(defaults)
+        self.recordsDetectionTraces = defaults.bool(forKey: DetectionTrace.recordingSettingKey)
     }
 }
 

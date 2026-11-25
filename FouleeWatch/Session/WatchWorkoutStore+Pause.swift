@@ -19,6 +19,7 @@ extension WatchWorkoutStore {
         guard case .active = state, pausedSince == nil, !isSaving else { return }
         let now = clock()
         pausedSince = now
+        trace?.record(.paused(at: now))
         sessionHandle?.pause()
         detection.stop()
         pendingSplit = nil
@@ -32,6 +33,7 @@ extension WatchWorkoutStore {
         let now = clock()
         legPausedDuration += max(0, now.timeIntervalSince(since))
         pausedSince = nil
+        trace?.record(.resumed(at: now))
         sessionHandle?.resume()
         beginActivityDetection(from: currentActivity)
         refreshActivityTotals(at: now)

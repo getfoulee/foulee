@@ -40,6 +40,35 @@ nonisolated public struct DetectionTrace: Codable, Equatable, Sendable {
         self.expectedSwitches = expectedSwitches
     }
 
+    /// The hidden setting that turns recording on (#727): on the iPhone, in
+    /// `UserDefaults.standard`, never synced — a trace is wanted from one
+    /// wrist, the one being tested.
+    public static let recordingSettingKey = "debug.recordsDetectionTraces"
+
+    /// The metadata a trace file travels to the iPhone with, so the phone
+    /// tells it from any other file the watch may send one day.
+    public static let transferMetadata = ["kind": "detectionTrace"]
+
+    /// Past this many events a recording stops growing: two hours of an outing
+    /// stay well under it, and a forgotten session cannot fill the watch.
+    public static let maximumEvents = 40_000
+
+    /// Adds `event` unless the recording is full.
+    public mutating func record(_ event: Event) {
+        guard events.count < Self.maximumEvents else { return }
+        events.append(event)
+    }
+
+    /// « trace-20240527-080000.json », from when the outing began: sorts by
+    /// date, and names a file without reading its attributes.
+    public var fileName: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyyMMdd-HHmmss"
+        return "trace-\(formatter.string(from: startedAt)).json"
+    }
+
     /// How a trace file is written and read: dates in seconds since 1970,
     /// readable by any tool, keys sorted so two recordings diff cleanly.
     public static func encoder() -> JSONEncoder {

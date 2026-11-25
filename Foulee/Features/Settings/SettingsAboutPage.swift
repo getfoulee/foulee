@@ -5,7 +5,9 @@ import SwiftUI
 /// and where to read the policy, get help, or see the code. A report can
 /// carry the device's diagnostics, only if the user chooses (issue #610).
 struct SettingsAboutPage: View {
+    @Bindable var preferences: UserPreferences
     private let version = AppVersion.current
+    @State private var traces: [URL] = []
     @State private var report: ProblemReport?
     @State private var attachesSummary = true
 
@@ -17,6 +19,9 @@ struct SettingsAboutPage: View {
                         UIPasteboard.general.string = version
                     }
                 }
+                // The hidden recorder of the detection tests (#727).
+                .onTapGesture(count: 7) { preferences.recordsDetectionTraces.toggle() }
+                .sensoryFeedback(.success, trigger: preferences.recordsDetectionTraces)
             Divider()
             row(label: "Auteur", value: "EnO33")
             Divider()
@@ -61,7 +66,67 @@ struct SettingsAboutPage: View {
                 .accessibilityHint("Avec les traces techniques, pour un envoi privé")
             }
         }
-        .task { report = await DiagnosticsCollector.shared.report() }
+        .task {
+            report = await DiagnosticsCollector.shared.report()
+            traces = DetectionTraceFiles.all()
+        }
+        if preferences.recordsDetectionTraces || !traces.isEmpty {
+            detectionTraces
+        }
+        // To the watch at once, not at the next refresh.
+        EmptyView().onChange(of: preferences.recordsDetectionTraces) { PhoneWatchSync.shared.resendRecordingSetting() }
+    }
+
+    /// Seven taps on the version show it (#727). The watch keeps the sensors
+    /// of each outing and sends the trace here, to be shared for the tests.
+    private var detectionTraces: some View {
+        GlassSection(
+            "Traces de détection",
+            footer: "La montre garde ses capteurs pendant chaque sortie et envoie la trace ici. Sept appuis sur la version pour arrêter."
+        ) {
+            SettingsToggle(
+                "Enregistrer les sorties",
+                detail: "Podomètre, mouvement, altitude et GPS de la montre",
+                isOn: $preferences.recordsDetectionTraces
+            )
+            if traces.isEmpty {
+                Divider()
+                Text("Aucune trace reçue pour l'instant.")
+                    .font(FouleeFont.callout)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            ForEach(traces, id: \.self) { url in
+                Divider()
+                ShareLink(item: url) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "waveform.path.ecg")
+                            .foregroundStyle(FouleeColor.accentMid)
+                            .frame(width: 24)
+                            .accessibilityHidden(true)
+                        Text(verbatim: url.deletingPathExtension().lastPathComponent)
+                            .font(FouleeFont.body.monospacedDigit())
+                            .foregroundStyle(.primary)
+                        Spacer(minLength: 0)
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                            .accessibilityHidden(true)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.pressable)
+                .accessibilityHint("Partager la trace")
+            }
+            if !traces.isEmpty {
+                Divider()
+                Button("Supprimer les traces", systemImage: "trash", role: .destructive) {
+                    DetectionTraceFiles.deleteAll()
+                    traces = []
+                }
+                .font(FouleeFont.body)
+            }
+        }
     }
 
     private var issueURL: URL {

@@ -80,7 +80,7 @@ struct SettingsPageView: View {
         case .notifications: SettingsNotificationsPage(preferences: preferences, store: permission)
         case .access: SettingsAccessPage(store: access)
         case .appearance: SettingsAppearancePage(preferences: preferences)
-        case .about: SettingsAboutPage()
+        case .about: SettingsAboutPage(preferences: preferences)
         }
     }
 }

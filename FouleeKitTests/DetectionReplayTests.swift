@@ -131,3 +131,31 @@ struct DetectionReplayTests {
         }
     }
 }
+
+/// The recording side of #727: what the watch keeps and how it names it.
+@Suite("Detection trace recording")
+struct DetectionTraceRecordingTests {
+    @Test("A recording stops growing at its cap")
+    func capped() {
+        var trace = DetectionTrace(
+            title: "", startedAt: .distantPast, startedAs: .walking, hasPedometerRhythm: true, events: []
+        )
+        for _ in 0..<(DetectionTrace.maximumEvents + 5) { trace.record(.paused(at: .distantPast)) }
+        #expect(trace.events.count == DetectionTrace.maximumEvents)
+    }
+
+    @Test("A trace file is named by when its outing began")
+    func fileName() {
+        let trace = DetectionTrace(title: "", startedAt: .now, startedAs: .running, hasPedometerRhythm: false, events: [])
+        #expect(trace.fileName.wholeMatch(of: /trace-\d{8}-\d{6}\.json/) != nil)
+    }
+
+    @Test("A payload from before the recorder leaves it off")
+    func payloadDefaultsOff() throws {
+        let json = #"{"streak":3,"minutesGoal":20,"stepsGoal":6000}"#
+        let payload = try JSONDecoder().decode(WatchSyncPayload.self, from: Data(json.utf8))
+        #expect(!payload.recordsDetectionTraces)
+        let on = WatchSyncPayload(streak: 3, minutesGoal: 20, stepsGoal: 6_000, recordsDetectionTraces: true)
+        #expect(try JSONDecoder().decode(WatchSyncPayload.self, from: JSONEncoder().encode(on)).recordsDetectionTraces)
+    }
+}

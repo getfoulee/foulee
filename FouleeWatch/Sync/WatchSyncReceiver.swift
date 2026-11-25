@@ -36,6 +36,17 @@ nonisolated final class WatchSyncReceiver: NSObject, WCSessionDelegate, @uncheck
     }
 
     /// A live state of the phone's session (issue #342).
+    /// A trace reached the iPhone (#727): its outgoing copy can go. Kept on a
+    /// failure, where the system says nothing more will be tried — a later
+    /// version could retry; today it is only a debugging aid.
+    func session(_ session: WCSession, didFinish fileTransfer: WCSessionFileTransfer, error: Error?) {
+        guard error == nil else {
+            FouleeLog.session.error("trace non transmise : \(error?.localizedDescription ?? "", privacy: .public)")
+            return
+        }
+        try? FileManager.default.removeItem(at: fileTransfer.file.fileURL)
+    }
+
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         guard let data = message[PhoneSessionKey.snapshot] as? Data,
               let snapshot = try? JSONDecoder().decode(PhoneSessionSnapshot.self, from: data) else { return }

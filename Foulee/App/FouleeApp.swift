@@ -28,6 +28,10 @@ struct FouleeApp: App {
         _ = Self.endOrphanedWalkActivitiesOnce
         _ = Self.startHealthObserversOnce
         _ = Self.startGarminConnectIQOnce
+        // With the hidden recorder on (#727), a trace arrives as a file that
+        // can wake the app in the background: the session must be active at
+        // launch to take it. Off, nothing changes at launch.
+        if UserDefaults.standard.bool(forKey: DetectionTrace.recordingSettingKey) { _ = PhoneWatchSync.shared }
         _ = Self.startMirrorObserverOnce
         _ = Self.recordLaunchOnce
         _ = Self.collectDiagnosticsOnce

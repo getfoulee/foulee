@@ -24,6 +24,9 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
     /// The raw mode, not a resolved activity: the "les deux" picker on the
     /// watch (issue #224) needs to see `both` to know it has to ask.
     public var activityMode: ActivityMode
+    /// Whether the watch records each outing's sensors for the detection
+    /// tests (#727): a hidden switch on the iPhone, off for everyone else.
+    public var recordsDetectionTraces: Bool
 
     public init(
         streak: Int,
@@ -32,7 +35,8 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         hydrationEnabled: Bool = false,
         hydrationGoalML: Int = 2_000,
         hydrationGlassML: Int = 250,
-        activityMode: ActivityMode = .walking
+        activityMode: ActivityMode = .walking,
+        recordsDetectionTraces: Bool = false
     ) {
         self.streak = streak
         self.minutesGoal = minutesGoal
@@ -41,6 +45,7 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         self.hydrationGoalML = hydrationGoalML
         self.hydrationGlassML = hydrationGlassML
         self.activityMode = activityMode
+        self.recordsDetectionTraces = recordsDetectionTraces
     }
 
     // Tolerant decoding: payloads written before hydration (or before the
@@ -56,6 +61,7 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         hydrationGoalML = try container.decodeIfPresent(Int.self, forKey: .hydrationGoalML) ?? 2_000
         hydrationGlassML = try container.decodeIfPresent(Int.self, forKey: .hydrationGlassML) ?? 250
         activityMode = try container.decodeIfPresent(ActivityMode.self, forKey: .activityMode) ?? .walking
+        recordsDetectionTraces = try container.decodeIfPresent(Bool.self, forKey: .recordsDetectionTraces) ?? false
     }
 }
 
