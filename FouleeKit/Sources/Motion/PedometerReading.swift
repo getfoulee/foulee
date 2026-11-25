@@ -11,7 +11,7 @@ import Foundation
 /// moment they were *delivered* — and HealthKit delivers steps in uneven
 /// batches, so a three-second window could hold two seconds of strides and
 /// read a run as a walk.
-nonisolated public struct PedometerReading: Equatable, Sendable {
+nonisolated public struct PedometerReading: Codable, Equatable, Sendable {
     /// The end of the interval the reading describes — the pedometer's own
     /// timestamp, never the moment this process was told.
     public var date: Date

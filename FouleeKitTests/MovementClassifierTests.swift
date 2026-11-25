@@ -1,7 +1,6 @@
-import FouleeKit
 import Foundation
 import Testing
-@testable import FouleeWatch
+@testable import FouleeKit
 
 /// Telling a walk from a run by how fast the wearer is moving (issues #267,
 /// #331).

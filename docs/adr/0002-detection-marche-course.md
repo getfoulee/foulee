@@ -113,6 +113,10 @@ Contrepartie assumée : les accélérations de moins de 45 s (les sprints d'un f
 
 Chaque observation (source, verdict, début, réception) et chaque bascule s'écrivent dans `FouleeLog.detection` (catégorie `detection`, sous-système `com.eno33.foulee`). Pour suivre une sortie : Console.app avec la montre connectée, filtre `category:detection`, messages *Info* inclus. C'est la leçon de #256 appliquée d'avance : sur un chemin qu'aucun simulateur n'exerce, la trace précède le réglage.
 
+### Traces rejouées (#727)
+
+La logique de détection (`MovementClassifier`, `ActivitySwitchDetector`, et `ActivityDetectionCore` qui les enchaîne comme le fait la montre) vit dans FouleeKit. Une sortie enregistrée (`DetectionTrace` : lectures du podomètre, estimations CoreMotion, altitude, pauses, GPS, dans l'ordre d'arrivée) se rejoue par `DetectionReplay` sur macOS, sans montre. Les traces réelles vivent dans `FouleeKitTests/Traces/` avec les bascules que le marcheur a réellement faites ; un réglage qui en perd une échoue au test. Le veto « course écartée : allure de marche » reste dans `WatchWorkoutStore` et n'est pas rejoué.
+
 ## Ce qui s'est révélé impossible
 
 ### Segmenter une séance par `HKWorkoutActivity`

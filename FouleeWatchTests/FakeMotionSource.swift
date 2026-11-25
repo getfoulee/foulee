@@ -2,7 +2,6 @@ import FouleeHealth
 import FouleeKit
 import Foundation
 import Testing
-@testable import FouleeWatch
 
 /// A CoreMotion that does what the test says, including changing its mind.
 ///

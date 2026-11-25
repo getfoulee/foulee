@@ -21,7 +21,7 @@ import Foundation
 /// `unrecognised` exists because a future OS could add a level, and folding an
 /// unknown value into `low` would claim the device said something it did not.
 /// It sorts *below* `low`, so any threshold rejects it.
-nonisolated public enum MotionActivityConfidence: Int, CaseIterable, Comparable, Sendable {
+nonisolated public enum MotionActivityConfidence: Int, CaseIterable, Codable, Comparable, Sendable {
     case unrecognised = -1
     case low = 0
     case medium = 1

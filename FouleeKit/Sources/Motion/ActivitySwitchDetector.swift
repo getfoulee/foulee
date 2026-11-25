@@ -1,4 +1,3 @@
-import FouleeKit
 import Foundation
 
 nonisolated extension MotionActivityEstimate {
@@ -43,14 +42,14 @@ nonisolated extension MotionActivityEstimate {
 /// `confirmations` remains, and remains tested: if the field ever shows the
 /// label flapping, raising it is one number — and the day segmenting becomes
 /// possible again, it must go back up with it.
-nonisolated struct ActivitySwitchDetector: Sendable {
+nonisolated public struct ActivitySwitchDetector: Sendable {
     /// A confirmed change: the activity to switch to, when it started, and
     /// when that was decided.
-    struct Switch: Equatable, Sendable {
-        var activity: SessionActivity
+    public struct Switch: Equatable, Sendable {
+        public var activity: SessionActivity
         /// Where the boundary lands — back-dated to when the source says the
         /// new activity began.
-        var date: Date
+        public var date: Date
         /// When the switch was decided: the observation that confirmed it.
         ///
         /// Not the same instant as `date`, and the difference is issue #331. A
@@ -58,7 +57,7 @@ nonisolated struct ActivitySwitchDetector: Sendable {
         /// that wait has to start *here*: measured from the back-dated
         /// boundary, a switch noticed thirty seconds late had « held » before
         /// anything could contradict it, and was cut on the spot.
-        var confirmedAt: Date
+        public var confirmedAt: Date
     }
 
     /// How many consecutive readings of the *other* activity confirm a switch.
@@ -66,7 +65,7 @@ nonisolated struct ActivitySwitchDetector: Sendable {
 
     /// What ships: one. See the note above — the hysteresis protected a
     /// permanent record that no longer exists.
-    static let defaultConfirmations = 1
+    public static let defaultConfirmations = 1
     /// Readings below this are not evidence.
     ///
     /// `.medium`, and deliberately not `.low`. The two failure modes are not

@@ -32,7 +32,7 @@ final class WatchActivityDetection {
     private let pedometer: PedometerClient
     private let confirmations: Int
 
-    private var detector: ActivitySwitchDetector?
+    private var core: ActivityDetectionCore?
     private var onSwitch: ((ActivitySwitchDetector.Switch) -> Void)?
     private var opening: Task<Void, Never>?
     private var sessionStart = Date.distantPast
@@ -40,7 +40,6 @@ final class WatchActivityDetection {
     private var isStreamingPedometer = false
     /// The pedometer's latest update. Dates the next one's boundary, and is
     /// what the screen reads as the live cadence.
-    private var lastPedometerReading: PedometerReading?
 
     /// - Parameter confirmations: passed straight to `ActivitySwitchDetector`,
     ///   whose own default is the shipped value. Surfaced here so a test can
@@ -68,7 +67,7 @@ final class WatchActivityDetection {
         stop()
         // A run waits for the pedometer's word (issue #390) — unless there is no
         // pedometer to give it, where that rule would silence runs altogether.
-        detector = ActivitySwitchDetector(
+        core = ActivityDetectionCore(
             startedAs: activity,
             at: date,
             confirmations: confirmations,
@@ -87,9 +86,8 @@ final class WatchActivityDetection {
     func stop() {
         opening?.cancel()
         opening = nil
-        detector = nil
+        core = nil
         onSwitch = nil
-        lastPedometerReading = nil
         if isStreamingActivity {
             isStreamingActivity = false
             source.closeStream()
@@ -103,7 +101,7 @@ final class WatchActivityDetection {
     /// Steps per second right now, or `nil` when the pedometer has nothing
     /// recent to say (issue #331).
     func cadence(at now: Date) -> Double? {
-        guard let reading = lastPedometerReading,
+        guard let reading = core?.lastPedometerReading,
               now.timeIntervalSince(reading.date) <= Self.cadenceShelfLife
         else { return nil }
         return reading.cadence
@@ -114,24 +112,17 @@ final class WatchActivityDetection {
     /// Internal rather than private so the whole rule — stream to store — is
     /// drivable from a test without any motion.
     func ingest(_ estimate: MotionActivityEstimate) {
-        guard let detector else { return }
-        record(estimate.observation(minimumConfidence: detector.minimumConfidence), from: "coremotion")
+        guard let step = core?.ingest(estimate) else { return }
+        record(step, from: "coremotion")
     }
 
-    /// Record one pedometer update (issue #331).
     func ingest(_ reading: PedometerReading) {
-        guard detector != nil else { return }
-        let previous = lastPedometerReading?.date
-        lastPedometerReading = reading
-        guard let observation = MovementClassifier.observation(reading, since: previous) else { return }
-        record(observation, from: "podomètre")
+        guard let step = core?.ingest(reading) else { return }
+        record(step, from: "podomètre")
     }
 
-    /// The one place an observation meets the detector, whichever source made
-    /// it (issue #267) — and the log, so a segment nobody walked can be traced
-    /// to the reading that cut it (issue #331).
-    private func record(_ observation: ActivityObservation, from origin: String) {
-        guard var detector else { return }
+    private func record(_ step: ActivityDetectionCore.Step, from origin: String) {
+        let observation = step.observation
         FouleeLog.detection.info(
             """
             \(origin, privacy: .public) : \(observation.reading.logText, privacy: .public) \
@@ -139,9 +130,7 @@ final class WatchActivityDetection {
             vu à \(observation.observed.timeIntervalSince(self.sessionStart), format: .fixed(precision: 1), privacy: .public) s
             """
         )
-        let confirmed = detector.observe(observation)
-        self.detector = detector
-        guard let confirmed else { return }
+        guard let confirmed = step.confirmed else { return }
         FouleeLog.detection.notice(
             """
             bascule vers \(confirmed.activity.label, privacy: .public), \
@@ -151,18 +140,6 @@ final class WatchActivityDetection {
         onSwitch?(confirmed)
     }
 
-    /// Retry opening until both streams take, or until the attempts run out.
-    ///
-    /// The retry is not defensive padding: issue #248 shipped with a single
-    /// attempt and produced a screen reporting a capability it had and did not
-    /// use, for as long as it was left open. Here the equivalent failure is
-    /// worse and quieter — detection that never runs for a whole outing, with
-    /// nothing on screen to say so.
-    ///
-    /// Bounded, unlike the probe's: availability is a property of the hardware,
-    /// so if it has not resolved within half a minute it is not going to, and a
-    /// session lasts an hour. Authorization is *not* waited on — the first
-    /// `openStream` is what raises the prompt.
     private func keepOpening(interval: Duration, maximumAttempts: Int) async {
         for _ in 0..<maximumAttempts {
             if Task.isCancelled || openStreams() { return }

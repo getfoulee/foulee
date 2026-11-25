@@ -1,6 +1,6 @@
-import FouleeKit
 import Foundation
 import Testing
+@testable import FouleeKit
 @testable import FouleeWatch
 
 /// The switching rule of issue #249, driven from hand-built sequences.
