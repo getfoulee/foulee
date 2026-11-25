@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// The pages the Réglages home drills into (issue #393), one per theme. Each

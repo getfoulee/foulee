@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// Small pill with optional leading SF Symbol — used for status badges

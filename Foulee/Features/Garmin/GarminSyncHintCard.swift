@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// Freshness hint shown on the Today screen when the user's data comes from a

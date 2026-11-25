@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// Two concentric progress rings (Fitness-style) for showing two independent

@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// "J'ai une montre Garmin" — how to let Garmin Connect write into Santé

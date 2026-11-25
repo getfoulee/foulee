@@ -8,7 +8,7 @@ import SwiftUI
 /// `MetricID.glyph`, which every target reads.
 extension MetricID {
     /// From `MetricPalette`, which the watch shares (#372).
-    var tint: Color {
+    public var tint: Color {
         switch self {
         case .steps: MetricPalette.steps
         case .minutes: MetricPalette.minutes
@@ -19,12 +19,23 @@ extension MetricID {
 
     /// The same colour on small text — a tile's label (issue #658): deeper
     /// in light mode, where `tint` falls under the 4.5:1 text needs.
-    var labelTint: Color {
+    public var labelTint: Color {
         switch self {
         case .steps: ReadablePalette.purpleText
         case .minutes: ReadablePalette.greenText
         case .distance: ReadablePalette.blueText
         case .calories: ReadablePalette.orangeText
+        }
+    }
+
+    /// On a surface that is always dark, the widgets' `FouleeColor.nightGradient`
+    /// (#725): the bright shade, which `tint` keeps for dark mode alone.
+    public var brightTint: Color {
+        switch self {
+        case .steps: MetricPalette.steps
+        case .minutes: ReadablePalette.brightGreen
+        case .distance: MetricPalette.distance
+        case .calories: ReadablePalette.brightOrange
         }
     }
 }

@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// First onboarding screen — brand logo + tagline + 3 value bullets +

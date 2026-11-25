@@ -1,4 +1,5 @@
 import CoreLocation
+import FouleeDesignSystem
 import FouleeKit
 import Testing
 @testable import FouleeWatch

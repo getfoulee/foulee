@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// Lightweight background for `.sheet` and `.fullScreenCover` presentations.

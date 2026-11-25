@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import SwiftUI
 
 /// The streak, as a flame and a number beside the profile button.

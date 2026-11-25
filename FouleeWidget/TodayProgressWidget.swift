@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import FouleeHealth
 import FouleeKit
 import SwiftUI
@@ -13,30 +14,12 @@ struct TodayProgressWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: Self.kind, provider: TodayProvider()) { entry in
             TodayProgressView(entry: entry)
-                .containerBackground(Self.containerBackground, for: .widget)
+                .containerBackground(FouleeColor.nightGradient, for: .widget)
         }
         .configurationDisplayName("Aujourd'hui Foulée")
         .description("Tes pas et tes minutes d'activité du jour, par rapport à tes objectifs.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .systemSmall])
     }
-
-    static let stepsGradient = LinearGradient(
-        colors: [Color(red: 0xD9 / 255, green: 0x7A / 255, blue: 0xFF / 255),
-                 Color(red: 0xBF / 255, green: 0x5A / 255, blue: 0xF2 / 255),
-                 Color(red: 0x7C / 255, green: 0x3A / 255, blue: 0xED / 255)],
-        startPoint: .topLeading, endPoint: .bottomTrailing
-    )
-    static let minutesGradient = LinearGradient(
-        colors: [Color(red: 0x5B / 255, green: 0xE3 / 255, blue: 0x6B / 255),
-                 Color(red: 0x30 / 255, green: 0xD1 / 255, blue: 0x58 / 255),
-                 Color(red: 0x1F / 255, green: 0xA8 / 255, blue: 0x45 / 255)],
-        startPoint: .topLeading, endPoint: .bottomTrailing
-    )
-    static let containerBackground = LinearGradient(
-        colors: [Color(red: 0x2A / 255, green: 0x0A / 255, blue: 0x4A / 255),
-                 Color(red: 0x1A / 255, green: 0x0A / 255, blue: 0x3A / 255)],
-        startPoint: .topLeading, endPoint: .bottomTrailing
-    )
 }
 
 /// One day's progress toward both goals.
@@ -201,9 +184,9 @@ struct TodayProgressView: View {
         VStack(alignment: .leading, spacing: 10) {
             rings(lineWidth: 9, inset: 11).frame(width: 60, height: 60)
             VStack(alignment: .leading, spacing: 4) {
-                legendRow(color: Color(red: 0xBF / 255, green: 0x5A / 255, blue: 0xF2 / 255),
+                legendRow(color: MetricID.steps.brightTint,
                           value: "\(entry.steps.groupedText())", unit: "pas", accentable: true)
-                legendRow(color: Color(red: 0x30 / 255, green: 0xD1 / 255, blue: 0x58 / 255),
+                legendRow(color: MetricID.minutes.brightTint,
                           value: "\(entry.minutes)", unit: "min")
                 FreshnessStamp(fetchedAt: entry.fetchedAt).foregroundStyle(.white.opacity(0.5))
             }
@@ -228,10 +211,10 @@ struct TodayProgressView: View {
     /// colour and the minutes ring stays white, so the two still part.
     private func rings(lineWidth: CGFloat, inset: CGFloat) -> some View {
         ZStack {
-            WidgetRing(progress: stepsProgress, lineWidth: lineWidth, gradient: TodayProgressWidget.stepsGradient)
+            WidgetRing(progress: stepsProgress, lineWidth: lineWidth, gradient: FouleeColor.accentGradient)
             WidgetRing(
                 progress: minutesProgress, lineWidth: lineWidth,
-                gradient: TodayProgressWidget.minutesGradient, accentable: false
+                gradient: FouleeColor.activityGradientOnNight, accentable: false
             )
                 .padding(inset)
         }

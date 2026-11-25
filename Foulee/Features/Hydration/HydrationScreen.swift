@@ -1,4 +1,5 @@
 import Dependencies
+import FouleeDesignSystem
 import SwiftUI
 
 /// The Hydratation screen (issue #355), opened from the home card: today as a
