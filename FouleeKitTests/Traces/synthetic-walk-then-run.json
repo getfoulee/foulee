@@ -1,0 +1,2876 @@
+{
+  "events": [
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796803.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796806.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796809.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796812.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796812.0,
+          "running": false,
+          "startDate": 1716796800.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796815.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796818.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796821.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796821.0,
+          "running": false,
+          "startDate": 1716796800.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796824.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796827.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796830.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796830.0,
+          "running": false,
+          "startDate": 1716796800.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796833.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796836.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796839.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796842.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796842.0,
+          "running": false,
+          "startDate": 1716796812.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796845.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796848.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796851.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796851.0,
+          "running": false,
+          "startDate": 1716796821.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796854.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796857.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796860.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796860.0,
+          "running": false,
+          "startDate": 1716796830.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796863.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796866.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796869.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796872.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796872.0,
+          "running": false,
+          "startDate": 1716796842.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796875.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796878.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796881.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796881.0,
+          "running": false,
+          "startDate": 1716796851.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796884.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796887.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796890.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796890.0,
+          "running": false,
+          "startDate": 1716796860.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796893.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796896.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796899.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796902.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796902.0,
+          "running": false,
+          "startDate": 1716796872.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796905.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796908.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796911.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796911.0,
+          "running": false,
+          "startDate": 1716796881.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796914.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796917.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796920.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796920.0,
+          "running": false,
+          "startDate": 1716796890.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796923.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796926.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796929.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796932.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796932.0,
+          "running": false,
+          "startDate": 1716796902.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796935.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796938.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796941.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796941.0,
+          "running": false,
+          "startDate": 1716796911.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796944.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796947.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796950.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796950.0,
+          "running": false,
+          "startDate": 1716796920.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796953.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796956.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796959.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796962.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796962.0,
+          "running": false,
+          "startDate": 1716796932.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796965.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796968.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796971.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796971.0,
+          "running": false,
+          "startDate": 1716796941.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796974.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796977.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796980.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796980.0,
+          "running": false,
+          "startDate": 1716796950.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796983.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796986.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796989.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796992.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716796992.0,
+          "running": false,
+          "startDate": 1716796962.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796995.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716796998.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797001.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797001.0,
+          "running": false,
+          "startDate": 1716796971.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797004.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797007.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797010.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797010.0,
+          "running": false,
+          "startDate": 1716796980.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797013.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797016.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797019.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797022.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797022.0,
+          "running": false,
+          "startDate": 1716796992.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797025.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797028.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797031.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797031.0,
+          "running": false,
+          "startDate": 1716797001.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797034.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797037.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797040.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797040.0,
+          "running": false,
+          "startDate": 1716797010.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797043.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797046.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797049.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797052.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797052.0,
+          "running": false,
+          "startDate": 1716797022.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797055.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797058.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797061.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797061.0,
+          "running": false,
+          "startDate": 1716797031.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797064.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797067.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797070.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797070.0,
+          "running": false,
+          "startDate": 1716797040.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797073.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797076.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797079.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797082.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797082.0,
+          "running": false,
+          "startDate": 1716797052.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797085.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797088.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797091.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797091.0,
+          "running": false,
+          "startDate": 1716797061.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797094.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797097.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 1.8,
+          "date": 1716797100.0,
+          "distanceMeters": 0,
+          "pace": 0.714286,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797100.0,
+          "running": false,
+          "startDate": 1716797070.0,
+          "walking": true
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797103.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797106.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797109.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797112.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797112.0,
+          "running": true,
+          "startDate": 1716797100.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797115.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797118.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797121.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797121.0,
+          "running": true,
+          "startDate": 1716797100.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797124.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797127.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797130.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797130.0,
+          "running": true,
+          "startDate": 1716797100.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797133.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797136.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797139.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797142.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797142.0,
+          "running": true,
+          "startDate": 1716797112.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797145.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797148.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797151.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797151.0,
+          "running": true,
+          "startDate": 1716797121.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797154.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797157.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797160.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797160.0,
+          "running": true,
+          "startDate": 1716797130.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797163.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797166.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797169.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797172.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797172.0,
+          "running": true,
+          "startDate": 1716797142.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797175.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797178.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797181.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797181.0,
+          "running": true,
+          "startDate": 1716797151.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797184.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797187.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797190.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797190.0,
+          "running": true,
+          "startDate": 1716797160.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797193.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797196.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797199.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797202.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797202.0,
+          "running": true,
+          "startDate": 1716797172.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797205.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797208.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797211.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797211.0,
+          "running": true,
+          "startDate": 1716797181.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797214.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797217.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797220.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797220.0,
+          "running": true,
+          "startDate": 1716797190.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797223.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797226.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797229.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797232.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797232.0,
+          "running": true,
+          "startDate": 1716797202.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797235.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797238.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797241.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797241.0,
+          "running": true,
+          "startDate": 1716797211.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797244.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797247.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797250.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797250.0,
+          "running": true,
+          "startDate": 1716797220.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797253.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797256.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797259.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797262.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797262.0,
+          "running": true,
+          "startDate": 1716797232.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797265.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797268.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797271.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797271.0,
+          "running": true,
+          "startDate": 1716797241.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797274.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797277.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797280.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797280.0,
+          "running": true,
+          "startDate": 1716797250.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797283.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797286.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797289.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797292.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797292.0,
+          "running": true,
+          "startDate": 1716797262.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797295.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797298.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797301.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797301.0,
+          "running": true,
+          "startDate": 1716797271.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797304.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797307.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797310.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797310.0,
+          "running": true,
+          "startDate": 1716797280.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797313.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797316.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797319.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797322.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797322.0,
+          "running": true,
+          "startDate": 1716797292.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797325.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797328.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797331.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797331.0,
+          "running": true,
+          "startDate": 1716797301.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797334.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797337.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797340.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797340.0,
+          "running": true,
+          "startDate": 1716797310.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797343.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797346.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797349.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797352.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797352.0,
+          "running": true,
+          "startDate": 1716797322.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797355.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797358.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797361.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797361.0,
+          "running": true,
+          "startDate": 1716797331.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797364.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797367.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797370.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797370.0,
+          "running": true,
+          "startDate": 1716797340.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797373.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797376.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797379.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797382.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797382.0,
+          "running": true,
+          "startDate": 1716797352.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797385.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797388.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797391.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797391.0,
+          "running": true,
+          "startDate": 1716797361.0,
+          "walking": false
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797394.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797397.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "pedometer": {
+        "_0": {
+          "cadence": 2.8,
+          "date": 1716797400.0,
+          "distanceMeters": 0,
+          "pace": 0.344828,
+          "steps": 0
+        }
+      }
+    },
+    {
+      "motion": {
+        "_0": {
+          "confidence": 2,
+          "receivedAt": 1716797400.0,
+          "running": true,
+          "startDate": 1716797370.0,
+          "walking": false
+        }
+      }
+    }
+  ],
+  "expectedSwitches": [
+    {
+      "activity": "running",
+      "offset": 300,
+      "tolerance": 15
+    }
+  ],
+  "hasPedometerRhythm": true,
+  "startedAs": "walking",
+  "startedAt": 1716796800.0,
+  "title": "Exemple synthétique : marche puis course (pas une trace réelle)",
+  "version": 1
+}

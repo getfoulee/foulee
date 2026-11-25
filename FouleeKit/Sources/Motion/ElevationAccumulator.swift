@@ -2,7 +2,7 @@ import Foundation
 
 /// The climb and the descent of an outing, in metres (issue #564). Measured
 /// apart and never added: 100 m up and 100 m down is a 100 m climb.
-nonisolated public struct Elevation: Equatable, Sendable {
+nonisolated public struct Elevation: Codable, Equatable, Sendable {
     public var ascent: Double
     public var descent: Double
 

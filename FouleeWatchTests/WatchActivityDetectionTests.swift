@@ -1,6 +1,6 @@
-import FouleeKit
 import Foundation
 import Testing
+@testable import FouleeKit
 @testable import FouleeWatch
 
 /// The lifetime half of issue #249: when the motion stream opens, when it

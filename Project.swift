@@ -127,6 +127,8 @@ let project = Project(
             bundleId: "\(bundleIdBase).kit.tests",
             deploymentTargets: .macOS("15.0"),
             sources: ["FouleeKitTests/**"],
+            // Recorded outings the detection is replayed against (#727).
+            resources: ["FouleeKitTests/Traces/**"],
             dependencies: [
                 .target(name: "FouleeKit")
             ],

@@ -35,7 +35,7 @@ import Foundation
 /// they are not mutually exclusive and can both be false, so collapsing them is
 /// a decision, and it belongs to `ActivitySwitchDetector` where it is stated
 /// once and tested.
-nonisolated public struct MotionActivityEstimate: Equatable, Sendable {
+nonisolated public struct MotionActivityEstimate: Codable, Equatable, Sendable {
     public var startDate: Date
     public var receivedAt: Date
     public var confidence: MotionActivityConfidence

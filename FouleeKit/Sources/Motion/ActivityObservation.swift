@@ -1,4 +1,3 @@
-import FouleeKit
 import Foundation
 
 /// One thing observed about what the wearer is doing, whatever produced it
@@ -18,26 +17,26 @@ import Foundation
 /// swings for reasons other than running.
 ///
 /// So both speak, in the same words, into `ActivitySwitchDetector`.
-nonisolated struct ActivityObservation: Equatable, Sendable {
+nonisolated public struct ActivityObservation: Equatable, Sendable {
     /// Which of the two produced it (issue #390).
-    enum Origin: Equatable, Sendable {
+    public enum Origin: Equatable, Sendable {
         case coreMotion
         case pedometer
     }
 
-    var reading: MotionActivityReading
+    public var reading: MotionActivityReading
     /// When the source says the activity began.
     ///
     /// Not when we were told. CoreMotion carries its own `startDate`; a
     /// cadence window began when the window did. This is what dates a segment
     /// boundary, and dating it from the moment of *noticing* would put the tail
     /// of a walk inside a run — permanently, once issue #265 lands.
-    var began: Date
+    public var began: Date
     /// When this process was handed the observation. Bounds the boundary above,
     /// and drives the staleness of a half-confirmed candidate.
-    var observed: Date
+    public var observed: Date
     /// A run needs the pedometer's word, not CoreMotion's alone (issue #390).
-    var origin: Origin = .coreMotion
+    public var origin: Origin = .coreMotion
 }
 
 nonisolated extension MotionActivityEstimate {
