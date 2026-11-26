@@ -1,4 +1,5 @@
 #if DEBUG
+import FouleeDomain
 import Foundation
 import os
 

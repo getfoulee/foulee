@@ -1,3 +1,4 @@
+import FouleeLiveActivityModel
 import SwiftUI
 import WidgetKit
 

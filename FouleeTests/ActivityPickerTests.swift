@@ -2,6 +2,7 @@ import Clocks
 import Dependencies
 import FouleeHealth
 import FouleeDomain
+import FouleeLiveActivityModel
 import SwiftUI
 import Testing
 @testable import Foulee

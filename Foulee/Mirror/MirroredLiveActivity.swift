@@ -2,6 +2,7 @@
 // annotations, and this type only ever touches it from the main actor.
 @preconcurrency import ActivityKit
 import FouleeDomain
+import FouleeLiveActivityModel
 import Foundation
 import os
 import UIKit

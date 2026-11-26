@@ -2,6 +2,7 @@
 import Dependencies
 import FouleeHealth
 import FouleeDomain
+import FouleeLiveActivityModel
 import Foundation
 import Observation
 import WidgetKit

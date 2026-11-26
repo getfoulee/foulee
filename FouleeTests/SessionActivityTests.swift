@@ -1,5 +1,6 @@
 import FouleeHealth
 import FouleeDomain
+import FouleeLiveActivityModel
 import Foundation
 import HealthKit
 import Testing

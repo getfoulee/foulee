@@ -1,5 +1,6 @@
 @preconcurrency import CoreLocation
 import FouleeDomain
+import FouleeHealth
 import Observation
 
 /// The app's contact with CoreLocation during an outing, as two closures

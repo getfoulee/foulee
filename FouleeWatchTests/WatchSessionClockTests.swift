@@ -1,3 +1,4 @@
+import FouleeDomain
 import Foundation
 import Testing
 @testable import FouleeWatch

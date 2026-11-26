@@ -214,3 +214,6 @@ struct StreakWidgetView: View {
         }
     }
 }
+
+/// The kit keeps WidgetKit out (#818): the extension declares the entry.
+extension StreakEntry: @retroactive TimelineEntry {}

@@ -13,11 +13,11 @@ import Foundation
 /// ActivityKit finds a running activity by its attributes type, and renamed,
 /// one left by the previous build would be out of reach of everything that can
 /// end it.
-nonisolated struct WalkActivityAttributes: ActivityAttributes, SessionActivityContent {
-    typealias ContentState = SessionActivityState
-    typealias SessionState = SessionActivityState
+nonisolated public struct WalkActivityAttributes: ActivityAttributes, SessionActivityContent, Sendable {
+    public typealias ContentState = SessionActivityState
+    public typealias SessionState = SessionActivityState
 
-    var goalMinutes: Int
+    public var goalMinutes: Int
 
     /// What the session in flight is, as the app started it — carried here so
     /// the Lock Screen stops announcing a run as a walk (issue #225).
@@ -41,16 +41,16 @@ nonisolated struct WalkActivityAttributes: ActivityAttributes, SessionActivityCo
     /// activity by omission. `nil` comes from a legacy decode, or from a
     /// mirrored outing (#275), which may switch sport after the attributes —
     /// fixed for the activity's life — are written.
-    var activity: SessionActivity?
+    public var activity: SessionActivity?
 
-    init(goalMinutes: Int, activity: SessionActivity?) {
+    public init(goalMinutes: Int, activity: SessionActivity?) {
         self.goalMinutes = goalMinutes
         self.activity = activity
     }
 
     /// What every build before #732 drew.
-    var metrics: [MetricID] { [.steps, .distance, .calories] }
-    var showsElevation: Bool { true }
+    public var metrics: [MetricID] { [.steps, .distance, .calories] }
+    public var showsElevation: Bool { true }
 }
 
 // MARK: - Tolerant decoding
@@ -96,7 +96,7 @@ nonisolated extension WalkActivityAttributes {
     /// `goalMinutes` stays required on purpose: it has been in every payload
     /// ever written, so a payload missing it is corrupt rather than old, and
     /// swallowing that would hide a real bug behind a 0-minute ring.
-    init(from decoder: any Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         goalMinutes = try container.decode(Int.self, forKey: .goalMinutes)
         activity = try? container.decode(SessionActivity.self, forKey: .activity)

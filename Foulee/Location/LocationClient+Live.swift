@@ -1,5 +1,6 @@
 @preconcurrency import CoreLocation
 import FouleeDomain
+import FouleeHealth
 import Foundation
 
 /// Bridges the one-shot `CLLocationManager` fix the weather card needs to
