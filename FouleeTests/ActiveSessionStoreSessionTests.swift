@@ -20,9 +20,7 @@ struct ActiveSessionStoreSessionTests {
         recovered: RecoveredPhoneWorkout? = nil
     ) -> PhoneWorkoutSessionClient {
         PhoneWorkoutSessionClient(
-            start: { activity, isUndecided, _ in
-                started.set(started.value + ["\(activity.rawValue) \(isUndecided)"])
-            },
+            start: { activity, _ in started.set(started.value + [activity.rawValue]) },
             pause: {},
             resume: {},
             finish: { outing in
@@ -53,7 +51,7 @@ struct ActiveSessionStoreSessionTests {
             let store = ActiveSessionStore()
             store.start(activity: .running)
             await store.stop()
-            #expect(started.value == ["running false"])
+            #expect(started.value == ["running"])
         }
     }
 
@@ -99,7 +97,6 @@ struct ActiveSessionStoreSessionTests {
         let recovered = RecoveredPhoneWorkout(
             startedAt: frozen.addingTimeInterval(-600),
             activity: .running,
-            isActivityUndecided: false,
             elapsed: 540,
             isPaused: false
         )
@@ -126,12 +123,11 @@ struct ActiveSessionStoreSessionTests {
         }
     }
 
-    @Test("A session recovered while paused comes back paused, still undecided in « les deux »")
+    @Test("A session recovered while paused comes back paused")
     func adoptPausedSession() async {
         let recovered = RecoveredPhoneWorkout(
             startedAt: frozen.addingTimeInterval(-600),
             activity: .walking,
-            isActivityUndecided: true,
             elapsed: 300,
             isPaused: true
         )
@@ -149,7 +145,6 @@ struct ActiveSessionStoreSessionTests {
                 Issue.record("expected a paused outing, got \(String(describing: store?.state))")
                 return
             }
-            #expect(session.isActivityUndecided)
             #expect(session.elapsed == 300)
         }
     }

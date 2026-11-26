@@ -34,4 +34,6 @@ nonisolated public enum FouleeIcon {
     public static let watch = "applewatch"
     public static let merge = "arrow.triangle.merge"
     public static let separate = "arrow.triangle.branch"
+    /// « Autre sport » (#743).
+    public static let otherSport = "list.bullet"
 }

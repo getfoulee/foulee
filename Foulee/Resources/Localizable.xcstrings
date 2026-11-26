@@ -114,6 +114,16 @@
         }
       }
     },
+    "%@ sur ma Watch" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ on my Watch"
+          }
+        }
+      }
+    },
     "%@ · En pause" : {
       "localizations" : {
         "en" : {
@@ -1193,16 +1203,6 @@
         }
       }
     },
-    "Automatique" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatic"
-          }
-        }
-      }
-    },
     "Autoriser" : {
       "localizations" : {
         "en" : {
@@ -1219,6 +1219,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Allow in Settings"
+          }
+        }
+      }
+    },
+    "Autre sport" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other sport"
+          }
+        }
+      }
+    },
+    "Autres sports" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other sports"
           }
         }
       }
@@ -1263,12 +1283,72 @@
         }
       }
     },
+    "Dernier sport" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last sport"
+          }
+        }
+      }
+    },
+    "Démarre une sortie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts a workout"
+          }
+        }
+      }
+    },
+    "Démarrer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
+          }
+        }
+      }
+    },
+    "Démarrer · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start · %@"
+          }
+        }
+      }
+    },
+    "Favoris" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorites"
+          }
+        }
+      }
+    },
     "Joindre le résumé" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Attach the summary"
+          }
+        }
+      }
+    },
+    "Le sport de ta dernière sortie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sport of your last workout"
           }
         }
       }
@@ -1313,12 +1393,32 @@
         }
       }
     },
+    "Quel sport ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which sport?"
+          }
+        }
+      }
+    },
     "Rapport de diagnostic Foulée" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foulée diagnostic report"
+          }
+        }
+      }
+    },
+    "Repartir · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go again · %@"
           }
         }
       }
@@ -1853,16 +1953,6 @@
         }
       }
     },
-    "Démarrer sur ma Watch" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start on my Watch"
-          }
-        }
-      }
-    },
     "Démarrer ta sortie" : {
       "localizations" : {
         "en" : {
@@ -2133,16 +2223,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jog"
-          }
-        }
-      }
-    },
-    "Foulée reconnaît la marche ou la course" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Foulée tells a walk from a run"
           }
         }
       }

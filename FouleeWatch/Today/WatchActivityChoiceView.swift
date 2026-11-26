@@ -1,36 +1,25 @@
 import FouleeDomain
 import SwiftUI
 
-/// « Les deux » : which activity is this session? (issue #224)
+/// « Autre sport » (issues #224, #743): the favourites first, then every other
+/// sport the watch records. Choosing one starts it.
 ///
-/// A full screen, not an extra control on the home. The home is already dense
-/// — streak hero, 2×2 grid, optional hydration card, then the CTA — and the
-/// two shapes that fit "in place" both cost something worse than a tap: a
-/// second start button permanently changes that layout for a screen read
-/// outdoors at a glance, and a long-press on the existing one hides the choice
-/// where nobody finds it. Here each answer gets the full width of the watch,
-/// stacked, with nothing else on screen to mis-hit, and the crown scrolls it
-/// at the largest Dynamic Type sizes. Users in « marche » or « course » never
-/// reach it.
+/// A full screen, not an extra control on the home: each sport gets the full
+/// width of the watch, stacked, with nothing else on screen to mis-hit, and
+/// the crown scrolls it at the largest Dynamic Type sizes.
 ///
-/// « Annuler » is a real button rather than a swipe: it is the only way back,
-/// so it must be visible. Inside the `ScrollView`, on a 40 mm watch, it sat
-/// below the bottom of the screen at the default text size and was gone
-/// entirely at the larger ones, leaving a screen whose only visible controls
-/// each start a permanent workout and no way out at all.
+/// It closes with the system's own button (ADR 0008): `.cancellationAction`,
+/// in the top corner every watchOS sheet keeps it, taking none of the
+/// answers' room.
 ///
-/// It is the system's own close button (ADR 0008): `.cancellationAction`, in
-/// the top corner every watchOS sheet keeps it. Pinned under the answers, it
-/// used to stand still while they scrolled, which read as a third control of
-/// another kind; up there it takes none of their room, and on a 40 mm both
-/// answers now fit without scrolling.
-///
-/// What this screen removes is the *silent* mislabelling, not the mis-tap:
-/// answering starts the session at once and `WatchWorkoutStore.stop()` saves
-/// unconditionally, so « Course » tapped by mistake is still a permanent run.
-/// Discarding a session already under way would be an action on the active
-/// screen — its own issue.
+/// Answering starts the session at once and `WatchWorkoutStore.stop()` saves
+/// unconditionally, so a sport tapped by mistake is still a permanent
+/// workout. Discarding a session already under way would be an action on the
+/// active screen — its own issue.
 struct WatchActivityChoiceView: View {
+    var sections: SportChoice.Sections
+    /// The sport « Démarrer » starts now, marked.
+    var current: SessionActivity
     var onChoose: (SessionActivity) -> Void
     var onCancel: () -> Void
 
@@ -38,13 +27,21 @@ struct WatchActivityChoiceView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 8) {
-                    Text("Marche ou course ?")
+                    Text("Quel sport ?")
                         .font(.headline)
                         .multilineTextAlignment(.center)
                         .minimumScaleFactor(0.7)
                         .padding(.bottom, 2)
-                    ForEach(SessionActivity.allCases, id: \.self) { activity in
-                        WatchActivityChoiceButton(activity: activity, select: { onChoose(activity) })
+                        .accessibilityAddTraits(.isHeader)
+                    rows(sections.favorites)
+                    if !sections.others.isEmpty {
+                        Text("Autres sports")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 4)
+                            .accessibilityAddTraits(.isHeader)
+                        rows(sections.others)
                     }
                 }
                 .padding(.horizontal, 2)
@@ -57,6 +54,17 @@ struct WatchActivityChoiceView: View {
             }
         }
     }
+
+    /// The favourites need no title: they come first, under the question.
+    private func rows(_ sports: [SessionActivity]) -> some View {
+        ForEach(sports, id: \.self) { activity in
+            WatchActivityChoiceButton(
+                activity: activity,
+                isCurrent: activity == current,
+                select: { onChoose(activity) }
+            )
+        }
+    }
 }
 
 /// One full-width answer. Internal rather than private for the same reason as
@@ -64,6 +72,7 @@ struct WatchActivityChoiceView: View {
 /// its rows, and calling it is the only way a test can reach the tap action.
 struct WatchActivityChoiceButton: View {
     var activity: SessionActivity
+    var isCurrent = false
     var select: () -> Void
 
     var body: some View {
@@ -75,7 +84,10 @@ struct WatchActivityChoiceButton: View {
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
-        .tint(Color("AccentColor"))
+        // The current sport in the accent colour, the others in grey: the
+        // same tap starts any of them.
+        .tint(isCurrent ? Color("AccentColor") : .gray)
+        .accessibilityAddTraits(isCurrent ? [.isSelected] : [])
     }
 }
 
@@ -92,5 +104,10 @@ struct WatchActivityCancelButton: View {
 }
 
 #Preview {
-    WatchActivityChoiceView(onChoose: { _ in }, onCancel: {})
+    WatchActivityChoiceView(
+        sections: SportChoice.sections(favorites: [.running]),
+        current: .running,
+        onChoose: { _ in },
+        onCancel: {}
+    )
 }

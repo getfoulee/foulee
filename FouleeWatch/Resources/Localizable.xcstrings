@@ -136,6 +136,26 @@
         }
       }
     },
+    "Autre sport" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other sport"
+          }
+        }
+      }
+    },
+    "Autres sports" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other sports"
+          }
+        }
+      }
+    },
     "Batterie presque vide : ta sortie est arrêtée et enregistrée." : {
       "localizations" : {
         "en" : {
@@ -196,6 +216,16 @@
         }
       }
     },
+    "Dernier sport" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last sport"
+          }
+        }
+      }
+    },
     "Durée" : {
       "localizations" : {
         "en" : {
@@ -212,6 +242,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start"
+          }
+        }
+      }
+    },
+    "Démarrer : %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start: %@"
           }
         }
       }
@@ -272,6 +312,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hydration"
+          }
+        }
+      }
+    },
+    "Quel sport ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which sport?"
           }
         }
       }
@@ -404,16 +454,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Walk and run"
-          }
-        }
-      }
-    },
-    "Marche ou course ?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Walk or run?"
           }
         }
       }

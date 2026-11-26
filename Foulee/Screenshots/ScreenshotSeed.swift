@@ -30,9 +30,9 @@ nonisolated extension ScreenshotSeed {
     /// review of a new SDK pins `.dark` instead (issue #408); the store boards
     /// never do.
     ///
-    /// `.both` is likewise deliberate (#222/#224): it is the mode that names no
-    /// activity in Réglages, and it makes « Démarrer ta sortie » open the
-    /// marche/course picker, which is a screen worth showing.
+    /// `.both` is likewise deliberate (#222): it is the mode that names no
+    /// activity in Réglages. With no last sport, « Démarrer » starts a walk
+    /// (#743), which the UI tests' labels name.
     ///
     /// Main actor: `UserPreferences` is main-actor state.
     @MainActor

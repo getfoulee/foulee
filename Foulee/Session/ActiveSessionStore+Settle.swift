@@ -13,7 +13,7 @@ extension ActiveSessionStore {
     /// Read off the *session*, so the Lock Screen cannot name the activity
     /// differently from what Santé will be stamped with. A member rather than
     /// three lines inside `startLiveActivity`, for the reason #234 pulled
-    /// `ActiveSessionScreen.startIfKnown()` out of its call site: inlined, the step
+    /// `ActiveSessionScreen.startSession()` out of its call site: inlined, the step
     /// that reads `session.activity` could be dropped — back to the hardcoded
     /// `.walking` this issue removes — with the whole suite green, because
     /// `Activity.request` needs a live ActivityKit and never runs in a test
@@ -22,20 +22,16 @@ extension ActiveSessionStore {
     ///
     /// `nil` activity only when nothing is in flight; the sole production
     /// caller runs immediately after `state` becomes `.active`.
-    /// Read the session's own motion history and settle two different things
-    /// with it (issues #246, #247).
+    /// Read the session's own motion history and settle what the outing cost
+    /// with it (issue #247).
     ///
-    /// **What the session is recorded as** — only when « les deux » left it
-    /// open. A mode of « Marche » or « Course » is an answer already given, and
-    /// detection is not entitled to contradict it.
+    /// The sport is the one the user started (#743), and detection is not
+    /// entitled to contradict it; the energy is a sum over the stretches. A
+    /// user who started « Marche » and ran for ten minutes chose their label
+    /// and still ran those ten minutes, and pricing them at 0.04 kcal/step
+    /// rather than 0.09 is simply wrong.
     ///
-    /// **What it cost** — always, whatever the mode. The two are not the same
-    /// question: the label is a claim about the outing, the energy is a sum
-    /// over its stretches. A user who set « Marche » and ran for ten minutes
-    /// chose their label and still ran those ten minutes, and pricing them at
-    /// 0.04 kcal/step rather than 0.09 is simply wrong.
-    ///
-    /// Runs **before** the workout is saved, because both stamps are permanent:
+    /// Runs **before** the workout is saved, because the stamp is permanent:
     /// `HKWorkout` is immutable, Foulée has no delete path, and the phone
     /// writes no energy samples — so this estimate is the only energy figure
     /// the session will ever carry.
@@ -46,10 +42,6 @@ extension ActiveSessionStore {
         let samples = await motionActivity.history(session.startedAt, endedAt)
         let segments = ActivitySegmentation.segments(samples, from: session.startedAt, to: endedAt)
         var settled = session
-        if session.isActivityUndecided {
-            settled.activity = ActivitySegmentation.dominant(segments)
-            settled.isActivityUndecided = false
-        }
         settled.stepsByActivity = await stepsByActivity(over: segments)
         return settled
     }
@@ -78,10 +70,7 @@ extension ActiveSessionStore {
         let activity: SessionActivity? = switch state {
         case .idle: nil
         case .active(let session), .paused(let session), .finished(let session):
-            // Nil while « les deux » has not been settled: the Lock Screen then
-            // says « Ta sortie » rather than naming a sport the save is about
-            // to overwrite (issue #246).
-            session.isActivityUndecided ? nil : session.activity
+            session.activity
         }
         return SessionActivityAttributes(goalMinutes: minutesGoal, activity: activity)
     }

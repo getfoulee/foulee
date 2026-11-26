@@ -34,93 +34,83 @@ private final class ConfigurationRecorder {
     }
 }
 
-/// The watch's picker (issue #224): whether the home screen's « Démarrer »
-/// asks or starts, and what the answer records.
+/// The watch's home and « Autre sport » (issues #224, #743): what the home
+/// screen's « Démarrer » starts, and what the picker records.
 ///
-/// `WatchStartActivityTests` covers the mode → intent resolution and
+/// `WatchStartActivityTests` covers how the sport is resolved and
 /// `WatchWorkoutStoreTests` covers the configuration once an activity is
 /// passed. The link between them is `WatchIdleScreen`, which is a `View` — so
 /// it is walked with `ViewTreeProbe`, the real screen and its real closures,
 /// rather than a stand-in that is not what ships.
-@Suite("Watch activity picker")
+@Suite("Watch sport picker")
 struct WatchActivityPickerTests {
     /// What the screen's closures did — a reference type so the `struct`
     /// test's escaping closures can record into it.
     final class Taps {
         var started: [SessionActivity] = []
-        var asked = 0
+        var chose = 0
         var cancelled = 0
     }
 
-    /// The idle route as `WatchRootView` builds it, with the synced mode
+    /// The idle route as `WatchRootView` builds it, with the synced choice
     /// stubbed and every outcome recorded.
     private func idle(
-        intent: ActivityStartIntent,
+        last: SessionActivity = .walking,
+        favorites: Set<SportID> = [.walking, .running],
         isChoosingActivity: Bool = false,
         into taps: Taps
     ) -> WatchIdleScreen {
-        WatchIdleScreen(
+        let choice = SportChoice.Resolved(activity: last, sections: SportChoice.sections(favorites: favorites))
+        return WatchIdleScreen(
             today: WatchTodayStore(),
             isChoosingActivity: isChoosingActivity,
-            intent: { intent },
+            choice: { choice },
             onStart: { taps.started.append($0) },
-            onAsk: { taps.asked += 1 },
+            onChooseSport: { taps.chose += 1 },
             onCancel: { taps.cancelled += 1 }
         )
     }
 
-    @Test("« Les deux » makes the home button ask instead of starting")
-    func bothAsksBeforeRecordingAnything() throws {
+    @Test("« Démarrer » starts the last sport in one tap, with no question", arguments: SessionActivity.allCases)
+    func startStartsTheLastSport(last: SessionActivity) throws {
         let box = Taps()
-        let screen = idle(intent: .ask, into: box)
+        let screen = idle(last: last, into: box)
         // The home screen's own CTA closure, pulled out of the tree it ships
         // in: this is the tap, not a re-implementation of it.
         let home = try #require(ViewTreeProbe.first(WatchTodayView.self, in: screen.body))
+        #expect(home.sport == last)
         home.onStart()
 
-        #expect(box.asked == 1)
-        // Nothing started. Before #224 this tap wrote a walk into Santé for
-        // every « les deux » user, whatever they were actually doing.
+        #expect(box.started == [last])
+        #expect(box.chose == 0)
+    }
+
+    @Test("« Autre sport » opens the picker and starts nothing")
+    func otherSportOpensThePicker() throws {
+        let box = Taps()
+        let home = try #require(ViewTreeProbe.first(WatchTodayView.self, in: idle(into: box).body))
+        try #require(ViewTreeProbe.first(WatchOtherSportButton.self, in: home.body)).choose()
+
+        #expect(box.chose == 1)
         #expect(box.started.isEmpty)
     }
 
-    @Test("A single-activity mode starts on the first tap, with no question")
-    func singleActivityModesStartInOneGesture() throws {
-        for (intent, expected) in [
-            (ActivityStartIntent.start(.walking), SessionActivity.walking),
-            (ActivityStartIntent.start(.running), SessionActivity.running)
-        ] {
-            let box = Taps()
-            let screen = idle(intent: intent, into: box)
-            try #require(ViewTreeProbe.first(WatchTodayView.self, in: screen.body)).onStart()
-
-            #expect(box.started == [expected])
-            // The whole point of keeping the picker out of these modes: the
-            // user answered in Réglages, and one gesture is what they have.
-            #expect(box.asked == 0)
-        }
-    }
-
-    @Test("The home screen is untouched until the question is actually asked")
-    func theQuestionIsNotOnTheHomeScreen() {
+    @Test("The home screen is untouched until the picker is opened")
+    func thePickerIsNotOnTheHomeScreen() {
         let box = Taps()
-        // Density criterion, held as a test: in « les deux » — the mode that
-        // does ask — the home screen still builds exactly one CTA and no
-        // picker. The question lives on its own screen, not as extra controls
-        // squeezed under the streak hero and the 2×2 grid.
-        let home = idle(intent: .ask, into: box).body
+        let home = idle(into: box).body
         #expect(ViewTreeProbe.contains(WatchTodayView.self, in: home))
         #expect(ViewTreeProbe.contains(WatchActivityChoiceView.self, in: home) == false)
 
-        let asking = idle(intent: .ask, isChoosingActivity: true, into: box).body
-        #expect(ViewTreeProbe.contains(WatchActivityChoiceView.self, in: asking))
-        #expect(ViewTreeProbe.contains(WatchTodayView.self, in: asking) == false)
+        let choosing = idle(isChoosingActivity: true, into: box).body
+        #expect(ViewTreeProbe.contains(WatchActivityChoiceView.self, in: choosing))
+        #expect(ViewTreeProbe.contains(WatchTodayView.self, in: choosing) == false)
     }
 
     @Test("Choosing « Course » on the wrist stamps the session as a run")
     func choosingRunningStampsARun() async throws {
         let box = Taps()
-        let screen = idle(intent: .ask, isChoosingActivity: true, into: box)
+        let screen = idle(isChoosingActivity: true, into: box)
         let picker = try #require(ViewTreeProbe.first(WatchActivityChoiceView.self, in: screen.body))
         // The buttons live inside a `ForEach`, which keeps a closure instead
         // of its rows — building one is the only way to reach the real action.
@@ -138,7 +128,7 @@ struct WatchActivityPickerTests {
     @Test("Choosing « Marche » stamps a walk, and the two buttons differ")
     func choosingWalkingStampsAWalk() async throws {
         let box = Taps()
-        let screen = idle(intent: .ask, isChoosingActivity: true, into: box)
+        let screen = idle(isChoosingActivity: true, into: box)
         let picker = try #require(ViewTreeProbe.first(WatchActivityChoiceView.self, in: screen.body))
         try #require(button(.walking, picker)).select()
         #expect(box.started == [.walking])
@@ -151,25 +141,28 @@ struct WatchActivityPickerTests {
         #expect(recorder.startedConfiguration?.activityType == .walking)
     }
 
-    @Test("Both answers are offered, named the way Réglages names them")
-    func theChoicesAreTheTwoActivities() throws {
+    @Test("The favourites come first, the other sports after, the last one marked")
+    func favouritesFirst() throws {
         let box = Taps()
-        let screen = idle(intent: .ask, isChoosingActivity: true, into: box)
+        let screen = idle(last: .running, favorites: [.running], isChoosingActivity: true, into: box)
         let picker = try #require(ViewTreeProbe.first(WatchActivityChoiceView.self, in: screen.body))
 
-        #expect(try #require(button(.walking, picker)).activity.label == "Marche")
+        #expect(picker.sections.favorites == [.running])
+        #expect(picker.sections.others == [.walking])
+        #expect(try #require(button(.running, picker)).isCurrent)
         #expect(try #require(button(.running, picker)).activity.label == "Course")
+        #expect(try #require(button(.walking, picker)).isCurrent == false)
+        #expect(try #require(button(.walking, picker)).activity.label == "Marche")
     }
 
     @Test("A mis-tap is recoverable: « Annuler » records nothing")
     func cancellingRecordsNothing() throws {
         let box = Taps()
-        let screen = idle(intent: .ask, isChoosingActivity: true, into: box)
+        let screen = idle(isChoosingActivity: true, into: box)
         let picker = try #require(ViewTreeProbe.first(WatchActivityChoiceView.self, in: screen.body))
         // The button the screen builds, not the closure it was handed. On the
         // watch this is the only way back — there is nothing behind this screen
-        // to swipe to — so a dead « Annuler » is a user stuck staring at the
-        // question with their home screen gone.
+        // to swipe to.
         try #require(ViewTreeProbe.first(WatchActivityCancelButton.self, in: picker.body)).cancel()
 
         #expect(box.cancelled == 1)
@@ -179,38 +172,33 @@ struct WatchActivityPickerTests {
     @Test("The way out is the system's close button, not scrolled away with the answers")
     func cancelIsOutsideTheScrolledRegion() throws {
         let box = Taps()
-        let screen = idle(intent: .ask, isChoosingActivity: true, into: box)
+        let screen = idle(isChoosingActivity: true, into: box)
         let picker = try #require(ViewTreeProbe.first(WatchActivityChoiceView.self, in: screen.body))
         let scrolled = try #require(scrolledRegion(of: picker.body))
 
-        // The answers scroll: on a 40 mm screen two full-width buttons plus the
-        // question already overflow at the larger Dynamic Type sizes, and the
-        // crown is how the second one is reached.
+        // The answers scroll: the crown is how the last ones are reached at
+        // the larger Dynamic Type sizes.
         #expect(ViewTreeProbe.contains(
             ForEach<[SessionActivity], SessionActivity, WatchActivityChoiceButton>.self,
             in: scrolled
         ))
-        // « Annuler » must not. It is the only way back — there is no screen
-        // behind this one to swipe to — so scrolled with the content it is off
-        // the bottom of a 40 mm screen at the default text size and gone
-        // entirely at the larger ones. It sits in the toolbar instead, as the
-        // system's close button (ADR 0008).
+        // « Annuler » must not: it sits in the toolbar, as the system's close
+        // button (ADR 0008).
         #expect(ViewTreeProbe.contains(WatchActivityCancelButton.self, in: scrolled) == false)
         #expect(ViewTreeProbe.contains(WatchActivityCancelButton.self, in: picker.body))
     }
 
-    /// « Démarrer » used to come after the streak, the four tiles and the
-    /// hydration card: the one thing the home is for was the last thing
-    /// reached. Pinned below the scroll, it is on screen from the first glance
-    /// (ADR 0008).
-    @Test("« Démarrer » is pinned to the home, not scrolled with the figures")
+    /// « Démarrer » is pinned below the scroll, on screen from the first
+    /// glance (ADR 0008); « Autre sport », the secondary action, scrolls.
+    @Test("« Démarrer » is pinned to the home, « Autre sport » scrolls with the figures")
     func startIsOutsideTheScrolledRegion() throws {
         let box = Taps()
-        let screen = idle(intent: .start(.walking), into: box)
+        let screen = idle(into: box)
         let home = try #require(ViewTreeProbe.first(WatchTodayView.self, in: screen.body))
         let scrolled = try #require(scrolledRegion(of: home.body))
 
         #expect(ViewTreeProbe.contains(WatchStartButton.self, in: scrolled) == false)
+        #expect(ViewTreeProbe.contains(WatchOtherSportButton.self, in: scrolled))
         let start = try #require(ViewTreeProbe.first(WatchStartButton.self, in: home.body))
         start.start()
         #expect(box.started == [.walking])

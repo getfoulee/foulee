@@ -117,8 +117,6 @@ nonisolated public struct WorkoutSessionHandle: Sendable {
     /// told from one about a leg closed a moment ago (#290).
     public var sessionID: ObjectIdentifier
     public var builderID: ObjectIdentifier
-    /// The sport the session was opened as: what Santé will stamp.
-    public var activity: SessionActivity
     /// Offer this session to the paired iPhone (#277). Only the watch can: on
     /// the iPhone it throws, and a store never calls it there.
     public var startMirroring: @MainActor () async throws -> Void
@@ -146,7 +144,6 @@ nonisolated public struct WorkoutSessionHandle: Sendable {
     public init(
         sessionID: ObjectIdentifier,
         builderID: ObjectIdentifier,
-        activity: SessionActivity = .walking,
         startMirroring: @escaping @MainActor () async throws -> Void = {},
         sendToRemote: @escaping @MainActor (Data) async throws -> Void = { _ in },
         end: @escaping @MainActor () -> Void,
@@ -160,7 +157,6 @@ nonisolated public struct WorkoutSessionHandle: Sendable {
     ) {
         self.sessionID = sessionID
         self.builderID = builderID
-        self.activity = activity
         self.startMirroring = startMirroring
         self.sendToRemote = sendToRemote
         self.end = end
@@ -352,7 +348,6 @@ nonisolated public extension WorkoutEngine {
         WorkoutSessionHandle(
             sessionID: ObjectIdentifier(session),
             builderID: ObjectIdentifier(builder),
-            activity: SessionActivity(session.workoutConfiguration.activityType) ?? .walking,
             startMirroring: {
                 #if os(watchOS)
                 try await session.startMirroringToCompanionDevice()

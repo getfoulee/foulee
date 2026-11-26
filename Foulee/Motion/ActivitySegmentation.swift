@@ -11,7 +11,7 @@ nonisolated struct ActivitySegment: Equatable, Sendable {
 }
 
 /// Turns a finished session's CoreMotion history into stretches of walking and
-/// running, and names the one that dominates (issue #246).
+/// running (issue #246), which price its energy (#247).
 ///
 /// Pure, so every case that matters is stated here rather than hoped for on a
 /// pavement: a history that starts after the session did, estimates the device
@@ -43,7 +43,7 @@ nonisolated enum ActivitySegmentation {
     /// Every instant of the session belongs to exactly one segment — including
     /// the stretches CoreMotion says nothing about, which become `fallback`.
     /// A partial covering would make the durations below add up to less than
-    /// the session, and « dominant » would then be a share of something other
+    /// the session, and the energy would then be priced over something other
     /// than the outing.
     static func segments(
         _ samples: [MotionHistorySample],
@@ -71,19 +71,7 @@ nonisolated enum ActivitySegmentation {
         return merged(spans)
     }
 
-    /// The activity the session should be recorded as.
-    ///
-    /// Ties go to walking, for the same reason the fallback does: an outing
-    /// split down the middle is not evidence that it was a run, and the wrong
-    /// guess is permanent.
-    static func dominant(_ segments: [ActivitySegment]) -> SessionActivity {
-        let running = duration(of: .running, in: segments)
-        let walking = duration(of: .walking, in: segments)
-        return running > walking ? .running : .walking
-    }
-
-    /// How long `activity` lasted across the session. Also what issue #247
-    /// needs to stop applying one calorie rate to a mixed outing.
+    /// How long `activity` lasted across the session.
     static func duration(of activity: SessionActivity, in segments: [ActivitySegment]) -> TimeInterval {
         segments.lazy.filter { $0.activity == activity }.reduce(0) { $0 + $1.duration }
     }

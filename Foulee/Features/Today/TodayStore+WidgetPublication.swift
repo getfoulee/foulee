@@ -7,6 +7,16 @@ import WidgetKit
 /// decides it. Split out of `TodayStore.swift` to keep that file within the
 /// length limit.
 extension TodayStore {
+    /// The totals the post-walk overlay is currently holding up, or nil when no
+    /// walk is pending. Read by `widgetPublication(stored:)`: the overlay lifts
+    /// the published counters above raw HealthKit exactly like the Connect IQ
+    /// one, so the widget process has to be told about it or it would drop the
+    /// walk on its very next render (#214). Only the two numbers the widget
+    /// may not fall below travel; the overlay is written by `TodayStore` alone.
+    var pendingWalkFloor: (steps: Int, distanceKm: Double)? {
+        pendingWalk.map { (steps: $0.targetSteps, distanceKm: $0.targetDistanceKm) }
+    }
+
     /// The app-group snapshot the widgets read, plus the payload for the
     /// Watch — nil when this pass measured no streak.
     struct Publication {
@@ -137,7 +147,8 @@ extension TodayStore {
             hydrationEnabled: hydrationEnabled,
             hydrationGoalML: hydrationGoalML,
             hydrationGlassML: hydrationGlassML,
-            activityMode: activityMode
+            activityMode: activityMode,
+            lastSport: lastSport
         ))
     }
 }

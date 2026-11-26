@@ -26,56 +26,71 @@ struct TodayStoreActivityTests {
         try await body(UserPreferences(defaults: defaults))
     }
 
-    @Test("A running user starts a run, a walking user a walk, a « les deux » user is asked")
-    func startIntentFollowsThePreference() async throws {
+    @Test("« Démarrer » starts the first favourite until a sport was started")
+    func startActivityFollowsTheFavourites() async throws {
         try await withPreferences { preferences in
             let store = TodayStore()
 
-            // One gesture, no question: the mode already answered it. Adding a
-            // tap here would be a regression for a user who has said « marche »
-            // once and for all (issue #224).
+            // One gesture, no question: the favourites already answer it
+            // (issues #224, #743). This is what `TodayScreen` hands
+            // `ActiveSessionScreen`, which the live client turns into
+            // `HKWorkoutConfiguration.activityType`.
             preferences.activityMode = .walking
             store.apply(preferences: preferences)
-            #expect(store.startIntent == .start(.walking))
+            #expect(store.startActivity == .walking)
 
-            // This is what `TodayScreen` hands `ActiveSessionScreen`, which hands
-            // it to the session, which the live client turns into
-            // `HKWorkoutConfiguration.activityType`. Before #223 the phone
-            // wrote `.walking` here whatever the user had chosen.
             preferences.activityMode = .running
             store.apply(preferences: preferences)
-            #expect(store.startIntent == .start(.running))
+            #expect(store.startActivity == .running)
 
-            // « Les deux »: the phone must ask rather than guess. Until #224
-            // this resolved to `.walking`, and every session such a user
-            // recorded went into Santé mislabelled — permanently.
+            // « Les deux » no longer asks (#743): walking comes first.
             preferences.activityMode = .both
             store.apply(preferences: preferences)
-            #expect(store.startIntent == .ask)
+            #expect(store.startActivity == .walking)
+        }
+    }
+
+    @Test("« Démarrer » starts the last sport started, without recomputing the streak")
+    func startActivityFollowsTheLastSport() async throws {
+        try await withDependencies {
+            $0.date = .constant(Date(timeIntervalSince1970: 1_800_000_000))
+        } operation: {
+            try await withPreferences { preferences in
+                preferences.activityMode = .both
+                let store = TodayStore()
+                store.apply(preferences: preferences)
+
+                preferences.recordStart(of: .running)
+                // A start moves no counter: no recompute, no widget reload.
+                // The refresh after the outing carries it to the wrist.
+                #expect(!store.hasChanged(preferences: preferences))
+                store.apply(preferences: preferences)
+                #expect(store.startActivity == .running)
+                #expect(store.lastSport == LastSport(.running, at: Date(timeIntervalSince1970: 1_800_000_000)))
+            }
         }
     }
 
     @Test("A shortcut starts the sport it names, else what the home button would")
-    func shortcutStartIntent() async throws {
+    func shortcutStartActivity() async throws {
         try await withPreferences { preferences in
             let store = TodayStore()
             preferences.activityMode = .walking
             store.apply(preferences: preferences)
 
-            // Issue #604: « Commence une course » from a walker records a run,
-            // and « automatique » leaves the sport to the motion history.
-            #expect(store.startIntent(requested: .running) == .start(.running))
-            #expect(store.startIntent(requested: .both) == .ask)
-            // No sport named: the same as a tap on the home button.
-            #expect(store.startIntent(requested: nil) == .start(.walking))
+            // Issue #604: « Commence une course » from a walker records a run.
+            #expect(store.startActivity(requested: .running) == .running)
+            // No sport named, or « Dernier sport »: the home button's.
+            #expect(store.startActivity(requested: nil) == .walking)
+            #expect(store.startActivity(requested: OutingActivity.automatic.activity) == .walking)
         }
     }
 
-    @Test("« Automatique » in Raccourcis is « les deux »")
-    func outingActivityModes() {
-        #expect(OutingActivity.walking.mode == .walking)
-        #expect(OutingActivity.running.mode == .running)
-        #expect(OutingActivity.automatic.mode == .both)
+    @Test("« Dernier sport » in Raccourcis names no sport, the others theirs")
+    func outingActivities() {
+        #expect(OutingActivity.walking.activity == .walking)
+        #expect(OutingActivity.running.activity == .running)
+        #expect(OutingActivity.automatic.activity == nil)
     }
 
     @Test("The Watch payload carries the mode, not a default")
@@ -178,7 +193,7 @@ struct TodayStoreActivityTests {
 
             store.apply(preferences: preferences)
             #expect(store.activityMode == .running)
-            #expect(store.startIntent == .start(.running))
+            #expect(store.startActivity == .running)
             // And it settles: a preference set that already matches publishes
             // nothing.
             #expect(!store.hasChanged(preferences: preferences))

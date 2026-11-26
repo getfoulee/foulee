@@ -21,9 +21,12 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
     /// one: a payload that defaulted it would silently reset the watch to
     /// walking on the first Health wake.
     ///
-    /// The raw mode, not a resolved activity: the "les deux" picker on the
-    /// watch (issue #224) needs to see `both` to know it has to ask.
+    /// The watch reads the favourite sports from it, for « Autre sport »
+    /// (#743).
     public var activityMode: ActivityMode
+    /// The iPhone's last sport (#743). The watch starts the newer of this one
+    /// and its own. Both producers push it, for the same reason as the mode.
+    public var lastSport: LastSport?
     /// Whether the watch records each outing's sensors for the detection
     /// tests (#727): a hidden switch on the iPhone, off for everyone else.
     public var recordsDetectionTraces: Bool
@@ -36,6 +39,7 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         hydrationGoalML: Int = 2_000,
         hydrationGlassML: Int = 250,
         activityMode: ActivityMode = .walking,
+        lastSport: LastSport? = nil,
         recordsDetectionTraces: Bool = false
     ) {
         self.streak = streak
@@ -45,6 +49,7 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         self.hydrationGoalML = hydrationGoalML
         self.hydrationGlassML = hydrationGlassML
         self.activityMode = activityMode
+        self.lastSport = lastSport
         self.recordsDetectionTraces = recordsDetectionTraces
     }
 
@@ -61,6 +66,8 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         hydrationGoalML = try container.decodeIfPresent(Int.self, forKey: .hydrationGoalML) ?? 2_000
         hydrationGlassML = try container.decodeIfPresent(Int.self, forKey: .hydrationGlassML) ?? 250
         activityMode = try container.decodeIfPresent(ActivityMode.self, forKey: .activityMode) ?? .walking
+        // A sport only a newer build of the iPhone knows reads as none.
+        lastSport = try? container.decodeIfPresent(LastSport.self, forKey: .lastSport)
         recordsDetectionTraces = try container.decodeIfPresent(Bool.self, forKey: .recordsDetectionTraces) ?? false
     }
 }
@@ -74,7 +81,7 @@ nonisolated public enum WatchSyncStore {
 
     /// Not private: it is the default every call site below binds, and the
     /// value a caller that owns its own default argument has to name to keep
-    /// production behaviour (see `WatchRootView.startIntent`).
+    /// production behaviour (see `WatchRootView.sportChoice`).
     public static var sharedDefaults: UserDefaults {
         UserDefaults(suiteName: suiteName) ?? .standard
     }

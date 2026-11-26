@@ -14,9 +14,10 @@ struct TodayScreen: View {
     @State private var isWalking = false
     /// An outing iOS kept running while the app was gone (#729), reopened.
     @State private var recoveredWalk: ActiveSessionStore?
-    /// What a shortcut asked to start (issue #604), in place of the store's
-    /// `startIntent` for that one session.
-    @State private var shortcutIntent: ActivityStartIntent?
+    /// The sport of the session on screen: the last one, a shortcut's (#604)
+    /// or the one picked in « Autre sport » (#743).
+    @State private var startingActivity = SessionActivity.walking
+    @State private var isChoosingSport = false
     private let sessionStartRouter = SessionStartRouter.shared
     /// The wrist's outing, shown instead of ours (issue #279). The store is not
     /// owned here — `FouleeApp` observes it from process launch, because a
@@ -118,6 +119,17 @@ struct TodayScreen: View {
                     .preferredColorScheme(preferredScheme)
                 }
             )
+            .sheet(isPresented: $isChoosingSport) {
+                SportPickerSheet(
+                    sections: store.sportChoice.sections,
+                    current: store.startActivity,
+                    onChoose: { sport in
+                        isChoosingSport = false
+                        startChosen(sport)
+                    },
+                    onClose: { isChoosingSport = false }
+                )
+            }
             .sheet(isPresented: $isShowingWeather) {
                 if let weather = store.snapshot?.weather {
                     WeatherDetailSheet(weather: weather, windowStart: store.walkWindowStart, location: store.locationAccess) {
@@ -152,14 +164,10 @@ struct TodayScreen: View {
         TodayHeroCard(
             snapshot: snapshot,
             mirroring: mirroredSession.session?.device,
-            // Only when the mode already answers « quel sport ? ». In « les
-            // deux » the watch's own picker is where that is asked, and the
-            // stamp it produces is permanent (issues #223, #224).
-            canStartOnWatch: mirroredSession.canStartOnWatch && store.startIntent.activity != nil,
-            onStartOnWatch: {
-                guard let activity = store.startIntent.activity else { return }
-                Task { await mirroredSession.startOnWatch(activity) }
-            },
+            canStartOnWatch: mirroredSession.canStartOnWatch,
+            onStartOnWatch: { startOnWatch(store.startActivity) },
+            sport: store.startActivity,
+            onChooseSport: { isChoosingSport = true },
             notificationsEnabled: preferences.notificationsEnabled,
             notificationsDenied: store.notificationsAuthorizationStatus == .denied,
             onStart: { startWalk() },
@@ -287,45 +295,6 @@ struct TodayScreen: View {
         date.dayText.uppercased()
     }
 
-    /// Push the active walk sheet. Available from the hero even once today's
-    /// goal is met (the card then also offers "Voir le bilan"), so a second
-    /// walk can always be started.
-    /// Start on the phone — unless the wrist is already recording (issue #279).
-    ///
-    /// **The watch always wins**, and not by a coin toss: it is the only one of
-    /// the two HealthKit lets mirror, so a phone session beside it would be
-    /// invisible from there. Two overlapping `HKWorkout` records are also
-    /// plainly false, which App Store review has its own wording for.
-    ///
-    /// Nothing prevented this before the mirror existed — the phone had no way
-    /// of knowing.
-    ///
-    /// - Parameter intent: a shortcut's choice; `nil` for the home button.
-    private func startWalk(_ intent: ActivityStartIntent? = nil) {
-        guard !mirroredSession.isMirroring else {
-            isShowingMirroredWalk = true
-            return
-        }
-        shortcutIntent = intent
-        // Teach Siri the habit, so « Commencer une sortie » shows up in its
-        // suggestions and Spotlight (issue #608). A shortcut run is donated
-        // by the system already.
-        if intent == nil {
-            StartOutingIntent().donate()
-        }
-        // Capture today's totals now so the post-walk overlay lands on the
-        // right baseline (see TodayStore.registerFinishedWalk).
-        store.walkWillStart()
-        isWalking = true
-    }
-
-    /// Starts what « Commencer une sortie » asked for (issue #604). A session
-    /// already on screen wins.
-    private func startPendingShortcut() {
-        guard let request = sessionStartRouter.take(), !isWalking else { return }
-        startWalk(store.startIntent(requested: request.mode))
-    }
-
     /// Only steps + minutes have a daily goal to draw on the stats chart.
     private func dailyGoal(for metric: MetricID) -> Double? {
         switch metric {
@@ -374,12 +343,11 @@ func todayPreferencesKey(_ preferences: UserPreferences) -> String {
     let goals = "\(preferences.stepsGoal)-\(preferences.minutesGoal)"
     let window = "\(preferences.walkWindowStart.rawMinutes)-\(preferences.activeDays.bitmask)"
     let hydration = "\(preferences.hydrationEnabled)-\(preferences.hydrationGoalML)-\(preferences.hydrationGlassML)"
-    // The mode moves no counter, and it still belongs here: it is the only
-    // input to `startIntent`, so without it a user who turns « les deux » on
-    // is never asked in that session — the store keeps the mode it mirrored at
-    // mount, and each refresh re-publishes it to the wrist, so the watch does
-    // not ask either (issue #224).
-    return "\(goals)-\(window)-\(hydration)-\(preferences.activityMode.rawValue)"
+    // The favourites and the last sport decide what « Démarrer » starts and
+    // what the wrist is sent (issues #224, #743).
+    let favorites = preferences.favoriteSports.map(\.rawValue).sorted().joined(separator: ",")
+    let sport = "\(favorites)-\(preferences.lastSport?.sport.rawValue ?? "")"
+    return "\(goals)-\(window)-\(hydration)-\(sport)"
 }
 
 private struct TodayPreviewWithData: View {
@@ -439,17 +407,72 @@ private func previewDefaults(suite: String) -> UserDefaults {
 #Preview("Dark") { TodayPreviewDark() }
 
 private extension TodayScreen {
+    /// Push the active walk sheet. Available from the hero even once today's
+    /// goal is met (the card then also offers "Voir le bilan"), so a second
+    /// walk can always be started.
+    /// Start on the phone — unless the wrist is already recording (issue #279).
+    ///
+    /// **The watch always wins**, and not by a coin toss: it is the only one of
+    /// the two HealthKit lets mirror, so a phone session beside it would be
+    /// invisible from there. Two overlapping `HKWorkout` records are also
+    /// plainly false, which App Store review has its own wording for.
+    ///
+    /// Nothing prevented this before the mirror existed — the phone had no way
+    /// of knowing.
+    ///
+    /// - Parameters:
+    ///   - activity: a shortcut's or the picker's sport; `nil` for the home
+    ///     button, which starts the last one.
+    ///   - donates: teach Siri the habit, so « Commencer une sortie » shows up
+    ///     in its suggestions and Spotlight (issue #608). A shortcut run is
+    ///     donated by the system already.
+    func startWalk(_ activity: SessionActivity? = nil, donates: Bool = true) {
+        guard !mirroredSession.isMirroring else {
+            isShowingMirroredWalk = true
+            return
+        }
+        startingActivity = store.startActivity(requested: activity)
+        preferences.recordStart(of: startingActivity)
+        if donates {
+            StartOutingIntent().donate()
+        }
+        // Capture today's totals now so the post-walk overlay lands on the
+        // right baseline (see TodayStore.registerFinishedWalk).
+        store.walkWillStart()
+        isWalking = true
+    }
+
+    /// Starts what « Commencer une sortie » asked for (issue #604). A session
+    /// already on screen wins.
+    func startPendingShortcut() {
+        guard let request = sessionStartRouter.take(), !isWalking else { return }
+        startWalk(request.activity, donates: false)
+    }
+
+    /// The wrist records a better outing (#283), so the phone hands it the
+    /// sport and the wrist opens the session.
+    func startOnWatch(_ activity: SessionActivity) {
+        preferences.recordStart(of: activity)
+        Task { await mirroredSession.startOnWatch(activity) }
+    }
+
+    /// « Autre sport » starts where « Démarrer » would: wrist first (#283).
+    func startChosen(_ activity: SessionActivity) {
+        if mirroredSession.canStartOnWatch, !mirroredSession.isMirroring {
+            startOnWatch(activity)
+        } else {
+            startWalk(activity)
+        }
+    }
+
     /// The session screen, on a fresh store or on one that took back an
     /// outing the app had lost (#729).
     var walkScreen: some View {
         ActiveSessionScreen(
             minutesGoal: store.minutesGoal,
-            // Resolved by the store, not here (issues #223, #224): the
-            // mode it mirrors is the same one it syncs to the Watch,
-            // and unlike this body it is reachable from a test. In
-            // « les deux » it is `.ask`, and the session screen opens
-            // on the picker.
-            intent: shortcutIntent ?? store.startIntent,
+            // Resolved by the store at the tap (issues #223, #743), and
+            // unlike this body the store is reachable from a test.
+            activity: startingActivity,
             store: recoveredWalk ?? ActiveSessionStore(),
             onDismiss: { session in
                 isWalking = false

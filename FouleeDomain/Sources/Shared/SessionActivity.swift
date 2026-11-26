@@ -37,10 +37,6 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     /// (issues #220, #221). One table rather than one per screen: the phone
     /// sheet and the watch screen ask the same question, and a user who picked
     /// « Course » in Réglages must read the same word on the wrist.
-    ///
-    /// No `init(mode:)` any more. It used to answer "which activity for this
-    /// mode?" and had to invent `.walking` for « les deux » — see
-    /// `ActivityStartIntent`, which asks instead of inventing.
     public var label: String {
         sport.descriptor.label
     }

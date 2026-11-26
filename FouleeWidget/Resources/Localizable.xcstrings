@@ -211,16 +211,6 @@
         }
       }
     },
-    "Automatique" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatic"
-          }
-        }
-      }
-    },
     "Balade" : {
       "localizations" : {
         "en" : {
@@ -277,6 +267,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Noted: +%lld ml of water."
+          }
+        }
+      }
+    },
+    "Dernier sport" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last sport"
+          }
+        }
+      }
+    },
+    "Le sport de ta dernière sortie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sport of your last workout"
           }
         }
       }
@@ -409,16 +419,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foulée isn’t allowed to write to Health. Turn on water in Health > Profile > Apps > Foulée."
-          }
-        }
-      }
-    },
-    "Foulée reconnaît la marche ou la course" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Foulée tells a walk from a run"
           }
         }
       }

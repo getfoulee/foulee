@@ -7,25 +7,21 @@ import SwiftUI
 import Testing
 @testable import Foulee
 
-/// How the phone decides what a session was (issues #224, then #246).
-///
-/// It used to **ask**, on this very screen, because nothing could tell a walk
-/// from a run and the stamp is permanent. The phone can tell now — from the
-/// session's own CoreMotion history, read at `stop()` — so « les deux » starts
-/// straight away like every other mode, names no sport while it runs, and is
-/// settled from what the device measured before the workout is saved.
+/// What the phone records a session as (issues #224, #246, #743): the sport
+/// the user started, never overruled by what the device measured, which only
+/// prices the energy.
 ///
 /// The tree is walked with `ViewTreeProbe` rather than testing a stand-in, so
 /// what is asserted is the screen that ships, `@State` store and all.
-@Suite("Activity decision (iPhone)")
+@Suite("Session sport (iPhone)")
 struct ActivityPickerTests {
     private let start = Date(timeIntervalSince1970: 1_700_000_000)
 
     private func screen(
-        _ intent: ActivityStartIntent,
+        _ activity: SessionActivity,
         store: ActiveSessionStore = ActiveSessionStore()
     ) -> ActiveSessionScreen {
-        ActiveSessionScreen(minutesGoal: 20, intent: intent, store: store, onDismiss: { _ in })
+        ActiveSessionScreen(minutesGoal: 20, activity: activity, store: store, onDismiss: { _ in })
     }
 
     private func session(of store: ActiveSessionStore) -> SessionRecord? {
@@ -64,57 +60,21 @@ struct ActivityPickerTests {
         )
     }
 
-    // MARK: - Nothing is asked any more
+    // MARK: - The sport started is the sport recorded
 
-    @Test("« Les deux » starts straight away, like every other mode")
-    func bothStartsWithoutAsking() async {
-        let store = ActiveSessionStore()
-        await withStubbedSensors {
-            screen(.ask, store: store).startIfKnown()
-        }
-        // The question was a stopgap for a device that could not tell. It can.
-        #expect(session(of: store) != nil)
-        #expect(session(of: store)?.isActivityUndecided == true)
-    }
-
-    @Test("A mode that answers the question is not overruled")
-    func aChosenModeStaysChosen() async {
+    @Test("The screen starts the sport it was handed, and names it on the Lock Screen")
+    func theStartedSportIsRecorded() async {
         for activity in SessionActivity.allCases {
             let store = ActiveSessionStore()
             await withStubbedSensors {
-                screen(.start(activity), store: store).startIfKnown()
+                screen(activity, store: store).startSession()
             }
             #expect(session(of: store)?.activity == activity)
-            // Not undecided: the user has said what they do, and detection is
-            // not entitled to contradict an answer already given.
-            #expect(session(of: store)?.isActivityUndecided == false)
+            #expect(store.liveActivityAttributes(minutesGoal: 20).activity == activity)
         }
     }
 
-    // MARK: - Nothing is named before it is known
-
-    @Test("An unsettled session names no sport, on screen or on the Lock Screen")
-    func anUndecidedSessionNamesNothing() async {
-        let store = ActiveSessionStore()
-        await withStubbedSensors {
-            screen(.ask, store: store).startIfKnown()
-        }
-        // Naming « Ta marche » for a whole outing and saving « Course » at the
-        // end would be the drift #225 was about, only worse.
-        #expect(store.liveActivityAttributes(minutesGoal: 20).activity == nil)
-        #expect(WalkActivityAttributes(goalMinutes: 20, activity: nil).title(isPaused: false) == "Ta sortie")
-    }
-
-    @Test("A settled session names its sport everywhere")
-    func aDecidedSessionNamesItsSport() async {
-        let store = ActiveSessionStore()
-        await withStubbedSensors {
-            screen(.start(.running), store: store).startIfKnown()
-        }
-        #expect(store.liveActivityAttributes(minutesGoal: 20).activity == .running)
-    }
-
-    // MARK: - What the device measured decides
+    // MARK: - What the device measured prices, never relabels
 
     /// A history the test writes: `walking` for the first `runningAfter`
     /// seconds, running from there to the end.
@@ -137,74 +97,40 @@ struct ActivityPickerTests {
         )
     }
 
-    private func undecidedSession(endingAfter seconds: TimeInterval) -> SessionRecord {
-        var session = SessionRecord(startedAt: start, activity: .walking, isActivityUndecided: true)
+    private func walk(endingAfter seconds: TimeInterval) -> SessionRecord {
+        var session = SessionRecord(startedAt: start, activity: .walking)
         session.endedAt = start.addingTimeInterval(seconds)
         return session
     }
 
-    @Test("An outing mostly run is recorded as a run")
-    func theDominantActivityWins() async {
-        let store = ActiveSessionStore()
-        var decided: SessionRecord?
-        await withStubbedSensors(history: history(runningAfter: 600)) {
-            decided = await store.settled(undecidedSession(endingAfter: 1_800))
-        }
-        #expect(decided?.activity == .running)
-        #expect(decided?.isActivityUndecided == false)
-    }
-
-    @Test("An outing mostly walked is recorded as a walk")
-    func aMostlyWalkedOutingStaysAWalk() async {
-        let store = ActiveSessionStore()
-        var decided: SessionRecord?
-        await withStubbedSensors(history: history(runningAfter: 1_500)) {
-            decided = await store.settled(undecidedSession(endingAfter: 1_800))
-        }
-        #expect(decided?.activity == .walking)
-    }
-
-    @Test("A session the user chose the sport of is handed back untouched")
+    @Test("A session the user chose the sport of is handed back with that sport")
     func aChosenSessionIsNeverOverridden() async {
         let store = ActiveSessionStore()
-        var chosen = SessionRecord(startedAt: start, activity: .walking)
-        chosen.endedAt = start.addingTimeInterval(1_800)
         var decided: SessionRecord?
         // A history that screams « course » from end to end.
         await withStubbedSensors(history: history(runningAfter: 0)) {
-            decided = await store.settled(chosen)
+            decided = await store.settled(walk(endingAfter: 1_800))
         }
-        // « Marche » in Réglages is an answer already given. Overriding it
-        // would also over-credit: kcalPerStep is 0.09 running against 0.04.
+        // « Marche » is an answer already given. Overriding it would also
+        // over-credit: kcalPerStep is 0.09 running against 0.04.
         #expect(decided?.activity == .walking)
-    }
-
-    @Test("A device that says nothing leaves the session a walk")
-    func asilentDeviceUnderCredits() async {
-        let store = ActiveSessionStore()
-        var decided: SessionRecord?
-        // `testValue` reports itself unavailable and returns no samples — a
-        // simulator, or a phone whose motion permission was refused.
-        await withStubbedSensors {
-            decided = await store.settled(undecidedSession(endingAfter: 1_800))
-        }
-        #expect(decided?.activity == .walking)
-        #expect(decided?.isActivityUndecided == false)
     }
 }
 
 extension ActivityPickerTests {
     // MARK: - What the outing cost (issue #247)
 
-    @Test("A mixed outing is broken down stretch by stretch")
+    @Test("A mixed outing is broken down stretch by stretch, and keeps its label")
     func aMixedOutingIsBrokenDown() async {
         let store = ActiveSessionStore()
         var settled: SessionRecord?
         await withStubbedSensors(history: history(runningAfter: 600), pedometer: countingPedometer) {
-            settled = await store.settled(undecidedSession(endingAfter: 1_800))
+            settled = await store.settled(walk(endingAfter: 1_800))
         }
-        // Ten minutes walking, twenty running — one step per second.
+        // Ten minutes walking, twenty running — one step per second. « Marche »
+        // stays the label: the user said so.
         #expect(settled?.stepsByActivity == [.walking: 600, .running: 1_200])
+        #expect(settled?.activity == .walking)
     }
 
     @Test("A homogeneous outing is not broken down at all")
@@ -213,7 +139,7 @@ extension ActivityPickerTests {
         var settled: SessionRecord?
         // Running from the first second: one stretch, one rate.
         await withStubbedSensors(history: history(runningAfter: 0), pedometer: countingPedometer) {
-            settled = await store.settled(undecidedSession(endingAfter: 1_800))
+            settled = await store.settled(walk(endingAfter: 1_800))
         }
         // The breakdown would price it identically, so the queries would buy
         // nothing — and `estimatedCalories` must land on exactly the figure it
@@ -227,28 +153,10 @@ extension ActivityPickerTests {
         var settled: SessionRecord?
         // `testValue`'s `steps` returns nil — no step counting on this device.
         await withStubbedSensors(history: history(runningAfter: 600)) {
-            settled = await store.settled(undecidedSession(endingAfter: 1_800))
+            settled = await store.settled(walk(endingAfter: 1_800))
         }
         // A partial breakdown is not a smaller truth, it is a wrong total: the
         // unmeasured stretch's steps would vanish from the estimate.
         #expect(settled?.stepsByActivity == nil)
-        // The label is still settled — the two questions are independent.
-        #expect(settled?.activity == .running)
-    }
-
-    @Test("A chosen mode keeps its label and still gets the real breakdown")
-    func aChosenModeIsStillPricedHonestly() async {
-        let store = ActiveSessionStore()
-        var chosen = SessionRecord(startedAt: start, activity: .walking)
-        chosen.endedAt = start.addingTimeInterval(1_800)
-        var settled: SessionRecord?
-        await withStubbedSensors(history: history(runningAfter: 600), pedometer: countingPedometer) {
-            settled = await store.settled(chosen)
-        }
-        // « Marche » stays the label — the user said so. But twenty of those
-        // thirty minutes were run, and pricing them at the walking rate is
-        // simply wrong.
-        #expect(settled?.activity == .walking)
-        #expect(settled?.stepsByActivity == [.walking: 600, .running: 1_200])
     }
 }

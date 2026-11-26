@@ -30,11 +30,6 @@ struct SessionActivityTests {
         #expect(SessionActivity.allCases.count == 2)
     }
 
-    // `SessionActivity(mode:)` is gone (#224). It answered "which activity for
-    // this mode?" with a value it had to invent for « les deux » — a walk,
-    // permanently, for every session such a user recorded. The question now
-    // has its own type, which can say « ask »: see `ActivityStartIntentTests`.
-
     @Test("The two activities are named the way the rest of the app names them")
     func labels() {
         // The same two words as `ActivityMode.label`, `OnboardingActivityView`

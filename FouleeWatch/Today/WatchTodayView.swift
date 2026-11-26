@@ -10,14 +10,16 @@ import SwiftUI
 /// « Démarrer » is pinned to the bottom (ADR 0008) while the rest scrolls: it
 /// is what the screen is for, and it used to come after everything else.
 ///
-/// Nothing here names an activity (issue #222): the CTA is the bare verb, and
-/// the steps tile carries the footprints glyph — a step count, not a walking
-/// figure. The mode does reach this target (`WatchSyncStore`, issue #223), but
-/// it decides what Santé records, not how this screen reads.
+/// The CTA names the sport it starts, the last one (#743); « Autre sport »,
+/// the secondary action, closes the scroll (ADR 0008). The steps tile carries
+/// the footprints glyph — a step count, not a walking figure (#222).
 struct WatchTodayView: View {
     let store: WatchTodayStore
     var errorMessage: String?
+    /// What « Démarrer » starts.
+    var sport: SessionActivity = .walking
     var onStart: () -> Void
+    var onChooseSport: () -> Void = {}
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -34,10 +36,11 @@ struct WatchTodayView: View {
                         .foregroundStyle(.red)
                         .multilineTextAlignment(.center)
                 }
+                WatchOtherSportButton(choose: onChooseSport)
             }
             .padding(.horizontal, 2)
         }
-        .pinnedAction { WatchStartButton(start: onStart) }
+        .pinnedAction { WatchStartButton(sport: sport, start: onStart) }
         .task {
             store.startObserving()
             await store.load()
@@ -121,18 +124,42 @@ struct WatchTodayView: View {
     }
 }
 
-/// « Démarrer ». Named rather than inline so a test can find where the home
-/// puts it: pinned, outside the scroll (ADR 0008).
+/// « Démarrer » and the sport it starts. Named rather than inline so a test
+/// can find where the home puts it: pinned, outside the scroll (ADR 0008).
 struct WatchStartButton: View {
+    var sport: SessionActivity
     var start: () -> Void
 
     var body: some View {
         Button(action: start) {
-            Label("Démarrer", systemImage: "play.fill")
-                .font(.headline)
-                .frame(maxWidth: .infinity)
+            Label {
+                VStack(spacing: 0) {
+                    Text("Démarrer")
+                        .font(.headline)
+                    Text(verbatim: sport.label)
+                        .font(.caption2)
+                }
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            } icon: {
+                Image(systemName: sport.icon)
+            }
+            .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
         .tint(Color("AccentColor"))
+        .accessibilityLabel(Text("Démarrer : \(sport.label)"))
+    }
+}
+
+/// « Autre sport » (#743): the secondary action, at the end of the scroll
+/// (ADR 0008). Named so a test can tap it.
+struct WatchOtherSportButton: View {
+    var choose: () -> Void
+
+    var body: some View {
+        Button("Autre sport", systemImage: FouleeIcon.otherSport, action: choose)
+            .font(.footnote)
+            .padding(.top, 4)
     }
 }

@@ -70,9 +70,10 @@ final class TodayStore {
     private(set) var hydrationEnabled = false
     private(set) var hydrationGoalML = 2_000
     private(set) var hydrationGlassML = 250
-    /// Mirrored for the same reason as the hydration prefs: the Watch needs it
-    /// to stamp its own sessions (issue #223) and can't read `UserPreferences`.
-    private(set) var activityMode: ActivityMode = .walking
+    /// Mirrored for the same reason as the hydration prefs: the Watch needs
+    /// them to start its own sessions (issues #223, #743).
+    private(set) var favoriteSports: Set<SportID> = [.walking]
+    private(set) var lastSport: LastSport?
 
     /// Last fetched history, kept so `apply(preferences:)` can re-derive the
     /// streaks immediately when the goal or active days change.
@@ -106,7 +107,7 @@ final class TodayStore {
     /// HealthKit reaches it — it can never double-count. Only steps + distance,
     /// which the walk measures directly; minutes/calories stay HealthKit-driven
     /// (faking exercise minutes could falsely complete a streak).
-    private struct PendingSession {
+    struct PendingSession {
         var targetSteps: Int
         var targetDistanceKm: Double
         /// startOfDay when the walk was registered — the overlay is only
@@ -114,17 +115,7 @@ final class TodayStore {
         var day: Date
         var registeredAt: Date
     }
-    @ObservationIgnored private var pendingWalk: PendingSession?
-
-    /// The totals the post-walk overlay is currently holding up, or nil when no
-    /// walk is pending. Read by `widgetPublication(stored:)`: the overlay lifts
-    /// the published counters above raw HealthKit exactly like the Connect IQ
-    /// one, so the widget process has to be told about it or it would drop the
-    /// walk on its very next render (#214). The overlay itself stays private —
-    /// only the two numbers the widget may not fall below travel.
-    var pendingWalkFloor: (steps: Int, distanceKm: Double)? {
-        pendingWalk.map { (steps: $0.targetSteps, distanceKm: $0.targetDistanceKm) }
-    }
+    @ObservationIgnored private(set) var pendingWalk: PendingSession?
 
     @ObservationIgnored private var walkBaselineSteps = 0
     @ObservationIgnored private var walkBaselineDistanceKm = 0.0
@@ -173,7 +164,8 @@ final class TodayStore {
         hydrationEnabled = preferences.hydrationEnabled
         hydrationGoalML = preferences.hydrationGoalML
         hydrationGlassML = preferences.hydrationGlassML
-        activityMode = preferences.activityMode
+        favoriteSports = preferences.favoriteSports
+        lastSport = preferences.lastSport
         // Re-derive from the cached history: changing the goal or the active
         // days changes both the ring threshold and which missed days break the
         // streak, so recompute the streaks rather than copying the old ones.
@@ -476,7 +468,6 @@ final class TodayStore {
         guard days.count == 7 else { return Array(repeating: 0, count: 7) }
         return days.map { byDay[$0] ?? 0 }
     }
-
 }
 
 // MARK: - Error boundary

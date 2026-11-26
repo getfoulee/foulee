@@ -8,12 +8,12 @@ import SwiftUI
 /// depending on `store.state`.
 struct ActiveSessionScreen: View {
     let minutesGoal: Int
-    /// What Santé will record this session as (issue #223) — or `.ask` when
-    /// the user is in « les deux » and only they can say (issue #224).
+    /// What Santé will record this session as (issue #223): the sport the
+    /// user started (#743).
     ///
     /// Resolved by `TodayStore`, not here: a `View` body is out of reach of the
     /// test process, and this is the value the stamp is made of.
-    let intent: ActivityStartIntent
+    let activity: SessionActivity
     var onDismiss: (SessionRecord) -> Void
     /// Backed out of the picker without starting anything. Distinct from
     /// `onDismiss`, which carries a finished session for the home to overlay —
@@ -28,19 +28,17 @@ struct ActiveSessionScreen: View {
 
     /// The store is a defaulted parameter for the same reason `WatchIdleScreen`
     /// takes its `onStart` from above: built inside the body it is invisible to
-    /// a test, and the two hops it hides — the `.onAppear` guard that must
-    /// *not* start anything in « les deux », and the answer that carries the
-    /// chosen activity into the session — are where the phone turns a tap into
-    /// a permanent Santé stamp (issue #224). Handed in, a test drives the
-    /// screen that ships and reads what it actually started.
+    /// a test, and the `.onAppear` start it hides is where the phone turns a
+    /// tap into a permanent Santé stamp (issue #224). Handed in, a test drives
+    /// the screen that ships and reads what it actually started.
     init(
         minutesGoal: Int,
-        intent: ActivityStartIntent,
+        activity: SessionActivity,
         store: ActiveSessionStore = ActiveSessionStore(),
         onDismiss: @escaping (SessionRecord) -> Void
     ) {
         self.minutesGoal = minutesGoal
-        self.intent = intent
+        self.activity = activity
         self.onDismiss = onDismiss
         _store = State(wrappedValue: store)
     }
@@ -50,7 +48,7 @@ struct ActiveSessionScreen: View {
             SheetBackground()
             content
         }
-        .onAppear { startIfKnown() }
+        .onAppear { startSession() }
         .onDisappear { store.reset() }
         .sheet(isPresented: $showRoute) {
             SessionRouteMapView(route: store.route) { showRoute = false }
@@ -61,24 +59,14 @@ struct ActiveSessionScreen: View {
         .sensoryFeedback(trigger: isFinishedState) { _, now in now ? .success : nil }
     }
 
-    /// Starts the session as soon as the screen appears, in every mode.
-    ///
-    /// « Les deux » starts **undecided** (issue #246): the sport is a
-    /// placeholder, nothing on screen names one, and the session's own motion
-    /// history settles it at `stop()` — before the workout is saved, because
-    /// the stamp is permanent.
+    /// Starts the session as soon as the screen appears.
     ///
     /// A named method rather than the body of `.onAppear`, and internal rather
     /// than private, because `.onAppear` never fires in a test process: inlined
-    /// there, the undecided flag could be dropped — every « les deux » session
-    /// silently stamped a walk again, which is exactly issue #223 — with the
-    /// whole suite green.
-    func startIfKnown() {
-        store.start(
-            minutesGoal: minutesGoal,
-            activity: intent.immediate ?? .walking,
-            isUndecided: intent.immediate == nil
-        )
+    /// there, the sport could be dropped — every session silently stamped a
+    /// walk again, which is exactly issue #223 — with the whole suite green.
+    func startSession() {
+        store.start(minutesGoal: minutesGoal, activity: activity)
     }
 
     private var isActiveState: Bool {
@@ -106,11 +94,7 @@ struct ActiveSessionScreen: View {
     private var sessionTitle: String {
         switch store.state {
         case .active(let session), .paused(let session), .finished(let session):
-            // « Ta sortie » too while « les deux » is unsettled (issue #246):
-            // naming a sport here and saving another one at the end would be
-            // the drift #225 was about, only worse — the screen would have been
-            // wrong for the whole outing.
-            session.isActivityUndecided ? String(localized: "Ta sortie") : session.activity.sessionTitle
+            session.activity.sessionTitle
         case .idle:
             String(localized: "Ta sortie")
         }
@@ -120,14 +104,8 @@ struct ActiveSessionScreen: View {
     private var content: some View {
         switch store.state {
         case .idle:
-            // The brief spinner while `onAppear` starts the session — for
-            // every mode now, « les deux » included.
-            //
-            // It used to ask, because nothing could tell a walk from a run and
-            // the stamp is permanent (issue #224). The phone can tell now, from
-            // the session's own motion history (issue #246), so the question
-            // has no answer the device will not produce by itself — and the
-            // whole point of the feature is « ne plus s'en soucier ».
+            // The brief spinner while `onAppear` starts the session, with the
+            // sport chosen on the home (#743).
             ProgressView()
         case .active(let session):
             walkBody(session: session, paused: false)
@@ -443,7 +421,7 @@ private struct ActiveSessionPreview: View {
         }
     }
     var body: some View {
-        ActiveSessionScreen(minutesGoal: 20, intent: .start(.walking), onDismiss: { _ in })
+        ActiveSessionScreen(minutesGoal: 20, activity: .walking, onDismiss: { _ in })
     }
 }
 

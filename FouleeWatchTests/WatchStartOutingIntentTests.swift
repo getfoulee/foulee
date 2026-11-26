@@ -4,7 +4,7 @@ import Testing
 @testable import FouleeWatch
 
 /// « Commencer une sortie » on the watch (issue #607): a named sport starts
-/// it, and an empty one does what « Démarrer » does with the synced mode.
+/// it, and an empty one does what « Démarrer » does: the last sport (#743).
 @Suite("Watch start outing intent")
 struct WatchStartOutingIntentTests {
     /// A throwaway suite, like `WatchStartActivityTests`: the real one is the
@@ -24,30 +24,22 @@ struct WatchStartOutingIntentTests {
     func aNamedSportWins() throws {
         try withDefaults { defaults in
             WatchSyncStore.write(payload(.walking), to: defaults)
-            #expect(StartOutingIntent.startIntent(for: .running, syncedTo: defaults) == .start(.running))
+            #expect(StartOutingIntent.activity(for: .running, syncedTo: defaults) == .running)
         }
     }
 
-    @Test("No sport named starts the synced one")
-    func noSportFollowsTheMode() throws {
+    @Test("No sport named, or « Dernier sport », starts what « Démarrer » would")
+    func noSportFollowsTheHomeButton() throws {
         try withDefaults { defaults in
             WatchSyncStore.write(payload(.running), to: defaults)
-            #expect(StartOutingIntent.startIntent(for: nil, syncedTo: defaults) == .start(.running))
+            #expect(StartOutingIntent.activity(for: nil, syncedTo: defaults) == .running)
+            #expect(StartOutingIntent.activity(for: .last, syncedTo: defaults) == .running)
         }
     }
 
-    /// The stamp in Santé is permanent (#223): « les deux » asks on the wrist.
-    @Test("No sport named with « les deux » asks")
-    func noSportWithBothAsks() throws {
-        try withDefaults { defaults in
-            WatchSyncStore.write(payload(.both), to: defaults)
-            #expect(StartOutingIntent.startIntent(for: nil, syncedTo: defaults) == .ask)
-        }
-    }
-
-    @Test("The Action button offers one workout per sport")
-    func theActionButtonOffersBothSports() {
-        let styles = StartWorkoutOutingIntent.suggestedWorkouts.map(\.workoutStyle.activity)
-        #expect(styles == [.walking, .running])
+    @Test("The Action button offers the last sport first, then one workout per sport")
+    func theActionButtonOffersTheLastSportFirst() {
+        let styles = StartWorkoutOutingIntent.suggestedWorkouts.map(\.workoutStyle)
+        #expect(styles == [.last, .walking, .running])
     }
 }

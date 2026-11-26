@@ -59,13 +59,13 @@ enum WatchScreenshotCapture {
         let session, legs: String
 
         static let french = Labels(
-            drank: "J'ai bu", start: "Démarrer",
+            drank: "J'ai bu", start: "Démarrer : Marche",
             music: "Musique", routeMap: "Plan du parcours", walkLeg: "Marche :",
             session: "Séance", legs: "Portions de la sortie"
         )
 
         static let english = Labels(
-            drank: "Had a glass", start: "Start",
+            drank: "Had a glass", start: "Start: Walk",
             music: "Music", routeMap: "Route map", walkLeg: "Walk:",
             session: "Session", legs: "Workout segments"
         )
