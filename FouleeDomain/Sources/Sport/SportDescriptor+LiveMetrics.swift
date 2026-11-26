@@ -16,4 +16,8 @@ nonisolated public extension SportDescriptor {
     /// Whether a live screen shows the climb and the descent: only for a sport
     /// the altimeter follows.
     var showsElevation: Bool { capabilities.contains(.elevation) }
+
+    /// Whether the climb is the main figure of a live screen, where steps
+    /// otherwise are (#744): for a sport told by its climb.
+    var leadsWithClimb: Bool { showsElevation && benchmarks.leadingRecord == .climb }
 }

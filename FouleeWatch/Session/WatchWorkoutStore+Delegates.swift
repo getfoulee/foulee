@@ -108,8 +108,12 @@ extension WatchWorkoutStore {
     /// Waiting costs no accuracy: the split carries `confirmed.date`, the
     /// instant the sport actually changed, and both HealthKit calls accept a
     /// past date.
+    ///
+    /// A hike or a trail ignores it (#744): one sport from start to finish,
+    /// whatever the pace on the climbs. Detection still runs for the cadence
+    /// and the hidden trace recorder.
     func applySwitch(_ confirmed: ActivitySwitchDetector.Switch) {
-        guard case .active = state else { return }
+        guard case .active = state, legActivity.sport.descriptor.followsGaitChanges else { return }
         currentActivity = confirmed.activity
         refreshActivityTotals(at: clock())
         // Back to what the leg is already recording: whatever was queued is

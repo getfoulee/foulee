@@ -116,6 +116,16 @@
         }
       }
     },
+    "Aucun dénivelé" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No elevation change"
+          }
+        }
+      }
+    },
     "Autorise l'eau dans Santé" : {
       "localizations" : {
         "en" : {
@@ -215,6 +225,10 @@
           }
         }
       }
+    },
+    "D+ / D− m" : {
+      "localizations" : {},
+      "shouldTranslate" : false
     },
     "Dernier sport" : {
       "localizations" : {

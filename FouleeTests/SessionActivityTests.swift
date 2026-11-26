@@ -21,13 +21,16 @@ import Testing
 /// (`FouleeWatchTests/WatchWorkoutStoreTests`).
 @Suite("Session activity")
 struct SessionActivityTests {
-    @Test("A run maps to HKWorkoutActivityType.running, a walk to .walking")
+    @Test("A run maps to HKWorkoutActivityType.running, a walk to .walking, a hike to .hiking")
     func healthKitMapping() {
         #expect(SessionActivity.running.hkActivityType == .running)
         #expect(SessionActivity.walking.hkActivityType == .walking)
+        #expect(SessionActivity.hiking.hkActivityType == .hiking)
+        // HealthKit has no trail type: Santé records a run (#744).
+        #expect(SessionActivity.trailRunning.hkActivityType == .running)
         // Spelled out rather than mapped over `allCases`, which would make the
         // assertion true by construction — the exact trap #217 fell into.
-        #expect(SessionActivity.allCases.count == 2)
+        #expect(SessionActivity.allCases.count == 4)
     }
 
     @Test("The two activities are named the way the rest of the app names them")

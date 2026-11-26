@@ -221,7 +221,7 @@ nonisolated public extension WorkoutEngine {
             return .notClosed(error)
         }
         do {
-            let next = try await startSession(Self.configuration(for: next.activity), boundary, next.leg, delegate)
+            let next = try await startSession(of: next.activity, at: boundary, leg: next.leg, delegate: delegate)
             return .changed(next: next)
         } catch {
             return .notOpened(error)
@@ -232,6 +232,28 @@ nonisolated public extension WorkoutEngine {
 // MARK: - Configuration and collection
 
 nonisolated public extension WorkoutEngine {
+    /// Open a session of `activity` at `date`, stamped with its sport (#744).
+    ///
+    /// The one way a session opens: HealthKit has no type for some sports (a
+    /// trail is a run in Santé), so the stamp goes on at the start, where a
+    /// session recovered after the app was killed can still read it.
+    @MainActor func startSession(
+        of activity: SessionActivity,
+        at date: Date,
+        leg: OutingLeg?,
+        delegate: (any WorkoutSessionDelegate)?
+    ) async throws -> WorkoutSessionHandle {
+        let handle = try await startSession(Self.configuration(for: activity), date, leg, delegate)
+        // Never a reason to lose the session: without it a trail reads back
+        // as a run.
+        do {
+            try await handle.addMetadata(activity.sport.workoutMetadata)
+        } catch {
+            FouleeLog.session.error("sport non noté : \(error.localizedDescription, privacy: .public)")
+        }
+        return handle
+    }
+
     /// The configuration HealthKit stamps a session of `activity` with: its
     /// type and where it happens, both from the sport's descriptor (ADR 0018).
     static func configuration(for activity: SessionActivity) -> HKWorkoutConfiguration {
@@ -421,7 +443,9 @@ nonisolated public extension WorkoutEngine {
             configuration: session.workoutConfiguration,
             collecting: collection
         )
-        guard let activity = SessionActivity(session.workoutConfiguration.activityType),
+        let tag = builder.metadata[FouleeWorkoutMetadata.sport] as? String
+        guard let sport = SportID(healthKitActivityRawValue: session.workoutConfiguration.activityType.rawValue, tag: tag),
+              let activity = SessionActivity(sport: sport),
               let startedAt = builder.startDate ?? session.startDate else {
             FouleeLog.session.error("séance retrouvée illisible")
             session.end()

@@ -20,6 +20,10 @@ nonisolated public enum FouleeWorkoutMetadata {
     // `OutingLeg`.
     public static let outingID = "com.eno33.foulee.workout.outingID"
     public static let legIndex = "com.eno33.foulee.workout.legIndex"
+
+    // The sport Foulée recorded, as its `SportID` raw value (#744): HealthKit
+    // has no type for some of them, and a trail run is a run in Santé.
+    public static let sport = "com.eno33.foulee.workout.sport"
 }
 
 /// Where one leg sits in its outing (issue #316).

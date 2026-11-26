@@ -21,9 +21,10 @@ import Foundation
 nonisolated public enum ActivityGlyph {
     public static let walk = "figure.walk"
     public static let run = "figure.run"
-    /// Read-side only: Foulée never records a hike, but the 7-day résumé has
-    /// listed them since #217 and now names them (#245).
     public static let hike = "figure.hiking"
+    /// A run on trails (#744): HealthKit's figure for a run, in a circle, so
+    /// it is not mistaken for a road run.
+    public static let trail = "figure.run.circle"
     /// Walk *and* run — also the neutral stand-in wherever the surface knows a
     /// session is running but not which activity it is (the Live Activity, see
     /// issue #225).

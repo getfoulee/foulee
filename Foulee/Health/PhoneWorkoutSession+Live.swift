@@ -25,7 +25,7 @@ private final class PhoneWorkoutSessionHolder {
 
     func start(_ activity: SessionActivity, at date: Date) async throws {
         guard handle == nil, engine.isAvailable() else { return }
-        handle = try await engine.startSession(WorkoutEngine.configuration(for: activity), date, nil, nil)
+        handle = try await engine.startSession(of: activity, at: date, leg: nil, delegate: nil)
     }
 
     func pause() { handle?.pause() }

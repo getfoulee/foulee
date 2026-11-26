@@ -200,11 +200,13 @@ struct ActiveSessionScreen: View {
         return VStack(spacing: 16) {
             ProgressRing(progress: progress, lineWidth: 16) {
                 VStack(spacing: 4) {
-                    Text(session.steps.groupedText())
+                    // A hike or a trail is told by its climb (#744), the
+                    // others by their steps.
+                    Text(leadsWithClimb(session) ? climbText(session) : session.steps.groupedText())
                         .scaledNumericFont(size: 56 * layout.scale)
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
-                    Text("PAS")
+                    Text(leadsWithClimb(session) ? "D+ / D−" : "PAS")
                         .font(FouleeFont.footnote.weight(.semibold))
                         .foregroundStyle(.secondary)
                     if !isAccessibilitySize {
@@ -235,11 +237,20 @@ struct ActiveSessionScreen: View {
         FigureRow(spacing: 12, ruleHeight: 28) {
             metric(value: session.distanceKm.kmText(fractionDigits: 1), label: "Distance")
             metric(value: "\(session.estimatedCalories) kcal", label: "Énergie")
-            metric(
-                value: "\(Int(session.elevationGainMeters)) / \(Int(session.elevationLossMeters)) m",
-                label: "D+ / D−"
-            )
+            if leadsWithClimb(session) {
+                metric(value: session.steps.groupedText(), label: "Pas")
+            } else {
+                metric(value: climbText(session), label: "D+ / D−")
+            }
         }
+    }
+
+    private func leadsWithClimb(_ session: SessionRecord) -> Bool {
+        session.activity.sport.descriptor.leadsWithClimb
+    }
+
+    private func climbText(_ session: SessionRecord) -> String {
+        "\(Int(session.elevationGainMeters)) / \(Int(session.elevationLossMeters)) m"
     }
 
     /// The ring reads as one VoiceOver element (above), so its figures

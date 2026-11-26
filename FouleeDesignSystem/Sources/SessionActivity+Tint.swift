@@ -8,7 +8,9 @@ nonisolated extension SessionActivity {
     public var tint: Color {
         switch self {
         case .walking: ActivityPalette.walk
-        case .running: ActivityPalette.run
+        // A trail is a run, and never sits beside a road run in one outing.
+        case .running, .trailRunning: ActivityPalette.run
+        case .hiking: ActivityPalette.hike
         }
     }
 }

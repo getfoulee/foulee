@@ -9,7 +9,10 @@ struct SportIDHealthKitTests {
     @Test("Every sport has a real HealthKit type and reads back as itself", arguments: SportID.allCases)
     func roundTrip(sport: SportID) {
         #expect(sport.hkActivityType != .other)
-        #expect(SportID(sport.hkActivityType) == sport)
+        // A trail is a run in Santé; only Foulée's tag tells it apart (#744).
+        let tag = sport.workoutMetadata[FouleeWorkoutMetadata.sport] as? String
+        #expect(SportID(healthKitActivityRawValue: sport.hkActivityType.rawValue, tag: tag) == sport)
+        #expect(SportID(sport.hkActivityType) == (sport == .trailRunning ? .running : sport))
     }
 
     @Test("The table stamps the types HealthKit has always had for walk, run and hike")
