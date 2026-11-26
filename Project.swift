@@ -250,7 +250,8 @@ let project = Project(
             ],
             entitlements: .file(path: "FouleeLiveActivity/Resources/FouleeLiveActivity.entitlements"),
             dependencies: [
-                .target(name: "FouleeDomain")
+                .target(name: "FouleeDomain"),
+                .target(name: "FouleeDesignSystem")
             ]
         ),
         .target(
@@ -315,6 +316,7 @@ let project = Project(
             entitlements: .file(path: "FouleeWatchWidget/Resources/FouleeWatchWidget.entitlements"),
             dependencies: [
                 .target(name: "FouleeDomain"),
+                .target(name: "FouleeDesignSystem"),
                 .target(name: "FouleeHealth")
             ]
         ),

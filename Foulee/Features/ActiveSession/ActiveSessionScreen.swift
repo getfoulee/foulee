@@ -264,20 +264,17 @@ struct ActiveSessionScreen: View {
         }
     }
 
+    /// The ring reads as one VoiceOver element (above), so its figures
+    /// speak through it.
     private func metric(value: String, label: LocalizedStringResource) -> some View {
-        VStack(spacing: 2) {
-            Text(value)
-                .scaledNumericFont(size: 17, weight: .semibold)
-                .minimumScaleFactor(0.7)
-                .lineLimit(1)
-            // One line, shrunk if needed: the ring is a fixed 232 pt, and at the
-            // accessibility sizes « Distance » broke mid-word (issue #408).
-            Text(label)
-                .font(FouleeFont.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-        }
+        MetricTile(
+            title: String(localized: label),
+            value: value,
+            icon: nil,
+            tint: .secondary,
+            shape: .compact,
+            size: .small
+        )
     }
 
     private var heartRatePlaceholder: some View {

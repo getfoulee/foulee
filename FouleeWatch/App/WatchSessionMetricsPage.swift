@@ -160,19 +160,14 @@ struct WatchSessionMetricsPage: View {
     ///
     /// One VoiceOver element each, the figure with its unit in words.
     private func metric(value: String, label: String, spoken: String, icon: String, tint: Color) -> some View {
-        VStack(spacing: 1) {
-            Text(value)
-                .scaledNumericFont(size: 17, weight: .semibold)
-            // Shrinks rather than wraps: « steps » is longer than « pas », and
-            // at the largest sizes it split mid-word like « pa/s » once did (#588).
-            Label(label, systemImage: icon)
-                .font(.caption2)
-                .foregroundStyle(tint)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(spoken)
+        MetricTile(
+            title: label,
+            value: value,
+            icon: icon,
+            tint: tint,
+            shape: .compact,
+            size: .small,
+            speech: .spoken(label: spoken, value: nil)
+        )
     }
 }

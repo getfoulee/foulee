@@ -38,13 +38,15 @@ private struct TodayStatusSnippet: View {
 
     var body: some View {
         FigureRow(spacing: 12) {
-            StatBlock(
-                systemIcon: FouleeIcon.flame,
-                label: "Série",
+            MetricTile(
+                title: String(localized: "Série"),
                 value: "\(snapshot.streak)",
-                sub: snapshot.streak == 1 ? String(localized: "jour") : String(localized: "jours"),
-                spokenValue: spokenStreakText(days: snapshot.streak),
-                tint: ReadablePalette.orangeText
+                unit: snapshot.streak == 1 ? String(localized: "jour") : String(localized: "jours"),
+                icon: FouleeIcon.flame,
+                tint: ReadablePalette.orangeText,
+                shape: .card,
+                size: .large,
+                speech: .spoken(label: String(localized: "Série"), value: spokenStreakText(days: snapshot.streak))
             )
             tile(.minutes, snapshot.minutes, goal: snapshot.minutesGoal)
             tile(.steps, snapshot.steps, goal: snapshot.stepsGoal)
@@ -53,13 +55,11 @@ private struct TodayStatusSnippet: View {
     }
 
     private func tile(_ metric: MetricID, _ value: Int, goal: Int) -> some View {
-        StatBlock(
-            systemIcon: metric.glyph,
-            label: .verbatim(metric.title),
+        MetricTile(
+            metric,
             value: value.groupedText(),
-            sub: "/ \(goal.groupedText())",
-            spokenValue: metric.spokenText(Double(value), goal: Double(goal)),
-            tint: metric.labelTint
+            unit: "/ \(goal.groupedText())",
+            spokenValue: metric.spokenText(Double(value), goal: Double(goal))
         )
     }
 }

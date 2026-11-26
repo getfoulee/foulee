@@ -176,26 +176,17 @@ struct WorkoutDetailSheet: View {
         spokenLabel: LocalizedStringResource? = nil,
         spokenValue: String? = nil
     ) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .scaledSystemFont(size: 14, weight: .semibold)
-                    .foregroundStyle(tint)
-                Text(label)
-                    .font(FouleeFont.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
-            Text(value)
-                .scaledNumericFont(size: 22, weight: .semibold)
-                .minimumScaleFactor(0.7)
-                .lineLimit(1)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        MetricTile(
+            title: String(localized: label),
+            value: value,
+            icon: icon,
+            tint: tint,
+            shape: .card,
+            size: .medium,
+            speech: .spoken(label: String(localized: spokenLabel ?? label), value: spokenValue ?? value)
+        )
         .padding(14)
         .fouleeGlass(cornerRadius: 18)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(spokenLabel ?? label))
-        .accessibilityValue(spokenValue ?? value)
     }
 
     /// Santé has the workout, except a Garmin outing Garmin Connect hasn't

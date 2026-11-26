@@ -93,14 +93,10 @@ struct DesignSystemGallery: View {
     private var stats: some View {
         section("Stat blocks") {
             LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 18) {
-                StatBlock(systemIcon: FouleeIcon.footsteps, label: "Pas",
-                          value: "4 218", sub: "/ 6 000", tint: FouleeColor.accentMid)
-                StatBlock(systemIcon: FouleeIcon.timer, label: "Minutes",
-                          value: "24", sub: "/ 20", tint: MetricID.minutes.tint)
-                StatBlock(systemIcon: FouleeIcon.distance, label: "Distance",
-                          value: "1,8 km", sub: nil, tint: Color(hex: 0x0A84FF))
-                StatBlock(systemIcon: FouleeIcon.flame, label: "Calories",
-                          value: "142", sub: "kcal", tint: FouleeColor.warning)
+                MetricTile(.steps, value: "4 218", unit: "/ 6 000")
+                MetricTile(.minutes, value: "24", unit: "/ 20")
+                MetricTile(.distance, value: "1,8 km", shape: .compact, size: .medium)
+                MetricTile(.calories, value: "142", unit: "kcal", size: .small)
             }
             .padding(18)
             .fouleeGlass(cornerRadius: 24)
