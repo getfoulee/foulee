@@ -87,7 +87,7 @@ final class ActiveSessionStore {
     private var routeTask: Task<Void, Never>?
 
     @ObservationIgnored
-    private var liveActivity: Activity<WalkActivityAttributes>?
+    private var liveActivity: Activity<SessionActivityAttributes>?
 
     // A pause splits the walk into segments. `banked*` carries the totals
     // from finished segments; the live segment (started at `segmentStart`,
@@ -402,11 +402,14 @@ private extension ActiveSessionStore {
         // by a previous *build* — see `WalkActivityAttributes.init(from:)` for
         // why that enumeration is only reachable while the attributes still
         // decode last version's payload.
+        for stray in Activity<SessionActivityAttributes>.activities {
+            Task { await stray.end(nil, dismissalPolicy: .immediate) }
+        }
         for stray in Activity<WalkActivityAttributes>.activities {
             Task { await stray.end(nil, dismissalPolicy: .immediate) }
         }
         let attributes = liveActivityAttributes(minutesGoal: minutesGoal)
-        let state = WalkActivityAttributes.SessionState(
+        let state = SessionActivityState(
             timerBasis: date.now,
             pausedAt: nil,
             elapsed: 0,
@@ -459,9 +462,9 @@ private extension ActiveSessionStore {
     func activityState(
         for session: SessionRecord,
         isPaused: Bool
-    ) -> WalkActivityAttributes.SessionState {
+    ) -> SessionActivityState {
         let now = date.now
-        return WalkActivityAttributes.SessionState(
+        return SessionActivityState(
             timerBasis: now.addingTimeInterval(-session.elapsed),
             pausedAt: isPaused ? now : nil,
             elapsed: session.elapsed,

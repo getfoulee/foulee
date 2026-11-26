@@ -239,6 +239,7 @@ let project = Project(
                 // ActivityKit, which FouleeDomain does not import: macOS has none.
                 // `SessionActivity+HealthKit` stays out of this extension too,
                 // so no HealthKit is pulled into a process that writes nothing.
+                "Foulee/Session/SessionActivityAttributes.swift",
                 "Foulee/Session/WalkActivityAttributes.swift"
             ],
             resources: [

@@ -73,7 +73,7 @@ extension ActiveSessionStore {
         return total
     }
 
-    func liveActivityAttributes(minutesGoal: Int) -> WalkActivityAttributes {
+    func liveActivityAttributes(minutesGoal: Int) -> SessionActivityAttributes {
         let activity: SessionActivity? = switch state {
         case .idle: nil
         case .active(let session), .paused(let session), .finished(let session):
@@ -82,6 +82,6 @@ extension ActiveSessionStore {
             // to overwrite (issue #246).
             session.isActivityUndecided ? nil : session.activity
         }
-        return WalkActivityAttributes(goalMinutes: minutesGoal, activity: activity)
+        return SessionActivityAttributes(goalMinutes: minutesGoal, activity: activity)
     }
 }
