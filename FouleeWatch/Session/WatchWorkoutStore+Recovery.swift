@@ -23,13 +23,13 @@ extension WatchWorkoutStore {
         // Capture mode (issue #239): nothing reaches HealthKit.
         guard !WatchScreenshotMode.isActive else { return }
         #endif
-        guard healthKit.isAvailable() else { return }
+        guard engine.isAvailable() else { return }
         isRecovering = true
         defer { isRecovering = false }
-        guard let recovered = await healthKit.recoverSession(self) else { return }
+        guard let recovered = await engine.recoverSession(self) else { return }
         var earlier: [WatchWorkoutSegment] = []
         if let leg = recovered.leg {
-            earlier = await healthKit.savedLegs(leg.outingID)
+            earlier = await savedLegs(leg.outingID)
         }
         await adopt(
             recovered.handle,

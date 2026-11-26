@@ -3,7 +3,6 @@ import FouleeDomain
 import Foundation
 import HealthKit
 import Testing
-@testable import FouleeWatch
 
 /// What a live session actually collects (issue #223).
 ///
@@ -20,10 +19,7 @@ import Testing
 @Suite("Watch workout collection")
 struct WatchWorkoutCollectionTests {
     private func configuration(_ activity: SessionActivity) -> HKWorkoutConfiguration {
-        let configuration = HKWorkoutConfiguration()
-        configuration.activityType = activity.hkActivityType
-        configuration.locationType = .outdoor
-        return configuration
+        WorkoutEngine.configuration(for: activity)
     }
 
     private func inferredTypes(_ activity: SessionActivity) -> Set<HKQuantityType> {
@@ -34,20 +30,21 @@ struct WatchWorkoutCollectionTests {
     }
 
     private func collectedTypes(_ activity: SessionActivity) -> Set<HKQuantityType> {
-        WatchWorkoutHealthKit.makeDataSource(
+        WorkoutEngine.makeDataSource(
             healthStore: HKHealthStore(),
-            configuration: configuration(activity)
+            configuration: configuration(activity),
+            collecting: .measured
         ).typesToCollect
     }
 
     @Test("Every type the store reads back is collected, for a walk and for a run")
     func everyIngestedTypeIsCollected() {
         // The contract that matters: `ingest` reads exactly
-        // `collectedQuantityTypes`, so anything missing here is a live counter
+        // `WorkoutEngine.collectedTypes`, so anything missing here is a live counter
         // stuck at 0 for the whole session. Both activities, because the
         // inference is not the same for both — see the next test.
         for activity in SessionActivity.allCases {
-            #expect(collectedTypes(activity).isSuperset(of: collectedQuantityTypes))
+            #expect(collectedTypes(activity).isSuperset(of: WorkoutEngine.collectedTypes(for: activity.sport)))
         }
     }
 
@@ -73,16 +70,43 @@ struct WatchWorkoutCollectionTests {
         // read). So the enable changes nothing for a run — it is not what makes
         // running work, it is what keeps a future inference change from
         // breaking it.
-        #expect(inferredTypes(.running).isSuperset(of: collectedQuantityTypes))
+        #expect(inferredTypes(.running).isSuperset(of: WorkoutEngine.collectedTypes(for: .running)))
     }
 
     @Test("Enabling never drops a type the source had already inferred")
     func enablingIsAdditive() {
-        // The "no-op when already inferred" claim in `makeDataSource`, held
+        // The "no-op when already inferred" claim in `WorkoutEngine.makeDataSource`, held
         // rather than asserted in prose: a walk keeps its inferred set and
         // gains step count; a run keeps everything, running dynamics included.
         for activity in SessionActivity.allCases {
             #expect(collectedTypes(activity).isSuperset(of: inferredTypes(activity)))
+        }
+    }
+
+    @Test("A session that measures nothing collects nothing (#730)")
+    func phoneCollectsNothing() {
+        // The iPhone's builder: iOS already writes the phone's steps and
+        // distance, so a sample from the builder would count the day twice.
+        for activity in SessionActivity.allCases {
+            let source = WorkoutEngine.makeDataSource(
+                healthStore: HKHealthStore(),
+                configuration: configuration(activity),
+                collecting: .nothing
+            )
+            #expect(source.typesToCollect.isEmpty)
+        }
+    }
+
+    @Test("Every recordable sport collects steps, distance, energy and heart rate")
+    func collectedTypesFollowTheCapabilities() {
+        let expected: Set<HKQuantityType> = [
+            HKQuantityType(.stepCount),
+            HKQuantityType(.distanceWalkingRunning),
+            HKQuantityType(.activeEnergyBurned),
+            HKQuantityType(.heartRate)
+        ]
+        for activity in SessionActivity.allCases {
+            #expect(Set(WorkoutEngine.collectedTypes(for: activity.sport)) == expected)
         }
     }
 }

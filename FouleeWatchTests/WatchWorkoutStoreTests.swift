@@ -1,5 +1,6 @@
 import CoreLocation
 import FouleeDomain
+import FouleeHealth
 import Foundation
 import HealthKit
 import Testing
@@ -9,7 +10,7 @@ struct StubError: LocalizedError {
     var errorDescription: String? { "boom" }
 }
 
-/// Scriptable stand-in for `WatchWorkoutHealthKit.live`: records every call,
+/// Scriptable stand-in for `WorkoutEngine.live`: records every call,
 /// throws on demand, and tracks the handle's lifetime so tests can assert
 /// that the store releases (or deliberately retains) the builder.
 final class WorkoutHealthKitStub {
@@ -95,7 +96,7 @@ final class WorkoutHealthKitStub {
         route: WatchRouteStore = WatchRouteStore(source: .inert),
         climb: WatchClimbStore = WatchClimbStore(source: .inert)
     ) -> WatchWorkoutStore {
-        WatchWorkoutStore(healthKit: WatchWorkoutHealthKit(
+        WatchWorkoutStore(engine: WorkoutEngine(
             isAvailable: { self.isAvailable },
             requestAuthorization: { toShare, read in
                 self.requestedShareTypes = toShare
@@ -106,7 +107,7 @@ final class WorkoutHealthKitStub {
                 self.startCalls += 1
                 self.startedConfiguration = configuration
                 self.startedLegs.append((configuration, startDate))
-                self.outingLegs.append(leg)
+                if let leg { self.outingLegs.append(leg) }
                 if let error = self.startError { throw error }
                 return self.makeHandle()
             },
@@ -114,7 +115,7 @@ final class WorkoutHealthKitStub {
                 self.recoverCalls += 1
                 guard let session = self.recoverable else { return nil }
                 self.recoverable = nil
-                return WatchRecoveredSession(
+                return RecoveredWorkoutSession(
                     handle: self.makeHandle(),
                     activity: session.activity,
                     startedAt: session.startedAt,
@@ -122,22 +123,21 @@ final class WorkoutHealthKitStub {
                     elapsed: session.elapsed,
                     isPaused: session.isPaused
                 )
-            },
-            savedLegs: { outingID in
-                self.savedLegsAsked.append(outingID)
-                return self.savedLegs
             }
-        ), detection: detection, route: route, climb: climb, battery: { self.battery }, clock: clock.read)
+        ), savedLegs: { outingID in
+            self.savedLegsAsked.append(outingID)
+            return self.savedLegs
+        }, detection: detection, route: route, climb: climb, battery: { self.battery }, clock: clock.read)
     }
 
-    private func makeHandle() -> WatchWorkoutSessionHandle {
+    private func makeHandle() -> WorkoutSessionHandle {
         let token = NSObject()
         handleToken = token
         // One object stands for both the session and its builder here. Real
         // HealthKit hands out two, and the store keeps them apart; a stub has
         // nothing to gain from the distinction.
         handleIDs.append(ObjectIdentifier(token))
-        return WatchWorkoutSessionHandle(
+        return WorkoutSessionHandle(
             sessionID: ObjectIdentifier(token),
             builderID: ObjectIdentifier(token),
             startMirroring: {
@@ -173,13 +173,13 @@ final class WorkoutHealthKitStub {
             collectionEndDate: { self.collectionEndDate },
             pause: { self.pauseCalls += 1 },
             resume: { self.resumeCalls += 1 },
-            addClimb: { self.climbs.append($0) }
+            addMetadata: { self.climbs.append(Elevation(metadata: $0)) }
         )
     }
 }
 
 /// What a stub session left running says about itself (issue #554): a
-/// `WatchRecoveredSession` without its handle, which the stub makes.
+/// `RecoveredWorkoutSession` without its handle, which the stub makes.
 struct RecoverableSession {
     var activity: SessionActivity
     var startedAt: Date
@@ -226,7 +226,7 @@ struct WatchWorkoutStoreTests {
         // Same list the data source collects (issue #223). Collected but not
         // shareable is exactly the authorization error that makes a perfectly
         // good session fail to save at the end.
-        for type in collectedQuantityTypes {
+        for type in WorkoutEngine.collectedTypes(for: .running) {
             #expect(stub.requestedShareTypes.contains(type))
             #expect(stub.requestedReadTypes.contains(type))
         }
@@ -446,5 +446,16 @@ extension WatchWorkoutStoreTests {
     func ended(_ store: WatchWorkoutStore) -> Bool? {
         guard case .ended(_, let saveFailed) = store.state else { return nil }
         return saveFailed
+    }
+}
+
+extension Elevation {
+    /// The climb a stub leg was stamped with, read back from the metadata
+    /// `Elevation.metadata` writes.
+    init(metadata: [String: Any]) {
+        func metres(_ key: String) -> Double {
+            (metadata[key] as? HKQuantity)?.doubleValue(for: .meter()) ?? 0
+        }
+        self.init(ascent: metres(HKMetadataKeyElevationAscended), descent: metres(HKMetadataKeyElevationDescended))
     }
 }

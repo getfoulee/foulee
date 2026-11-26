@@ -21,29 +21,14 @@ extension WatchWorkoutStore {
     // watch is the authoritative source during a workout, so these don't
     // double-count the daily totals.
     //
-    // Derived from `collectedQuantityTypes` rather than spelled out again: the
-    // set that must be authorized *is* the set the data source collects, and
-    // the two drifting apart is precisely the authorization failure above.
-    // The route rides along (issue #312); refusing it costs the map, never the
-    // workout.
+    // Derived from `WorkoutEngine.collectedTypes` for every sport the watch
+    // records rather than spelled out again: the set that must be authorized
+    // *is* the set the data source collects. The route rides along (issue
+    // #312); refusing it costs the map, never the workout.
     static let writeTypes: Set<HKSampleType> = Set(
-        collectedQuantityTypes.map { $0 as HKSampleType }
+        SessionActivity.allCases.flatMap { WorkoutEngine.collectedTypes(for: $0.sport) }.map { $0 as HKSampleType }
     ).union([HKWorkoutType.workoutType(), HKSeriesType.workoutRoute()])
     static let readTypes: Set<HKObjectType> = Set(writeTypes.map { $0 as HKObjectType })
-
-    /// The configuration HealthKit stamps a session — or one of its nested
-    /// activities — with.
-    ///
-    /// One builder for both, because a nested activity of the same kind must be
-    /// configured exactly like the session that would have started as it:
-    /// `locationType` drifting between the two would make the same walk measure
-    /// differently depending on whether it was chosen or detected.
-    static func configuration(for activity: SessionActivity) -> HKWorkoutConfiguration {
-        let configuration = HKWorkoutConfiguration()
-        configuration.activityType = activity.hkActivityType
-        configuration.locationType = .outdoor
-        return configuration
-    }
 
     /// The shortest stretch that deserves a workout of its own.
     ///
@@ -79,7 +64,7 @@ extension WatchWorkoutStore {
     /// The log line is the point. Nothing about this path can be exercised in a
     /// simulator — `HKWorkoutSession` needs a real watch — so the first outing
     /// on a wrist is the test, and it has to leave a trace either way.
-    func offerMirror(_ handle: WatchWorkoutSessionHandle) async {
+    func offerMirror(_ handle: WorkoutSessionHandle) async {
         do {
             try await handle.startMirroring()
             FouleeLog.session.notice("miroir offert à l'iPhone")
