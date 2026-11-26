@@ -71,6 +71,21 @@ struct WatchStartActivityTests {
         }
     }
 
+    @Test("The favourites sent win over the mode")
+    func theFavouritesSentWin() throws {
+        try withDefaults { defaults in
+            // A mode that disagrees, as an iPhone writes for a third sport the
+            // mode cannot name: the favourites are what the wrist offers.
+            var sent = payload(.walking)
+            sent.favoriteSports = [.running]
+            WatchSyncStore.write(sent, to: defaults)
+            let choice = WatchRootView.sportChoice(syncedTo: defaults)
+            #expect(choice.activity == .running)
+            #expect(choice.sections.favorites == [.running])
+            #expect(choice.sections.others == [.walking])
+        }
+    }
+
     @Test("A watch that never received a payload starts a walk")
     func freshPairingStartsAWalk() throws {
         try withDefaults { defaults in

@@ -43,6 +43,14 @@ nonisolated public enum FavoriteSportsPreference {
         return sports.isEmpty ? [.walking] : sports
     }
 
+    /// The favourite sports once `migrate` has run on `store`, `nil` before:
+    /// a background wake can come before the first launch of a build that
+    /// migrates, and its stored mode is then the only answer.
+    public static func migratedFavoriteSports(in store: SettingsKeyValueStore) -> Set<SportID>? {
+        let version = store.object(forKey: schemaVersionKey) as? Int ?? 0
+        return version >= schemaVersion ? favoriteSports(in: store) : nil
+    }
+
     /// Writes `sports` under `key`, keeping any stored sport this build does
     /// not know: a newer build on another iPhone chose it, and this one must
     /// not erase it each time it applies what iCloud brought.

@@ -21,9 +21,13 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
     /// one: a payload that defaulted it would silently reset the watch to
     /// walking on the first Health wake.
     ///
-    /// The watch reads the favourite sports from it, for « Autre sport »
-    /// (#743).
+    /// Kept for a watch older than #831, which reads the favourites from it.
     public var activityMode: ActivityMode
+    /// The favourite sports (#831), which the mode cannot all name: it turns
+    /// any sport but walking and running into walking. `nil` from an iPhone
+    /// older than #831, or from a background wake before the first launch
+    /// migrated the preferences.
+    public var favoriteSports: Set<SportID>?
     /// The iPhone's last sport (#743). The watch starts the newer of this one
     /// and its own. Both producers push it, for the same reason as the mode.
     public var lastSport: LastSport?
@@ -39,6 +43,7 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         hydrationGoalML: Int = 2_000,
         hydrationGlassML: Int = 250,
         activityMode: ActivityMode = .walking,
+        favoriteSports: Set<SportID>? = nil,
         lastSport: LastSport? = nil,
         recordsDetectionTraces: Bool = false
     ) {
@@ -49,6 +54,7 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         self.hydrationGoalML = hydrationGoalML
         self.hydrationGlassML = hydrationGlassML
         self.activityMode = activityMode
+        self.favoriteSports = favoriteSports
         self.lastSport = lastSport
         self.recordsDetectionTraces = recordsDetectionTraces
     }
@@ -66,9 +72,22 @@ nonisolated public struct WatchSyncPayload: Codable, Sendable {
         hydrationGoalML = try container.decodeIfPresent(Int.self, forKey: .hydrationGoalML) ?? 2_000
         hydrationGlassML = try container.decodeIfPresent(Int.self, forKey: .hydrationGlassML) ?? 250
         activityMode = try container.decodeIfPresent(ActivityMode.self, forKey: .activityMode) ?? .walking
+        // A sport only a newer build of the iPhone knows is skipped; none
+        // left reads as absent, and the mode stands for the favourites.
+        let sports = (try? container.decodeIfPresent([String].self, forKey: .favoriteSports))?
+            .compactMap(SportID.init(rawValue:))
+        favoriteSports = sports.flatMap { $0.isEmpty ? nil : Set($0) }
         // A sport only a newer build of the iPhone knows reads as none.
         lastSport = try? container.decodeIfPresent(LastSport.self, forKey: .lastSport)
         recordsDetectionTraces = try container.decodeIfPresent(Bool.self, forKey: .recordsDetectionTraces) ?? false
+    }
+}
+
+nonisolated public extension WatchSyncPayload {
+    /// The favourite sports the watch offers first: the ones sent, or the
+    /// mode's for a payload without them.
+    var favorites: Set<SportID> {
+        favoriteSports ?? activityMode.favoriteSports
     }
 }
 
