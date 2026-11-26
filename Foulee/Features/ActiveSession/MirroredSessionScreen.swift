@@ -201,20 +201,17 @@ struct MirroredSessionScreen: View {
     /// `spokenUnit` when the written one is an abbreviation VoiceOver spells
     /// out letter by letter — « bpm ».
     private func tile(_ value: String, _ label: LocalizedStringResource, spokenUnit: LocalizedStringResource? = nil) -> some View {
-        VStack(spacing: 2) {
-            Text(value)
-                .scaledNumericFont(size: 28, weight: .semibold)
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
+        MetricTile(
+            title: String(localized: label),
+            value: value,
+            icon: nil,
+            tint: .secondary,
+            shape: .compact,
+            size: .large,
+            speech: .spoken(label: "\(value) \(String(localized: spokenUnit ?? label))", value: nil)
+        )
         .padding(.vertical, 14)
         .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("\(value) \(spokenUnit ?? label)"))
     }
 
     /// Ends the outing — on the wrist (issue #282).

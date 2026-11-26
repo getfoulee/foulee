@@ -214,22 +214,17 @@ struct RecapHighlights: View {
     }
 
     private func tile(icon: String, tint: Color, title: LocalizedStringResource, value: String, detail: String) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Label { Text(title) } icon: { Image(systemName: icon) }
-                .font(FouleeFont.footnote.weight(.semibold))
-                .foregroundStyle(tint)
-            Text(value)
-                .scaledNumericFont(size: 22)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            Text(detail)
-                .font(FouleeFont.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        MetricTile(
+            title: String(localized: title),
+            value: value,
+            detail: detail,
+            icon: icon,
+            tint: tint,
+            shape: .card,
+            size: .medium
+        )
         .padding(14)
         .fouleeGlass(cornerRadius: 20)
-        .accessibilityElement(children: .combine)
     }
 }
 

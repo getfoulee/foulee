@@ -1,3 +1,4 @@
+import FouleeDesignSystem
 import FouleeHealth
 import FouleeDomain
 @preconcurrency import HealthKit
@@ -231,14 +232,15 @@ struct WatchStatComplicationView: View {
     }
 
     private var rectangular: some View {
-        HStack(spacing: 6) {
-            Image(systemName: entry.metric.metricID.glyph).font(.system(size: 20, weight: .bold))
-            VStack(alignment: .leading, spacing: 0) {
-                Text(valueText)
-                    .font(.system(size: 18, weight: .bold, design: .rounded)).monospacedDigit()
-                Text(entry.metric.metricID.unit).font(.system(size: 11)).foregroundStyle(.secondary)
-            }
-        }
+        MetricTile(
+            title: nil,
+            value: valueText,
+            unit: entry.metric.metricID.unit,
+            icon: entry.metric.metricID.glyph,
+            tint: .primary,
+            shape: .card,
+            size: .small
+        )
     }
 
     private var inline: some View {

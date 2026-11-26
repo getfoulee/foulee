@@ -80,14 +80,7 @@ struct TodayStatsGrid: View {
     /// A metric's tile, in its ring's colour (#366).
     private func tile(_ metric: MetricID, _ value: String, sub: String? = nil, spoken: String? = nil) -> some View {
         metricButton(metric) {
-            StatBlock(
-                systemIcon: metric.glyph,
-                label: .verbatim(metric.title),
-                value: value,
-                sub: sub,
-                spokenValue: spoken,
-                tint: metric.labelTint
-            )
+            MetricTile(metric, value: value, unit: sub, spokenValue: spoken)
         }
     }
 

@@ -97,19 +97,18 @@ struct WatchTodayView: View {
     /// One VoiceOver element per tile, its figures in words: « 8 240 pas sur
     /// 10 000 pas », « 4,2 kilomètres » (issue #600).
     private func stat(_ metric: MetricID, value: Double, goal: Double? = nil) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Image(systemName: metric.glyph).scaledSystemFont(size: 13, weight: .bold).foregroundStyle(metric.tint)
-            Text(metric.formatted(value))
-                .scaledNumericFont(size: 18, weight: .bold).minimumScaleFactor(0.6).lineLimit(1)
-            Text(goal.map { "/ \(metric.formatted($0)) \(metric.unit)" } ?? metric.unit)
-                .scaledSystemFont(size: 11).foregroundStyle(.secondary)
-                .minimumScaleFactor(0.7).lineLimit(1)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        MetricTile(
+            title: nil,
+            value: metric.formatted(value),
+            detail: goal.map { "/ \(metric.formatted($0)) \(metric.unit)" } ?? metric.unit,
+            icon: metric.glyph,
+            tint: metric.tint,
+            shape: .card,
+            size: .small,
+            speech: .spoken(label: goal.map { metric.spokenText(value, goal: $0) } ?? metric.spokenText(value), value: nil)
+        )
         .padding(8)
         .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(goal.map { metric.spokenText(value, goal: $0) } ?? metric.spokenText(value))
     }
 
     /// No payload ever received from the phone — explain why the streak and

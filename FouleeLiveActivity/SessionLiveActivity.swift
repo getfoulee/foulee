@@ -1,4 +1,5 @@
 import ActivityKit
+import FouleeDesignSystem
 import FouleeDomain
 import SwiftUI
 import WidgetKit
@@ -70,16 +71,16 @@ where Attributes.ContentState == SessionActivityState {
                         ForEach(context.attributes.cellMetrics) { metric in
                             statCell(
                                 value: context.state.valueText(for: metric),
-                                label: Text(metric.unit),
+                                label: metric.unit,
                                 icon: metric.glyph,
-                                spoken: Text(context.state.spokenText(for: metric))
+                                spoken: context.state.spokenText(for: metric)
                             )
                         }
                         statCell(
                             value: "\(context.attributes.goalMinutes)",
-                            label: Text("min objectif"),
+                            label: String(localized: "min objectif"),
                             icon: "target",
-                            spoken: Text(spokenGoalText(minutes: context.attributes.goalMinutes))
+                            spoken: spokenGoalText(minutes: context.attributes.goalMinutes)
                         )
                     }
                 }
@@ -113,21 +114,16 @@ where Attributes.ContentState == SessionActivityState {
 
     /// `spoken` is the whole cell for VoiceOver: « — kcal » would be read
     /// « tiret k cal » and « 30 min objectif » word by word (issue #601).
-    private func statCell(value: String, label: Text, icon: String, spoken: Text) -> some View {
-        VStack(spacing: 2) {
-            Image(systemName: icon)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-            Text(value)
-                .font(.system(.callout, design: .rounded, weight: .semibold))
-                .monospacedDigit()
-            label
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(spoken)
+    private func statCell(value: String, label: String, icon: String, spoken: String) -> some View {
+        MetricTile(
+            title: label,
+            value: value,
+            icon: icon,
+            tint: .secondary,
+            shape: .compact,
+            size: .small,
+            speech: .spoken(label: spoken, value: nil)
+        )
     }
 }
 

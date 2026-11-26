@@ -195,15 +195,17 @@ struct StatWidgetView: View {
     }
 
     private var rectangular: some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon).font(.system(size: 22, weight: .bold))
-            VStack(alignment: .leading, spacing: 0) {
-                Text(valueText + (hasGoal ? " / \(goalText)" : ""))
-                    .font(.system(size: 17, weight: .bold, design: .rounded))
-                    .monospacedDigit()
-                Text(label).font(.system(size: 11)).foregroundStyle(.secondary)
-                FreshnessStamp(fetchedAt: entry.fetchedAt).foregroundStyle(.secondary)
-            }
+        VStack(alignment: .leading, spacing: 0) {
+            MetricTile(
+                title: String(localized: label),
+                value: valueText,
+                unit: hasGoal ? "/ \(goalText)" : nil,
+                icon: icon,
+                tint: .primary,
+                shape: .card,
+                size: .small
+            )
+            FreshnessStamp(fetchedAt: entry.fetchedAt).foregroundStyle(.secondary)
         }
     }
 
