@@ -30,8 +30,8 @@ struct ActivitySegmentationTests {
     @Test("A session nothing was recorded for is one walk, not nothing")
     func anEmptyHistoryStillCoversTheSession() {
         let segments = ActivitySegmentation.segments([], from: start, to: at(1_800))
-        // Returning nothing would make « dominant » a verdict on an empty set,
-        // and the session's own duration would vanish from issue #247's sums.
+        // Returning nothing would make the session's own duration vanish from
+        // issue #247's sums.
         #expect(segments == [ActivitySegment(activity: .walking, start: start, end: at(1_800))])
     }
 
@@ -72,8 +72,7 @@ struct ActivitySegmentationTests {
         )
         let total = ActivitySegmentation.duration(of: .walking, in: segments)
             + ActivitySegmentation.duration(of: .running, in: segments)
-        // « Dominant » is a share; a partial covering would make it a share of
-        // something other than the outing.
+        // A partial covering would price something other than the outing.
         #expect(total == 1_800)
     }
 
@@ -101,50 +100,6 @@ struct ActivitySegmentationTests {
     func aClearRunIsRead() {
         let segments = ActivitySegmentation.segments([sample(0, running: true)], from: start, to: at(600))
         #expect(segments.first?.activity == .running)
-    }
-
-    // MARK: - Which activity the session is recorded as
-
-    @Test("A session entirely run is a run, one entirely walked is a walk")
-    func aHomogeneousOutingIsItself() {
-        let run = ActivitySegmentation.segments([sample(0, running: true)], from: start, to: at(1_800))
-        #expect(ActivitySegmentation.dominant(run) == .running)
-
-        let walk = ActivitySegmentation.segments([sample(0, walking: true)], from: start, to: at(1_800))
-        #expect(ActivitySegmentation.dominant(walk) == .walking)
-    }
-
-    @Test("A mixed outing takes the activity that lasted longest")
-    func aMixedOutingTakesTheMajority() {
-        // 10 min walking, 20 min running.
-        let mostlyRunning = ActivitySegmentation.segments(
-            [sample(0, walking: true), sample(600, running: true)],
-            from: start,
-            to: at(1_800)
-        )
-        #expect(ActivitySegmentation.dominant(mostlyRunning) == .running)
-
-        // The same outing the other way round.
-        let mostlyWalking = ActivitySegmentation.segments(
-            [sample(0, running: true), sample(600, walking: true)],
-            from: start,
-            to: at(1_800)
-        )
-        #expect(ActivitySegmentation.dominant(mostlyWalking) == .walking)
-    }
-
-    @Test("An outing split down the middle is recorded as a walk")
-    func aTieUnderCredits() {
-        let even = ActivitySegmentation.segments(
-            [sample(0, running: true), sample(900, walking: true)],
-            from: start,
-            to: at(1_800)
-        )
-        // Half and half is not evidence that it was a run, and the wrong guess
-        // is permanent.
-        #expect(ActivitySegmentation.duration(of: .running, in: even) == 900)
-        #expect(ActivitySegmentation.duration(of: .walking, in: even) == 900)
-        #expect(ActivitySegmentation.dominant(even) == .walking)
     }
 
     // MARK: - Shape of the result

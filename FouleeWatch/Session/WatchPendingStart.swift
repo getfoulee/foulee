@@ -18,19 +18,18 @@ import Observation
 final class WatchPendingStart {
     static let shared = WatchPendingStart()
 
-    /// `.ask` only from Siri: the phone always names a sport, but « Commencer
-    /// une sortie » follows the synced mode, and « les deux » asks on the
-    /// wrist exactly as « Démarrer » does.
-    private(set) var intent: ActivityStartIntent?
+    /// The sport to start. Siri without a sport resolves it as « Démarrer »
+    /// does, before asking (#743).
+    private(set) var activity: SessionActivity?
 
-    func request(_ intent: ActivityStartIntent) {
-        self.intent = intent
+    func request(_ activity: SessionActivity) {
+        self.activity = activity
     }
 
     /// Read and clear. Taking rather than observing-and-resetting is what stops
     /// a second start when the view rebuilds for an unrelated reason.
-    func take() -> ActivityStartIntent? {
-        defer { intent = nil }
-        return intent
+    func take() -> SessionActivity? {
+        defer { activity = nil }
+        return activity
     }
 }

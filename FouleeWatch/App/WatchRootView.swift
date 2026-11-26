@@ -5,7 +5,7 @@ import SwiftUI
 struct WatchRootView: View {
     @State private var store = WatchWorkoutStore()
     @State private var todayStore = WatchTodayStore()
-    /// « Les deux » only: the question is on screen and nothing has started.
+    /// « Autre sport »: the picker is on screen and nothing has started.
     /// Local to the idle route — a session in flight clears it.
     @State private var isChoosingActivity = false
     private let pendingStart = WatchPendingStart.shared
@@ -71,7 +71,7 @@ struct WatchRootView: View {
             startIfAsked()
         }
         .onChange(of: recovery.requests) { _, _ in Task { await store.recover() } }
-        .onChange(of: pendingStart.intent) { _, _ in startIfAsked() }
+        .onChange(of: pendingStart.activity) { _, _ in startIfAsked() }
     }
 
     /// Home, with nothing in flight here or on the phone.
@@ -81,7 +81,7 @@ struct WatchRootView: View {
             errorMessage: store.lastError,
             isChoosingActivity: isChoosingActivity,
             onStart: begin,
-            onAsk: { isChoosingActivity = true },
+            onChooseSport: { isChoosingActivity = true },
             onCancel: { isChoosingActivity = false }
         )
     }
@@ -97,39 +97,47 @@ struct WatchRootView: View {
     /// way, so a refused one does not start a session later, on some
     /// unrelated relaunch.
     private func startIfAsked() {
-        let intent = pendingStart.take()
-        guard case .idle = store.state, phoneSession.shown(at: .now) == nil, let intent else { return }
-        switch intent {
-        case .start(let activity): begin(activity)
-        case .ask: isChoosingActivity = true
-        }
+        let activity = pendingStart.take()
+        guard case .idle = store.state, phoneSession.shown(at: .now) == nil, let activity else { return }
+        begin(activity)
     }
 
-    /// One place a session begins, whether the activity came from the synced
-    /// mode or from the user answering the question.
+    /// One place a session begins, whatever chose the sport. It becomes the
+    /// one « Démarrer » starts next (#743).
     private func begin(_ activity: SessionActivity) {
         isChoosingActivity = false
+        Self.recordStart(of: activity, at: .now)
         Task { await store.start(activity: activity) }
     }
 
-    /// What a tap on « Démarrer » resolves to, given the mode the phone synced
-    /// (issues #223, #224).
+    /// What « Démarrer » starts and « Autre sport » lists (issues #223,
+    /// #743): the newer of the iPhone's last sport and the watch's own, among
+    /// the favourites the phone synced.
     ///
-    /// Read at tap time, not at view build: the phone can push a new mode while
-    /// this screen sits on the wrist, and the stamp is permanent. A watch that
-    /// has never received a payload — a fresh pairing, or a phone that hasn't
-    /// been opened since the update — falls back to walking, the app's
-    /// historical behaviour, rather than asking a question the user has never
-    /// been shown the settings for.
+    /// Read at tap time, not at view build: the phone can push a new payload
+    /// while this screen sits on the wrist, and the stamp is permanent. A
+    /// watch that has never received a payload starts a walk, the app's
+    /// historical behaviour, unless it has started something itself.
     ///
     /// Static, internal, and taking the defaults suite rather than reading the
     /// shared one inline: this is the watch's whole half of the phone→wrist
-    /// wire, and inside a `View` body nothing could assert it. The parameter is
-    /// `WatchSyncStore`'s own test seam, so a test drives the real write → read
-    /// → resolve path against a throwaway suite.
-    static func startIntent(
+    /// wire, and inside a `View` body nothing could assert it.
+    static func sportChoice(
         syncedTo defaults: UserDefaults = WatchSyncStore.sharedDefaults
-    ) -> ActivityStartIntent {
-        ActivityStartIntent(mode: WatchSyncStore.read(from: defaults)?.activityMode ?? .walking)
+    ) -> SportChoice.Resolved {
+        let payload = WatchSyncStore.read(from: defaults)
+        let favorites = payload?.activityMode.favoriteSports ?? [.walking]
+        let last = LastSport.newest(payload?.lastSport, LastSportPreference.read(from: defaults))
+        return SportChoice.resolve(last: last, favorites: favorites)
+    }
+
+    /// Remembers a sport started on the wrist, in the App Group beside the
+    /// phone's payload.
+    static func recordStart(
+        of activity: SessionActivity,
+        at date: Date,
+        in defaults: UserDefaults = WatchSyncStore.sharedDefaults
+    ) {
+        LastSportPreference.write(LastSport(activity, at: date), to: defaults)
     }
 }

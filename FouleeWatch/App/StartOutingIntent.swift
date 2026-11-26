@@ -1,13 +1,11 @@
 import AppIntents
 import FouleeDomain
 
-/// « Commencer une sortie » for Siri on the watch (issue #607). The phone's
-/// intent of the same name, minus « Automatique »: the watch writes its own
-/// workout, and a sport nobody chose would stamp Santé for good (#223).
+/// « Commencer une sortie » for Siri on the watch (issue #607).
 ///
-/// Left empty, it does what « Démarrer » does: the synced mode starts its
-/// sport, and « les deux » asks on the wrist. The intent only parks the
-/// request; `WatchRootView` owns the session.
+/// Left empty or set to « Dernier sport », it does what « Démarrer » does:
+/// the last sport starts (#743). The intent only parks the request;
+/// `WatchRootView` owns the session.
 struct StartOutingIntent: AppIntent {
     static var title: LocalizedStringResource { "Commencer une sortie" }
     // periphery:ignore - read by the AppIntents runtime, never from code.
@@ -20,24 +18,24 @@ struct StartOutingIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        WatchPendingStart.shared.request(Self.startIntent(for: activity))
+        WatchPendingStart.shared.request(Self.activity(for: activity))
         return .result()
     }
 
     /// Static so a test drives it against a throwaway defaults suite, like
-    /// `WatchRootView.startIntent`.
+    /// `WatchRootView.sportChoice`.
     @MainActor
-    static func startIntent(
+    static func activity(
         for activity: WatchOutingActivity?,
         syncedTo defaults: UserDefaults = WatchSyncStore.sharedDefaults
-    ) -> ActivityStartIntent {
-        activity.map { ActivityStartIntent.start($0.activity) } ?? WatchRootView.startIntent(syncedTo: defaults)
+    ) -> SessionActivity {
+        activity?.activity ?? WatchRootView.sportChoice(syncedTo: defaults).activity
     }
 }
 
 /// The Action button of the Apple Watch Ultra (issue #607). Its settings list
-/// `suggestedWorkouts`, one per sport, and the wearer picks one once: the
-/// protocol wants a sport, so there is no « follow my mode » here.
+/// `suggestedWorkouts`: « Dernier sport » first, which starts what
+/// « Démarrer » would (#743), then one per sport.
 struct StartWorkoutOutingIntent: StartWorkoutIntent {
     static var title: LocalizedStringResource { "Commencer une sortie" }
     // periphery:ignore - read by the AppIntents runtime, never from code.
@@ -60,13 +58,15 @@ struct StartWorkoutOutingIntent: StartWorkoutIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        WatchPendingStart.shared.request(.start(workoutStyle.activity))
+        WatchPendingStart.shared.request(StartOutingIntent.activity(for: workoutStyle))
         return .result()
     }
 }
 
 /// The sport as Siri hears it and the Action button lists it.
 enum WatchOutingActivity: String, AppEnum, CaseIterable {
+    /// The sport « Démarrer » starts: the last one (#743).
+    case last
     case walking
     case running
 
@@ -74,13 +74,16 @@ enum WatchOutingActivity: String, AppEnum, CaseIterable {
 
     static var caseDisplayRepresentations: [WatchOutingActivity: DisplayRepresentation] {
         [
+            .last: DisplayRepresentation(title: "Dernier sport", image: .init(systemName: "arrow.clockwise")),
             .walking: DisplayRepresentation(title: "Marche", image: .init(systemName: "figure.walk")),
             .running: DisplayRepresentation(title: "Course", image: .init(systemName: "figure.run"))
         ]
     }
 
-    var activity: SessionActivity {
+    /// `nil` for « Dernier sport », resolved at the tap.
+    var activity: SessionActivity? {
         switch self {
+        case .last: nil
         case .walking: .walking
         case .running: .running
         }

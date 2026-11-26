@@ -5,7 +5,7 @@ import WidgetKit
 
 /// « Commencer une sortie » in Control Center, on the Lock Screen and on the
 /// iPhone's Action button (issue #606). The sport is picked when the control
-/// is added; left empty, the user's own mode decides, as on the home button.
+/// is added; left empty, the last sport starts, as on the home button (#743).
 struct StartOutingControl: ControlWidget {
     static let kind = "com.eno33.foulee.startOutingControl"
 

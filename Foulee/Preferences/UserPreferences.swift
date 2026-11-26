@@ -77,8 +77,18 @@ final class UserPreferences {
             save(ActivityMode(favorites: favoriteSports).rawValue, forKey: Keys.activityMode)
         }
     }
+    /// The sport of the latest outing started on this iPhone, or on the watch
+    /// from here (#743): what « Démarrer » starts again. This iPhone's alone,
+    /// never synced: a start is not a setting, and pushing every one through
+    /// iCloud would re-send the whole set each outing.
+    var lastSport: LastSport? {
+        didSet {
+            guard let lastSport, lastSport != oldValue else { return }
+            LastSportPreference.write(lastSport, to: defaults)
+        }
+    }
     /// The favourite sports as the walk / run / both choice the onboarding and
-    /// Settings still offer, until the sport picker replaces it (#743).
+    /// Settings offer.
     var activityMode: ActivityMode {
         get { ActivityMode(favorites: favoriteSports) }
         set { favoriteSports = newValue.favoriteSports }
@@ -164,6 +174,7 @@ final class UserPreferences {
         self.hydrationSnoozeMinutes = (defaults.object(forKey: Keys.hydrationSnoozeMinutes) as? Int) ?? 15
         FavoriteSportsPreference.migrate(defaults)
         self.favoriteSports = FavoriteSportsPreference.favoriteSports(in: defaults)
+        self.lastSport = LastSportPreference.read(from: defaults)
         self.recapNotificationsEnabled = (defaults.object(forKey: Keys.recapNotificationsEnabled) as? Bool) ?? true
         self.sessionNotificationsEnabled = SessionNotifier.isEnabled(defaults)
         self.recordsDetectionTraces = defaults.bool(forKey: DetectionTrace.recordingSettingKey)
@@ -171,6 +182,11 @@ final class UserPreferences {
 }
 
 extension UserPreferences {
+    /// Remembers `activity` as the sport « Démarrer » starts next (#743).
+    func recordStart(of activity: SessionActivity) {
+        lastSport = LastSport(activity, at: date.now)
+    }
+
     /// Brings in what another iPhone changed: at launch and each time iCloud
     /// reports a change. Sends this one's settings instead when they are the
     /// newer.

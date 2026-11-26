@@ -86,7 +86,7 @@ enum ScreenshotCapture {
             seeInHealth: "Voir dans Santé", stopSession: "Arrêter la séance",
             statistics: "STATISTIQUES", drankGlass: "J'ai bu un verre", hydration: "Hydratation",
             glassByGlass: "Verre par verre", seeSummary: "Voir le bilan", walkAndRun: "Marche et course",
-            portions: "PORTIONS", settings: "Réglages", inProgress: "EN COURS", goAgain: "Repartir",
+            portions: "PORTIONS", settings: "Réglages", inProgress: "EN COURS", goAgain: "Repartir · Marche",
             close: "Fermer", stop: "Arrêter", outingFinished: "Sortie terminée", finish: "Terminer",
             forecastAtNoon: "Prévision à 12:00 "
         )
@@ -97,7 +97,7 @@ enum ScreenshotCapture {
             seeInHealth: "See in Health", stopSession: "Stop the session",
             statistics: "STATISTICS", drankGlass: "I had a glass", hydration: "Hydration",
             glassByGlass: "Glass by glass", seeSummary: "See the recap", walkAndRun: "Walk and run",
-            portions: "PARTS", settings: "Settings", inProgress: "IN PROGRESS", goAgain: "Go again",
+            portions: "PARTS", settings: "Settings", inProgress: "IN PROGRESS", goAgain: "Go again · Walk",
             close: "Close", stop: "Stop", outingFinished: "Workout finished", finish: "Finish",
             forecastAtNoon: "Forecast at 12:00"
         )

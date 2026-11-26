@@ -25,7 +25,7 @@ struct StartOutingIntent: AppIntent {
     // periphery:ignore - read by the AppIntents runtime, never from code.
     static var supportedModes: IntentModes { .foreground }
 
-    /// Left empty, the user's own mode decides, as on the home button.
+    /// Left empty, the last sport starts, as on the home button (#743).
     @Parameter(title: "Sport")
     var activity: OutingActivity?
 
@@ -37,7 +37,7 @@ struct StartOutingIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        SessionStartRouter.shared.start(activity?.mode)
+        SessionStartRouter.shared.start(activity?.activity)
         return .result()
     }
 }
@@ -54,20 +54,21 @@ nonisolated enum OutingActivity: String, AppEnum {
         [
             .walking: DisplayRepresentation(title: "Marche"),
             .running: DisplayRepresentation(title: "Course"),
+            // The raw value stays: shortcuts saved with it must keep working.
             .automatic: DisplayRepresentation(
-                title: "Automatique",
-                subtitle: "Foulée reconnaît la marche ou la course"
+                title: "Dernier sport",
+                subtitle: "Le sport de ta dernière sortie"
             )
         ]
     }
 
-    /// « Automatique » is « les deux »: the session's own motion history
-    /// settles the sport at the end (#246).
-    var mode: ActivityMode {
+    /// The sport this names; `nil` for « Dernier sport », which the home
+    /// resolves as « Démarrer » does (#743).
+    var activity: SessionActivity? {
         switch self {
         case .walking: .walking
         case .running: .running
-        case .automatic: .both
+        case .automatic: nil
         }
     }
 }
@@ -75,8 +76,8 @@ nonisolated enum OutingActivity: String, AppEnum {
 /// A start asked for by a shortcut, carried to the home that presents the
 /// session — the intent runs before any screen may be mounted.
 nonisolated struct SessionStartRequest: Equatable {
-    /// `nil` when the shortcut named no sport: the user's own mode decides.
-    let mode: ActivityMode?
+    /// `nil` when the shortcut named no sport: the last sport starts.
+    let activity: SessionActivity?
 }
 
 /// Main-actor spelled out: the widget extension compiles this file without the
@@ -88,8 +89,8 @@ final class SessionStartRouter {
 
     private(set) var pending: SessionStartRequest?
 
-    func start(_ mode: ActivityMode?) {
-        pending = SessionStartRequest(mode: mode)
+    func start(_ activity: SessionActivity?) {
+        pending = SessionStartRequest(activity: activity)
     }
 
     /// Read and clear, so a rebuild of the home does not start twice.

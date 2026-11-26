@@ -154,9 +154,8 @@ final class ScreenshotCaptureTests: XCTestCase {
         close(app)
     }
 
-    /// « Repartir » puts the timer on screen straight away: the phone stopped
-    /// asking which activity in #246, even in « les deux » mode — detection
-    /// decides. Nothing is written to Santé: the capture doubles'
+    /// « Repartir » puts the timer on screen straight away, with the last
+    /// sport or the first favourite (#743). Nothing is written to Santé: the capture doubles'
     /// `saveWorkout` is a no-op, and this run never stops the session anyway.
     private func captureSession(_ app: XCUIApplication) {
         tapWhenReady(app.buttons.labeled(ScreenshotCapture.label.goAgain), "Repartir")

@@ -10,8 +10,8 @@ import Testing
 /// Without them the watch could ignore the phone entirely — replacing the read
 /// with a plain `.walking` left the watch suite green.
 ///
-/// What each mode makes the start *button* do is one hop further out, in
-/// `WatchActivityPickerTests` (issue #224).
+/// What the start *button* does with it is one hop further out, in
+/// `WatchActivityPickerTests` (issues #224, #743).
 @Suite("Watch start activity")
 struct WatchStartActivityTests {
     /// Runs `body` against a throwaway suite, like `WatchSyncStoreTests`: the
@@ -23,8 +23,11 @@ struct WatchStartActivityTests {
         try body(defaults)
     }
 
-    private func payload(_ mode: ActivityMode) -> WatchSyncPayload {
-        WatchSyncPayload(streak: 3, minutesGoal: 20, stepsGoal: 6_000, activityMode: mode)
+    private static let earlier = Date(timeIntervalSince1970: 1_800_000_000)
+    private static let later = earlier.addingTimeInterval(3_600)
+
+    private func payload(_ mode: ActivityMode, last: LastSport? = nil) -> WatchSyncPayload {
+        WatchSyncPayload(streak: 3, minutesGoal: 20, stepsGoal: 6_000, activityMode: mode, lastSport: last)
     }
 
     @Test("A synced running mode starts a run, in one gesture")
@@ -33,30 +36,38 @@ struct WatchStartActivityTests {
             // The full wire, through `WatchSyncStore`'s own storage: what the
             // receiver persists on a phone push is what the start button reads.
             WatchSyncStore.write(payload(.running), to: defaults)
-            #expect(WatchRootView.startIntent(syncedTo: defaults) == .start(.running))
+            #expect(WatchRootView.sportChoice(syncedTo: defaults).activity == .running)
         }
     }
 
-    @Test("A synced walking mode starts a walk, in one gesture")
-    func walkingModeStartsAWalk() throws {
+    @Test("« Les deux » starts a walk until a sport was started, and asks nothing")
+    func bothStartsTheFirstFavourite() throws {
         try withDefaults { defaults in
-            // No picker in a single-activity mode: the user answered this
-            // question in Réglages, and asking again would cost them a tap on
-            // every session (issue #224).
-            WatchSyncStore.write(payload(.walking), to: defaults)
-            #expect(WatchRootView.startIntent(syncedTo: defaults) == .start(.walking))
-        }
-    }
-
-    @Test("« Les deux » asks instead of guessing")
-    func bothAsks() throws {
-        try withDefaults { defaults in
-            // The watch sees the raw mode, not a resolved activity, precisely
-            // so it can ask here instead of guessing. It used to resolve to
-            // `.walking`, which wrote every run a « les deux » user recorded
-            // into Santé as a walk — and `HKWorkout` is immutable (issue #224).
             WatchSyncStore.write(payload(.both), to: defaults)
-            #expect(WatchRootView.startIntent(syncedTo: defaults) == .ask)
+            let choice = WatchRootView.sportChoice(syncedTo: defaults)
+            #expect(choice.activity == .walking)
+            #expect(choice.sections.favorites == [.walking, .running])
+        }
+    }
+
+    @Test("The iPhone's last sport starts on the wrist")
+    func thePhonesLastSportStarts() throws {
+        try withDefaults { defaults in
+            WatchSyncStore.write(payload(.walking, last: LastSport(sport: .running, startedAt: Self.earlier)), to: defaults)
+            #expect(WatchRootView.sportChoice(syncedTo: defaults).activity == .running)
+        }
+    }
+
+    @Test("The newer of the wrist's last sport and the iPhone's starts")
+    func theNewerLastSportWins() throws {
+        try withDefaults { defaults in
+            WatchSyncStore.write(payload(.both, last: LastSport(sport: .running, startedAt: Self.earlier)), to: defaults)
+            WatchRootView.recordStart(of: .walking, at: Self.later, in: defaults)
+            #expect(WatchRootView.sportChoice(syncedTo: defaults).activity == .walking)
+
+            let newer = LastSport(sport: .running, startedAt: Self.later.addingTimeInterval(60))
+            WatchSyncStore.write(payload(.both, last: newer), to: defaults)
+            #expect(WatchRootView.sportChoice(syncedTo: defaults).activity == .running)
         }
     }
 
@@ -65,10 +76,8 @@ struct WatchStartActivityTests {
         try withDefaults { defaults in
             // Fresh pairing, or a phone not opened since the update. Walking is
             // the app's historical behaviour, and a wrong stamp is permanent.
-            // Asking would be worse here: the question would come from a
-            // preference this watch has never been told about.
             #expect(WatchSyncStore.read(from: defaults) == nil)
-            #expect(WatchRootView.startIntent(syncedTo: defaults) == .start(.walking))
+            #expect(WatchRootView.sportChoice(syncedTo: defaults).activity == .walking)
         }
     }
 
@@ -79,7 +88,7 @@ struct WatchStartActivityTests {
             // home screen sits on the wrist.
             WatchSyncStore.write(payload(.walking), to: defaults)
             WatchSyncStore.write(payload(.running), to: defaults)
-            #expect(WatchRootView.startIntent(syncedTo: defaults) == .start(.running))
+            #expect(WatchRootView.sportChoice(syncedTo: defaults).activity == .running)
         }
     }
 }

@@ -17,23 +17,8 @@ nonisolated public struct SessionRecord: Equatable, Sendable {
     /// Defaults to `.walking`: it is what every session the app ever wrote was
     /// stamped with, so a caller that doesn't set it keeps the old behaviour
     /// rather than getting a surprise. `ActiveSessionStore.start` sets it from the
-    /// user's `ActivityMode`.
+    /// sport the user started (#743).
     public var activity: SessionActivity = .walking
-
-    /// True while `activity` is a placeholder the detection replaces at the end
-    /// (issue #246).
-    ///
-    /// Only « les deux » produces it: the mode says the user does both, the
-    /// phone no longer asks which, and nothing is knowable until the session's
-    /// CoreMotion history can be read — which is at `stop()`. Everywhere it
-    /// matters the app says « Ta sortie » rather than naming a sport it is
-    /// about to overwrite.
-    ///
-    /// A flag rather than an optional `activity`: `estimatedCalories` needs a
-    /// rate at every instant, and the honest provisional rate is walking's —
-    /// the lower of the two, so a session read mid-flight under-credits rather
-    /// than inventing.
-    public var isActivityUndecided: Bool = false
 
     /// Steps measured over each activity's own stretches (issue #247).
     ///
@@ -82,7 +67,6 @@ nonisolated public struct SessionRecord: Equatable, Sendable {
         distanceMeters: Double = 0,
         elevationGainMeters: Double = 0,
         activity: SessionActivity = .walking,
-        isActivityUndecided: Bool = false,
         stepsByActivity: [SessionActivity: Int]? = nil
     ) {
         self.startedAt = startedAt
@@ -92,7 +76,6 @@ nonisolated public struct SessionRecord: Equatable, Sendable {
         self.distanceMeters = distanceMeters
         self.elevationGainMeters = elevationGainMeters
         self.activity = activity
-        self.isActivityUndecided = isActivityUndecided
         self.stepsByActivity = stepsByActivity
     }
 }

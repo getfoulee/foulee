@@ -107,23 +107,12 @@ final class ActiveSessionStore {
     /// `reset()` first to start a second walk in the same screen lifetime.
     ///
     /// `activity` is what the finished workout will be stamped with in Santé
-    /// (issue #223); the screen derives it from the user's `ActivityMode`. It
-    /// defaults to `.walking` like the rest of this path, so a caller that
-    /// doesn't care gets the app's historical behaviour.
-    /// - Parameter isUndecided: « les deux » mode, where `activity` is only a
-    ///   placeholder and the real answer comes from the session's motion
-    ///   history at `stop()` (issue #246).
-    func start(
-        minutesGoal: Int = 20,
-        activity: SessionActivity = .walking,
-        isUndecided: Bool = false
-    ) {
+    /// (issue #223): the sport the user started (#743). It defaults to
+    /// `.walking` like the rest of this path, so a caller that doesn't care
+    /// gets the app's historical behaviour.
+    func start(minutesGoal: Int = 20, activity: SessionActivity = .walking) {
         guard case .idle = state else { return }
-        let session = SessionRecord(
-            startedAt: date.now,
-            activity: activity,
-            isActivityUndecided: isUndecided
-        )
+        let session = SessionRecord(startedAt: date.now, activity: activity)
         bankedElapsed = 0
         bankedSteps = 0
         bankedDistance = 0
@@ -138,7 +127,7 @@ final class ActiveSessionStore {
         // A refused session is no reason to refuse the outing: it is then
         // saved at the end without one, as before #729.
         sessionOpening = Task { [workoutSession] in
-            try? await workoutSession.start(activity, isUndecided, session.startedAt)
+            try? await workoutSession.start(activity, session.startedAt)
         }
     }
 
@@ -349,9 +338,8 @@ final class ActiveSessionStore {
 // MARK: - Saving and recovery
 
 extension ActiveSessionStore {
-    /// The session's builder saves the outing; without a session, or when
-    /// « les deux » settled on another sport than the one it opened with, the
-    /// outing is saved here under the settled sport (#729).
+    /// The session's builder saves the outing; without a session, the outing
+    /// is saved here (#729).
     private func save(_ recorded: SessionRecord) async {
         await sessionOpening?.value
         sessionOpening = nil
@@ -369,11 +357,7 @@ extension ActiveSessionStore {
     /// with it, and start again from here.
     func adopt(_ recovered: RecoveredPhoneWorkout, minutesGoal: Int) async {
         guard case .idle = state else { return }
-        var session = SessionRecord(
-            startedAt: recovered.startedAt,
-            activity: recovered.activity,
-            isActivityUndecided: recovered.isActivityUndecided
-        )
+        var session = SessionRecord(startedAt: recovered.startedAt, activity: recovered.activity)
         bankedElapsed = recovered.elapsed
         bankedSteps = await pedometer.steps(recovered.startedAt, date.now) ?? 0
         session.elapsed = bankedElapsed

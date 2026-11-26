@@ -6,8 +6,6 @@ import Foundation
 nonisolated struct RecoveredPhoneWorkout: Equatable, Sendable {
     var startedAt: Date
     var activity: SessionActivity
-    /// « Les deux »: the sport is a placeholder until `stop()` settles it.
-    var isActivityUndecided: Bool
     /// Time the builder counted, pauses left out.
     var elapsed: TimeInterval
     var isPaused: Bool
@@ -24,15 +22,13 @@ nonisolated struct RecoveredPhoneWorkout: Equatable, Sendable {
 nonisolated struct PhoneWorkoutSessionClient: Sendable {
     /// Open the session and start collecting at `date`. Throws when HealthKit
     /// refuses; the outing then goes on without one and is saved as before.
-    var start: @Sendable (_ activity: SessionActivity, _ isUndecided: Bool, _ date: Date) async throws -> Void
+    var start: @Sendable (_ activity: SessionActivity, _ date: Date) async throws -> Void
     var pause: @Sendable () async -> Void
     var resume: @Sendable () async -> Void
     /// Save the outing with the session's builder, and say whether it did.
     ///
-    /// `false` without saving when there is no session, or when the sport the
-    /// outing settled on is not the one the session opened with (« les
-    /// deux »): the session is then discarded, and the caller saves the outing
-    /// itself under the right sport, because a stamp in Santé is permanent.
+    /// `false` without saving when there is no session: the caller then saves
+    /// the outing itself.
     var finish: @Sendable (SessionRecord) async throws -> Bool
     /// Take back the session iOS kept running while the app was gone.
     var recover: @Sendable () async -> RecoveredPhoneWorkout?
@@ -45,7 +41,7 @@ nonisolated extension PhoneWorkoutSessionClient: DependencyKey {
     static let previewValue = none
 
     private static let none = PhoneWorkoutSessionClient(
-        start: { _, _, _ in },
+        start: { _, _ in },
         pause: {},
         resume: {},
         finish: { _ in false },

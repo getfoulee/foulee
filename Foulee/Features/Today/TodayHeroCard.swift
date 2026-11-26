@@ -30,6 +30,10 @@ struct TodayHeroCard: View {
     /// instead (issue #283).
     var canStartOnWatch = false
     var onStartOnWatch: () -> Void = {}
+    /// What « Démarrer » starts: the last sport (#743).
+    var sport: SessionActivity = .walking
+    /// « Autre sport »: the picker, favourites first.
+    var onChooseSport: () -> Void = {}
     var notificationsEnabled: Bool
     /// System permission is denied: the pref alone would lie ("activés" while
     /// iOS delivers nothing), so the bell surfaces the real state instead.
@@ -74,6 +78,9 @@ struct TodayHeroCard: View {
                 content
             }
             actionRow
+            if mirroring == nil {
+                OtherSportButton(action: onChooseSport)
+            }
         }
         // 22, not more: on an iPhone SE every extra point of margin comes out
         // of « Sortie terminée » and « Voir le bilan », which then truncate
@@ -276,15 +283,15 @@ struct TodayHeroCard: View {
                 // The phone's own start stays, as the secondary. Demoting it
                 // outright would be a behaviour change nobody has been able to
                 // try — nothing about this path is exercisable off a wrist.
-                PrimaryButton(title: "Démarrer sur ma Watch", systemIcon: "applewatch", action: onStartOnWatch)
+                PrimaryButton(title: "\(sport.label) sur ma Watch", systemIcon: FouleeIcon.watch, action: onStartOnWatch)
                 SecondaryButton(title: "Sur l'iPhone", systemIcon: FouleeIcon.play, action: onStart)
             } else if snapshot.hasWalkedToday {
                 // Goal already met: still let the user start another session —
                 // the single summary button used to be the only option.
                 SecondaryButton(title: "Voir le bilan", systemIcon: FouleeIcon.sparkle, action: onSummary)
-                PrimaryButton(title: "Repartir", systemIcon: FouleeIcon.play, action: onStart)
+                PrimaryButton(title: "Repartir · \(sport.label)", systemIcon: sport.icon, action: onStart)
             } else {
-                PrimaryButton(title: "Démarrer ta sortie", systemIcon: FouleeIcon.play, action: onStart)
+                PrimaryButton(title: "Démarrer · \(sport.label)", systemIcon: sport.icon, action: onStart)
                 reminderMenu
             }
         }

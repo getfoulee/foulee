@@ -17,10 +17,9 @@ nonisolated public struct SessionActivityAttributes: ActivityAttributes, Session
     public typealias ContentState = SessionActivityState
 
     public var goalMinutes: Int
-    /// The sport, as the app started it; `nil` for an outing the app cannot
-    /// name yet (« les deux » unsettled) or a mirrored one, whose sport may
-    /// change after the attributes — fixed for the activity's life — are
-    /// written (#246, #275).
+    /// The sport, as the app started it; `nil` for a mirrored outing, whose
+    /// sport may change after the attributes — fixed for the activity's life —
+    /// are written (#275).
     public var activity: SessionActivity?
     /// The figures drawn, in order. Fixed with the attributes, like the sport.
     public var metrics: [MetricID]
