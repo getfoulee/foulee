@@ -3,9 +3,10 @@ import Foundation
 /// What a session Foulée records *is* — the write-side counterpart of
 /// `WorkoutActivityFilter` (which is read-side, and deliberately wider).
 ///
-/// Two cases, not three: `ActivityMode.both` is a preference about the app's
-/// scope, never a property of a session in flight. Every session that reaches
-/// HealthKit is one thing or the other, and Santé keeps that stamp forever —
+/// The sports Foulée records, never « both »: `ActivityMode.both` is a
+/// preference about the app's scope, never a property of a session in flight.
+/// Every session that reaches HealthKit is one sport, and Santé keeps that
+/// stamp forever —
 /// issue #223 exists because until now the stamp was the literal `.walking`,
 /// for every session the app has ever written, run or walk. That past is not
 /// fixable retroactively: `HKWorkout` is immutable and Foulée cannot rewrite
@@ -16,6 +17,8 @@ import Foundation
 nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable {
     case walking
     case running
+    case hiking
+    case trailRunning
 
     /// The sport this session records. Same raw value, so the two stay
     /// interchangeable on disk and on the wire (#720).
@@ -23,6 +26,8 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
         switch self {
         case .walking: .walking
         case .running: .running
+        case .hiking: .hiking
+        case .trailRunning: .trailRunning
         }
     }
 

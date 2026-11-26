@@ -40,13 +40,7 @@ struct WatchSessionMetricsPage: View {
                 }
 
                 HStack(spacing: 10) {
-                    metric(
-                        value: metrics.steps.groupedText(),
-                        label: MetricID.steps.unit,
-                        spoken: MetricID.steps.spokenText(Double(metrics.steps)),
-                        icon: MetricID.steps.glyph,
-                        tint: MetricPalette.steps
-                    )
+                    leadingFigure
                     metric(
                         value: metrics.distanceKm.kmValue(),
                         label: MetricID.distance.unit,
@@ -77,6 +71,29 @@ struct WatchSessionMetricsPage: View {
         // Named for VoiceOver rather than drawn on screen — see the pager's own
         // documentation for why no page here carries a visible header.
         .sessionPage("Séance")
+    }
+
+    /// The first tile: the climb for a hike or a trail, told by it (#744),
+    /// the steps otherwise.
+    @ViewBuilder
+    private var leadingFigure: some View {
+        if metrics.activity.sport.descriptor.leadsWithClimb {
+            metric(
+                value: "\(Int(metrics.climbMeters.rounded())) / \(Int(metrics.descentMeters.rounded()))",
+                label: "D+ / D− m",
+                spoken: metrics.elevation.spokenText ?? String(localized: "Aucun dénivelé"),
+                icon: FouleeIcon.climb,
+                tint: FouleeColor.success
+            )
+        } else {
+            metric(
+                value: metrics.steps.groupedText(),
+                label: MetricID.steps.unit,
+                spoken: MetricID.steps.spokenText(Double(metrics.steps)),
+                icon: MetricID.steps.glyph,
+                tint: MetricPalette.steps
+            )
+        }
     }
 
     /// What the watch is recording right now, and how much of it there has been

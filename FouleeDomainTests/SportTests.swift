@@ -8,23 +8,45 @@ import Testing
 struct SportTests {
     @Test("Raw values never change: they are stored and sent", arguments: SportID.allCases)
     func rawValuesAreStable(sport: SportID) {
-        let expected: [SportID: String] = [.walking: "walking", .running: "running", .hiking: "hiking"]
+        let expected: [SportID: String] = [
+            .walking: "walking", .running: "running", .hiking: "hiking", .trailRunning: "trailRunning",
+        ]
         #expect(sport.rawValue == expected[sport])
         #expect(sport.descriptor.id == sport)
     }
 
-    @Test("Every sport has a label, a glyph and a HealthKit type of its own")
+    @Test("Every sport has a label and a glyph of its own")
     func everySportIsDistinct() {
         let descriptors = SportID.allCases.map(\.descriptor)
         #expect(Set(descriptors.map(\.label)).count == descriptors.count)
         #expect(Set(descriptors.map(\.glyph)).count == descriptors.count)
-        #expect(Set(descriptors.map(\.healthKitActivityRawValue)).count == descriptors.count)
         #expect(descriptors.allSatisfy { !$0.label.isEmpty })
     }
 
-    @Test("HealthKit raw values read back as their sport", arguments: SportID.allCases)
-    func healthKitRoundTrip(sport: SportID) {
-        #expect(SportID(healthKitActivityRawValue: sport.descriptor.healthKitActivityRawValue) == sport)
+    @Test("A workout reads back as its sport through its type and Foulée's tag", arguments: SportID.allCases)
+    func healthKitRoundTrip(sport: SportID) throws {
+        let raw = sport.descriptor.healthKitActivityRawValue
+        let tag = try #require(sport.workoutMetadata[FouleeWorkoutMetadata.sport] as? String)
+        #expect(SportID(healthKitActivityRawValue: raw, tag: tag) == sport)
+    }
+
+    @Test("A trail is a run in Santé: without Foulée's tag it reads as a run")
+    func trailWithoutTagIsARun() {
+        #expect(SportID.trailRunning.descriptor.healthKitActivityRawValue == SportID.running.descriptor.healthKitActivityRawValue)
+        #expect(SportID(healthKitActivityRawValue: 37) == .running)
+        #expect(SportID(healthKitActivityRawValue: 37, tag: nil) == .running)
+        // Another app's tag, or one naming a sport of another type, is ignored.
+        #expect(SportID(healthKitActivityRawValue: 37, tag: "curling") == .running)
+        #expect(SportID(healthKitActivityRawValue: 37, tag: "hiking") == .running)
+    }
+
+    @Test("Every other sport has a HealthKit type of its own")
+    func healthKitTypesAreDistinctButForTrail() {
+        let plain = SportID.allCases.filter { $0 != .trailRunning }.map(\.descriptor.healthKitActivityRawValue)
+        #expect(Set(plain).count == plain.count)
+        for sport in SportID.allCases where sport != .trailRunning {
+            #expect(SportID(healthKitActivityRawValue: sport.descriptor.healthKitActivityRawValue) == sport)
+        }
     }
 
     @Test("An unknown HealthKit type is no sport")
@@ -41,7 +63,6 @@ struct SportTests {
         }
         #expect(descriptor.sessionTitle != nil)
         #expect(descriptor.kcalPerStep != nil)
-        #expect(descriptor.garminSport != nil)
         #expect(SessionActivity(sport: sport)?.sport == sport)
     }
 
@@ -49,7 +70,10 @@ struct SportTests {
     func garminMapping() {
         #expect(SportID(garminSport: "walking") == .walking)
         #expect(SportID(garminSport: "running") == .running)
+        // The Garmin app records walks and runs only (#748).
         #expect(SportID(garminSport: "hiking") == nil)
+        #expect(SportID.hiking.descriptor.garminSport == nil)
+        #expect(SportID.trailRunning.descriptor.garminSport == nil)
         #expect(SportID(garminSport: "cycling") == nil)
     }
 
@@ -90,6 +114,21 @@ struct SportTests {
         #expect(SportID.running.descriptor.benchmarks == .paced)
         #expect(SportID.hiking.descriptor.benchmarks == .climbing)
         #expect(RecordedActivity.other.benchmarks == .paced)
+    }
+
+    @Test("A hike and a trail are one sport from start to finish, told by their climb")
+    func hikeAndTrailKeepOneSport() {
+        for sport in [SportID.hiking, .trailRunning] {
+            #expect(sport.descriptor.followsGaitChanges == false)
+            #expect(sport.descriptor.benchmarks == .climbing)
+            #expect(sport.descriptor.leadsWithClimb)
+        }
+        for sport in [SportID.walking, .running] {
+            #expect(sport.descriptor.followsGaitChanges)
+            #expect(sport.descriptor.leadsWithClimb == false)
+        }
+        #expect(SportID.hiking.descriptor.gait == .walk)
+        #expect(SportID.trailRunning.descriptor.gait == .run)
     }
 
     @Test("Every sport has its own word inside a sentence")

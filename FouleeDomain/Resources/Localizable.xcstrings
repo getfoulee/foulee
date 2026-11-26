@@ -423,12 +423,52 @@
         }
       }
     },
+    "Ta randonnée" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your hike"
+          }
+        }
+      }
+    },
+    "Ton trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your trail run"
+          }
+        }
+      }
+    },
+    "Trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trail"
+          }
+        }
+      }
+    },
     "Verre non enregistré — réessaie" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Glass not saved — try again"
+          }
+        }
+      }
+    },
+    "course en trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "trail run"
           }
         }
       }

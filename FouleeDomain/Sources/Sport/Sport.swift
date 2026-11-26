@@ -13,9 +13,11 @@ import Foundation
 nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
     case walking
     case running
-    /// Read-side only for now: the résumé has listed hikes since #217, but
-    /// Foulée does not record one yet (#744).
+    /// Recorded since #744; the résumé has listed hikes since #217.
     case hiking
+    /// A run on trails (#744). HealthKit has no type for it: Santé records a
+    /// run, and Foulée tells it apart by `FouleeWorkoutMetadata.sport`.
+    case trailRunning
 
     /// Everything Foulée knows about this sport.
     public var descriptor: SportDescriptor {
@@ -23,11 +25,16 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
         case .walking: .walking
         case .running: .running
         case .hiking: .hiking
+        case .trailRunning: .trailRunning
         }
     }
 
     /// The sport HealthKit stamped on a workout, from
     /// `HKWorkoutActivityType.rawValue`. `nil` for a type Foulée cannot name.
+    ///
+    /// Two sports can share a type (a trail is a run in Santé): the first in
+    /// `allCases` answers, the plain one. `init(healthKitActivityRawValue:tag:)`
+    /// reads Foulée's own tag to tell them apart.
     ///
     /// The kit stays free of HealthKit (ADR 0007), so the mapping is kept as
     /// raw values here and read through the one extension
@@ -37,6 +44,24 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
             return nil
         }
         self = sport
+    }
+
+    /// The sport of a workout: Foulée's tag (`FouleeWorkoutMetadata.sport`)
+    /// when it names a sport of the workout's type, the type alone otherwise —
+    /// another app's workout, or one Foulée wrote before #744.
+    public init?(healthKitActivityRawValue rawValue: UInt, tag: String?) {
+        if let tagged = tag.flatMap(Self.init(rawValue:)),
+           tagged.descriptor.healthKitActivityRawValue == rawValue {
+            self = tagged
+        } else {
+            self.init(healthKitActivityRawValue: rawValue)
+        }
+    }
+
+    /// What a workout of this sport carries so that it reads back as itself
+    /// (#744): the sport's raw value, under Foulée's own key.
+    public var workoutMetadata: [String: Any] {
+        [FouleeWorkoutMetadata.sport: rawValue]
     }
 
     /// The sport a Connect IQ message names in its `sport` field.
@@ -62,6 +87,12 @@ nonisolated public struct SportDescriptor: Sendable {
     /// Where the sport happens, which decides whether GPS is asked for.
     public enum Location: Equatable, Sendable {
         case outdoor
+    }
+
+    /// How fast the sport moves, which decides how finely its pace is shown.
+    public enum Gait: Equatable, Sendable {
+        case walk
+        case run
     }
 
     /// How speed is written for this sport.
@@ -111,6 +142,11 @@ nonisolated public struct SportDescriptor: Sendable {
     public let location: Location
     public let capabilities: Capabilities
     public let speedDisplay: SpeedDisplay
+    public let gait: Gait
+    /// Whether the watch follows a change between walking and running during
+    /// the outing, one workout per stretch (#265). A hike or a trail is one
+    /// sport from start to finish, whatever the pace on the climbs.
+    public let followsGaitChanges: Bool
     /// Whether Foulée records this sport itself, or only reads it from Santé.
     public let isRecordable: Bool
     /// Kept as resources and resolved on each read, so a label follows the
@@ -153,6 +189,8 @@ nonisolated extension SportDescriptor {
         location: .outdoor,
         capabilities: [.route, .steps, .elevation],
         speedDisplay: .pace,
+        gait: .walk,
+        followsGaitChanges: true,
         isRecordable: true,
         labelResource: "Marche",
         sessionTitleResource: "Ta marche",
@@ -171,6 +209,8 @@ nonisolated extension SportDescriptor {
         location: .outdoor,
         capabilities: [.route, .steps, .elevation],
         speedDisplay: .pace,
+        gait: .run,
+        followsGaitChanges: true,
         isRecordable: true,
         labelResource: "Course",
         sessionTitleResource: "Ta course",
@@ -189,15 +229,45 @@ nonisolated extension SportDescriptor {
         location: .outdoor,
         capabilities: [.route, .steps, .elevation],
         speedDisplay: .pace,
-        isRecordable: false,
+        gait: .walk,
+        followsGaitChanges: false,
+        isRecordable: true,
         labelResource: "Randonnée",
-        sessionTitleResource: nil,
+        sessionTitleResource: "Ta randonnée",
         glyph: ActivityGlyph.hike,
         healthKitActivityRawValue: 24,
+        // The Garmin app records walks and runs only (#748).
         garminSport: nil,
-        kcalPerStep: nil,
+        // Walking's: the climb costs more, but the phone has no honest figure
+        // for it, and under-crediting is the rule (`ActivitySegmentation`).
+        kcalPerStep: 0.04,
         benchmarks: .climbing,
         nounResource: "randonnée",
         verbResource: "tu marches"
+    )
+
+    static let trailRunning = SportDescriptor(
+        id: .trailRunning,
+        family: .onFoot,
+        location: .outdoor,
+        capabilities: [.route, .steps, .elevation],
+        speedDisplay: .pace,
+        gait: .run,
+        followsGaitChanges: false,
+        isRecordable: true,
+        labelResource: "Trail",
+        sessionTitleResource: "Ton trail",
+        glyph: ActivityGlyph.trail,
+        // A run in Santé: HealthKit has no trail type. Foulée's tag tells it
+        // apart (`SportID.workoutMetadata`).
+        healthKitActivityRawValue: 37,
+        garminSport: nil,
+        kcalPerStep: 0.09,
+        // Its pace depends on the slope, like a hike's.
+        benchmarks: .climbing,
+        // « Ta plus longue course en trail »: the sentences around the noun
+        // are written for a feminine word.
+        nounResource: "course en trail",
+        verbResource: "tu cours"
     )
 }

@@ -57,7 +57,7 @@ extension WatchWorkoutStore {
 
     /// The live pace rounded to the step its sport can honestly claim.
     nonisolated static func quantised(pace secondsPerKm: TimeInterval, for activity: SessionActivity) -> TimeInterval {
-        let step: TimeInterval = activity == .running ? 5 : 10
+        let step: TimeInterval = activity.sport.descriptor.gait == .run ? 5 : 10
         return (secondsPerKm / step).rounded() * step
     }
 }

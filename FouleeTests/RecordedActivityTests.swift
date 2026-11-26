@@ -18,9 +18,28 @@ struct RecordedActivityTests {
 
     @Test("The three types the résumé lists are named, never lumped together")
     func theListedTypesAreNamed() {
-        #expect(RecordedActivity(.walking) == .walking)
-        #expect(RecordedActivity(.running) == .running)
-        #expect(RecordedActivity(.hiking) == .hiking)
+        #expect(RecordedActivity(.walking, metadata: nil) == .walking)
+        #expect(RecordedActivity(.running, metadata: nil) == .running)
+        #expect(RecordedActivity(.hiking, metadata: nil) == .hiking)
+    }
+
+    @Test("A run Foulée tagged as a trail reads as a trail, any other run as a run")
+    func aTaggedRunIsATrail() {
+        #expect(RecordedActivity(.running, metadata: SportID.trailRunning.workoutMetadata) == .trailRunning)
+        #expect(RecordedActivity(.running, metadata: SportID.running.workoutMetadata) == .running)
+        // Another app's run, or one Foulée wrote before #744.
+        #expect(RecordedActivity(.running, metadata: [:]) == .running)
+        // A tag that does not fit the type is not believed.
+        #expect(RecordedActivity(.walking, metadata: SportID.trailRunning.workoutMetadata) == .walking)
+    }
+
+    @Test("A phone-recorded outing reads back as the sport it was started as")
+    func phoneOutingReadsBackAsItsSport() {
+        for activity in SessionActivity.allCases {
+            let session = SessionRecord(startedAt: Date(timeIntervalSince1970: 1_800_000_000), activity: activity)
+            let type = activity.hkActivityType
+            #expect(RecordedActivity(type, metadata: session.workoutMetadata) == RecordedActivity(sport: activity.sport))
+        }
     }
 
     /// The load-bearing one: it ties #217's filter to #245's labels.
@@ -31,7 +50,7 @@ struct RecordedActivityTests {
             // the résumé that all read « Séance » — the neutral label is for
             // what cannot be named, not a place to quietly park new types.
             #expect(
-                RecordedActivity(type) != .other,
+                RecordedActivity(type, metadata: nil) != .other,
                 "\(type.rawValue) passe le filtre du résumé mais n'a pas de nom"
             )
         }
@@ -42,8 +61,8 @@ struct RecordedActivityTests {
         // It happened, and hiding it would be a worse lie than « Séance ». The
         // *write* side refuses these outright — that one feeds a permanent
         // stamp, this one feeds a label.
-        #expect(RecordedActivity(.cycling) == .other)
-        #expect(RecordedActivity(.swimming) == .other)
+        #expect(RecordedActivity(.cycling, metadata: nil) == .other)
+        #expect(RecordedActivity(.swimming, metadata: nil) == .other)
         #expect(SessionActivity(.cycling) == nil)
     }
 

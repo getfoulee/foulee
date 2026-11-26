@@ -262,7 +262,7 @@ final class WatchWorkoutStore: NSObject {
         let leg = OutingLeg(outingID: outingID, index: 0)
         startTrace(activity: activity, at: now)
         let handle = await runOrTrap("ouverture de la séance") {
-            try await engine.startSession(WorkoutEngine.configuration(for: activity), now, leg, self)
+            try await engine.startSession(of: activity, at: now, leg: leg, delegate: self)
         }
         guard let handle else { return }
         await adopt(handle, activity: activity, legStartedAt: now, after: [])

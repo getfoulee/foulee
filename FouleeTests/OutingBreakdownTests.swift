@@ -71,8 +71,11 @@ struct OutingBreakdownTests {
     /// Walk and run must be told apart without relying on red against green.
     @Test("Walking and running are drawn in distinct colours")
     func distinctTints() {
-        let tints = RecordedActivity.allCases.map(\.tint)
+        // A trail shares the run's: it never sits beside a road run in one
+        // outing (#744).
+        let tints = RecordedActivity.allCases.filter { $0 != .trailRunning }.map(\.tint)
         #expect(Set(tints.map(\.description)).count == tints.count)
+        #expect(RecordedActivity.trailRunning.tint == ActivityPalette.run)
         #expect(RecordedActivity.walking.tint == ActivityPalette.walk)
         #expect(RecordedActivity.running.tint == ActivityPalette.run)
     }

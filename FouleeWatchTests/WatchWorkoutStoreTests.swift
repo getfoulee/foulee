@@ -76,6 +76,8 @@ final class WorkoutHealthKitStub {
     private(set) var resumeCalls = 0
     /// The climb each leg was stamped with, in call order (issue #535).
     private(set) var climbs: [Elevation] = []
+    /// The sport each session was stamped with when it opened (#744).
+    private(set) var sportTags: [String] = []
     /// The time the store reads (issue #406). It stands still until a test
     /// moves it, so every date the store writes is one the test can name.
     let clock = ManualClock()
@@ -173,7 +175,13 @@ final class WorkoutHealthKitStub {
             collectionEndDate: { self.collectionEndDate },
             pause: { self.pauseCalls += 1 },
             resume: { self.resumeCalls += 1 },
-            addMetadata: { self.climbs.append(Elevation(metadata: $0)) }
+            addMetadata: { metadata in
+                if let tag = metadata[FouleeWorkoutMetadata.sport] as? String {
+                    self.sportTags.append(tag)
+                } else {
+                    self.climbs.append(Elevation(metadata: metadata))
+                }
+            }
         )
     }
 }

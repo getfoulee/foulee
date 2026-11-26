@@ -28,24 +28,18 @@ struct SportChoiceTests {
         #expect(SportChoice.defaultActivity(last: nil, favorites: [.walking, .running]) == .walking)
     }
 
-    @Test("A last sport Foulée cannot record falls back to the favourites")
-    func unrecordableLastSport() {
-        let last = LastSport(sport: .hiking, startedAt: Self.earlier)
-        #expect(SportChoice.defaultActivity(last: last, favorites: [.running]) == .running)
-    }
-
-    @Test("No favourite that can be recorded starts a walk")
+    @Test("No favourite starts a walk, a hike favourite a hike")
     func walkingFallback() {
         #expect(SportChoice.defaultActivity(last: nil, favorites: []) == .walking)
-        #expect(SportChoice.defaultActivity(last: nil, favorites: [.hiking]) == .walking)
+        #expect(SportChoice.defaultActivity(last: nil, favorites: [.hiking]) == .hiking)
     }
 
     @Test("Favourites come first, then every other recordable sport")
     func sections() {
         let sections = SportChoice.sections(favorites: [.running, .hiking])
-        #expect(sections.favorites == [.running])
-        #expect(sections.others == [.walking])
-        let all = SportChoice.sections(favorites: [.walking, .running])
+        #expect(sections.favorites == [.running, .hiking])
+        #expect(sections.others == [.walking, .trailRunning])
+        let all = SportChoice.sections(favorites: Set(SportID.allCases))
         #expect(all.favorites == SessionActivity.allCases)
         #expect(all.others.isEmpty)
     }
