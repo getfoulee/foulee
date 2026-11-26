@@ -2,7 +2,6 @@ import FouleeDomain
 import FouleeLiveActivityModel
 import Foundation
 import Testing
-@testable import Foulee
 
 /// Cover for the value the Lock Screen reads while a session runs (#225).
 ///

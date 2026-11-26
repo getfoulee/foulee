@@ -2,7 +2,6 @@ import FouleeDomain
 import FouleeLiveActivityModel
 import Foundation
 import Testing
-@testable import Foulee
 
 /// What the sport-aware Live Activity draws (#732), and that its payload
 /// survives a build that knows more or less than this one.
