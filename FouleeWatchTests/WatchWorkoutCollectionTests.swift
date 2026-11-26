@@ -3,7 +3,6 @@ import FouleeDomain
 import Foundation
 import HealthKit
 import Testing
-@testable import FouleeWatch
 
 /// What a live session actually collects (issue #223).
 ///
