@@ -30,7 +30,7 @@ import UIKit
 final class MirroredLiveActivity {
     static let shared = MirroredLiveActivity()
 
-    private var activity: Activity<WalkActivityAttributes>?
+    private var activity: Activity<SessionActivityAttributes>?
 
     /// Activities this process started. The orphan sweep at launch
     /// (`FouleeApp.endOrphanedWalkActivitiesOnce`) must leave them alone: a
@@ -73,14 +73,14 @@ final class MirroredLiveActivity {
         figures: SessionSnapshot?,
         outingStartedAt: Date,
         device: MirroredDevice = .appleWatch
-    ) -> WalkActivityAttributes.SessionState {
+    ) -> SessionActivityState {
         guard let figures else {
-            return WalkActivityAttributes.SessionState(
+            return SessionActivityState(
                 timerBasis: outingStartedAt, pausedAt: nil, elapsed: 0,
                 steps: 0, distanceKm: 0, activeCalories: 0
             )
         }
-        return WalkActivityAttributes.SessionState(
+        return SessionActivityState(
             timerBasis: figures.outingStartedAt,
             pausedAt: figures.isPaused ? figures.sentAt : nil,
             elapsed: figures.elapsed(at: figures.sentAt),
@@ -92,7 +92,7 @@ final class MirroredLiveActivity {
         )
     }
 
-    private func start(with state: WalkActivityAttributes.SessionState) {
+    private func start(with state: SessionActivityState) {
         let appState = Self.describe(UIApplication.shared.applicationState)
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
             FouleeLog.liveActivity.notice("miroir : Live Activities désactivées dans Réglages (app \(appState, privacy: .public))")
@@ -102,7 +102,7 @@ final class MirroredLiveActivity {
         // and a mirrored outing can switch from walk to run mid-way (#265).
         // « Ta sortie » stays true; a named sport would go stale at the first
         // switch.
-        let attributes = WalkActivityAttributes(goalMinutes: Self.goalMinutes, activity: nil)
+        let attributes = SessionActivityAttributes(goalMinutes: Self.goalMinutes, activity: nil)
         do {
             let started = try Activity.request(
                 attributes: attributes,
@@ -138,8 +138,8 @@ final class MirroredLiveActivity {
 
     /// The activities this type starts: no sport in their attributes, where
     /// the phone's own walk always names one (`ActiveSessionStore`).
-    private static func mirroredActivities() -> [Activity<WalkActivityAttributes>] {
-        Activity<WalkActivityAttributes>.activities.filter { $0.attributes.activity == nil }
+    private static func mirroredActivities() -> [Activity<SessionActivityAttributes>] {
+        Activity<SessionActivityAttributes>.activities.filter { $0.attributes.activity == nil }
     }
 
     /// Read straight from the defaults: a mirror wake mounts no UI, so the

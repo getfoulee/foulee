@@ -129,7 +129,11 @@ struct FouleeApp: App {
             // A mirror wake is a launch too (#275): the activity it starts is
             // not an orphan.
             let startedHere = MirroredLiveActivity.startedHere.withLock { $0 }
-            for activity in Activity<WalkActivityAttributes>.activities where !startedHere.contains(activity.id) {
+            for activity in Activity<SessionActivityAttributes>.activities where !startedHere.contains(activity.id) {
+                await activity.end(nil, dismissalPolicy: .immediate)
+            }
+            // Left by a build before #732; the mirror no longer starts these.
+            for activity in Activity<WalkActivityAttributes>.activities {
                 await activity.end(nil, dismissalPolicy: .immediate)
             }
         }

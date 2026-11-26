@@ -9,18 +9,19 @@ import WidgetKit
 /// - Dynamic Island expanded: timer + km and climb + steps + kcal
 /// - Dynamic Island minimal: activity icon
 ///
-/// The copy and the glyph follow the session's own activity (issue #225):
-/// a run announces itself as a run. This extension has no app-group
-/// entitlement, so the snapshot the widgets read is out of reach and
-/// `WalkActivityAttributes.activity` is the only channel that carries the
-/// information — the title and the glyph are derived there, once, so the four
-/// places below that draw the figure cannot disagree. The neutral « Ta sortie »
-/// and `ActivityGlyph.mixedCardio` that #222 put here stay for one payload
-/// only: an activity started by a build older than #225, which never recorded
-/// what it was.
-struct SessionLiveActivity: Widget {
+/// The copy, the glyph and the figures follow the outing's sport (#225,
+/// #732): a run announces itself as a run, and a sport without a distance
+/// draws none. This extension has no app-group entitlement, so the attributes
+/// are the only channel that carries it — the title, the glyph and the figures
+/// are derived there, once, so the places below cannot disagree.
+///
+/// Generic over the attributes type: `SessionActivityAttributes` for every new
+/// activity, `WalkActivityAttributes` for one left running by a build before
+/// #732, drawn the same way.
+struct SessionLiveActivity<Attributes: ActivityAttributes & SessionActivityContent>: Widget
+where Attributes.ContentState == SessionActivityState {
     var body: some WidgetConfiguration {
-        ActivityConfiguration(for: WalkActivityAttributes.self) { context in
+        ActivityConfiguration(for: Attributes.self) { context in
             LockScreenView(
                 state: context.state,
                 attributes: context.attributes
@@ -46,13 +47,16 @@ struct SessionLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 1) {
-                        Text(context.state.distanceKm.kmText())
-                            .font(.system(.title3, design: .rounded, weight: .semibold))
-                            .monospacedDigit()
-                            .accessibilityLabel(MetricID.distance.spokenText(context.state.distanceKm))
-                        // The climb under the distance, when there is one
+                        if let headline = context.attributes.headlineMetric {
+                            Text(context.state.text(for: headline))
+                                .font(.system(.title3, design: .rounded, weight: .semibold))
+                                .monospacedDigit()
+                                .accessibilityLabel(context.state.spokenText(for: headline))
+                        }
+                        // The climb under the headline, when there is one
                         // (issue #576); never in the compact views.
-                        if let elevation = context.state.elevation, let text = elevation.text {
+                        if context.attributes.showsElevation,
+                           let elevation = context.state.elevation, let text = elevation.text {
                             Text(text)
                                 .font(.caption2)
                                 .monospacedDigit()
@@ -63,23 +67,17 @@ struct SessionLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     HStack {
-                        statCell(
-                            value: context.state.steps.groupedText(),
-                            label: "pas",
-                            icon: MetricID.steps.glyph,
-                            spoken: Text(MetricID.steps.spokenText(Double(context.state.steps)))
-                        )
-                        statCell(
-                            value: context.state.activeCalories.map { "\($0)" } ?? "—",
-                            label: "kcal",
-                            icon: MetricID.calories.glyph,
-                            spoken: context.state.activeCalories
-                                .map { Text(MetricID.calories.spokenText(Double($0))) }
-                                ?? Text("Calories indisponibles")
-                        )
+                        ForEach(context.attributes.cellMetrics) { metric in
+                            statCell(
+                                value: context.state.valueText(for: metric),
+                                label: Text(metric.unit),
+                                icon: metric.glyph,
+                                spoken: Text(context.state.spokenText(for: metric))
+                            )
+                        }
                         statCell(
                             value: "\(context.attributes.goalMinutes)",
-                            label: "min objectif",
+                            label: Text("min objectif"),
                             icon: "target",
                             spoken: Text(spokenGoalText(minutes: context.attributes.goalMinutes))
                         )
@@ -107,7 +105,7 @@ struct SessionLiveActivity: Widget {
 
     /// The activity's glyph, or pause, named for VoiceOver by the session's
     /// title: « Ta marche », « Ta course · En pause » (issue #601).
-    private func sessionGlyph(_ context: ActivityViewContext<WalkActivityAttributes>) -> some View {
+    private func sessionGlyph(_ context: ActivityViewContext<Attributes>) -> some View {
         Image(systemName: context.state.isPaused ? "pause.fill" : context.attributes.glyph)
             .foregroundStyle(.tint)
             .accessibilityLabel(context.attributes.title(isPaused: context.state.isPaused))
@@ -115,7 +113,7 @@ struct SessionLiveActivity: Widget {
 
     /// `spoken` is the whole cell for VoiceOver: « — kcal » would be read
     /// « tiret k cal » and « 30 min objectif » word by word (issue #601).
-    private func statCell(value: String, label: LocalizedStringResource, icon: String, spoken: Text) -> some View {
+    private func statCell(value: String, label: Text, icon: String, spoken: Text) -> some View {
         VStack(spacing: 2) {
             Image(systemName: icon)
                 .font(.caption2)
@@ -123,7 +121,7 @@ struct SessionLiveActivity: Widget {
             Text(value)
                 .font(.system(.callout, design: .rounded, weight: .semibold))
                 .monospacedDigit()
-            Text(label)
+            label
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
@@ -134,8 +132,8 @@ struct SessionLiveActivity: Widget {
 }
 
 struct LockScreenView: View {
-    let state: WalkActivityAttributes.SessionState
-    let attributes: WalkActivityAttributes
+    let state: SessionActivityState
+    let attributes: any SessionActivityContent
 
     private var progress: Double {
         let goalSeconds = Double(attributes.goalMinutes * 60)
@@ -148,9 +146,9 @@ struct LockScreenView: View {
             ring
             VStack(alignment: .leading, spacing: 4) {
                 Label(
-                    // « Ta marche » / « Ta course », and « Ta sortie » only
-                    // when the payload predates #225 — spelled in
-                    // `WalkActivityAttributes` so the Dynamic Island above
+                    // « Ta marche » / « Ta course », « Ta sortie » for an
+                    // outing the app cannot name — spelled in
+                    // `SessionActivityContent` so the Dynamic Island above
                     // draws the same figure this row does.
                     attributes.title(isPaused: state.isPaused),
                     systemImage: state.isPaused ? "pause.fill" : attributes.glyph
@@ -167,15 +165,17 @@ struct LockScreenView: View {
                 .monospacedDigit()
                 .foregroundStyle(state.isPaused ? .secondary : .primary)
                 .sessionClockAccessibility(state)
-                Text("\(state.steps.groupedText()) pas · \(state.distanceKm.kmText())")
+                // The sport's first two figures: « 5 391 pas · 2,48 km »
+                // for a walk, the calories alone for a sport without either.
+                Text(attributes.rowMetrics.map(state.text(for:)).joined(separator: " · "))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .accessibilityLabel(Text(
-                        "\(MetricID.steps.spokenText(Double(state.steps))), \(MetricID.distance.spokenText(state.distanceKm))"
+                        attributes.rowMetrics.map(state.spokenText(for:)).joined(separator: ", ")
                     ))
                 // Its own line: beside the steps and the distance it would
                 // truncate on a small phone (issue #576).
-                if let elevation = state.elevation, let text = elevation.text {
+                if attributes.showsElevation, let elevation = state.elevation, let text = elevation.text {
                     Text(text)
                         .font(.footnote)
                         .monospacedDigit()
@@ -212,7 +212,7 @@ private extension View {
     /// The session clock for VoiceOver (issue #601): « 18:24 » is read as a
     /// time of day. Running, a `.relative` text the system ticks like the
     /// timer itself, « 18 min 24 s »; paused, the frozen duration in words.
-    func sessionClockAccessibility(_ state: WalkActivityAttributes.SessionState) -> some View {
+    func sessionClockAccessibility(_ state: SessionActivityState) -> some View {
         accessibilityLabel(Text("Durée"))
             .accessibilityValue(
                 state.isPaused

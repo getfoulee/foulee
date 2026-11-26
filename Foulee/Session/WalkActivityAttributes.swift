@@ -2,23 +2,20 @@ import ActivityKit
 import FouleeDomain
 import Foundation
 
-/// Shape of the data the Live Activity surfaces. Imported by both the
-/// iOS app target (which starts/updates/ends the activity) and the
-/// FouleeLiveActivity widget extension (which renders Lock Screen +
-/// Dynamic Island views).
+/// The Live Activity attributes of every build before #732, kept one release
+/// so an activity a previous build left running is still drawn (as a walk or
+/// a run, with their figures) and still reached by the two sweeps that end it:
+/// `FouleeApp.endOrphanedWalkActivitiesOnce` and
+/// `ActiveSessionStore.startLiveActivity`. No new activity uses it:
+/// `SessionActivityAttributes` replaced it. Remove it in the release after.
 ///
-/// It is also the *only* channel between the two: the extension has no
-/// app-group entitlement (`FouleeLiveActivity.entitlements` is empty), so the
-/// snapshot the Série and Aujourd'hui widgets read is out of reach and nothing
-/// else can tell it what the session in flight is (issue #225).
-///
-/// The one type that kept its « Walk » name when the others became sport-
-/// neutral (#722). ActivityKit finds a running activity by its attributes
-/// type, and both clean-up sweeps reach a stranded one only through
-/// `Activity<WalkActivityAttributes>.activities`: renamed, an activity left by
-/// the previous build would be out of reach of everything that can end it.
-nonisolated struct WalkActivityAttributes: ActivityAttributes {
-    typealias ContentState = SessionState
+/// It kept its « Walk » name when the other types became sport-neutral (#722):
+/// ActivityKit finds a running activity by its attributes type, and renamed,
+/// one left by the previous build would be out of reach of everything that can
+/// end it.
+nonisolated struct WalkActivityAttributes: ActivityAttributes, SessionActivityContent {
+    typealias ContentState = SessionActivityState
+    typealias SessionState = SessionActivityState
 
     var goalMinutes: Int
 
@@ -51,62 +48,9 @@ nonisolated struct WalkActivityAttributes: ActivityAttributes {
         self.activity = activity
     }
 
-    /// Title for the Lock Screen row, in the app's own registre.
-    ///
-    /// The two named cases come from `SessionActivity.sessionTitle`, which is
-    /// also what the phone's own live screen draws — the two surfaces are on
-    /// screen at the same moment and #222 asked for one voice across them.
-    /// « sortie » stays the noun for a session whose activity is unknown; no
-    /// third word is introduced here. The paused suffix keeps #222's shape.
-    func title(isPaused: Bool) -> String {
-        isPaused ? String(localized: "\(baseTitle) · En pause") : baseTitle
-    }
-
-    /// SF Symbol for the same session, read from `ActivityGlyph` rather than
-    /// `FouleeIcon`: the latter lives in DesignSystem, imports SwiftUI and is
-    /// not compiled into this extension (see Project.swift).
-    var glyph: String {
-        switch activity {
-        case .walking: ActivityGlyph.walk
-        case .running: ActivityGlyph.run
-        case nil: ActivityGlyph.mixedCardio
-        }
-    }
-
-    private var baseTitle: String {
-        activity?.sessionTitle ?? String(localized: "Ta sortie")
-    }
-
-    /// Pushed on walk events (start, pause, resume, pedometer samples) —
-    /// the clock itself runs system-side off `timerBasis`.
-    nonisolated struct SessionState: Codable, Hashable, Sendable {
-        /// Virtual start of the walk: now minus accumulated elapsed,
-        /// recomputed on every push so `Text(timerInterval:)` keeps the
-        /// clock running while the app is suspended.
-        var timerBasis: Date
-        /// Set while paused; freezes the system timer via `pauseTime`.
-        var pausedAt: Date?
-        var elapsed: TimeInterval
-        var steps: Int
-        var distanceKm: Double
-        /// `nil` when the source states none — a Garmin watch (ADR 0009,
-        /// D7): the Lock Screen says « — » rather than a measured-looking 0.
-        /// Optional, so a state written before it decodes as is.
-        var activeCalories: Int?
-        /// The climb and descent so far, in metres (issue #576); `nil` when
-        /// the source states none live — a Garmin watch. Optional, so a state
-        /// written before them decodes as is.
-        var climbMeters: Double?
-        var descentMeters: Double?
-
-        var isPaused: Bool { pausedAt != nil }
-
-        /// « ↑ 120 m · ↓ 115 m », or `nil` with nothing measured.
-        var elevation: Elevation? {
-            guard climbMeters != nil || descentMeters != nil else { return nil }
-            return Elevation(ascent: climbMeters ?? 0, descent: descentMeters ?? 0)
-        }
-    }
+    /// What every build before #732 drew.
+    var metrics: [MetricID] { [.steps, .distance, .calories] }
+    var showsElevation: Bool { true }
 }
 
 // MARK: - Tolerant decoding
