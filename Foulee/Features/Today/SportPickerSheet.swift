@@ -55,6 +55,9 @@ struct OtherSportButton: View {
                 .font(FouleeFont.callout.weight(.semibold))
                 .foregroundStyle(ReadablePalette.purpleText)
                 .frame(maxWidth: .infinity, minHeight: 44)
+                // The whole line takes the tap, not only the glyphs: a plain
+                // button hit-tests its content, which left a thin target.
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier(TodayAccessibility.otherSport)
