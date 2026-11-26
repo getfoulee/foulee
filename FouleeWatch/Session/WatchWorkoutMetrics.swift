@@ -217,19 +217,19 @@ nonisolated extension WatchWorkoutMetrics {
     /// the outing's clock would have read zero. Falling back to `now - elapsed`
     /// covers the finished session, where the basis is deliberately cleared so
     /// the recap stops counting.
-    func snapshot(at now: Date, isEnded: Bool) -> WatchSessionSnapshot {
-        WatchSessionSnapshot(
+    func snapshot(at now: Date, isEnded: Bool) -> SessionSnapshot {
+        SessionSnapshot(
             sentAt: now,
             outingStartedAt: timerBasis ?? now.addingTimeInterval(-elapsed(at: now)),
             activity: activity,
+            // Over wins over paused: an outing stopped during a pause is over.
+            phase: isEnded ? .ended : isPaused ? .paused : .active,
             steps: steps,
             distanceMeters: distanceMeters,
             activeCalories: activeCalories,
             heartRate: heartRate,
             climbMeters: climbMeters,
-            descentMeters: descentMeters,
-            isEnded: isEnded,
-            isPaused: isPaused
+            descentMeters: descentMeters
         )
     }
 }

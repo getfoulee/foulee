@@ -125,18 +125,18 @@ nonisolated extension ScreenshotSeed {
     ///
     /// A Garmin states no calories and no climb while it runs (ADR 0009, D7):
     /// its board carries neither, as a real one would.
-    static func wristFigures(from device: MirroredDevice) -> WatchSessionSnapshot {
+    static func wristFigures(from device: MirroredDevice) -> SessionSnapshot {
         let isGarmin = device == .garmin
-        return WatchSessionSnapshot(
+        return SessionSnapshot(
             sentAt: instant,
             outingStartedAt: instant.addingTimeInterval(-sessionElapsed),
             activity: .running,
+            phase: .active,
             steps: sessionSteps,
             distanceMeters: sessionDistanceMeters,
             activeCalories: isGarmin ? 0 : sessionCalories,
             heartRate: sessionHeartRate,
             climbMeters: isGarmin ? 0 : sessionElevationMeters,
-            isEnded: false,
             route: [MirroredRoutePortion(activity: .running, coordinates: route)]
         )
     }

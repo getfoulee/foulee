@@ -12,7 +12,7 @@ import SwiftUI
 /// The same order as the wrist's own session (ADR 0008): the controls to the
 /// left of the figures, which are the page it opens on.
 struct WatchPhoneSessionPager: View {
-    let snapshot: PhoneSessionSnapshot
+    let snapshot: SessionSnapshot
     var isSending: Bool
     var errorMessage: String?
     var onCommand: (PhoneSessionCommand) -> Void
@@ -47,7 +47,7 @@ struct WatchPhoneSessionPager: View {
 ///
 /// The buttons ask; the screen changes when the phone says the session did.
 private struct WatchPhoneSessionControlsPage: View {
-    let snapshot: PhoneSessionSnapshot
+    let snapshot: SessionSnapshot
     let metrics: WatchWorkoutMetrics
     var isSending: Bool
     var onCommand: (PhoneSessionCommand) -> Void

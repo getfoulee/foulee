@@ -49,7 +49,7 @@ nonisolated final class WatchSyncReceiver: NSObject, WCSessionDelegate, @uncheck
 
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         guard let data = message[PhoneSessionKey.snapshot] as? Data,
-              let snapshot = try? JSONDecoder().decode(PhoneSessionSnapshot.self, from: data) else { return }
+              let snapshot = try? JSONDecoder().decode(SessionSnapshot.self, from: data) else { return }
         Task { @MainActor in WatchPhoneSession.shared.receive(snapshot) }
     }
 
@@ -70,7 +70,7 @@ nonisolated final class WatchSyncReceiver: NSObject, WCSessionDelegate, @uncheck
     /// each change, so an absent key is the phone saying « no session ».
     private func receivePhoneSession(_ context: [String: Any]) {
         let snapshot = (context[PhoneSessionKey.snapshot] as? Data)
-            .flatMap { try? JSONDecoder().decode(PhoneSessionSnapshot.self, from: $0) }
+            .flatMap { try? JSONDecoder().decode(SessionSnapshot.self, from: $0) }
         Task { @MainActor in WatchPhoneSession.shared.receive(snapshot) }
     }
 }

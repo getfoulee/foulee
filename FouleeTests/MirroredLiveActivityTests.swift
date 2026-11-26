@@ -8,19 +8,18 @@ import Testing
 struct MirroredLiveActivityTests {
     private let start = Date(timeIntervalSinceReferenceDate: 800_000_000)
 
-    private func figures(at offset: TimeInterval, isPaused: Bool = false) -> WatchSessionSnapshot {
-        WatchSessionSnapshot(
+    private func figures(at offset: TimeInterval, isPaused: Bool = false) -> SessionSnapshot {
+        SessionSnapshot(
             sentAt: start.addingTimeInterval(offset),
             outingStartedAt: start,
             activity: .running,
+            phase: isPaused ? .paused : .active,
             steps: 1_200,
             distanceMeters: 2_500,
             activeCalories: 140,
             heartRate: 150,
             climbMeters: 85,
-            descentMeters: 40,
-            isEnded: false,
-            isPaused: isPaused
+            descentMeters: 40
         )
     }
 

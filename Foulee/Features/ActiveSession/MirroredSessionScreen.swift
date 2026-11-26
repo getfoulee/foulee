@@ -175,7 +175,7 @@ struct MirroredSessionScreen: View {
     }
 
     /// « Relevé il y a 2 min ». The line that keeps this screen from lying.
-    private func freshness(_ figures: WatchSessionSnapshot) -> some View {
+    private func freshness(_ figures: SessionSnapshot) -> some View {
         TimelineView(.periodic(from: .now, by: 30)) { _ in
             Text(Self.ageText(figures.age(at: date.now)))
                 .font(.caption)

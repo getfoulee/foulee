@@ -21,16 +21,16 @@ struct MirroredRouteTests {
         ]
     )
 
-    private func snapshot(route: [MirroredRoutePortion]) -> WatchSessionSnapshot {
-        WatchSessionSnapshot(
+    private func snapshot(route: [MirroredRoutePortion]) -> SessionSnapshot {
+        SessionSnapshot(
             sentAt: base,
             outingStartedAt: base.addingTimeInterval(-600),
             activity: .running,
+            phase: .active,
             steps: 2_480,
             distanceMeters: 1_830,
             activeCalories: 108,
             heartRate: 118,
-            isEnded: false,
             route: route
         )
     }
@@ -41,7 +41,7 @@ struct MirroredRouteTests {
     func roundTrip() throws {
         let original = snapshot(route: [run])
         let decoded = try JSONDecoder().decode(
-            WatchSessionSnapshot.self,
+            SessionSnapshot.self,
             from: JSONEncoder().encode(original)
         )
         #expect(decoded == original)
@@ -73,7 +73,7 @@ struct MirroredRouteTests {
     @Test("A snapshot without a route decodes with an empty one")
     func noRouteIsEmpty() throws {
         let json = #"{"sentAt": 0, "outingStartedAt": 0, "activity": "walking", "steps": 12}"#
-        let decoded = try JSONDecoder().decode(WatchSessionSnapshot.self, from: Data(json.utf8))
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
         #expect(decoded.route.isEmpty)
         #expect(decoded.steps == 12)
     }
@@ -81,7 +81,7 @@ struct MirroredRouteTests {
     @Test("A malformed route costs the map, never the figures")
     func aBadRouteKeepsTheFigures() throws {
         let json = #"{"sentAt": 0, "outingStartedAt": 0, "activity": "walking", "steps": 12, "route": "oops"}"#
-        let decoded = try JSONDecoder().decode(WatchSessionSnapshot.self, from: Data(json.utf8))
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
         #expect(decoded.route.isEmpty)
         #expect(decoded.steps == 12)
     }

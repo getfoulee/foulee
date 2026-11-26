@@ -38,7 +38,7 @@ final class MirroredSessionStore {
     /// any numbers yet — which is a real state, not a transient one: HealthKit
     /// may take minutes to deliver the first batch. The screen says « en
     /// attente » rather than drawing zeros that look measured.
-    private(set) var figures: WatchSessionSnapshot?
+    private(set) var figures: SessionSnapshot?
 
     /// The newest `sentAt` ever seen, kept **across outings**.
     ///
@@ -123,7 +123,7 @@ final class MirroredSessionStore {
     /// An end dated the same as the figures held still ends: the Garmin watch
     /// dates to the second, and its end can leave in the second of a periodic
     /// state.
-    private func apply(_ snapshot: WatchSessionSnapshot, from device: MirroredDevice) {
+    private func apply(_ snapshot: SessionSnapshot, from device: MirroredDevice) {
         if let newest = newestSentAt,
            newest > snapshot.sentAt || (newest == snapshot.sentAt && !snapshot.isEnded) {
             return

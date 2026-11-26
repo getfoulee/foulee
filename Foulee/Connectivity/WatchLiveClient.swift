@@ -9,7 +9,7 @@ import Foundation
 /// walk is never held up by a watch that is off, unpaired or out of range.
 nonisolated struct WatchLiveClient: Sendable {
     /// The session's latest state, or `nil` once there is none.
-    var publish: @Sendable (PhoneSessionSnapshot?) -> Void
+    var publish: @Sendable (SessionSnapshot?) -> Void
 }
 
 nonisolated extension WatchLiveClient: DependencyKey {

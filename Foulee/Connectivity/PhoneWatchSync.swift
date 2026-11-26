@@ -20,7 +20,7 @@ nonisolated final class PhoneWatchSync: NSObject, WCSessionDelegate, @unchecked 
     /// the session alone would wipe the synced prefs off the wrist.
     nonisolated struct Context: Sendable {
         var payload: WatchSyncPayload?
-        var session: PhoneSessionSnapshot?
+        var session: SessionSnapshot?
 
         /// The dictionary as WatchConnectivity wants it. Pure, so what reaches
         /// the wrist is asserted without a `WCSession`.
@@ -84,7 +84,7 @@ nonisolated final class PhoneWatchSync: NSObject, WCSessionDelegate, @unchecked 
     /// WatchConnectivity sees fit, which is no clock to run a session on.
     /// « No session » travels in the context only: an ended session has
     /// already been said live.
-    func publish(session snapshot: PhoneSessionSnapshot?) {
+    func publish(session snapshot: SessionSnapshot?) {
         #if DEBUG
         guard !Self.isMuted else { return }
         #endif

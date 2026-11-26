@@ -23,7 +23,7 @@ nonisolated final class GarminConnectIQBridge: NSObject, IQDeviceEventDelegate, 
         /// twice would deliver every message twice.
         var registeredDeviceIDs: Set<UUID> = []
         var subscribers: [UUID: AsyncStream<GarminDailySnapshot>.Continuation] = [:]
-        var sessionSubscribers: [UUID: AsyncStream<WatchSessionSnapshot>.Continuation] = [:]
+        var sessionSubscribers: [UUID: AsyncStream<SessionSnapshot>.Continuation] = [:]
         var waterSubscribers: [UUID: AsyncStream<Void>.Continuation] = [:]
         var lastAccepted: GarminDailySnapshot?
     }
@@ -130,7 +130,7 @@ nonisolated final class GarminConnectIQBridge: NSObject, IQDeviceEventDelegate, 
         stream(of: \.subscribers)
     }
 
-    func sessionStates() -> AsyncStream<WatchSessionSnapshot> {
+    func sessionStates() -> AsyncStream<SessionSnapshot> {
         stream(of: \.sessionSubscribers)
     }
 

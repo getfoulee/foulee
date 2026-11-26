@@ -43,16 +43,15 @@ struct MirroredSessionStoreTests {
         activity: SessionActivity = .walking,
         steps: Int = 0,
         isEnded: Bool = false
-    ) -> WatchSessionSnapshot {
-        WatchSessionSnapshot(
+    ) -> SessionSnapshot {
+        SessionSnapshot(
             sentAt: base.addingTimeInterval(offset),
             outingStartedAt: base.addingTimeInterval(outing),
             activity: activity,
+            phase: isEnded ? .ended : .active,
             steps: steps,
             distanceMeters: 0,
-            activeCalories: 0,
-            heartRate: nil,
-            isEnded: isEnded
+            activeCalories: 0
         )
     }
 
