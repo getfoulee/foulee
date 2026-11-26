@@ -25,7 +25,7 @@ struct WatchWorkoutMetricsTests {
 // Value semantics of the state enum, pinned separately: the view relies on
 // these to re-render and to pick the right screen. The store's transitions
 // themselves are covered in WatchWorkoutStoreTests via the injectable
-// WatchWorkoutHealthKit facade.
+// WorkoutEngine.
 @Suite("WatchWorkoutStore.State")
 struct WatchWorkoutStateTests {
     @Test("Save failure distinguishes the two summary states")

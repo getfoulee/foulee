@@ -1,4 +1,5 @@
 import FouleeDomain
+import FouleeHealth
 import Foundation
 import HealthKit
 import Testing
@@ -16,7 +17,7 @@ private final class TrapHealthKit {
     var calls: Int { availabilityChecks + authorizationRequests + sessionStarts }
 
     func makeStore() -> WatchWorkoutStore {
-        WatchWorkoutStore(healthKit: WatchWorkoutHealthKit(
+        WatchWorkoutStore(engine: WorkoutEngine(
             isAvailable: {
                 self.availabilityChecks += 1
                 return true
@@ -27,7 +28,7 @@ private final class TrapHealthKit {
             startSession: { _, _, _, _ in
                 self.sessionStarts += 1
                 let token = NSObject()
-                return WatchWorkoutSessionHandle(
+                return WorkoutSessionHandle(
                     sessionID: ObjectIdentifier(token),
                     builderID: ObjectIdentifier(token),
                     startMirroring: {},

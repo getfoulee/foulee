@@ -1,4 +1,5 @@
 import FouleeDomain
+import FouleeHealth
 @preconcurrency import HealthKit
 import Observation
 import SwiftUI
@@ -7,7 +8,7 @@ import SwiftUI
 /// `HKLiveWorkoutBuilder` — the same APIs the Workouts app uses, which
 /// gives us real heart-rate, distance and calorie samples instead of the
 /// CMPedometer estimates the iPhone target relies on. The HealthKit calls
-/// go through the injectable `WatchWorkoutHealthKit` facade.
+/// go through `WorkoutEngine`, shared with the iPhone (#730).
 ///
 /// State is a tiny three-case enum so the view binds declaratively. Errors
 /// funnel through a single boundary (`runOrTrap`); the rest is happy-path.
@@ -32,7 +33,9 @@ final class WatchWorkoutStore: NSObject {
     @ObservationIgnored var isRecovering = false
 
     /// Internal for `WatchWorkoutStore+Recovery` (issue #554).
-    @ObservationIgnored let healthKit: WatchWorkoutHealthKit
+    @ObservationIgnored let engine: WorkoutEngine
+    /// The legs of an outing Santé already holds (issue #554).
+    @ObservationIgnored let savedLegs: @MainActor (_ outingID: UUID) async -> [WatchWorkoutSegment]
     /// The time every pause, leg and batch is dated with. Injected so tests
     /// drive it instead of racing the runner's clock (issue #406): a pause
     /// test once failed because a slow machine took over a second to start a
@@ -41,7 +44,7 @@ final class WatchWorkoutStore: NSObject {
     /// Internal, not private, because `WatchWorkoutStore+Legs` answers « is
     /// this callback about the leg in flight? » from it (issue #290) — and that
     /// question belongs next to the delegates that ask it, not here.
-    @ObservationIgnored var sessionHandle: WatchWorkoutSessionHandle?
+    @ObservationIgnored var sessionHandle: WorkoutSessionHandle?
     @ObservationIgnored let detection: WatchActivityDetection
     /// What detection says is happening right now — the source of the sport
     /// named on screen (issue #250).
@@ -107,14 +110,16 @@ final class WatchWorkoutStore: NSObject {
     var endedOnLowBattery = false
 
     init(
-        healthKit: WatchWorkoutHealthKit = .live,
+        engine: WorkoutEngine = .live(collecting: .measured),
+        savedLegs: @escaping @MainActor (UUID) async -> [WatchWorkoutSegment] = WatchWorkoutSegment.saved(of:),
         detection: WatchActivityDetection = WatchActivityDetection(),
         route: WatchRouteStore = WatchRouteStore(),
         climb: WatchClimbStore = WatchClimbStore(),
         battery: @escaping @MainActor () -> BatteryReading = BatteryReading.watch,
         clock: @escaping @MainActor () -> Date = { .now }
     ) {
-        self.healthKit = healthKit
+        self.engine = engine
+        self.savedLegs = savedLegs
         self.detection = detection
         self.route = route
         self.climb = climb
@@ -136,7 +141,7 @@ final class WatchWorkoutStore: NSObject {
         guard case .idle = state else { return }
         #if DEBUG
         // Capture mode (issue #239): show the seeded session and open nothing.
-        // It returns before `healthKit` is read, so there is no authorization
+        // It returns before `engine` is read, so there is no authorization
         // prompt, no `HKWorkoutSession`, no builder — and `sessionHandle` stays
         // nil, which makes `stop()` and `retrySave()` no-ops too. Nothing this
         // path can reach writes to Santé.
@@ -145,7 +150,7 @@ final class WatchWorkoutStore: NSObject {
             return
         }
         #endif
-        guard healthKit.isAvailable() else {
+        guard engine.isAvailable() else {
             lastError = String(localized: "Santé n'est pas disponible sur cet appareil.")
             return
         }
@@ -160,7 +165,7 @@ final class WatchWorkoutStore: NSObject {
             readTypes.insert(waterType)
         }
         let granted = await runOrTrap("autorisation HealthKit") {
-            try await healthKit.requestAuthorization(writeTypes, readTypes)
+            try await engine.requestAuthorization(writeTypes, readTypes)
             return true
         }
         guard granted == true else { return }
@@ -198,10 +203,8 @@ final class WatchWorkoutStore: NSObject {
             return
         }
         await stampClimb(on: handle, from: legStartedAt, to: end)
-        handle.end()
         let saved = await runOrTrap("enregistrement de la séance") {
-            try await handle.endCollection(end)
-            try await handle.finishWorkout(route.locations)
+            try await handle.finish(at: end, route: route.locations)
             return true as Bool
         }
         state = .ended(metrics, saveFailed: saved != true)
@@ -246,7 +249,7 @@ final class WatchWorkoutStore: NSObject {
     ///
     /// Internal rather than folded into the branch above so
     /// `WatchScreenshotModeTests` can call it on a store built with a
-    /// **trap** `WatchWorkoutHealthKit` — every closure of which fails the test
+    /// **trap** `WorkoutEngine` — every closure of which fails the test
     /// if it is called. That is the runtime proof that this path reaches
     /// HealthKit not at all.
     func startScreenshotSession() {
@@ -260,7 +263,7 @@ final class WatchWorkoutStore: NSObject {
         let leg = OutingLeg(outingID: outingID, index: 0)
         startTrace(activity: activity, at: now)
         let handle = await runOrTrap("ouverture de la séance") {
-            try await healthKit.startSession(Self.configuration(for: activity), now, leg, self)
+            try await engine.startSession(WorkoutEngine.configuration(for: activity), now, leg, self)
         }
         guard let handle else { return }
         await adopt(handle, activity: activity, legStartedAt: now, after: [])
@@ -269,7 +272,7 @@ final class WatchWorkoutStore: NSObject {
     /// Make `handle` the leg in flight of an outing whose earlier legs are
     /// `finished`, and show it. Internal for `recover()` (issue #554).
     func adopt(
-        _ handle: WatchWorkoutSessionHandle,
+        _ handle: WorkoutSessionHandle,
         activity: SessionActivity,
         legStartedAt start: Date,
         after finished: [WatchWorkoutSegment],
@@ -373,12 +376,17 @@ final class WatchWorkoutStore: NSObject {
         do {
             return try await body()
         } catch {
-            lastError = error.localizedDescription
-            FouleeLog.session.error(
-                "\(step, privacy: .public) : \(error.localizedDescription, privacy: .public)"
-            )
+            trap(step, error)
             return nil
         }
+    }
+
+    /// `runOrTrap`'s catch, for a failure that arrives as a value.
+    func trap(_ step: StaticString, _ error: any Error) {
+        lastError = error.localizedDescription
+        FouleeLog.session.error(
+            "\(step, privacy: .public) : \(error.localizedDescription, privacy: .public)"
+        )
     }
 }
 
@@ -438,58 +446,46 @@ extension WatchWorkoutStore {
         )
     }
 
-    /// Close the leg in flight and open the next one at the same instant.
-    ///
-    /// This is what Forme does when you tap « + » mid-outing, and the only
-    /// shape HealthKit allows: a session records one sport, so a second sport
-    /// needs a second session (#256).
+    /// Change the outing's sport at `boundary`: the engine saves the leg in
+    /// flight and opens the next one there (#730, ADR 0002 D7).
     ///
     /// **A failure here never costs what came before.** Every finished leg is
-    /// already its own saved workout. If the next leg cannot be opened the
-    /// outing ends, with the reason on screen — which is a smaller loss than a
-    /// session that keeps running while recording nothing.
+    /// already its own saved workout. A leg that will not close keeps its
+    /// builder, so « Terminer » can still finish it; a next leg that will not
+    /// open leaves the outing going without measure, with the reason on
+    /// screen. Nothing but « Terminer » ends an outing: a failed split that
+    /// ended one cost a real sortie.
     /// Internal for `splitIfDue`, in `WatchWorkoutStore+Legs`.
     func splitLeg(to activity: SessionActivity, at boundary: Date) async {
         guard let handle = sessionHandle else { return }
         await stampClimb(on: handle, from: legStartedAt, to: boundary)
-        let closed = await runOrTrap("fermeture de la jambe") {
-            handle.end()
-            try await handle.endCollection(boundary)
-            try await handle.finishWorkout(route.locations)
-            return true as Bool
-        }
+        let change = await engine.changeSport(
+            of: handle,
+            at: boundary,
+            route: route.locations,
+            to: (activity, OutingLeg(outingID: outingID, index: finishedLegs.count + 1)),
+            delegate: self
+        )
         finishedLegs.append(legInFlight(endingAt: boundary))
-
-        guard closed == true else {
-            // The builder is alive, so « Terminer » can still finish it — and
-            // **the outing goes on**. Nothing but that button ends one.
+        switch change {
+        case .notClosed(let error):
+            trap("fermeture de la jambe", error)
             FouleeLog.session.error("jambe non fermée, la sortie continue")
-            return
-        }
-        sessionHandle = nil
-
-        let leg = OutingLeg(outingID: outingID, index: finishedLegs.count)
-        let next = await runOrTrap("ouverture de la jambe suivante") {
-            try await healthKit.startSession(Self.configuration(for: activity), boundary, leg, self)
-        }
-        guard let next else {
-            // **This is what ended a real sortie**: the fifth switch could not
-            // open its leg, and the app finished everything — on the « Bravo »
-            // path, so the reason never reached the screen. Nothing but
-            // « Terminer » ends an outing now. Nothing more is measured, but
-            // every leg recorded is saved and `lastError` says why.
+        case .notOpened(let error):
+            sessionHandle = nil
+            trap("ouverture de la jambe suivante", error)
             FouleeLog.session.error("jambe suivante non ouverte, la sortie continue sans mesure")
-            return
+        case .changed(let next):
+            sessionHandle = next
+            // Each leg is its own session, so each one has to be offered again —
+            // the mirror does not survive the session it was opened on (#277).
+            await offerMirror(next)
+            await mirrorSwitch()
+            legStartedAt = boundary
+            legActivity = activity
+            legIdentity = UUID()
+            currentLeg = .zero
+            resetPause()
         }
-        sessionHandle = next
-        // Each leg is its own session, so each one has to be offered again —
-        // the mirror does not survive the session it was opened on (#277).
-        await offerMirror(next)
-        await mirrorSwitch()
-        legStartedAt = boundary
-        legActivity = activity
-        legIdentity = UUID()
-        currentLeg = .zero
-        resetPause()
     }
 }

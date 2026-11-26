@@ -1,10 +1,11 @@
 import FouleeDomain
+import FouleeHealth
 import HealthKit
 import SwiftUI
 import Testing
 @testable import FouleeWatch
 
-/// Minimal stand-in for `WatchWorkoutHealthKit.live` — just enough to record
+/// Minimal stand-in for `WorkoutEngine.live` — just enough to record
 /// the configuration a start produces. `WatchWorkoutStoreTests` has the full
 /// scriptable stub for the state machine; this one exists so the picker can be
 /// followed all the way to what Santé would be handed.
@@ -12,13 +13,13 @@ private final class ConfigurationRecorder {
     private(set) var startedConfiguration: HKWorkoutConfiguration?
 
     func makeStore() -> WatchWorkoutStore {
-        WatchWorkoutStore(healthKit: WatchWorkoutHealthKit(
+        WatchWorkoutStore(engine: WorkoutEngine(
             isAvailable: { true },
             requestAuthorization: { _, _ in },
             startSession: { configuration, _, _, _ in
                 self.startedConfiguration = configuration
                 let token = NSObject()
-                return WatchWorkoutSessionHandle(
+                return WorkoutSessionHandle(
                     sessionID: ObjectIdentifier(token),
                     builderID: ObjectIdentifier(token),
                     startMirroring: {},

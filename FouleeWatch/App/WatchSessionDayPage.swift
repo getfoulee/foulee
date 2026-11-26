@@ -19,7 +19,7 @@ import SwiftUI
 /// wants to log a glass is the moment they are least able to leave the
 /// session, and the card answers the same question as the bars above it. It
 /// is the home's card, with the same store behind it. `dietaryWater` is not in
-/// `collectedQuantityTypes`, so a glass logged mid-session touches nothing the
+/// `WorkoutEngine.collectedTypes`, so a glass logged mid-session touches nothing the
 /// `HKLiveWorkoutBuilder` is collecting.
 ///
 /// The streak and the goals cost nothing to draw — they are the phone's, read

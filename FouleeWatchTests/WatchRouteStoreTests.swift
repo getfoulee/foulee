@@ -1,4 +1,5 @@
 import CoreLocation
+import FouleeHealth
 import Testing
 @testable import FouleeWatch
 
@@ -223,7 +224,7 @@ struct WatchWorkoutRouteSaveTests {
         let end = start.addingTimeInterval(600)
         let fixes = [-1.0, 0, 300, 600, 601].map { fix(at: start.addingTimeInterval($0)) }
 
-        let leg = WatchWorkoutHealthKit.routeFixes(fixes, from: start, to: end)
+        let leg = WorkoutEngine.routeFixes(fixes, from: start, to: end)
 
         #expect(leg.map(\.timestamp) == [0.0, 300, 600].map { start.addingTimeInterval($0) })
     }
@@ -232,7 +233,7 @@ struct WatchWorkoutRouteSaveTests {
     func invertedRange() {
         let start = Date(timeIntervalSinceReferenceDate: 1_000)
         let fixes = [fix(at: start)]
-        #expect(WatchWorkoutHealthKit.routeFixes(fixes, from: start, to: start.addingTimeInterval(-1)).isEmpty)
+        #expect(WorkoutEngine.routeFixes(fixes, from: start, to: start.addingTimeInterval(-1)).isEmpty)
     }
 
     @Test("« Terminer » hands the outing's fixes to the save")
