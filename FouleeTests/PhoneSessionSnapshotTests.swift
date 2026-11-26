@@ -8,12 +8,12 @@ import Testing
 struct PhoneSessionSnapshotTests {
     private let sent = Date(timeIntervalSince1970: 1_754_000_000)
 
-    private func snapshot(_ phase: PhoneSessionSnapshot.Phase) -> PhoneSessionSnapshot {
-        PhoneSessionSnapshot(
+    private func snapshot(_ phase: SessionSnapshot.Phase) -> SessionSnapshot {
+        SessionSnapshot(
             sentAt: sent,
+            outingStartedAt: sent.addingTimeInterval(-600),
             activity: .running,
             phase: phase,
-            elapsed: 600,
             steps: 1_800,
             distanceMeters: 1_650,
             activeCalories: 150,
@@ -27,7 +27,7 @@ struct PhoneSessionSnapshotTests {
     @Test("A snapshot survives the round trip whole")
     func roundTrip() throws {
         let original = snapshot(.paused)
-        let decoded = try JSONDecoder().decode(PhoneSessionSnapshot.self, from: JSONEncoder().encode(original))
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: JSONEncoder().encode(original))
         #expect(decoded == original)
     }
 
@@ -35,7 +35,7 @@ struct PhoneSessionSnapshotTests {
     @Test("An unknown sport or phase degrades instead of failing")
     func tolerantDecoding() throws {
         let json = #"{"sentAt": 0, "activity": "natation", "phase": "sieste", "steps": 12}"#
-        let decoded = try JSONDecoder().decode(PhoneSessionSnapshot.self, from: Data(json.utf8))
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
         #expect(decoded.activity == .walking)
         #expect(decoded.phase == .active)
         #expect(decoded.steps == 12)
@@ -62,7 +62,7 @@ struct PhoneSessionSnapshotTests {
 
         #expect(context["payload"] is Data)
         let data = try #require(context[PhoneSessionKey.snapshot] as? Data)
-        #expect(try JSONDecoder().decode(PhoneSessionSnapshot.self, from: data) == snapshot(.active))
+        #expect(try JSONDecoder().decode(SessionSnapshot.self, from: data) == snapshot(.active))
     }
 
     /// An absent key is how the wrist learns there is no session any more.

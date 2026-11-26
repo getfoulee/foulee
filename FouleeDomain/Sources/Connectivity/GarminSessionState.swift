@@ -2,7 +2,7 @@ import Foundation
 
 /// A session in progress on the Garmin watch, as the Foulée Monkey C app
 /// states it every 10 s and at each pause, resume and end (`session`, ADR 0009,
-/// D7 and D6). Read into the `WatchSessionSnapshot` the Apple Watch's mirror
+/// D7 and D6). Read into the `SessionSnapshot` the Apple Watch's mirror
 /// already draws: the same complete, dated state (ADR 0003, D2), so the mirror
 /// screen and its rules (newest wins, the end closes it) serve both watches.
 ///
@@ -42,7 +42,7 @@ nonisolated public enum GarminSessionState {
     /// - missing or non-numeric metric → 0, negative → 0.
     ///
     /// The watch has no calories to state: they stay 0, and the screen says so.
-    public static func decode(_ message: Any) -> WatchSessionSnapshot? {
+    public static func decode(_ message: Any) -> SessionSnapshot? {
         guard let fields = message as? [AnyHashable: Any],
               fields[Key.type] as? String == messageType,
               ConnectIQField.integer(fields[Key.version]) == schemaVersion,
@@ -50,18 +50,18 @@ nonisolated public enum GarminSessionState {
 
         let elapsed = TimeInterval(ConnectIQField.nonNegative(fields[Key.elapsed]))
         let heartRate = ConnectIQField.nonNegative(fields[Key.heartRate])
-        return WatchSessionSnapshot(
+        return SessionSnapshot(
             sentAt: sentAt,
             // The start pushed back by every pause, as the Apple Watch states
             // it: the phone's clock then runs from it between two states.
             outingStartedAt: sentAt.addingTimeInterval(-elapsed),
             activity: ConnectIQField.activity(fields[Key.sport]),
+            phase: ConnectIQField.flag(fields[Key.ended]) ? .ended
+                : ConnectIQField.flag(fields[Key.paused]) ? .paused : .active,
             steps: ConnectIQField.nonNegative(fields[Key.steps]),
             distanceMeters: Double(ConnectIQField.nonNegative(fields[Key.distance])),
             activeCalories: 0,
-            heartRate: heartRate > 0 ? heartRate : nil,
-            isEnded: ConnectIQField.flag(fields[Key.ended]),
-            isPaused: ConnectIQField.flag(fields[Key.paused])
+            heartRate: heartRate > 0 ? heartRate : nil
         )
     }
 }

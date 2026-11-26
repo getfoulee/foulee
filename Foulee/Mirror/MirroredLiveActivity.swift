@@ -70,7 +70,7 @@ final class MirroredLiveActivity {
     /// A Garmin watch states no calories, nor any climb while it runs: none
     /// are drawn.
     nonisolated static func state(
-        figures: WatchSessionSnapshot?,
+        figures: SessionSnapshot?,
         outingStartedAt: Date,
         device: MirroredDevice = .appleWatch
     ) -> WalkActivityAttributes.SessionState {

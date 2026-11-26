@@ -11,8 +11,8 @@ import Testing
 struct ActiveSessionStoreWatchTests {
     private let frozen = Date(timeIntervalSince1970: 1_700_000_000)
 
-    private func withStore(_ body: (ActiveSessionStore, LockedRef<[PhoneSessionSnapshot?]>) async throws -> Void) async throws {
-        let told = LockedRef<[PhoneSessionSnapshot?]>([])
+    private func withStore(_ body: (ActiveSessionStore, LockedRef<[SessionSnapshot?]>) async throws -> Void) async throws {
+        let told = LockedRef<[SessionSnapshot?]>([])
         try await withDependencies {
             $0.date = .constant(frozen)
             $0.pedometer = .testValue

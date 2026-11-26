@@ -26,7 +26,7 @@ final class WorkoutHealthKitStub {
     private(set) var startCalls = 0
     private(set) var mirrorOffers = 0
     /// Every snapshot handed to the phone, decoded (issue #278).
-    private(set) var sentSnapshots: [WatchSessionSnapshot] = []
+    private(set) var sentSnapshots: [SessionSnapshot] = []
     /// Whether `end()` had already been called when each snapshot went out.
     /// `sendToRemoteWorkoutSession` needs a session that is still alive, so the
     /// final snapshot has to leave *before* the teardown (issue #278).
@@ -145,7 +145,7 @@ final class WorkoutHealthKitStub {
                 if let error = self.mirrorError { throw error }
             },
             sendToRemote: { data in
-                if let snapshot = try? JSONDecoder().decode(WatchSessionSnapshot.self, from: data) {
+                if let snapshot = try? JSONDecoder().decode(SessionSnapshot.self, from: data) {
                     self.sentSnapshots.append(snapshot)
                     self.sentAfterEnd.append(self.endCalls > 0)
                 }

@@ -47,9 +47,9 @@ extension ActiveSessionStore {
     }
 
     /// The session as the wrist shows it, or `nil` when there is none.
-    func watchSnapshot(at now: Date) -> PhoneSessionSnapshot? {
+    func watchSnapshot(at now: Date) -> SessionSnapshot? {
         let session: SessionRecord
-        let phase: PhoneSessionSnapshot.Phase
+        let phase: SessionSnapshot.Phase
         switch state {
         case .idle:
             return nil
@@ -63,11 +63,11 @@ extension ActiveSessionStore {
             session = done
             phase = .ended
         }
-        return PhoneSessionSnapshot(
+        return SessionSnapshot(
             sentAt: now,
+            outingStartedAt: now.addingTimeInterval(-session.elapsed),
             activity: session.activity,
             phase: phase,
-            elapsed: session.elapsed,
             steps: session.steps,
             distanceMeters: session.distanceMeters,
             activeCalories: session.estimatedCalories,

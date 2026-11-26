@@ -56,8 +56,8 @@ nonisolated enum MirroredSessionEvent: Equatable, Sendable {
     /// Figures the wrist stated (issue #278). A complete state, dated by the
     /// wrist — the phone keeps the newest and drops the rest, because HealthKit
     /// promises delivery, not sequence.
-    case snapshot(WatchSessionSnapshot)
+    case snapshot(SessionSnapshot)
     /// The same complete state, from the Garmin watch (ADR 0009, D7).
-    case garmin(WatchSessionSnapshot)
+    case garmin(SessionSnapshot)
     case ended
 }

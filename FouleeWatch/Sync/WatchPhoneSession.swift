@@ -19,7 +19,7 @@ final class WatchPhoneSession {
     static let staleAfter: TimeInterval = 15 * 60
 
     /// The newest state the phone sent, whatever its age.
-    private(set) var snapshot: PhoneSessionSnapshot?
+    private(set) var snapshot: SessionSnapshot?
     /// A command is on its way to the phone.
     private(set) var isSending = false
     /// Why the last command was not carried out.
@@ -34,7 +34,7 @@ final class WatchPhoneSession {
     /// What the phone said. Newest wins: a context and a live message can
     /// carry the same session in either order. `nil` — no session — always
     /// wins, so a session the phone let go of never lingers here.
-    func receive(_ snapshot: PhoneSessionSnapshot?) {
+    func receive(_ snapshot: SessionSnapshot?) {
         guard let snapshot else {
             self.snapshot = nil
             return
@@ -44,7 +44,7 @@ final class WatchPhoneSession {
     }
 
     /// The session to show, if any: not ended, and not gone stale.
-    func shown(at now: Date) -> PhoneSessionSnapshot? {
+    func shown(at now: Date) -> SessionSnapshot? {
         guard let snapshot, snapshot.phase != .ended,
               now.timeIntervalSince(snapshot.sentAt) <= Self.staleAfter
         else { return nil }

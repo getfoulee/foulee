@@ -8,26 +8,26 @@ import Testing
 /// **two apps that update separately**: a watch on a newer build talks to a
 /// phone on an older one for as long as the owner takes to install both.
 @Suite("Watch session snapshot")
-struct WatchSessionSnapshotTests {
+struct SessionSnapshotTests {
     private let base = Date(timeIntervalSince1970: 1_754_000_000)
 
-    private func snapshot(isEnded: Bool = false) -> WatchSessionSnapshot {
-        WatchSessionSnapshot(
+    private func snapshot(isEnded: Bool = false) -> SessionSnapshot {
+        SessionSnapshot(
             sentAt: base,
             outingStartedAt: base.addingTimeInterval(-600),
             activity: .running,
+            phase: isEnded ? .ended : .active,
             steps: 2_480,
             distanceMeters: 1_830,
             activeCalories: 108,
-            heartRate: 118,
-            isEnded: isEnded
+            heartRate: 118
         )
     }
 
     @Test("A snapshot survives the round trip whole")
     func roundTrip() throws {
         let data = try JSONEncoder().encode(snapshot())
-        let decoded = try JSONDecoder().decode(WatchSessionSnapshot.self, from: data)
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: data)
         #expect(decoded == snapshot())
     }
 
@@ -41,7 +41,7 @@ struct WatchSessionSnapshotTests {
         {"sentAt": 0, "outingStartedAt": 0, "activity": "natation",
          "steps": 10, "distanceMeters": 5, "activeCalories": 1, "isEnded": false}
         """
-        let decoded = try JSONDecoder().decode(WatchSessionSnapshot.self, from: Data(json.utf8))
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
         #expect(decoded.activity == .walking)
         #expect(decoded.steps == 10)
     }
@@ -51,7 +51,7 @@ struct WatchSessionSnapshotTests {
     @Test("Missing keys fall back rather than failing")
     func missingKeysFallBack() throws {
         let json = #"{"sentAt": 0, "outingStartedAt": 0, "activity": "walking"}"#
-        let decoded = try JSONDecoder().decode(WatchSessionSnapshot.self, from: Data(json.utf8))
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
 
         #expect(decoded.steps == 0)
         #expect(decoded.heartRate == nil)
@@ -84,7 +84,7 @@ struct WatchSessionSnapshotTests {
     ])
     func datesAreRequired(json: String) {
         #expect(throws: (any Error).self) {
-            try JSONDecoder().decode(WatchSessionSnapshot.self, from: Data(json.utf8))
+            try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
         }
     }
 
@@ -95,7 +95,7 @@ struct WatchSessionSnapshotTests {
     func aWrongTypeIsRefused() {
         let json = #"{"sentAt": 0, "outingStartedAt": 0, "activity": "walking", "steps": "beaucoup"}"#
         #expect(throws: (any Error).self) {
-            try JSONDecoder().decode(WatchSessionSnapshot.self, from: Data(json.utf8))
+            try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
         }
     }
 
@@ -138,7 +138,7 @@ struct WatchSessionSnapshotTests {
     @Test("A watch that never sends a pause is never paused")
     func pauseDefaultsToRunning() throws {
         let json = #"{"sentAt": 0, "outingStartedAt": 0, "activity": "walking"}"#
-        let decoded = try JSONDecoder().decode(WatchSessionSnapshot.self, from: Data(json.utf8))
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
         #expect(decoded.isPaused == false)
     }
 
@@ -147,8 +147,63 @@ struct WatchSessionSnapshotTests {
     @Test("A paused outing's clock stands still on what the wrist stated")
     func aPausedClockStandsStill() {
         var paused = snapshot()
-        paused.isPaused = true
+        paused.phase = .paused
         #expect(paused.elapsed(at: base.addingTimeInterval(300)) == 600)
         #expect(snapshot().elapsed(at: base.addingTimeInterval(300)) == 900)
+    }
+
+    @Test("An outing that is over stops its clock where it was stated")
+    func anEndedClockStandsStill() {
+        let ended = snapshot(isEnded: true)
+        #expect(ended.elapsed(at: base.addingTimeInterval(300)) == 600)
+        #expect(ended.timerBasis == nil)
+    }
+
+    // MARK: - Both wire formats (#730)
+
+    /// What the iPhone sent before #730: an elapsed time and a phase, no start.
+    @Test("A phone payload from before #730 reads with its clock and phase")
+    func readsTheOldPhonePayload() throws {
+        let json = """
+        {"sentAt": 1000, "activity": "running", "phase": "paused", "elapsed": 600,
+         "steps": 1800, "distanceMeters": 1650, "activeCalories": 150}
+        """
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
+        #expect(decoded.phase == .paused)
+        #expect(decoded.elapsed == 600)
+        #expect(decoded.outingStartedAt == Date(timeIntervalSinceReferenceDate: 400))
+    }
+
+    /// What a watch or a Garmin state said before #730: two flags. Over wins.
+    @Test("A watch payload from before #730 reads its flags as a phase", arguments: [
+        (false, false, SessionSnapshot.Phase.active),
+        (false, true, .paused),
+        (true, false, .ended),
+        (true, true, .ended)
+    ])
+    func readsTheOldWatchPayload(isEnded: Bool, isPaused: Bool, phase: SessionSnapshot.Phase) throws {
+        let json = """
+        {"sentAt": 1000, "outingStartedAt": 400, "activity": "walking",
+         "isEnded": \(isEnded), "isPaused": \(isPaused)}
+        """
+        let decoded = try JSONDecoder().decode(SessionSnapshot.self, from: Data(json.utf8))
+        #expect(decoded.phase == phase)
+    }
+
+    /// An older build at the other end decodes with its own keys only: the
+    /// watch's needs `outingStartedAt`, the phone's `elapsed` and `phase`.
+    @Test("A snapshot writes the keys both older builds read", arguments: [
+        SessionSnapshot.Phase.active, .paused, .ended
+    ])
+    func writesBothFormats(phase: SessionSnapshot.Phase) throws {
+        var figures = snapshot()
+        figures.phase = phase
+        let data = try JSONEncoder().encode(figures)
+        let object = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+        #expect(object["outingStartedAt"] as? Double == base.addingTimeInterval(-600).timeIntervalSinceReferenceDate)
+        #expect(object["elapsed"] as? Double == 600)
+        #expect(object["phase"] as? String == phase.rawValue)
+        #expect(object["isEnded"] as? Bool == (phase == .ended))
+        #expect(object["isPaused"] as? Bool == (phase == .paused))
     }
 }

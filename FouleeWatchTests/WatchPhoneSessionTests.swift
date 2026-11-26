@@ -11,15 +11,15 @@ struct WatchPhoneSessionTests {
     private struct Unreachable: Error {}
 
     private func snapshot(
-        _ phase: PhoneSessionSnapshot.Phase = .active,
+        _ phase: SessionSnapshot.Phase = .active,
         sentAgo: TimeInterval = 0,
         route: [MirroredRoutePortion] = []
-    ) -> PhoneSessionSnapshot {
-        PhoneSessionSnapshot(
+    ) -> SessionSnapshot {
+        SessionSnapshot(
             sentAt: now.addingTimeInterval(-sentAgo),
+            outingStartedAt: now.addingTimeInterval(-sentAgo).addingTimeInterval(-600),
             activity: .running,
             phase: phase,
-            elapsed: 600,
             steps: 1_800,
             distanceMeters: 1_650,
             activeCalories: 150,

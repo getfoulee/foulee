@@ -99,7 +99,7 @@ nonisolated struct GarminConnectIQClient: Sendable {
 
     /// The session in progress on the watch, each state as it is decoded
     /// (ADR 0009, D7). Read by `MirroredSessionStore`.
-    var sessionStates: @Sendable () -> AsyncStream<WatchSessionSnapshot>
+    var sessionStates: @Sendable () -> AsyncStream<SessionSnapshot>
 
     /// Fires each time a glass noted at the watch is kept for Santé (ADR 0009,
     /// D8). Read by `GarminWaterIngestion`, which writes what is waiting.

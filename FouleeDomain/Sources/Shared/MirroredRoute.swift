@@ -5,7 +5,7 @@ import Foundation
 ///
 /// What the wrist sends the phone so the outing it mirrors can be drawn on a
 /// map, coloured by portion like the watch's « Plan » page (#320) and the
-/// detail (#319). It rides in `WatchSessionSnapshot`, so it shares its rule:
+/// detail (#319). It rides in `SessionSnapshot`, so it shares its rule:
 /// **a complete route, never a delta** — a delta lost between two HealthKit
 /// wakes could never be recovered, a complete route is corrected by the next.
 nonisolated public struct MirroredRoutePortion: Equatable, Sendable {

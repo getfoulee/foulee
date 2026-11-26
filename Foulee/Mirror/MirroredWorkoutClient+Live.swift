@@ -157,7 +157,7 @@ nonisolated private final class MirrorBridge: NSObject, HKWorkoutSessionDelegate
     ) {
         let decoder = JSONDecoder()
         for payload in data {
-            guard let snapshot = try? decoder.decode(WatchSessionSnapshot.self, from: payload) else {
+            guard let snapshot = try? decoder.decode(SessionSnapshot.self, from: payload) else {
                 // A payload from a build this one does not understand. The
                 // decoder is written to degrade rather than throw, so reaching
                 // here means something worse than a new field.
