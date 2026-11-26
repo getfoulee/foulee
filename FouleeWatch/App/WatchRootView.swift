@@ -126,7 +126,7 @@ struct WatchRootView: View {
         syncedTo defaults: UserDefaults = WatchSyncStore.sharedDefaults
     ) -> SportChoice.Resolved {
         let payload = WatchSyncStore.read(from: defaults)
-        let favorites = payload?.activityMode.favoriteSports ?? [.walking]
+        let favorites = payload?.favorites ?? [.walking]
         let last = LastSport.newest(payload?.lastSport, LastSportPreference.read(from: defaults))
         return SportChoice.resolve(last: last, favorites: favorites)
     }

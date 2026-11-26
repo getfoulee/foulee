@@ -195,6 +195,7 @@ nonisolated private func refreshSnapshotMetrics(store: HKHealthStore, wake: Back
         // Health wake — the watch would quietly go back to stamping walks
         // (issue #223).
         activityMode: BackgroundStreakRefresh.preferences(defaults: defaults).activityMode,
+        favoriteSports: FavoriteSportsPreference.migratedFavoriteSports(in: defaults),
         // Same reason: a payload without it would hide the iPhone's last
         // sport from the watch until the app is opened (#743).
         lastSport: LastSportPreference.read(from: defaults)

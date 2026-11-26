@@ -118,4 +118,14 @@ struct FavoriteSportsPreferenceTests {
         Preference.write([.running], to: store)
         #expect(store.values[Preference.key] as? [String] == ["cycling", "running"])
     }
+
+    @Test("The favourites are offered to a background reader only once migrated")
+    func migratedFavouritesOnly() {
+        let store = store(mode: "running")
+        // Before the first launch of a build that migrates, the mode is the
+        // only answer: reading the favourites would say walking.
+        #expect(Preference.migratedFavoriteSports(in: store) == nil)
+        Preference.migrate(store)
+        #expect(Preference.migratedFavoriteSports(in: store) == [.running])
+    }
 }

@@ -148,6 +148,7 @@ extension TodayStore {
             hydrationGoalML: hydrationGoalML,
             hydrationGlassML: hydrationGlassML,
             activityMode: activityMode,
+            favoriteSports: favoriteSports,
             lastSport: lastSport
         ))
     }

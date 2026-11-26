@@ -114,6 +114,8 @@ struct TodayStoreActivityTests {
                 // stamping walks forever, whatever the phone is set to.
                 let publication = try #require(store.widgetPublication(stored: nil))
                 #expect(publication.watchPayload?.activityMode == .running)
+                // And the favourites themselves, which the mode cannot all name (#831).
+                #expect(publication.watchPayload?.favoriteSports == [.running])
             }
         }
     }
