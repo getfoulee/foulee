@@ -20,9 +20,9 @@ private extension SessionActivityState {
 }
 
 private extension SessionActivityAttributes {
+    // periphery:ignore - read only inside `#Preview`, which Periphery does not index.
     /// No sport records this yet: strength or a rower, whose only figure is
     /// the calories.
-    // periphery:ignore - read only inside `#Preview`, which Periphery does not index.
     static let withoutDistance = SessionActivityAttributes(
         goalMinutes: 30,
         activity: nil,
