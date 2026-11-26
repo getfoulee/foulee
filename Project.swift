@@ -129,6 +129,15 @@ let project = Project(
             onWatch: false,
             dependencies: [.target(name: "FouleeDomain"), .target(name: "FouleeHealth")]
         ),
+        // The Live Activity's attributes, read by the app that starts it and the
+        // extension that draws it (#818). ActivityKit, which the kit does not
+        // import: neither the Mac nor the watch has it. No HealthKit either.
+        sharedFramework(
+            name: "FouleeLiveActivityModel",
+            bundleSuffix: "liveactivitymodel",
+            onWatch: false,
+            dependencies: [.target(name: "FouleeDomain")]
+        ),
         .target(
             name: "FouleeDomainTests",
             destinations: [.mac],
@@ -164,6 +173,7 @@ let project = Project(
                 .target(name: "FouleeDesignSystem"),
                 .target(name: "FouleeHealth"),
                 .target(name: "FouleeIntents"),
+                .target(name: "FouleeLiveActivityModel"),
                 .package(product: "Dependencies"),
                 // iPhone app only — the widget and watch targets must never
                 // link the Connect IQ framework (iOS-only binary, and the
@@ -200,8 +210,7 @@ let project = Project(
                 "FouleeWidget/**",
                 // Declared in each process rather than in FouleeIntents: Siri's
                 // training of its phrases needs its `AppEnum` in the app (#724).
-                "Foulee/Shared/StartOutingIntent.swift",
-                "FouleeWatchWidget/StreakEntry.swift"
+                "Foulee/Shared/StartOutingIntent.swift"
             ],
             resources: [
                 .glob(
@@ -235,12 +244,7 @@ let project = Project(
                 ]
             ]),
             sources: [
-                "FouleeLiveActivity/**",
-                // ActivityKit, which FouleeDomain does not import: macOS has none.
-                // `SessionActivity+HealthKit` stays out of this extension too,
-                // so no HealthKit is pulled into a process that writes nothing.
-                "Foulee/Session/SessionActivityAttributes.swift",
-                "Foulee/Session/WalkActivityAttributes.swift"
+                "FouleeLiveActivity/**"
             ],
             resources: [
                 .glob(
@@ -251,7 +255,8 @@ let project = Project(
             entitlements: .file(path: "FouleeLiveActivity/Resources/FouleeLiveActivity.entitlements"),
             dependencies: [
                 .target(name: "FouleeDomain"),
-                .target(name: "FouleeDesignSystem")
+                .target(name: "FouleeDesignSystem"),
+                .target(name: "FouleeLiveActivityModel")
             ]
         ),
         .target(
@@ -262,18 +267,7 @@ let project = Project(
             deploymentTargets: .watchOS("26.0"),
             infoPlist: .extendingDefault(with: fouleeWatchInfoPlist),
             sources: [
-                "FouleeWatch/**",
-                // The route recorder the phone's map already uses (issue
-                // #312): one accuracy rule, one stream lifetime, one place
-                // that asks for location. Main-actor state, so not in the kit.
-                "Foulee/Location/RouteRecorder.swift",
-                // The App Store capture seed (issue #239). Only the
-                // Foundation-only half: the watch board and the phone board
-                // must show the same day, and the way to guarantee that is to
-                // compile the same constants, not to copy them. The rest of
-                // Foulee/Screenshots/ names phone types and stays out.
-                // Everything in this file is `#if DEBUG`.
-                "Foulee/Screenshots/ScreenshotSeedCore.swift"
+                "FouleeWatch/**"
             ],
             resources: [
                 .glob(

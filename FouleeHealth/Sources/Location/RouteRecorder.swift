@@ -4,19 +4,17 @@ import FouleeDomain
 /// Continuous fix recorder that draws an outing's route — on the phone's map
 /// sheet and on the watch's « Plan » page (issue #312).
 ///
-/// One recorder for both platforms, compiled by both targets: the accuracy
-/// rule and the stream lifetime are the parts that can be got wrong, and two
-/// copies would be two chances to. It also owns the when-in-use authorization
+/// One recorder for both platforms, in FouleeHealth with the other sensor
+/// clients (#818): the accuracy rule and the stream lifetime are the parts
+/// that can be got wrong, and two copies would be two chances to. It also owns the when-in-use authorization
 /// request, so the app has a single place that asks.
 ///
 /// Kept apart from the phone's weather lookup so a walk's high-accuracy
 /// streaming never disturbs the kilometre-accuracy one-shot the weather card
 /// relies on.
-///
-/// Explicit: the watch target compiles this file without default MainActor isolation.
 @MainActor
-final class RouteRecorder: NSObject, CLLocationManagerDelegate {
-    static let shared = RouteRecorder()
+public final class RouteRecorder: NSObject, CLLocationManagerDelegate {
+    public static let shared = RouteRecorder()
 
     /// Fixes less precise than this are dropped before anything sees them.
     ///
@@ -24,7 +22,7 @@ final class RouteRecorder: NSObject, CLLocationManagerDelegate {
     /// Santé, adds distance that was never walked. 50 m keeps the fixes a watch
     /// gets under trees or between buildings while rejecting the cell-tower
     /// guesses CoreLocation hands out before GPS has locked.
-    nonisolated static let maximumHorizontalAccuracy: CLLocationAccuracy = 50
+    nonisolated public static let maximumHorizontalAccuracy: CLLocationAccuracy = 50
 
     private let manager = CLLocationManager()
     private var authContinuation: CheckedContinuation<Bool, Never>?
@@ -46,13 +44,13 @@ final class RouteRecorder: NSObject, CLLocationManagerDelegate {
 
     /// Whether `location` is precise enough to belong on a route. A negative
     /// accuracy is CoreLocation's way of saying the fix is invalid.
-    nonisolated static func isUsable(_ location: CLLocation) -> Bool {
+    nonisolated public static func isUsable(_ location: CLLocation) -> Bool {
         location.horizontalAccuracy >= 0 && location.horizontalAccuracy <= maximumHorizontalAccuracy
     }
 
     /// Ask for when-in-use access if it has never been asked, and answer
     /// whether the app may read a position.
-    func requestAuthorization() async -> Bool {
+    public func requestAuthorization() async -> Bool {
         let status = manager.authorizationStatus
         guard status == .notDetermined else { return status.allowsLocation }
         return await withCheckedContinuation { continuation in
@@ -65,7 +63,7 @@ final class RouteRecorder: NSObject, CLLocationManagerDelegate {
 
     /// Stream usable fixes until the consumer stops iterating. Starting a new
     /// stream finishes the previous one.
-    nonisolated static func updates() -> AsyncStream<CLLocation> {
+    nonisolated public static func updates() -> AsyncStream<CLLocation> {
         let id = UUID()
         return AsyncStream { continuation in
             continuation.onTermination = { _ in
@@ -96,7 +94,7 @@ final class RouteRecorder: NSObject, CLLocationManagerDelegate {
         )
     }
 
-    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    nonisolated public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let granted = manager.authorizationStatus.allowsLocation
         Task { @MainActor in
             authContinuation?.resume(returning: granted)
@@ -109,7 +107,7 @@ final class RouteRecorder: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    nonisolated public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let usable = locations.filter(Self.isUsable)
         let rejected = locations.count - usable.count
         Task { @MainActor in
@@ -119,7 +117,7 @@ final class RouteRecorder: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    nonisolated public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         // `locationUnknown` is transient and CoreLocation keeps trying on its
         // own; anything else is worth a line, never a dead stream.
         if (error as? CLError)?.code == .locationUnknown { return }

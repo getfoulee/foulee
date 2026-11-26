@@ -24,3 +24,6 @@ struct StreakProvider: TimelineProvider {
         WatchSyncStore.read()?.streak ?? 0
     }
 }
+
+/// The kit keeps WidgetKit out (#818): the extension declares the entry.
+extension StreakEntry: @retroactive TimelineEntry {}

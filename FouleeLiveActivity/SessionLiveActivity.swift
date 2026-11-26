@@ -1,6 +1,7 @@
 import ActivityKit
 import FouleeDesignSystem
 import FouleeDomain
+import FouleeLiveActivityModel
 import SwiftUI
 import WidgetKit
 

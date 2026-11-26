@@ -1,6 +1,7 @@
 import Clocks
 import Dependencies
 import FouleeDomain
+import FouleeLiveActivityModel
 import Foundation
 import Testing
 @testable import Foulee
