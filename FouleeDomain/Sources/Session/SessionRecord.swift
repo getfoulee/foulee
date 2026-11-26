@@ -47,6 +47,10 @@ nonisolated public struct SessionRecord: Equatable, Sendable {
     /// A homogeneous outing lands on exactly the figure it always did — one
     /// stretch, one rate, the same multiplication.
     public var estimatedCalories: Int {
+        // A sport without steps is priced by the minute (#745).
+        if let perMinute = activity.sport.descriptor.kcalPerMinute {
+            return Int(elapsed / 60 * perMinute)
+        }
         guard let stepsByActivity, !stepsByActivity.isEmpty else {
             return Int(Double(steps) * activity.kcalPerStep)
         }

@@ -709,6 +709,16 @@
         }
       }
     },
+    "%lld kilocalories" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld kilocalories"
+          }
+        }
+      }
+    },
     "%lld minutes sur %lld" : {
       "localizations" : {
         "en" : {
@@ -1339,6 +1349,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Attach the summary"
+          }
+        }
+      }
+    },
+    "KCAL" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KCAL"
           }
         }
       }

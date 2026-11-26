@@ -55,6 +55,39 @@ struct ActiveSessionStoreSessionTests {
         }
     }
 
+    @Test("An indoor session never touches the location, a walk does (#745)")
+    func indoorSessionAsksNoLocation() async {
+        let asked = LockedRef<[String]>([])
+        let finished = LockedRef<SessionRecord?>(nil)
+        await withDependencies {
+            $0.date = .constant(frozen)
+            $0.pedometer = .testValue
+            $0.healthKit = .testValue
+            $0.continuousClock = TestClock()
+            $0.phoneWorkoutSession = session(saves: true, started: LockedRef([]), finished: finished)
+            $0.location = LocationClient(
+                requestWhenInUse: { asked.set(asked.value + ["request"]); return true },
+                currentLocation: { nil },
+                routeUpdates: {
+                    asked.set(asked.value + ["route"])
+                    return AsyncStream { $0.finish() }
+                },
+                access: { asked.set(asked.value + ["access"]); return .granted }
+            )
+        } operation: {
+            let yoga = ActiveSessionStore()
+            yoga.start(activity: .yoga)
+            await yoga.stop()
+            #expect(asked.value.isEmpty)
+            #expect(yoga.degradedStates.isEmpty)
+
+            let walk = ActiveSessionStore()
+            walk.start(activity: .walking)
+            #expect(asked.value.contains("route"))
+            await walk.stop()
+        }
+    }
+
     @Test("When the session's builder saves the outing, it is not saved a second time")
     func sessionSavesOnce() async {
         let saved = LockedRef<SessionRecord?>(nil)

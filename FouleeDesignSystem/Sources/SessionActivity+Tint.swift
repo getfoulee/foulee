@@ -11,6 +11,7 @@ nonisolated extension SessionActivity {
         // A trail is a run, and never sits beside a road run in one outing.
         case .running, .trailRunning: ActivityPalette.run
         case .hiking: ActivityPalette.hike
+        case .strength, .hiit, .yoga: ActivityPalette.training
         }
     }
 }

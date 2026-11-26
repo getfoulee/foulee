@@ -17,7 +17,20 @@ nonisolated public extension SportDescriptor {
     /// the altimeter follows.
     var showsElevation: Bool { capabilities.contains(.elevation) }
 
-    /// Whether the climb is the main figure of a live screen, where steps
-    /// otherwise are (#744): for a sport told by its climb.
-    var leadsWithClimb: Bool { showsElevation && benchmarks.leadingRecord == .climb }
+    /// The main figure of a live screen: the climb for a sport told by it
+    /// (#744), the calories for one without steps (#745), the steps otherwise.
+    var liveLead: MetricLead {
+        if showsElevation, benchmarks.leadingRecord == .climb { return .climb }
+        return capabilities.contains(.steps) ? .steps : .calories
+    }
+
+    /// Whether a live screen draws a route, and so asks for the GPS.
+    var tracksRoute: Bool { capabilities.contains(.route) }
+}
+
+/// What a live screen shows first.
+nonisolated public enum MetricLead: Equatable, Sendable {
+    case steps
+    case climb
+    case calories
 }

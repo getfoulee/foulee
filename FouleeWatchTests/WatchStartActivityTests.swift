@@ -82,7 +82,7 @@ struct WatchStartActivityTests {
             let choice = WatchRootView.sportChoice(syncedTo: defaults)
             #expect(choice.activity == .running)
             #expect(choice.sections.favorites == [.running])
-            #expect(choice.sections.others == [.walking, .hiking, .trailRunning])
+            #expect(choice.sections.others == [.walking, .hiking, .trailRunning, .strength, .hiit, .yoga])
         }
     }
 

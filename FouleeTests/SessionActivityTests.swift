@@ -30,7 +30,10 @@ struct SessionActivityTests {
         #expect(SessionActivity.trailRunning.hkActivityType == .running)
         // Spelled out rather than mapped over `allCases`, which would make the
         // assertion true by construction — the exact trap #217 fell into.
-        #expect(SessionActivity.allCases.count == 4)
+        #expect(SessionActivity.yoga.hkActivityType == .yoga)
+        #expect(SessionActivity.strength.hkActivityType == .traditionalStrengthTraining)
+        #expect(SessionActivity.hiit.hkActivityType == .highIntensityIntervalTraining)
+        #expect(SessionActivity.allCases.count == 7)
     }
 
     @Test("The two activities are named the way the rest of the app names them")

@@ -139,7 +139,7 @@ struct ActiveSessionScreen: View {
                 .scrollBounceBehavior(.basedOnSize)
                 // Wider than tall, the route sits beside the figures rather
                 // than behind the « Carte » button (#662).
-                if layout.isSideBySide {
+                if layout.isSideBySide, tracksRoute(session) {
                     SessionRouteMap(strokes: SessionRouteMap.strokes(route: store.route))
                         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
                         .padding(.trailing, 20)
@@ -200,16 +200,17 @@ struct ActiveSessionScreen: View {
         return VStack(spacing: 16) {
             ProgressRing(progress: progress, lineWidth: 16) {
                 VStack(spacing: 4) {
-                    // A hike or a trail is told by its climb (#744), the
-                    // others by their steps.
-                    Text(leadsWithClimb(session) ? climbText(session) : session.steps.groupedText())
+                    // A hike or a trail is told by its climb (#744), an
+                    // indoor session by its calories (#745), the others by
+                    // their steps.
+                    Text(leadText(session))
                         .scaledNumericFont(size: 56 * layout.scale)
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
-                    Text(leadsWithClimb(session) ? "D+ / D−" : "PAS")
+                    Text(leadLabel(session))
                         .font(FouleeFont.footnote.weight(.semibold))
                         .foregroundStyle(.secondary)
-                    if !isAccessibilitySize {
+                    if !isAccessibilitySize, tracksRoute(session) {
                         ringFigures(session: session)
                             .padding(.top, 8)
                     }
@@ -217,7 +218,7 @@ struct ActiveSessionScreen: View {
             }
             // Grown with the room on the inner screen (#662).
             .frame(width: 232 * layout.scale, height: 232 * layout.scale)
-            if isAccessibilitySize {
+            if isAccessibilitySize, tracksRoute(session) {
                 ringFigures(session: session)
             }
         }
@@ -228,6 +229,7 @@ struct ActiveSessionScreen: View {
     }
 
     private func figuresAccessibilityValue(_ session: SessionRecord) -> Text {
+        guard tracksRoute(session) else { return Text("\(session.estimatedCalories) kilocalories") }
         let (steps, distance) = (session.steps.groupedText(), session.distanceKm.kmText(fractionDigits: 1))
         let (kcal, up, down) = (session.estimatedCalories, Int(session.elevationGainMeters), Int(session.elevationLossMeters))
         return Text("\(steps) pas, \(distance), \(kcal) kilocalories, \(up) mètres de montée, \(down) mètres de descente")
@@ -237,7 +239,7 @@ struct ActiveSessionScreen: View {
         FigureRow(spacing: 12, ruleHeight: 28) {
             metric(value: session.distanceKm.kmText(fractionDigits: 1), label: "Distance")
             metric(value: "\(session.estimatedCalories) kcal", label: "Énergie")
-            if leadsWithClimb(session) {
+            if session.activity.sport.descriptor.liveLead == .climb {
                 metric(value: session.steps.groupedText(), label: "Pas")
             } else {
                 metric(value: climbText(session), label: "D+ / D−")
@@ -245,8 +247,25 @@ struct ActiveSessionScreen: View {
         }
     }
 
-    private func leadsWithClimb(_ session: SessionRecord) -> Bool {
-        session.activity.sport.descriptor.leadsWithClimb
+    private func leadText(_ session: SessionRecord) -> String {
+        switch session.activity.sport.descriptor.liveLead {
+        case .steps: session.steps.groupedText()
+        case .climb: climbText(session)
+        case .calories: "\(session.estimatedCalories)"
+        }
+    }
+
+    private func leadLabel(_ session: SessionRecord) -> LocalizedStringResource {
+        switch session.activity.sport.descriptor.liveLead {
+        case .steps: "PAS"
+        case .climb: "D+ / D−"
+        case .calories: "KCAL"
+        }
+    }
+
+    /// An indoor session has no distance, no climb and no map (#745).
+    private func tracksRoute(_ session: SessionRecord) -> Bool {
+        session.activity.sport.descriptor.tracksRoute
     }
 
     private func climbText(_ session: SessionRecord) -> String {
@@ -301,8 +320,9 @@ private extension ActiveSessionScreen {
                     Task { await store.pause() }
                 }
             }
-            // The map is already on screen beside the figures.
-            if !layout.isSideBySide {
+            // The map is already on screen beside the figures; an indoor
+            // session has none (#745).
+            if !layout.isSideBySide, activity.sport.descriptor.tracksRoute {
                 controlButton(icon: FouleeIcon.location, color: Color(hex: 0x0A84FF), label: "Carte") {
                     showRoute = true
                 }

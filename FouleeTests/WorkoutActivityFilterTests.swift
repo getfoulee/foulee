@@ -49,9 +49,13 @@ struct WorkoutActivityFilterTests {
         return Set((activity.subpredicates as? [NSPredicate] ?? []).map(\.predicateFormat))
     }
 
-    @Test("The résumé accepts walking, running and hiking — and nothing else")
+    @Test("The résumé accepts the sports Foulée names — and nothing else")
     func acceptedActivityTypes() {
-        #expect(WorkoutActivityFilter.summarizedActivityTypes == [.walking, .running, .hiking])
+        // A trail is a run in Santé: no type of its own (#744). Strength, HIIT
+        // and yoga since #745.
+        #expect(WorkoutActivityFilter.summarizedActivityTypes == [
+            .walking, .running, .hiking, .traditionalStrengthTraining, .highIntensityIntervalTraining, .yoga,
+        ])
         #expect(!WorkoutActivityFilter.summarizedActivityTypes.contains(.cycling))
     }
 
@@ -66,9 +70,10 @@ struct WorkoutActivityFilterTests {
         #expect(clauses.contains(HKQuery.predicateForWorkouts(with: .running).predicateFormat))
         #expect(clauses.contains(HKQuery.predicateForWorkouts(with: .hiking).predicateFormat))
         #expect(clauses.contains(HKQuery.predicateForWorkouts(with: .walking).predicateFormat))
-        // ORed, not ANDed: an AND over three activity types matches no
+        #expect(clauses.contains(HKQuery.predicateForWorkouts(with: .yoga).predicateFormat))
+        // ORed, not ANDed: an AND over several activity types matches no
         // workout. One clause each, no more — a stray type shows up here.
-        #expect(clauses.count == 3)
+        #expect(clauses.count == 6)
     }
 
     @Test("The date clause spans daysBack days back through end of today")
