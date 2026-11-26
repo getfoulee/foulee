@@ -16,6 +16,8 @@ nonisolated public enum ActivityPalette {
     public static let walk = ReadablePalette.cyan
     public static let run = ReadablePalette.orange
     public static let hike = ReadablePalette.green
+    /// Strength, HIIT, yoga (#745): one colour, they never share an outing.
+    public static let training = ReadablePalette.indigoText
     /// A sport Foulée cannot name.
     public static let neutral = Color.gray
 }

@@ -9,6 +9,7 @@ extension RecordedActivity {
         case .walking: ActivityPalette.walk
         case .running, .trailRunning: ActivityPalette.run
         case .hiking: ActivityPalette.hike
+        case .strength, .hiit, .yoga: ActivityPalette.training
         case .other: ActivityPalette.neutral
         }
     }

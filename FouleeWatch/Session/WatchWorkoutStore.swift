@@ -293,7 +293,8 @@ final class WatchWorkoutStore: NSObject {
         resetPause()
         state = .active(.empty(for: activity))
         beginActivityDetection(from: activity)
-        route.start()
+        // No GPS for a sport without a route (#745), so no location prompt.
+        if activity.sport.descriptor.tracksRoute { route.start() }
         climb.start(clock: clock)
     }
 

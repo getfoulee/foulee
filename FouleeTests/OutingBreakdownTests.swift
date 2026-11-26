@@ -73,9 +73,11 @@ struct OutingBreakdownTests {
     func distinctTints() {
         // A trail shares the run's: it never sits beside a road run in one
         // outing (#744).
-        let tints = RecordedActivity.allCases.filter { $0 != .trailRunning }.map(\.tint)
+        // Strength, HIIT and yoga share one too: they never share an outing (#745).
+        let tints = [RecordedActivity.walking, .running, .hiking, .strength, .other].map(\.tint)
         #expect(Set(tints.map(\.description)).count == tints.count)
         #expect(RecordedActivity.trailRunning.tint == ActivityPalette.run)
+        #expect(RecordedActivity.yoga.tint == ActivityPalette.training)
         #expect(RecordedActivity.walking.tint == ActivityPalette.walk)
         #expect(RecordedActivity.running.tint == ActivityPalette.run)
     }

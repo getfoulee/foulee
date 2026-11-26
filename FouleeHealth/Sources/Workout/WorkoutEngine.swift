@@ -261,6 +261,7 @@ nonisolated public extension WorkoutEngine {
         configuration.activityType = activity.hkActivityType
         switch activity.sport.descriptor.location {
         case .outdoor: configuration.locationType = .outdoor
+        case .indoor: configuration.locationType = .indoor
         }
         return configuration
     }

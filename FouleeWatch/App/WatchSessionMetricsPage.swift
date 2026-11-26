@@ -39,15 +39,19 @@ struct WatchSessionMetricsPage: View {
                     currentActivity
                 }
 
-                HStack(spacing: 10) {
-                    leadingFigure
-                    metric(
-                        value: metrics.distanceKm.kmValue(),
-                        label: MetricID.distance.unit,
-                        spoken: MetricID.distance.spokenText(metrics.distanceKm),
-                        icon: MetricID.distance.glyph,
-                        tint: MetricPalette.distance
-                    )
+                // An indoor session has no route, steps or climb (#745):
+                // its calories and heart rate are the whole page.
+                if metrics.activity.sport.descriptor.tracksRoute {
+                    HStack(spacing: 10) {
+                        leadingFigure
+                        metric(
+                            value: metrics.distanceKm.kmValue(),
+                            label: MetricID.distance.unit,
+                            spoken: MetricID.distance.spokenText(metrics.distanceKm),
+                            icon: MetricID.distance.glyph,
+                            tint: MetricPalette.distance
+                        )
+                    }
                 }
                 HStack(spacing: 10) {
                     metric(
@@ -73,11 +77,11 @@ struct WatchSessionMetricsPage: View {
         .sessionPage("Séance")
     }
 
-    /// The first tile: the climb for a hike or a trail, told by it (#744),
-    /// the steps otherwise.
+    /// The first tile of a sport with a route: the climb for a hike or a
+    /// trail, told by it (#744), the steps otherwise.
     @ViewBuilder
     private var leadingFigure: some View {
-        if metrics.activity.sport.descriptor.leadsWithClimb {
+        if metrics.activity.sport.descriptor.liveLead == .climb {
             metric(
                 value: "\(Int(metrics.climbMeters.rounded())) / \(Int(metrics.descentMeters.rounded()))",
                 label: "D+ / D− m",

@@ -38,7 +38,7 @@ struct SportChoiceTests {
     func sections() {
         let sections = SportChoice.sections(favorites: [.running, .hiking])
         #expect(sections.favorites == [.running, .hiking])
-        #expect(sections.others == [.walking, .trailRunning])
+        #expect(sections.others == [.walking, .trailRunning, .strength, .hiit, .yoga])
         let all = SportChoice.sections(favorites: Set(SportID.allCases))
         #expect(all.favorites == SessionActivity.allCases)
         #expect(all.others.isEmpty)

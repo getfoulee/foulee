@@ -119,7 +119,7 @@ final class ActiveSessionStore {
         bankedElevation = .zero
         route = []
         beginSegment()
-        routeTask = makeRouteTask()
+        routeTask = makeRouteTask(for: activity)
         state = .active(session)
         tickerTask = makeTickerTask()
         startLiveActivity(minutesGoal: minutesGoal)
@@ -293,7 +293,10 @@ final class ActiveSessionStore {
         }
     }
 
-    private func makeRouteTask() -> Task<Void, Never> {
+    /// `nil` for a sport without a route (#745): no GPS, and no location
+    /// permission asked for or missed.
+    private func makeRouteTask(for activity: SessionActivity) -> Task<Void, Never>? {
+        guard activity.sport.descriptor.tracksRoute else { return nil }
         // Build the stream on the main actor (we're @MainActor here), then
         // drain it off the hot path, appending each fix back on the main actor.
         let updates = location.routeUpdates()
@@ -363,7 +366,7 @@ extension ActiveSessionStore {
         session.elapsed = bankedElapsed
         session.steps = bankedSteps
         route = []
-        routeTask = makeRouteTask()
+        routeTask = makeRouteTask(for: recovered.activity)
         startLiveActivity(minutesGoal: minutesGoal)
         if recovered.isPaused {
             state = .paused(session)

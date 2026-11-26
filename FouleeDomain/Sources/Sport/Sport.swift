@@ -18,6 +18,11 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
     /// A run on trails (#744). HealthKit has no type for it: Santé records a
     /// run, and Foulée tells it apart by `FouleeWorkoutMetadata.sport`.
     case trailRunning
+    /// Indoor sessions without a route or steps (#745): duration, heart rate
+    /// and calories only.
+    case strength
+    case hiit
+    case yoga
 
     /// Everything Foulée knows about this sport.
     public var descriptor: SportDescriptor {
@@ -26,6 +31,9 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
         case .running: .running
         case .hiking: .hiking
         case .trailRunning: .trailRunning
+        case .strength: .strength
+        case .hiit: .hiit
+        case .yoga: .yoga
         }
     }
 
@@ -82,11 +90,15 @@ nonisolated public struct SportDescriptor: Sendable {
     public enum Family: Equatable, Sendable {
         /// Walking, running, hiking: steps, a pace, a route.
         case onFoot
+        /// Strength, HIIT, yoga: a duration, a heart rate, calories (#745).
+        case training
     }
 
     /// Where the sport happens, which decides whether GPS is asked for.
     public enum Location: Equatable, Sendable {
         case outdoor
+        /// No GPS, and no location permission asked for (#745).
+        case indoor
     }
 
     /// How fast the sport moves, which decides how finely its pace is shown.
@@ -99,6 +111,8 @@ nonisolated public struct SportDescriptor: Sendable {
     public enum SpeedDisplay: Equatable, Sendable {
         /// Minutes per kilometre, « 6'12" /km ».
         case pace
+        /// No speed: a session that goes nowhere.
+        case none
     }
 
     /// The record told first when an outing beats several (#742).
@@ -122,6 +136,9 @@ nonisolated public struct SportDescriptor: Sendable {
         public static let paced = Benchmarks(comparesPace: true, leadingRecord: .distance)
         /// A hike's: told by its climb, its pace left alone.
         public static let climbing = Benchmarks(comparesPace: false, leadingRecord: .climb)
+        /// A session that goes nowhere (#745): no pace, and with no distance
+        /// its records never fire.
+        public static let stationary = Benchmarks(comparesPace: false, leadingRecord: .distance)
     }
 
     /// The sensors a session of this sport reads.
@@ -142,7 +159,8 @@ nonisolated public struct SportDescriptor: Sendable {
     public let location: Location
     public let capabilities: Capabilities
     public let speedDisplay: SpeedDisplay
-    public let gait: Gait
+    /// `nil` for a sport without a pace.
+    public let gait: Gait?
     /// Whether the watch follows a change between walking and running during
     /// the outing, one workout per stretch (#265). A hike or a trail is one
     /// sport from start to finish, whatever the pace on the climbs.
@@ -163,6 +181,9 @@ nonisolated public struct SportDescriptor: Sendable {
     /// Kilocalories per step for a phone-recorded session, the only energy
     /// figure it will ever have (see `SessionActivity.kcalPerStep`).
     public let kcalPerStep: Double?
+    /// Kilocalories per minute, for a sport without steps (#745): the phone's
+    /// only energy figure for it. Low on purpose, like the per-step rates.
+    public var kcalPerMinute: Double?
     public let benchmarks: Benchmarks
     let nounResource: LocalizedStringResource
     let verbResource: LocalizedStringResource
@@ -269,5 +290,74 @@ nonisolated extension SportDescriptor {
         // are written for a feminine word.
         nounResource: "course en trail",
         verbResource: "tu cours"
+    )
+
+    // Indoor sessions (#745): no route, no steps, no climb, so no GPS and no
+    // location permission. The watch measures their heart rate and energy;
+    // the phone estimates the energy from the duration, at low rates (MET 2.5
+    // to 8 for about 70 kg, rounded down): under-crediting is the rule for an
+    // estimate.
+
+    static let strength = SportDescriptor(
+        id: .strength,
+        family: .training,
+        location: .indoor,
+        capabilities: [],
+        speedDisplay: .none,
+        gait: nil,
+        followsGaitChanges: false,
+        isRecordable: true,
+        labelResource: "Renfo",
+        sessionTitleResource: "Ta séance de renfo",
+        glyph: ActivityGlyph.strength,
+        healthKitActivityRawValue: 50,
+        garminSport: nil,
+        kcalPerStep: nil,
+        kcalPerMinute: 4,
+        benchmarks: .stationary,
+        nounResource: "séance de renfo",
+        verbResource: "tu t'entraînes"
+    )
+
+    static let hiit = SportDescriptor(
+        id: .hiit,
+        family: .training,
+        location: .indoor,
+        capabilities: [],
+        speedDisplay: .none,
+        gait: nil,
+        followsGaitChanges: false,
+        isRecordable: true,
+        labelResource: "HIIT",
+        sessionTitleResource: "Ta séance de HIIT",
+        glyph: ActivityGlyph.hiit,
+        healthKitActivityRawValue: 63,
+        garminSport: nil,
+        kcalPerStep: nil,
+        kcalPerMinute: 8,
+        benchmarks: .stationary,
+        nounResource: "séance de HIIT",
+        verbResource: "tu t'entraînes"
+    )
+
+    static let yoga = SportDescriptor(
+        id: .yoga,
+        family: .training,
+        location: .indoor,
+        capabilities: [],
+        speedDisplay: .none,
+        gait: nil,
+        followsGaitChanges: false,
+        isRecordable: true,
+        labelResource: "Yoga",
+        sessionTitleResource: "Ta séance de yoga",
+        glyph: ActivityGlyph.yoga,
+        healthKitActivityRawValue: 57,
+        garminSport: nil,
+        kcalPerStep: nil,
+        kcalPerMinute: 3,
+        benchmarks: .stationary,
+        nounResource: "séance de yoga",
+        verbResource: "tu t'entraînes"
     )
 }

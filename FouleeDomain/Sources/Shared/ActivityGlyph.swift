@@ -25,6 +25,10 @@ nonisolated public enum ActivityGlyph {
     /// A run on trails (#744): HealthKit's figure for a run, in a circle, so
     /// it is not mistaken for a road run.
     public static let trail = "figure.run.circle"
+    /// Indoor sessions (#745), HealthKit's own figures.
+    public static let strength = "figure.strengthtraining.traditional"
+    public static let hiit = "figure.highintensity.intervaltraining"
+    public static let yoga = "figure.yoga"
     /// Walk *and* run — also the neutral stand-in wherever the surface knows a
     /// session is running but not which activity it is (the Live Activity, see
     /// issue #225).

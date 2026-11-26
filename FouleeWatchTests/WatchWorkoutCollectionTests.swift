@@ -97,15 +97,12 @@ struct WatchWorkoutCollectionTests {
         }
     }
 
-    @Test("Every recordable sport collects steps, distance, energy and heart rate")
+    @Test("A sport on foot collects steps, distance, energy and heart rate; an indoor one energy and heart rate")
     func collectedTypesFollowTheCapabilities() {
-        let expected: Set<HKQuantityType> = [
-            HKQuantityType(.stepCount),
-            HKQuantityType(.distanceWalkingRunning),
-            HKQuantityType(.activeEnergyBurned),
-            HKQuantityType(.heartRate)
-        ]
+        let measured: Set<HKQuantityType> = [HKQuantityType(.activeEnergyBurned), HKQuantityType(.heartRate)]
+        let onFoot = measured.union([HKQuantityType(.stepCount), HKQuantityType(.distanceWalkingRunning)])
         for activity in SessionActivity.allCases {
+            let expected = activity.sport.descriptor.family == .onFoot ? onFoot : measured
             #expect(Set(WorkoutEngine.collectedTypes(for: activity.sport)) == expected)
         }
     }

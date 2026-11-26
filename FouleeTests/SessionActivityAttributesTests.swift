@@ -16,7 +16,10 @@ struct SessionActivityAttributesTests {
         activeCalories: 108
     )
 
-    @Test("A walk and a run draw what they always did", arguments: SessionActivity.allCases)
+    @Test(
+        "A walk and a run draw what they always did",
+        arguments: SessionActivity.allCases.filter { $0.sport.descriptor.family == .onFoot }
+    )
     func walkAndRun(activity: SessionActivity) {
         let attributes = SessionActivityAttributes(goalMinutes: 30, activity: activity)
         #expect(attributes.metrics == [.steps, .distance, .calories])
@@ -24,6 +27,14 @@ struct SessionActivityAttributesTests {
         #expect(attributes.headlineMetric == .distance)
         #expect(attributes.cellMetrics == [.steps, .calories])
         #expect(attributes.rowMetrics == [.steps, .distance])
+    }
+
+    @Test("An indoor session draws its calories alone, with no climb (#745)", arguments: [SessionActivity.strength, .hiit, .yoga])
+    func indoorSession(activity: SessionActivity) {
+        let attributes = SessionActivityAttributes(goalMinutes: 30, activity: activity)
+        #expect(attributes.metrics == [.calories])
+        #expect(attributes.showsElevation == false)
+        #expect(attributes.headlineMetric == .calories)
     }
 
     @Test("An unnamed outing draws a walk's figures as « Ta sortie »")

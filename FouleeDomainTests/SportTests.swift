@@ -10,6 +10,7 @@ struct SportTests {
     func rawValuesAreStable(sport: SportID) {
         let expected: [SportID: String] = [
             .walking: "walking", .running: "running", .hiking: "hiking", .trailRunning: "trailRunning",
+            .strength: "strength", .hiit: "hiit", .yoga: "yoga",
         ]
         #expect(sport.rawValue == expected[sport])
         #expect(sport.descriptor.id == sport)
@@ -62,7 +63,8 @@ struct SportTests {
             return
         }
         #expect(descriptor.sessionTitle != nil)
-        #expect(descriptor.kcalPerStep != nil)
+        // Priced by the step, or by the minute for a sport without steps.
+        #expect((descriptor.kcalPerStep ?? descriptor.kcalPerMinute) != nil)
         #expect(SessionActivity(sport: sport)?.sport == sport)
     }
 
@@ -121,11 +123,11 @@ struct SportTests {
         for sport in [SportID.hiking, .trailRunning] {
             #expect(sport.descriptor.followsGaitChanges == false)
             #expect(sport.descriptor.benchmarks == .climbing)
-            #expect(sport.descriptor.leadsWithClimb)
+            #expect(sport.descriptor.liveLead == .climb)
         }
         for sport in [SportID.walking, .running] {
             #expect(sport.descriptor.followsGaitChanges)
-            #expect(sport.descriptor.leadsWithClimb == false)
+            #expect(sport.descriptor.liveLead == .steps)
         }
         #expect(SportID.hiking.descriptor.gait == .walk)
         #expect(SportID.trailRunning.descriptor.gait == .run)
@@ -136,5 +138,25 @@ struct SportTests {
         let nouns = SportID.allCases.map(\.descriptor.noun)
         #expect(Set(nouns).count == SportID.allCases.count)
         #expect(RecordedActivity.running.verb == "tu cours")
+    }
+
+    @Test("An indoor session has no route, no steps, no climb, and is priced by the minute", arguments: [SportID.strength, .hiit, .yoga])
+    func indoorSessions(sport: SportID) {
+        let descriptor = sport.descriptor
+        #expect(descriptor.location == .indoor)
+        #expect(descriptor.tracksRoute == false)
+        #expect(descriptor.capabilities.isEmpty)
+        #expect(descriptor.liveLead == .calories)
+        #expect(descriptor.kcalPerStep == nil)
+        #expect((descriptor.kcalPerMinute ?? 0) > 0)
+        #expect(descriptor.benchmarks.comparesPace == false)
+    }
+
+    @Test("A phone session without steps is priced by its minutes")
+    func indoorCalories() {
+        let yoga = SessionRecord(startedAt: Date(timeIntervalSince1970: 1_800_000_000), elapsed: 30 * 60, activity: .yoga)
+        #expect(yoga.estimatedCalories == 90)
+        let hiit = SessionRecord(startedAt: Date(timeIntervalSince1970: 1_800_000_000), elapsed: 20 * 60, activity: .hiit)
+        #expect(hiit.estimatedCalories == 160)
     }
 }

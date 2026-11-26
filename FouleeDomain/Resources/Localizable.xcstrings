@@ -403,12 +403,32 @@
         }
       }
     },
+    "HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HIIT"
+          }
+        }
+      }
+    },
     "Ouvre d'abord Foulée pour autoriser l'accès à Santé." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open Foulée first to allow access to Health."
+          }
+        }
+      }
+    },
+    "Renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strength"
           }
         }
       }
@@ -429,6 +449,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your hike"
+          }
+        }
+      }
+    },
+    "Ta séance de HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your HIIT session"
+          }
+        }
+      }
+    },
+    "Ta séance de renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your strength session"
+          }
+        }
+      }
+    },
+    "Ta séance de yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your yoga session"
           }
         }
       }
@@ -459,6 +509,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Glass not saved — try again"
+          }
+        }
+      }
+    },
+    "Yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yoga"
           }
         }
       }
@@ -919,6 +979,36 @@
         }
       }
     },
+    "séance de HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HIIT session"
+          }
+        }
+      }
+    },
+    "séance de renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "strength session"
+          }
+        }
+      }
+    },
+    "séance de yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yoga session"
+          }
+        }
+      }
+    },
     "tu cours" : {
       "localizations" : {
         "en" : {
@@ -935,6 +1025,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "you walk"
+          }
+        }
+      }
+    },
+    "tu t'entraînes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "you train"
           }
         }
       }
