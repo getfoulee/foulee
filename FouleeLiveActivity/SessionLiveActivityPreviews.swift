@@ -6,6 +6,7 @@ import WidgetKit
 // on the Lock Screen and in the expanded Dynamic Island.
 
 private extension SessionActivityState {
+    // periphery:ignore - read only inside `#Preview`, which Periphery does not index.
     static let halfway = SessionActivityState(
         timerBasis: .now.addingTimeInterval(-1_104),
         pausedAt: nil,
@@ -21,6 +22,7 @@ private extension SessionActivityState {
 private extension SessionActivityAttributes {
     /// No sport records this yet: strength or a rower, whose only figure is
     /// the calories.
+    // periphery:ignore - read only inside `#Preview`, which Periphery does not index.
     static let withoutDistance = SessionActivityAttributes(
         goalMinutes: 30,
         activity: nil,
