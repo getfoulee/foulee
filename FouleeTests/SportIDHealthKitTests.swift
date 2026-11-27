@@ -13,7 +13,8 @@ struct SportIDHealthKitTests {
         // tells it apart (#744, #746).
         let tag = sport.workoutMetadata[FouleeWorkoutMetadata.sport] as? String
         #expect(SportID(healthKitActivityRawValue: sport.hkActivityType.rawValue, tag: tag) == sport)
-        #expect(SportID(sport.hkActivityType) == ([SportID.trailRunning, .indoorRunning].contains(sport) ? .running : sport))
+        let plain: [SportID: SportID] = [.trailRunning: .running, .indoorRunning: .running, .indoorCycling: .cycling]
+        #expect(SportID(sport.hkActivityType) == plain[sport, default: sport])
     }
 
     @Test("The table stamps the types HealthKit has always had for walk, run and hike")
@@ -25,6 +26,6 @@ struct SportIDHealthKitTests {
 
     @Test("A type Foulée cannot name is no sport")
     func unknownType() {
-        #expect(SportID(HKWorkoutActivityType.cycling) == nil)
+        #expect(SportID(HKWorkoutActivityType.climbing) == nil)
     }
 }

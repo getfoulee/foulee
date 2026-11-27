@@ -172,8 +172,9 @@ struct TodayStoreActivityTests {
     @Test("Raccourcis names every sport Foulée records, by its own raw value (#747)")
     func everySportHasAShortcutValue() {
         let named = OutingActivity.allCases.compactMap(\.activity)
-        #expect(named == SessionActivity.allCases)
-        #expect(Set(OutingActivity.allCases.map(\.rawValue)).isSuperset(of: SportID.allCases.map(\.rawValue)))
+        // The iPhone's sports: a ride is the watch's until #750.
+        #expect(named == SportChoice.recordable(on: .phone))
+        #expect(!named.contains(.cycling))
         // Shortcuts saved before #747 keep the values they were saved with.
         #expect(OutingActivity(rawValue: "walking") == .walking)
         #expect(OutingActivity(rawValue: "running") == .running)

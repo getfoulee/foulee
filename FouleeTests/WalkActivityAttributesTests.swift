@@ -99,7 +99,7 @@ struct WalkActivityAttributesTests {
         // activity added later). Swift's synthesized decoder throws
         // `dataCorrupted` here — this is the case the hand-written
         // `init(from:)` exists for.
-        let future = Data(#"{"goalMinutes":30,"activity":"cycling"}"#.utf8)
+        let future = Data(#"{"goalMinutes":30,"activity":"curling"}"#.utf8)
 
         let decoded = try JSONDecoder().decode(WalkActivityAttributes.self, from: future)
 
@@ -133,7 +133,7 @@ struct WalkActivityAttributesTests {
 
         let legacy = try PropertyListEncoder().encode(LegacyPayload(goalMinutes: 30))
         let future = try PropertyListEncoder().encode(
-            FuturePayload(goalMinutes: 30, activity: "cycling")
+            FuturePayload(goalMinutes: 30, activity: "curling")
         )
 
         for payload in [legacy, future] {

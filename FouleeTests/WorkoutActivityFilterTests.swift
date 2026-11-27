@@ -56,9 +56,9 @@ struct WorkoutActivityFilterTests {
         // since #746.
         #expect(WorkoutActivityFilter.summarizedActivityTypes == [
             .walking, .running, .hiking, .traditionalStrengthTraining, .highIntensityIntervalTraining, .yoga,
-            .rowing, .elliptical,
+            .rowing, .elliptical, .cycling,
         ])
-        #expect(!WorkoutActivityFilter.summarizedActivityTypes.contains(.cycling))
+        #expect(!WorkoutActivityFilter.summarizedActivityTypes.contains(.swimming))
     }
 
     @Test("The query's predicate carries a run clause — the one #217 was missing")
@@ -75,7 +75,7 @@ struct WorkoutActivityFilterTests {
         #expect(clauses.contains(HKQuery.predicateForWorkouts(with: .yoga).predicateFormat))
         // ORed, not ANDed: an AND over several activity types matches no
         // workout. One clause each, no more — a stray type shows up here.
-        #expect(clauses.count == 8)
+        #expect(clauses.count == 9)
     }
 
     @Test("The date clause spans daysBack days back through end of today")

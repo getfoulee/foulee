@@ -56,7 +56,10 @@ extension WatchWorkoutStore {
     }
 
     /// The live pace rounded to the step its sport can honestly claim.
+    /// A ride's is left alone: it is shown in whole km/h (#749), which rounds
+    /// it already.
     nonisolated static func quantised(pace secondsPerKm: TimeInterval, for activity: SessionActivity) -> TimeInterval {
+        guard activity.sport.descriptor.speedDisplay != .speed else { return secondsPerKm }
         let step: TimeInterval = activity.sport.descriptor.gait == .run ? 5 : 10
         return (secondsPerKm / step).rounded() * step
     }

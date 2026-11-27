@@ -46,7 +46,8 @@ struct StartOutingIntent: AppIntent {
 ///
 /// Built on `SportID` (#747): every case but « Dernier sport » carries the raw
 /// value of the sport it names, so a shortcut saved before a sport was added
-/// keeps its value, and a test demands a case for every recordable sport.
+/// keeps its value, and a test demands a case for every sport the iPhone
+/// records. A ride is the watch's until #750.
 /// The titles stay literals: the AppIntents metadata is read at build time.
 nonisolated enum OutingActivity: String, AppEnum {
     case walking

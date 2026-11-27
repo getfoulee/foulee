@@ -252,11 +252,11 @@ struct OutingMergeTests {
 
     @Test("A sport this build cannot name reads as none and is written back untouched")
     func unknownSportSurvives() throws {
-        let json = #"[{"id":"\#(UUID().uuidString)","workoutIDs":[],"startedAt":0,"sport":"cycling"}]"#
+        let json = #"[{"id":"\#(UUID().uuidString)","workoutIDs":[],"startedAt":0,"sport":"curling"}]"#
         let merges = try JSONDecoder().decode([OutingMerge].self, from: Data(json.utf8))
         #expect(try #require(merges.first).sport == nil)
         let written = try #require(String(data: JSONEncoder().encode(merges), encoding: .utf8))
-        #expect(written.contains(#""sport":"cycling""#))
+        #expect(written.contains(#""sport":"curling""#))
     }
 
     @Test("A merge that names a sport reads every part as that sport")

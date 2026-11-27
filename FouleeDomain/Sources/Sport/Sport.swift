@@ -30,6 +30,11 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
     case rowing
     case elliptical
     case indoorRunning
+    /// Rides (#749), recorded on the watch: a route, a speed in km/h, and the
+    /// power and cadence a Bluetooth sensor sends. An indoor ride is a ride
+    /// in Santé, indoors, told apart by Foulée's tag.
+    case cycling
+    case indoorCycling
 
     /// Everything Foulée knows about this sport.
     public var descriptor: SportDescriptor {
@@ -44,6 +49,8 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
         case .rowing: .rowing
         case .elliptical: .elliptical
         case .indoorRunning: .indoorRunning
+        case .cycling: .cycling
+        case .indoorCycling: .indoorCycling
         }
     }
 
@@ -103,6 +110,15 @@ nonisolated public struct SportDescriptor: Sendable {
         /// Strength, HIIT, yoga, rower, elliptical: a duration, a heart rate,
         /// calories (#745, #746).
         case training
+        /// Rides (#749): a speed rather than a pace, no steps.
+        case cycling
+    }
+
+    /// The devices that record a sport.
+    public enum Devices: Equatable, Sendable {
+        case phoneAndWatch
+        /// Cycling until the iPhone records it with the GPS alone (#750).
+        case watchOnly
     }
 
     /// Where the sport happens, which decides whether GPS is asked for.
@@ -122,6 +138,8 @@ nonisolated public struct SportDescriptor: Sendable {
     public enum SpeedDisplay: Equatable, Sendable {
         /// Minutes per kilometre, « 6'12" /km ».
         case pace
+        /// Kilometres per hour, « 24 km/h »: a ride (#749).
+        case speed
         /// No speed: a session that goes nowhere.
         case none
     }
@@ -150,6 +168,9 @@ nonisolated public struct SportDescriptor: Sendable {
         /// A session that goes nowhere (#745): no pace, and with no distance
         /// its records never fire.
         public static let stationary = Benchmarks(comparesPace: false, leadingRecord: .distance)
+        /// A ride's (#749): told by its distance. Its speed is not compared:
+        /// the sentences that compare speak in seconds per kilometre.
+        public static let ridden = Benchmarks(comparesPace: false, leadingRecord: .distance)
     }
 
     /// The sensors a session of this sport reads.
@@ -162,6 +183,9 @@ nonisolated public struct SportDescriptor: Sendable {
         /// A distance: from the GPS outdoors, from the accelerometer on a
         /// treadmill (#746), where the builder estimates it without a route.
         public static let distance = Capabilities(rawValue: 1 << 3)
+        /// Speed, cadence and power from a Bluetooth bike sensor (#749),
+        /// when one is paired; the distance too, indoors.
+        public static let cyclingSensors = Capabilities(rawValue: 1 << 4)
         /// Steps and cadence, from the pedometer.
         public static let steps = Capabilities(rawValue: 1 << 1)
         /// Climb and descent, from the altimeter.
@@ -181,6 +205,8 @@ nonisolated public struct SportDescriptor: Sendable {
     public let followsGaitChanges: Bool
     /// Whether Foulée records this sport itself, or only reads it from Santé.
     public let isRecordable: Bool
+    /// Which devices record it, when it is recordable.
+    public var devices: Devices = .phoneAndWatch
     /// Kept as resources and resolved on each read, so a label follows the
     /// app's language instead of the one it had when the table was built.
     let labelResource: LocalizedStringResource

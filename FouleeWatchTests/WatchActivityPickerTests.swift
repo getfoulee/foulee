@@ -148,7 +148,9 @@ struct WatchActivityPickerTests {
         let picker = try #require(ViewTreeProbe.first(WatchActivityChoiceView.self, in: screen.body))
 
         #expect(picker.sections.favorites == [.running])
-        #expect(picker.sections.others == [.walking, .hiking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning])
+        #expect(picker.sections.others == [
+            .walking, .hiking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning, .cycling, .indoorCycling,
+        ])
         #expect(try #require(button(.running, picker)).isCurrent)
         #expect(try #require(button(.running, picker)).activity.label == "Course")
         #expect(try #require(button(.walking, picker)).isCurrent == false)

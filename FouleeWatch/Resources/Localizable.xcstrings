@@ -96,6 +96,26 @@
       "localizations" : {},
       "shouldTranslate" : false
     },
+    "%lld tours par minute" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld revolutions per minute"
+          }
+        }
+      }
+    },
+    "%lld watts" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld watts"
+          }
+        }
+      }
+    },
     "Annuler" : {
       "localizations" : {
         "en" : {
@@ -192,6 +212,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Noted: +%lld ml of water."
+          }
+        }
+      }
+    },
+    "Cadence inconnue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cadence unknown"
           }
         }
       }
@@ -360,6 +390,16 @@
         }
       }
     },
+    "home trainer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "home trainer"
+          }
+        }
+      }
+    },
     "Hydratation" : {
       "localizations" : {
         "en" : {
@@ -376,6 +416,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "weight training"
+          }
+        }
+      }
+    },
+    "Puissance inconnue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power unknown"
           }
         }
       }
@@ -712,6 +762,16 @@
         }
       }
     },
+    "sortie à vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ride"
+          }
+        }
+      }
+    },
     "Sport" : {
       "localizations" : {
         "en" : {
@@ -778,6 +838,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "strength session"
+          }
+        }
+      }
+    },
+    "séance de vélo d'intérieur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "indoor ride"
           }
         }
       }
@@ -888,6 +958,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Glass not saved — try again"
+          }
+        }
+      }
+    },
+    "Vitesse inconnue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speed unknown"
+          }
+        }
+      }
+    },
+    "Vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bike"
+          }
+        }
+      }
+    },
+    "Vélo d'intérieur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor bike"
           }
         }
       }

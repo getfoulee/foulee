@@ -61,9 +61,11 @@ struct RecordedActivityTests {
         // It happened, and hiding it would be a worse lie than « Séance ». The
         // *write* side refuses these outright — that one feeds a permanent
         // stamp, this one feeds a label.
-        #expect(RecordedActivity(.cycling, metadata: nil) == .other)
+        #expect(RecordedActivity(.climbing, metadata: nil) == .other)
         #expect(RecordedActivity(.swimming, metadata: nil) == .other)
-        #expect(SessionActivity(.cycling) == nil)
+        #expect(SessionActivity(.climbing) == nil)
+        // A ride is named since #749.
+        #expect(RecordedActivity(.cycling, metadata: nil) == .cycling)
     }
 
     // MARK: - How it reads

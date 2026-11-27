@@ -9,6 +9,10 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     var distanceMeters: Double
     var activeCalories: Int
     var heartRate: Int?
+    /// A bike sensor's last power in watts and cadence in turns a minute
+    /// (#749), `nil` without one.
+    var power: Int?
+    var cadence: Int?
     /// The outing's climb so far, in metres (issue #535); 0 without a
     /// barometer.
     var climbMeters: Double = 0
@@ -150,8 +154,22 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     /// to three zeros reads as a broken counter; « Course » alone reads as what
     /// it is — the sport, named, with no figures claimed.
     /// « 5'25"/km ».
+    /// « 24 km/h » for a ride instead (#749).
     var recentPace: String? {
-        recentPaceSecondsPerKm.map { paceText(secondsPerKm: $0, roundedTo: 1) }
+        recentPaceSecondsPerKm.map { pace in
+            activity.sport.descriptor.speedDisplay == .speed
+                ? speedText(secondsPerKm: pace)
+                : paceText(secondsPerKm: pace, roundedTo: 1)
+        }
+    }
+
+    /// `recentPace` as VoiceOver says it.
+    private var spokenRecentPace: String? {
+        recentPaceSecondsPerKm.map { pace in
+            activity.sport.descriptor.speedDisplay == .speed
+                ? spokenSpeedText(secondsPerKm: pace)
+                : spokenPaceText(secondsPerKm: pace)
+        }
     }
 
     var activityHeadlineText: String {
@@ -191,7 +209,7 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     /// is read as a time of day, « kcal » letter by letter.
     var activitySummaryText: String {
         var figures: [String] = []
-        if let recentPaceSecondsPerKm { figures.append(spokenPaceText(secondsPerKm: recentPaceSecondsPerKm)) }
+        if let spokenRecentPace { figures.append(spokenRecentPace) }
         if showsActivityBreakdown {
             let totals = activityTotals
             figures += [
@@ -264,7 +282,11 @@ nonisolated struct WatchSportSummary: Equatable, Sendable, Identifiable {
             totals.elapsed.walkClockText,
             totals.distanceKm.kmText(fractionDigits: 1)
         ]
-        if let pace = totals.elapsed.paceText(overKm: totals.distanceKm) { parts.append(pace) }
+        // A ride's speed, a walk's or a run's pace (#749).
+        let pace = activity.sport.descriptor.speedDisplay == .speed
+            ? totals.elapsed.speedText(overKm: totals.distanceKm)
+            : totals.elapsed.paceText(overKm: totals.distanceKm)
+        if let pace { parts.append(pace) }
         if let cadence = cadenceText(steps: totals.steps, over: totals.elapsed) {
             parts.append(cadence)
         }

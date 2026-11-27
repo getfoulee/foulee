@@ -70,6 +70,10 @@ struct WatchSessionMetricsPage: View {
                         tint: MetricPalette.heartRate
                     )
                 }
+                // A bike sensor's figures (#749), only once one sends them.
+                if metrics.power != nil || metrics.cadence != nil {
+                    sensorFigures
+                }
             }
             .padding(.horizontal, 6)
         }
@@ -79,10 +83,20 @@ struct WatchSessionMetricsPage: View {
     }
 
     /// The first tile of a sport with a distance: the climb for a hike or a
-    /// trail, told by it (#744), the steps otherwise.
+    /// trail, told by it (#744), the speed for a ride (#749), the steps
+    /// otherwise.
     @ViewBuilder
     private var leadingFigure: some View {
-        if metrics.activity.sport.descriptor.liveLead == .climb {
+        if metrics.activity.sport.descriptor.speedDisplay == .speed {
+            metric(
+                value: metrics.recentPaceSecondsPerKm.map { "\(Int((3_600 / $0).rounded()))" } ?? "—",
+                label: "km/h",
+                spoken: metrics.recentPaceSecondsPerKm.map { spokenSpeedText(secondsPerKm: $0) }
+                    ?? String(localized: "Vitesse inconnue"),
+                icon: FouleeIcon.speed,
+                tint: MetricPalette.distance
+            )
+        } else if metrics.activity.sport.descriptor.liveLead == .climb {
             metric(
                 value: "\(Int(metrics.climbMeters.rounded())) / \(Int(metrics.descentMeters.rounded()))",
                 label: "D+ / D− m",
@@ -181,6 +195,27 @@ struct WatchSessionMetricsPage: View {
     /// so it reads first.
     ///
     /// One VoiceOver element each, the figure with its unit in words.
+    /// Power and cadence from a bike sensor (#749).
+    private var sensorFigures: some View {
+        HStack(spacing: 10) {
+            metric(
+                value: metrics.power.map { "\($0)" } ?? "—",
+                label: "W",
+                spoken: metrics.power.map { String(localized: "\($0) watts") } ?? String(localized: "Puissance inconnue"),
+                icon: FouleeIcon.power,
+                tint: MetricPalette.power
+            )
+            metric(
+                value: metrics.cadence.map { "\($0)" } ?? "—",
+                label: "tr/min",
+                spoken: metrics.cadence.map { String(localized: "\($0) tours par minute") }
+                    ?? String(localized: "Cadence inconnue"),
+                icon: FouleeIcon.cadence,
+                tint: MetricPalette.steps
+            )
+        }
+    }
+
     private func metric(value: String, label: String, spoken: String, icon: String, tint: Color) -> some View {
         MetricTile(
             title: label,

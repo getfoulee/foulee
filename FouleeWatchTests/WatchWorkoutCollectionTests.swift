@@ -101,8 +101,16 @@ struct WatchWorkoutCollectionTests {
     func collectedTypesFollowTheCapabilities() {
         let measured: Set<HKQuantityType> = [HKQuantityType(.activeEnergyBurned), HKQuantityType(.heartRate)]
         let onFoot = measured.union([HKQuantityType(.stepCount), HKQuantityType(.distanceWalkingRunning)])
+        // A ride's distance, and its bike sensor's figures (#749).
+        let ride = measured.union(
+            [.distanceCycling, .cyclingSpeed, .cyclingCadence, .cyclingPower].map { HKQuantityType($0) }
+        )
         for activity in SessionActivity.allCases {
-            let expected = activity.sport.descriptor.family == .onFoot ? onFoot : measured
+            let expected = switch activity.sport.descriptor.family {
+            case .onFoot: onFoot
+            case .training: measured
+            case .cycling: ride
+            }
             #expect(Set(WorkoutEngine.collectedTypes(for: activity.sport)) == expected)
         }
     }

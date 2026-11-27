@@ -29,13 +29,14 @@ extension WatchWorkoutSegment {
         func sum(_ identifier: HKQuantityTypeIdentifier, in unit: HKUnit) -> Double {
             workout.statistics(for: HKQuantityType(identifier))?.sumQuantity()?.doubleValue(for: unit) ?? 0
         }
+        let activity = SessionActivity(workout.workoutActivityType) ?? .walking
         return WatchWorkoutSegment(
             id: workout.uuid,
-            activity: SessionActivity(workout.workoutActivityType) ?? .walking,
+            activity: activity,
             start: workout.startDate,
             end: workout.endDate,
             steps: Int(sum(.stepCount, in: .count())),
-            distanceMeters: sum(.distanceWalkingRunning, in: .meter()),
+            distanceMeters: sum(activity.sport.distanceTypeIdentifier, in: .meter()),
             activeCalories: Int(sum(.activeEnergyBurned, in: .kilocalorie())),
             pausedDuration: max(0, workout.endDate.timeIntervalSince(workout.startDate) - workout.duration)
         )
