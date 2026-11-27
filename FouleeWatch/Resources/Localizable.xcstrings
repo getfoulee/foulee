@@ -226,6 +226,26 @@
         }
       }
     },
+    "course en trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "trail run"
+          }
+        }
+      }
+    },
+    "course sur tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "treadmill run"
+          }
+        }
+      }
+    },
     "D+ / D− m" : {
       "localizations" : {},
       "shouldTranslate" : false
@@ -280,6 +300,16 @@
         }
       }
     },
+    "Elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elliptical"
+          }
+        }
+      }
+    },
     "En pause" : {
       "localizations" : {
         "en" : {
@@ -320,12 +350,32 @@
         }
       }
     },
+    "HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HIIT"
+          }
+        }
+      }
+    },
     "Hydratation" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hydration"
+          }
+        }
+      }
+    },
+    "musculation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "weight training"
           }
         }
       }
@@ -552,6 +602,36 @@
         }
       }
     },
+    "Rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rower"
+          }
+        }
+      }
+    },
+    "rando" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hike"
+          }
+        }
+      }
+    },
+    "Randonnée" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hike"
+          }
+        }
+      }
+    },
     "Rappelle-moi" : {
       "localizations" : {
         "en" : {
@@ -568,6 +648,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Read %@ ago"
+          }
+        }
+      }
+    },
+    "Renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strength"
           }
         }
       }
@@ -642,12 +732,62 @@
         }
       }
     },
+    "séance d'elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "elliptical session"
+          }
+        }
+      }
+    },
+    "séance de HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HIIT session"
+          }
+        }
+      }
+    },
     "Séance de l'iPhone" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "iPhone session"
+          }
+        }
+      }
+    },
+    "séance de rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rowing session"
+          }
+        }
+      }
+    },
+    "séance de renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "strength session"
+          }
+        }
+      }
+    },
+    "séance de yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yoga session"
           }
         }
       }
@@ -678,6 +818,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your workout is going to Health"
+          }
+        }
+      }
+    },
+    "Tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treadmill"
           }
         }
       }
@@ -722,12 +872,32 @@
         }
       }
     },
+    "Trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trail"
+          }
+        }
+      }
+    },
     "Verre non enregistré — réessaie" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Glass not saved — try again"
+          }
+        }
+      }
+    },
+    "Yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yoga"
           }
         }
       }

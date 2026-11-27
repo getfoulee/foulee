@@ -40,6 +40,15 @@ struct WatchStartOutingIntentTests {
     @Test("The Action button offers the last sport first, then one workout per sport")
     func theActionButtonOffersTheLastSportFirst() {
         let styles = StartWorkoutOutingIntent.suggestedWorkouts.map(\.workoutStyle)
-        #expect(styles == [.last, .walking, .running])
+        #expect(styles.first == .last)
+        #expect(styles.dropFirst().compactMap(\.activity) == SessionActivity.allCases)
+    }
+
+    @Test("Every sport keeps its raw value, so saved shortcuts still resolve (#747)")
+    func rawValuesFollowTheSports() {
+        #expect(WatchOutingActivity(rawValue: "last") == .last)
+        for activity in SessionActivity.allCases {
+            #expect(WatchOutingActivity(rawValue: activity.rawValue)?.activity == activity)
+        }
     }
 }

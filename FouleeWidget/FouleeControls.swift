@@ -1,4 +1,5 @@
 import AppIntents
+import FouleeDomain
 import FouleeIntents
 import SwiftUI
 import WidgetKit
@@ -51,13 +52,19 @@ private extension OutingActivity {
         case .walking: "Commencer une marche"
         case .running: "Commencer une course"
         case .automatic: "Commencer une sortie"
+        case .hiking: "Commencer une randonnée"
+        case .trailRunning: "Commencer un trail"
+        case .strength: "Commencer une séance de renfo"
+        case .hiit: "Commencer une séance de HIIT"
+        case .yoga: "Commencer une séance de yoga"
+        case .rowing: "Commencer une séance de rameur"
+        case .elliptical: "Commencer une séance d'elliptique"
+        case .indoorRunning: "Commencer une course sur tapis"
         }
     }
 
+    /// The sport's own figure (#747); « Dernier sport » keeps the walker.
     var symbolName: String {
-        switch self {
-        case .walking, .automatic: "figure.walk"
-        case .running: "figure.run"
-        }
+        activity?.icon ?? ActivityGlyph.walk
     }
 }
