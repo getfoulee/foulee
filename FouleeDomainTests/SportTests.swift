@@ -13,6 +13,7 @@ struct SportTests {
             .strength: "strength", .hiit: "hiit", .yoga: "yoga",
             .rowing: "rowing", .elliptical: "elliptical", .indoorRunning: "indoorRunning",
             .cycling: "cycling", .indoorCycling: "indoorCycling", .poolSwimming: "poolSwimming",
+            .openWaterSwimming: "openWaterSwimming",
         ]
         #expect(sport.rawValue == expected[sport])
         #expect(sport.descriptor.id == sport)
@@ -52,7 +53,7 @@ struct SportTests {
 
     @Test("Every other sport has a HealthKit type of its own")
     func healthKitTypesAreDistinctButForTrail() {
-        let tagged: Set<SportID> = [.trailRunning, .indoorRunning, .indoorCycling]
+        let tagged: Set<SportID> = [.trailRunning, .indoorRunning, .indoorCycling, .openWaterSwimming]
         let plain = SportID.allCases.filter { !tagged.contains($0) }.map(\.descriptor.healthKitActivityRawValue)
         #expect(Set(plain).count == plain.count)
         for sport in SportID.allCases where !tagged.contains(sport) {
@@ -258,5 +259,17 @@ struct SportTests {
         func object(forKey key: String) -> Any? { values[key] }
         func set(_ value: Any?, forKey key: String) { values[key] = value }
         func removeObject(forKey key: String) { values[key] = nil }
+    }
+
+    @Test("An open-water swim has a route and a pace per 100 m, and no pool to ask for (#752)")
+    func openWater() {
+        let descriptor = SportID.openWaterSwimming.descriptor
+        #expect(descriptor.family == .swimming)
+        #expect(descriptor.tracksRoute)
+        #expect(descriptor.speedDisplay == .per100m)
+        #expect(descriptor.countsPoolLengths == false)
+        #expect(SportID.poolSwimming.descriptor.countsPoolLengths)
+        // 20 minutes a kilometre is 2 minutes a 100 m.
+        #expect(pacePer100mText(secondsPerKm: 1_250) == "2'05\"/100\u{00A0}m")
     }
 }

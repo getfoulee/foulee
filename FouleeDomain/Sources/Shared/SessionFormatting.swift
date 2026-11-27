@@ -153,3 +153,15 @@ nonisolated public extension TimeInterval {
         return FouleeDomain.speedText(secondsPerKm: self / km)
     }
 }
+
+/// « 2'05"/100 m » from a pace in seconds per kilometre (#752): a swim's,
+/// rounded to `step` seconds a 100 metres.
+nonisolated public func pacePer100mText(secondsPerKm: TimeInterval, roundedTo step: TimeInterval = 1) -> String {
+    let rounded = Int((secondsPerKm / 10 / step).rounded() * step)
+    return String(format: "%d'%02d\"/100\u{00A0}m", rounded / 60, rounded % 60)
+}
+
+/// The same pace as VoiceOver says it: « 2 minutes et 5 secondes aux 100 mètres ».
+nonisolated public func spokenPacePer100mText(secondsPerKm: TimeInterval, locale: Locale = .app) -> String {
+    kitText("\(spokenDurationText(seconds: secondsPerKm / 10, locale: locale)) aux 100 mètres", locale: locale)
+}

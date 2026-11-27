@@ -42,7 +42,8 @@ struct SessionActivityTests {
         #expect(SessionActivity.indoorCycling.hkActivityType == .cycling)
         // A pool is a swim in Santé (#751).
         #expect(SessionActivity.poolSwimming.hkActivityType == .swimming)
-        #expect(SessionActivity.allCases.count == 13)
+        #expect(SessionActivity.openWaterSwimming.hkActivityType == .swimming)
+        #expect(SessionActivity.allCases.count == 14)
     }
 
     @Test("The two activities are named the way the rest of the app names them")

@@ -370,6 +370,16 @@
         }
       }
     },
+    "Eau libre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open water"
+          }
+        }
+      }
+    },
     "Elliptique" : {
       "localizations" : {
         "en" : {
@@ -486,6 +496,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "weight training"
+          }
+        }
+      }
+    },
+    "nage en eau libre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "open-water swim"
           }
         }
       }
@@ -828,6 +848,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resume"
+          }
+        }
+      }
+    },
+    "Rythme inconnu" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pace unknown"
           }
         }
       }

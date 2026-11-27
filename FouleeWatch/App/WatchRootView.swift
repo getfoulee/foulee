@@ -121,7 +121,7 @@ struct WatchRootView: View {
     private func begin(_ activity: SessionActivity) {
         isChoosingActivity = false
         // A swim asks for its pool first (#751).
-        guard activity.sport.descriptor.family != .swimming else {
+        guard !activity.sport.descriptor.countsPoolLengths else {
             swimWaitingForPool = activity
             return
         }

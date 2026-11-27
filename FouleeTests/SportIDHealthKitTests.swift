@@ -13,7 +13,9 @@ struct SportIDHealthKitTests {
         // tells it apart (#744, #746).
         let tag = sport.workoutMetadata[FouleeWorkoutMetadata.sport] as? String
         #expect(SportID(healthKitActivityRawValue: sport.hkActivityType.rawValue, tag: tag) == sport)
-        let plain: [SportID: SportID] = [.trailRunning: .running, .indoorRunning: .running, .indoorCycling: .cycling]
+        let plain: [SportID: SportID] = [
+            .trailRunning: .running, .indoorRunning: .running, .indoorCycling: .cycling, .openWaterSwimming: .poolSwimming,
+        ]
         #expect(SportID(sport.hkActivityType) == plain[sport, default: sport])
     }
 

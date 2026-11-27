@@ -92,7 +92,7 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     static func empty(for activity: SessionActivity, pool: PoolLength? = nil) -> WatchWorkoutMetrics {
         var metrics = zero
         metrics.activity = activity
-        if activity.sport.descriptor.family == .swimming { metrics.pool = pool ?? .standard }
+        if activity.sport.descriptor.countsPoolLengths { metrics.pool = pool ?? .standard }
         return metrics
     }
 
@@ -170,18 +170,22 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     /// « 24 km/h » for a ride instead (#749).
     var recentPace: String? {
         recentPaceSecondsPerKm.map { pace in
-            activity.sport.descriptor.speedDisplay == .speed
-                ? speedText(secondsPerKm: pace)
-                : paceText(secondsPerKm: pace, roundedTo: 1)
+            switch activity.sport.descriptor.speedDisplay {
+            case .speed: speedText(secondsPerKm: pace)
+            case .per100m: pacePer100mText(secondsPerKm: pace)
+            case .pace, .none: paceText(secondsPerKm: pace, roundedTo: 1)
+            }
         }
     }
 
     /// `recentPace` as VoiceOver says it.
     private var spokenRecentPace: String? {
         recentPaceSecondsPerKm.map { pace in
-            activity.sport.descriptor.speedDisplay == .speed
-                ? spokenSpeedText(secondsPerKm: pace)
-                : spokenPaceText(secondsPerKm: pace)
+            switch activity.sport.descriptor.speedDisplay {
+            case .speed: spokenSpeedText(secondsPerKm: pace)
+            case .per100m: spokenPacePer100mText(secondsPerKm: pace)
+            case .pace, .none: spokenPaceText(secondsPerKm: pace)
+            }
         }
     }
 
@@ -296,9 +300,12 @@ nonisolated struct WatchSportSummary: Equatable, Sendable, Identifiable {
             totals.distanceKm.kmText(fractionDigits: 1)
         ]
         // A ride's speed, a walk's or a run's pace (#749).
-        let pace = activity.sport.descriptor.speedDisplay == .speed
-            ? totals.elapsed.speedText(overKm: totals.distanceKm)
-            : totals.elapsed.paceText(overKm: totals.distanceKm)
+        let pace: String? = switch activity.sport.descriptor.speedDisplay {
+        case .speed: totals.elapsed.speedText(overKm: totals.distanceKm)
+        case .per100m: totals.elapsed.paceText(overKm: totals.distanceKm)
+            .map { _ in pacePer100mText(secondsPerKm: totals.elapsed / totals.distanceKm) }
+        case .pace, .none: totals.elapsed.paceText(overKm: totals.distanceKm)
+        }
         if let pace { parts.append(pace) }
         if let cadence = cadenceText(steps: totals.steps, over: totals.elapsed) {
             parts.append(cadence)

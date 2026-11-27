@@ -39,7 +39,8 @@ struct SportChoiceTests {
         let sections = SportChoice.sections(favorites: [.running, .hiking])
         #expect(sections.favorites == [.running, .hiking])
         #expect(sections.others == [
-            .walking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning, .cycling, .indoorCycling, .poolSwimming,
+            .walking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning,
+            .cycling, .indoorCycling, .poolSwimming, .openWaterSwimming,
         ])
         let all = SportChoice.sections(favorites: Set(SportID.allCases))
         #expect(all.favorites == SessionActivity.allCases)

@@ -37,6 +37,9 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
     case indoorCycling
     /// Laps of a pool (#751), on the watch: lengths, strokes and a SWOLF.
     case poolSwimming
+    /// A swim in a lake or the sea (#752): its route from the GPS, a pace per
+    /// 100 m. A swim in Santé, told apart from the pool by Foulée's tag.
+    case openWaterSwimming
 
     /// Everything Foulée knows about this sport.
     public var descriptor: SportDescriptor {
@@ -54,6 +57,7 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
         case .cycling: .cycling
         case .indoorCycling: .indoorCycling
         case .poolSwimming: .poolSwimming
+        case .openWaterSwimming: .openWaterSwimming
         }
     }
 
@@ -145,6 +149,8 @@ nonisolated public struct SportDescriptor: Sendable {
         case pace
         /// Kilometres per hour, « 24 km/h »: a ride (#749).
         case speed
+        /// Minutes per 100 metres, « 2'05"/100 m »: a swim (#752).
+        case per100m
         /// No speed: a session that goes nowhere.
         case none
     }

@@ -17,6 +17,16 @@
         }
       }
     },
+    "%@ aux 100 mètres" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ per 100 meters"
+          }
+        }
+      }
+    },
     "%@ de dénivelé aujourd'hui. Le précédent record : %@." : {
       "localizations" : {
         "en" : {
@@ -443,6 +453,16 @@
         }
       }
     },
+    "Eau libre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open water"
+          }
+        }
+      }
+    },
     "Elliptique" : {
       "localizations" : {
         "en" : {
@@ -469,6 +489,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "HIIT"
+          }
+        }
+      }
+    },
+    "nage en eau libre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "open-water swim"
           }
         }
       }
@@ -579,6 +609,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your treadmill run"
+          }
+        }
+      }
+    },
+    "Ta nage en eau libre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your open-water swim"
           }
         }
       }

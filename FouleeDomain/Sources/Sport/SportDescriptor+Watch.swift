@@ -78,4 +78,29 @@ nonisolated extension SportDescriptor {
         nounResource: "séance de natation",
         verbResource: "tu nages"
     )
+
+    /// Open water (#752): the GPS draws the route between strokes, the watch
+    /// counts the strokes and the distance; no pool, no lengths.
+    static let openWaterSwimming = SportDescriptor(
+        id: .openWaterSwimming,
+        family: .swimming,
+        location: .outdoor,
+        capabilities: [.route, .distance, .swimStrokes],
+        speedDisplay: .per100m,
+        gait: nil,
+        followsGaitChanges: false,
+        isRecordable: true,
+        devices: .watchOnly,
+        labelResource: "Eau libre",
+        sessionTitleResource: "Ta nage en eau libre",
+        glyph: ActivityGlyph.openWaterSwim,
+        // A swim in Santé. Foulée's tag tells it apart from a pool.
+        healthKitActivityRawValue: 46,
+        garminSport: nil,
+        kcalPerStep: nil,
+        kcalPerMinute: 6,
+        benchmarks: .ridden,
+        nounResource: "nage en eau libre",
+        verbResource: "tu nages"
+    )
 }
