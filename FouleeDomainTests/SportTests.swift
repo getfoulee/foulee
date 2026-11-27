@@ -11,6 +11,7 @@ struct SportTests {
         let expected: [SportID: String] = [
             .walking: "walking", .running: "running", .hiking: "hiking", .trailRunning: "trailRunning",
             .strength: "strength", .hiit: "hiit", .yoga: "yoga",
+            .rowing: "rowing", .elliptical: "elliptical", .indoorRunning: "indoorRunning",
         ]
         #expect(sport.rawValue == expected[sport])
         #expect(sport.descriptor.id == sport)
@@ -41,11 +42,19 @@ struct SportTests {
         #expect(SportID(healthKitActivityRawValue: 37, tag: "hiking") == .running)
     }
 
+    @Test("A treadmill run is a run in Santé: without Foulée's tag it reads as a run")
+    func treadmillWithoutTagIsARun() {
+        #expect(SportID.indoorRunning.descriptor.healthKitActivityRawValue == SportID.running.descriptor.healthKitActivityRawValue)
+        #expect(SportID(healthKitActivityRawValue: 37, tag: "indoorRunning") == .indoorRunning)
+        #expect(SportID(healthKitActivityRawValue: 37, tag: nil) == .running)
+    }
+
     @Test("Every other sport has a HealthKit type of its own")
     func healthKitTypesAreDistinctButForTrail() {
-        let plain = SportID.allCases.filter { $0 != .trailRunning }.map(\.descriptor.healthKitActivityRawValue)
+        let tagged: Set<SportID> = [.trailRunning, .indoorRunning]
+        let plain = SportID.allCases.filter { !tagged.contains($0) }.map(\.descriptor.healthKitActivityRawValue)
         #expect(Set(plain).count == plain.count)
-        for sport in SportID.allCases where sport != .trailRunning {
+        for sport in SportID.allCases where !tagged.contains(sport) {
             #expect(SportID(healthKitActivityRawValue: sport.descriptor.healthKitActivityRawValue) == sport)
         }
     }
@@ -93,7 +102,7 @@ struct SportTests {
             #expect(descriptor.family == .onFoot)
             #expect(descriptor.location == .outdoor)
             #expect(descriptor.speedDisplay == .pace)
-            #expect(descriptor.capabilities == [.route, .steps, .elevation])
+            #expect(descriptor.capabilities == [.route, .distance, .steps, .elevation])
         }
     }
 
@@ -140,7 +149,10 @@ struct SportTests {
         #expect(RecordedActivity.running.verb == "tu cours")
     }
 
-    @Test("An indoor session has no route, no steps, no climb, and is priced by the minute", arguments: [SportID.strength, .hiit, .yoga])
+    @Test(
+        "An indoor session has no route, no steps, no climb, and is priced by the minute",
+        arguments: SportID.allCases.filter { $0.descriptor.family == .training }
+    )
     func indoorSessions(sport: SportID) {
         let descriptor = sport.descriptor
         #expect(descriptor.location == .indoor)
@@ -152,11 +164,30 @@ struct SportTests {
         #expect(descriptor.benchmarks.comparesPace == false)
     }
 
+    @Test("A treadmill run has steps, a distance and a pace, but no route and no climb")
+    func treadmill() {
+        let descriptor = SportID.indoorRunning.descriptor
+        #expect(descriptor.family == .onFoot)
+        #expect(descriptor.location == .indoor)
+        #expect(descriptor.capabilities == [.distance, .steps])
+        #expect(descriptor.tracksRoute == false)
+        #expect(descriptor.measuresDistance)
+        #expect(descriptor.showsElevation == false)
+        #expect(descriptor.liveLead == .steps)
+        #expect(descriptor.speedDisplay == .pace)
+        #expect(descriptor.gait == .run)
+        #expect(descriptor.followsGaitChanges == false)
+        #expect(descriptor.kcalPerStep == SportID.running.descriptor.kcalPerStep)
+        #expect(descriptor.benchmarks == .paced)
+    }
+
     @Test("A phone session without steps is priced by its minutes")
     func indoorCalories() {
         let yoga = SessionRecord(startedAt: Date(timeIntervalSince1970: 1_800_000_000), elapsed: 30 * 60, activity: .yoga)
         #expect(yoga.estimatedCalories == 90)
         let hiit = SessionRecord(startedAt: Date(timeIntervalSince1970: 1_800_000_000), elapsed: 20 * 60, activity: .hiit)
         #expect(hiit.estimatedCalories == 160)
+        let rowing = SessionRecord(startedAt: Date(timeIntervalSince1970: 1_800_000_000), elapsed: 30 * 60, activity: .rowing)
+        #expect(rowing.estimatedCalories == 180)
     }
 }

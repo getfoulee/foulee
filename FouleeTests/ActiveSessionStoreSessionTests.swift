@@ -75,11 +75,14 @@ struct ActiveSessionStoreSessionTests {
                 access: { asked.set(asked.value + ["access"]); return .granted }
             )
         } operation: {
-            let yoga = ActiveSessionStore()
-            yoga.start(activity: .yoga)
-            await yoga.stop()
-            #expect(asked.value.isEmpty)
-            #expect(yoga.degradedStates.isEmpty)
+            // A treadmill run has steps and a distance, but no route (#746).
+            for activity in [SessionActivity.yoga, .indoorRunning] {
+                let indoor = ActiveSessionStore()
+                indoor.start(activity: activity)
+                await indoor.stop()
+                #expect(asked.value.isEmpty)
+                #expect(indoor.degradedStates.isEmpty)
+            }
 
             let walk = ActiveSessionStore()
             walk.start(activity: .walking)

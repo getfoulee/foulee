@@ -25,6 +25,9 @@ nonisolated public enum RecordedActivity: String, Equatable, Hashable, Sendable,
     case strength
     case hiit
     case yoga
+    case rowing
+    case elliptical
+    case indoorRunning
     /// A type Foulée cannot name.
     ///
     /// Unreachable through today's filter, which accepts exactly the three

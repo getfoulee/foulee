@@ -29,6 +29,10 @@ nonisolated public enum ActivityGlyph {
     public static let strength = "figure.strengthtraining.traditional"
     public static let hiit = "figure.highintensity.intervaltraining"
     public static let yoga = "figure.yoga"
+    /// Indoor machines (#746), HealthKit's own figures.
+    public static let rower = "figure.rower"
+    public static let elliptical = "figure.elliptical"
+    public static let treadmill = "figure.run.treadmill"
     /// Walk *and* run — also the neutral stand-in wherever the surface knows a
     /// session is running but not which activity it is (the Live Activity, see
     /// issue #225).

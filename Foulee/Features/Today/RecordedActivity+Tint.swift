@@ -7,9 +7,9 @@ extension RecordedActivity {
     var tint: Color {
         switch self {
         case .walking: ActivityPalette.walk
-        case .running, .trailRunning: ActivityPalette.run
+        case .running, .trailRunning, .indoorRunning: ActivityPalette.run
         case .hiking: ActivityPalette.hike
-        case .strength, .hiit, .yoga: ActivityPalette.training
+        case .strength, .hiit, .yoga, .rowing, .elliptical: ActivityPalette.training
         case .other: ActivityPalette.neutral
         }
     }
