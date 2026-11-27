@@ -33,6 +33,10 @@ nonisolated public extension SportDescriptor {
     /// treadmill without one (#746).
     var measuresDistance: Bool { capabilities.contains(.distance) }
 
+    /// Whether a session of this sport is counted in a pool, whose length is
+    /// asked before it starts (#751): a swim indoors.
+    var countsPoolLengths: Bool { family == .swimming && location == .indoor }
+
     /// Whether the phone sums the distance along the route rather than taking
     /// the pedometer's (#750): a ride has a distance and no steps.
     var measuresDistanceAlongRoute: Bool { tracksRoute && measuresDistance && !capabilities.contains(.steps) }

@@ -268,9 +268,12 @@ nonisolated public extension WorkoutEngine {
         case .outdoor: configuration.locationType = .outdoor
         case .indoor: configuration.locationType = .indoor
         }
-        if activity.sport.descriptor.family == .swimming {
+        if activity.sport.descriptor.countsPoolLengths {
             configuration.swimmingLocationType = .pool
             configuration.lapLength = HKQuantity(unit: .meter(), doubleValue: (pool ?? .standard).meters)
+        } else if activity.sport.descriptor.family == .swimming {
+            // Open water (#752): no pool, the GPS between strokes.
+            configuration.swimmingLocationType = .openWater
         }
         return configuration
     }

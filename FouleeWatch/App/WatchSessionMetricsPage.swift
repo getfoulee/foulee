@@ -89,7 +89,19 @@ struct WatchSessionMetricsPage: View {
     /// otherwise.
     @ViewBuilder
     private var leadingFigure: some View {
-        if metrics.activity.sport.descriptor.speedDisplay == .speed {
+        if metrics.activity.sport.descriptor.speedDisplay == .per100m {
+            // An open-water swim's pace (#752).
+            metric(
+                value: metrics.recentPaceSecondsPerKm.map {
+                    pacePer100mText(secondsPerKm: $0).replacingOccurrences(of: "/100\u{00A0}m", with: "")
+                } ?? "—",
+                label: "/100 m",
+                spoken: metrics.recentPaceSecondsPerKm.map { spokenPacePer100mText(secondsPerKm: $0) }
+                    ?? String(localized: "Rythme inconnu"),
+                icon: ActivityGlyph.openWaterSwim,
+                tint: MetricPalette.distance
+            )
+        } else if metrics.activity.sport.descriptor.speedDisplay == .speed {
             metric(
                 value: metrics.recentPaceSecondsPerKm.map { "\(Int((3_600 / $0).rounded()))" } ?? "—",
                 label: "km/h",

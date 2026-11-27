@@ -87,7 +87,7 @@ struct WatchStartActivityTests {
             #expect(choice.sections.favorites == [.running])
             #expect(choice.sections.others == [
                 .walking, .hiking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning,
-                .cycling, .indoorCycling, .poolSwimming,
+                .cycling, .indoorCycling, .poolSwimming, .openWaterSwimming,
             ])
         }
     }

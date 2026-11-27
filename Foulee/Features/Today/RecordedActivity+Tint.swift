@@ -10,7 +10,7 @@ extension RecordedActivity {
         case .running, .trailRunning, .indoorRunning: ActivityPalette.run
         case .hiking: ActivityPalette.hike
         case .cycling, .indoorCycling: ActivityPalette.ride
-        case .poolSwimming: ActivityPalette.swim
+        case .poolSwimming, .openWaterSwimming: ActivityPalette.swim
         case .strength, .hiit, .yoga, .rowing, .elliptical: ActivityPalette.training
         case .other: ActivityPalette.neutral
         }

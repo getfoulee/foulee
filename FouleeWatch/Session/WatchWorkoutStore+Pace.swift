@@ -60,7 +60,11 @@ extension WatchWorkoutStore {
     /// it already.
     nonisolated static func quantised(pace secondsPerKm: TimeInterval, for activity: SessionActivity) -> TimeInterval {
         guard activity.sport.descriptor.speedDisplay != .speed else { return secondsPerKm }
-        let step: TimeInterval = activity.sport.descriptor.gait == .run ? 5 : 10
+        // A swim's to 5 s a 100 m (#752), 50 s a kilometre.
+        let step: TimeInterval = switch activity.sport.descriptor.speedDisplay {
+        case .per100m: 50
+        default: activity.sport.descriptor.gait == .run ? 5 : 10
+        }
         return (secondsPerKm / step).rounded() * step
     }
 }
