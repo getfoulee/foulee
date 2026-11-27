@@ -108,13 +108,13 @@ struct SportChoiceTests {
         #expect(SportChoice.toggling(.hiking, in: [.hiking]) == [.hiking])
     }
 
-    @Test("The iPhone offers no ride, and a ride last started on the wrist starts a favourite there (#749)")
-    func ridesStayOnTheWatch() {
-        let phone = SportChoice.sections(favorites: [.cycling, .running], on: .phone)
-        #expect(phone.favorites == [.running])
-        #expect(!phone.others.contains(.cycling) && !phone.others.contains(.indoorCycling))
-        let ride = LastSport(sport: .cycling, startedAt: Self.later)
-        #expect(SportChoice.defaultActivity(last: ride, favorites: [.running], on: .phone) == .running)
-        #expect(SportChoice.defaultActivity(last: ride, favorites: [.running], on: .watch) == .cycling)
+    @Test("The iPhone offers an outdoor ride but no indoor one (#749, #750)")
+    func indoorRidesStayOnTheWatch() {
+        let phone = SportChoice.sections(favorites: [.indoorCycling, .cycling, .running], on: .phone)
+        #expect(phone.favorites == [.running, .cycling])
+        #expect(!phone.others.contains(.indoorCycling))
+        let indoor = LastSport(sport: .indoorCycling, startedAt: Self.later)
+        #expect(SportChoice.defaultActivity(last: indoor, favorites: [.running], on: .phone) == .running)
+        #expect(SportChoice.defaultActivity(last: indoor, favorites: [.running], on: .watch) == .indoorCycling)
     }
 }

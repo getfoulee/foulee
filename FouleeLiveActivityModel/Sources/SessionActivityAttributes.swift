@@ -24,6 +24,8 @@ nonisolated public struct SessionActivityAttributes: ActivityAttributes, Session
     /// The figures drawn, in order. Fixed with the attributes, like the sport.
     public var metrics: [MetricID]
     public var showsElevation: Bool
+    /// A ride's average speed beside its figures (#750).
+    public var showsSpeed: Bool = false
 
     /// The figures `activity`'s sport shows; for an unnamed outing, those of a
     /// walk or a run, the two it can be.
@@ -35,6 +37,7 @@ nonisolated public struct SessionActivityAttributes: ActivityAttributes, Session
             metrics: descriptor.liveMetrics,
             showsElevation: descriptor.showsElevation
         )
+        showsSpeed = descriptor.speedDisplay == .speed
     }
 
     public init(goalMinutes: Int, activity: SessionActivity?, metrics: [MetricID], showsElevation: Bool) {
@@ -47,7 +50,7 @@ nonisolated public struct SessionActivityAttributes: ActivityAttributes, Session
 
 nonisolated extension SessionActivityAttributes: Codable {
     private enum CodingKeys: String, CodingKey {
-        case goalMinutes, activity, metrics, showsElevation
+        case goalMinutes, activity, metrics, showsElevation, showsSpeed
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -56,6 +59,7 @@ nonisolated extension SessionActivityAttributes: Codable {
         try container.encodeIfPresent(activity, forKey: .activity)
         try container.encode(metrics.map(\.rawValue), forKey: .metrics)
         try container.encode(showsElevation, forKey: .showsElevation)
+        try container.encode(showsSpeed, forKey: .showsSpeed)
     }
 
     /// Never fails on what a later build may add: an unknown sport reads as an
@@ -69,6 +73,7 @@ nonisolated extension SessionActivityAttributes: Codable {
         let raw = (try? container.decode([String].self, forKey: .metrics)) ?? []
         metrics = raw.compactMap(MetricID.init(rawValue:))
         showsElevation = (try? container.decode(Bool.self, forKey: .showsElevation)) ?? false
+        showsSpeed = (try? container.decode(Bool.self, forKey: .showsSpeed)) ?? false
     }
 }
 
@@ -79,6 +84,7 @@ nonisolated public protocol SessionActivityContent {
     var activity: SessionActivity? { get }
     var metrics: [MetricID] { get }
     var showsElevation: Bool { get }
+    var showsSpeed: Bool { get }
 }
 
 nonisolated extension SessionActivityContent {
@@ -115,6 +121,17 @@ nonisolated extension SessionActivityContent {
     /// The Lock Screen row: the first two figures.
     public var rowMetrics: [MetricID] {
         Array(metrics.prefix(2))
+    }
+
+    /// The Lock Screen row as drawn: its figures, and a ride's average speed
+    /// once it has one (#750).
+    public func rowTexts(_ state: SessionActivityState) -> [String] {
+        rowMetrics.map(state.text(for:)) + (showsSpeed ? [state.averageSpeedText].compactMap(\.self) : [])
+    }
+
+    /// The same row for VoiceOver.
+    public func rowSpokenTexts(_ state: SessionActivityState) -> [String] {
+        rowMetrics.map(state.spokenText(for:)) + (showsSpeed ? [state.spokenAverageSpeedText].compactMap(\.self) : [])
     }
 }
 
@@ -170,6 +187,17 @@ nonisolated public struct SessionActivityState: Codable, Hashable, Sendable {
 
     /// `metric` as drawn: « 5 391 pas », « 2,48 km », « 320 kcal », and
     /// « — kcal » for calories the source does not state.
+    /// A ride's average speed, « 24 km/h » (#750); `nil` before 50 m.
+    public var averageSpeedText: String? {
+        elapsed.speedText(overKm: distanceKm)
+    }
+
+    /// The same speed for VoiceOver.
+    public var spokenAverageSpeedText: String? {
+        guard averageSpeedText != nil else { return nil }
+        return spokenSpeedText(secondsPerKm: elapsed / distanceKm)
+    }
+
     public func text(for metric: MetricID) -> String {
         switch metric {
         case .distance: distanceKm.kmText()

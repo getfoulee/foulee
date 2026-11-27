@@ -51,6 +51,8 @@ nonisolated public struct WalkActivityAttributes: ActivityAttributes, SessionAct
     /// What every build before #732 drew.
     public var metrics: [MetricID] { [.steps, .distance, .calories] }
     public var showsElevation: Bool { true }
+    /// A walk or a run, never a ride.
+    public var showsSpeed: Bool { false }
 }
 
 // MARK: - Tolerant decoding

@@ -232,6 +232,12 @@ struct ActiveSessionScreen: View {
         guard measuresDistance(session) else { return Text("\(session.estimatedCalories) kilocalories") }
         let (steps, distance) = (session.steps.groupedText(), session.distanceKm.kmText(fractionDigits: 1))
         let kcal = session.estimatedCalories
+        // A ride has no steps, and a speed (#750).
+        if session.activity.sport.descriptor.liveLead == .speed {
+            let (up, down) = (Int(session.elevationGainMeters), Int(session.elevationLossMeters))
+            let speed = averageSpeedSpoken(session)
+            return Text("\(distance), \(speed), \(kcal) kilocalories, \(up) mètres de montée, \(down) mètres de descente")
+        }
         // A treadmill has no climb to tell (#746). Two whole sentences rather
         // than one spliced: each translates as a sentence.
         guard session.activity.sport.descriptor.showsElevation else {
@@ -258,7 +264,19 @@ struct ActiveSessionScreen: View {
         case .steps: session.steps.groupedText()
         case .climb: climbText(session)
         case .calories: "\(session.estimatedCalories)"
+        case .speed: averageSpeed(session).map { "\($0)" } ?? "—"
         }
+    }
+
+    /// A ride's average speed in whole km/h (#750), `nil` before 50 m.
+    private func averageSpeed(_ session: SessionRecord) -> Int? {
+        guard session.elapsed.speedText(overKm: session.distanceKm) != nil else { return nil }
+        return Int((session.distanceKm / (session.elapsed / 3_600)).rounded())
+    }
+
+    private func averageSpeedSpoken(_ session: SessionRecord) -> String {
+        guard averageSpeed(session) != nil else { return String(localized: "vitesse moyenne inconnue") }
+        return String(localized: "\(spokenSpeedText(secondsPerKm: session.elapsed / session.distanceKm)) en moyenne")
     }
 
     private func leadLabel(_ session: SessionRecord) -> LocalizedStringResource {
@@ -266,6 +284,7 @@ struct ActiveSessionScreen: View {
         case .steps: "PAS"
         case .climb: "D+ / D−"
         case .calories: "KCAL"
+        case .speed: "KM/H MOY."
         }
     }
 
@@ -302,7 +321,12 @@ struct ActiveSessionScreen: View {
             Image(systemName: FouleeIcon.heart)
                 .scaledSystemFont(size: 20)
                 .foregroundStyle(FouleeColor.danger)
-            Text("Connecte ta Watch pour le rythme cardiaque")
+            // A ride's bike sensors reach the watch only (#750).
+            Text(
+                activity.sport.descriptor.family == .cycling
+                    ? "Lance ta sortie sur ta Watch pour le rythme cardiaque, la puissance et la cadence"
+                    : "Connecte ta Watch pour le rythme cardiaque"
+            )
                 .font(FouleeFont.footnote)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

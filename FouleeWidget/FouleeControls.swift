@@ -60,6 +60,7 @@ private extension OutingActivity {
         case .rowing: "Commencer une séance de rameur"
         case .elliptical: "Commencer une séance d'elliptique"
         case .indoorRunning: "Commencer une course sur tapis"
+        case .cycling: "Commencer une sortie à vélo"
         }
     }
 

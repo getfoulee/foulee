@@ -55,6 +55,14 @@ where Attributes.ContentState == SessionActivityState {
                                 .monospacedDigit()
                                 .accessibilityLabel(context.state.spokenText(for: headline))
                         }
+                        // A ride's average speed under its distance (#750).
+                        if context.attributes.showsSpeed, let speed = context.state.averageSpeedText {
+                            Text(speed)
+                                .font(.caption2)
+                                .monospacedDigit()
+                                .foregroundStyle(.secondary)
+                                .accessibilityLabel(context.state.spokenAverageSpeedText ?? speed)
+                        }
                         // The climb under the headline, when there is one
                         // (issue #576); never in the compact views.
                         if context.attributes.showsElevation,
@@ -164,12 +172,11 @@ struct LockScreenView: View {
                 .sessionClockAccessibility(state)
                 // The sport's first two figures: « 5 391 pas · 2,48 km »
                 // for a walk, the calories alone for a sport without either.
-                Text(attributes.rowMetrics.map(state.text(for:)).joined(separator: " · "))
+                // A ride adds its average speed: « 12,4 km · 24 km/h » (#750).
+                Text(attributes.rowTexts(state).joined(separator: " · "))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .accessibilityLabel(Text(
-                        attributes.rowMetrics.map(state.spokenText(for:)).joined(separator: ", ")
-                    ))
+                    .accessibilityLabel(Text(attributes.rowSpokenTexts(state).joined(separator: ", ")))
                 // Its own line: beside the steps and the distance it would
                 // truncate on a small phone (issue #576).
                 if attributes.showsElevation, let elevation = state.elevation, let text = elevation.text {

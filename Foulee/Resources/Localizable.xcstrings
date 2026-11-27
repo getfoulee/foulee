@@ -24,6 +24,16 @@
       },
       "shouldTranslate" : false
     },
+    "%@ en moyenne" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ on average"
+          }
+        }
+      }
+    },
     "%@ litre sur %@, %@" : {
       "localizations" : {
         "en" : {
@@ -516,6 +526,16 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ → %2$@ · %3$@ au total. Santé n'est pas modifié : tu pourras les séparer à nouveau."
+          }
+        }
+      }
+    },
+    "%@, %@, %lld kilocalories, %lld mètres de montée, %lld mètres de descente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@, %3$lld kilocalories, %4$lld meters up, %5$lld meters down"
           }
         }
       }
@@ -1473,6 +1493,26 @@
         }
       }
     },
+    "KM/H MOY." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AVG KM/H"
+          }
+        }
+      }
+    },
+    "Lance ta sortie sur ta Watch pour le rythme cardiaque, la puissance et la cadence" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start your ride on your Watch for heart rate, power and cadence"
+          }
+        }
+      }
+    },
     "Le sport de ta dernière sortie" : {
       "localizations" : {
         "en" : {
@@ -1683,6 +1723,16 @@
         }
       }
     },
+    "sortie à vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ride"
+          }
+        }
+      }
+    },
     "Sports favoris" : {
       "localizations" : {
         "en" : {
@@ -1799,6 +1849,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version, device and latest incidents"
+          }
+        }
+      }
+    },
+    "vitesse moyenne inconnue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "average speed unknown"
           }
         }
       }
@@ -5107,6 +5167,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "See statistics"
+          }
+        }
+      }
+    },
+    "Vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bike"
           }
         }
       }
