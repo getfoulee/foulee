@@ -98,4 +98,11 @@ struct SportChoiceTests {
         #expect(LastSportPreference.read(from: store) == newer)
         #expect(LastSportPreference.keep(LastSport(sport: .hiking, startedAt: Self.earlier), in: Store()))
     }
+
+    @Test("Ticking adds a favourite, unticking removes it, but never the last one (#835)")
+    func toggling() {
+        #expect(SportChoice.toggling(.hiking, in: [.walking]) == [.walking, .hiking])
+        #expect(SportChoice.toggling(.walking, in: [.walking, .hiking]) == [.hiking])
+        #expect(SportChoice.toggling(.hiking, in: [.hiking]) == [.hiking])
+    }
 }

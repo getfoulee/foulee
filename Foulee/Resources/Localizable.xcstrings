@@ -863,6 +863,16 @@
         }
       }
     },
+    "%lld sports" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sports"
+          }
+        }
+      }
+    },
     "%lld verres de retard" : {
       "localizations" : {
         "en" : {
@@ -999,6 +1009,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shows this day’s workouts"
+          }
+        }
+      }
+    },
+    "Ajoute aux favoris" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adds to favorites"
           }
         }
       }
@@ -1313,6 +1333,16 @@
         }
       }
     },
+    "Coche tes favoris : ils passent en tête. Ta série, elle, compte toutes tes activités." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tick your favorites: they come first. Your streak counts all your activities."
+          }
+        }
+      }
+    },
     "course en trail" : {
       "localizations" : {
         "en" : {
@@ -1373,6 +1403,26 @@
         }
       }
     },
+    "En tête de « Autre sport ». Ta série compte toutes tes activités, quel que soit ce choix." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listed first in “Other sport”. Your streak counts all your activities, whatever you choose."
+          }
+        }
+      }
+    },
+    "Favori" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorite"
+          }
+        }
+      }
+    },
     "Favoris" : {
       "localizations" : {
         "en" : {
@@ -1389,6 +1439,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "HIIT"
+          }
+        }
+      }
+    },
+    "Il te faut au moins un sport favori" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You need at least one favorite sport"
           }
         }
       }
@@ -1473,12 +1533,32 @@
         }
       }
     },
+    "Pas favori" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not a favorite"
+          }
+        }
+      }
+    },
     "Quel sport ?" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Which sport?"
+          }
+        }
+      }
+    },
+    "Quels sont\ntes sports ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What are\nyour sports?"
           }
         }
       }
@@ -1543,6 +1623,16 @@
         }
       }
     },
+    "Retire des favoris" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Removes from favorites"
+          }
+        }
+      }
+    },
     "Rien ne part sans toi. Le résumé ne contient ni donnée de santé ni position." : {
       "localizations" : {
         "en" : {
@@ -1589,6 +1679,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset Foulée?"
+          }
+        }
+      }
+    },
+    "Sports favoris" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorite sports"
           }
         }
       }
@@ -2095,16 +2195,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Time to drink” notifications with “Had a glass” and “Remind me”."
-          }
-        }
-      }
-    },
-    "Des sorties plus intenses" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "More intense workouts"
           }
         }
       }
@@ -2923,16 +3013,6 @@
         }
       }
     },
-    "Les deux" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Both"
-          }
-        }
-      }
-    },
     "Les libellés de Garmin Connect changent d'une version à l'autre — « Applications connectées » s'est déjà appelé « Applications tierces ». Le chemin, lui, ne bouge pas : les paramètres, puis les applications connectées." : {
       "localizations" : {
         "en" : {
@@ -3383,16 +3463,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Goals"
-          }
-        }
-      }
-    },
-    "On adaptera Foulée à ta pratique. Ta série, elle, compte toutes tes activités." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Foulée will adapt to how you move. Your streak counts every activity."
           }
         }
       }
@@ -4577,16 +4647,6 @@
         }
       }
     },
-    "Ta série compte toutes tes activités, quel que soit ce choix." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your streak counts all your activities, whatever you choose."
-          }
-        }
-      }
-    },
     "Ta série, tes minutes et tes pas du jour." : {
       "localizations" : {
         "en" : {
@@ -4817,16 +4877,6 @@
         }
       }
     },
-    "Tu marches ou\ntu cours ?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Do you walk\nor run?"
-          }
-        }
-      }
-    },
     "Tu peux changer ces autorisations dans Réglages à tout moment." : {
       "localizations" : {
         "en" : {
@@ -4903,16 +4953,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "One workout per working day"
-          }
-        }
-      }
-    },
-    "Une sortie tranquille, à ton rythme" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An easy workout, at your own pace"
           }
         }
       }
@@ -5415,16 +5455,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "About"
-          }
-        }
-      }
-    },
-    "Ça dépend des jours" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Depends on the day"
           }
         }
       }

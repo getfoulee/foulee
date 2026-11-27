@@ -5,12 +5,14 @@ import Testing
 
 @Suite("SettingsSummary")
 struct SettingsSummaryTests {
-    @Test("Goals read mode, minutes and steps")
+    @Test("Goals read the favourite sports, minutes and steps")
     func goals() {
-        #expect(SettingsSummary.goals(mode: .walking, minutesGoal: 20, stepsGoal: 6_000)
+        #expect(SettingsSummary.goals(favorites: [.walking], minutesGoal: 20, stepsGoal: 6_000)
             == "Marche · 20 min · \(6_000.groupedText()) pas")
-        #expect(SettingsSummary.goals(mode: .both, minutesGoal: 60, stepsGoal: 10_000)
-            == "Les deux · 1 h · \(10_000.groupedText()) pas")
+        #expect(SettingsSummary.goals(favorites: [.hiking], minutesGoal: 20, stepsGoal: 6_000)
+            == "Randonnée · 20 min · \(6_000.groupedText()) pas")
+        #expect(SettingsSummary.goals(favorites: [.walking, .running, .yoga], minutesGoal: 60, stepsGoal: 10_000)
+            == "3 sports · 1 h · \(10_000.groupedText()) pas")
     }
 
     @Test("Usual day sets are named, others counted", arguments: [

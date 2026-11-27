@@ -5,9 +5,15 @@ import Foundation
 /// so a setting can be read without opening its page. Pure functions of plain
 /// values: the wording is pinned by tests, not by screenshots.
 enum SettingsSummary {
-    /// « Marche · 20 min · 6 000 pas ».
-    static func goals(mode: ActivityMode, minutesGoal: Int, stepsGoal: Int) -> String {
-        String(localized: "\(mode.label) · \(durationText(minutes: minutesGoal)) · \(stepsGoal.groupedText()) pas")
+    /// « Marche · 20 min · 6 000 pas », « 3 sports · 20 min · 6 000 pas ».
+    static func goals(favorites: Set<SportID>, minutesGoal: Int, stepsGoal: Int) -> String {
+        String(localized: "\(favoritesText(favorites)) · \(durationText(minutes: minutesGoal)) · \(stepsGoal.groupedText()) pas")
+    }
+
+    /// The favourite sport by name, or how many there are (#835).
+    static func favoritesText(_ favorites: Set<SportID>) -> String {
+        if favorites.count == 1, let sport = favorites.first { return sport.descriptor.label }
+        return String(localized: "\(favorites.count) sports")
     }
 
     /// « En semaine · 11:30–13:30 ».
