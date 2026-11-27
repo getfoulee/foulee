@@ -23,6 +23,13 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
     case strength
     case hiit
     case yoga
+    /// Indoor machines (#746). A rower and an elliptical go nowhere, like
+    /// strength; a treadmill run keeps its steps and its distance, without a
+    /// route. HealthKit has no treadmill type: Santé records an indoor run,
+    /// and Foulée tells it apart by `FouleeWorkoutMetadata.sport`, as a trail.
+    case rowing
+    case elliptical
+    case indoorRunning
 
     /// Everything Foulée knows about this sport.
     public var descriptor: SportDescriptor {
@@ -34,6 +41,9 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
         case .strength: .strength
         case .hiit: .hiit
         case .yoga: .yoga
+        case .rowing: .rowing
+        case .elliptical: .elliptical
+        case .indoorRunning: .indoorRunning
         }
     }
 
@@ -90,7 +100,8 @@ nonisolated public struct SportDescriptor: Sendable {
     public enum Family: Equatable, Sendable {
         /// Walking, running, hiking: steps, a pace, a route.
         case onFoot
-        /// Strength, HIIT, yoga: a duration, a heart rate, calories (#745).
+        /// Strength, HIIT, yoga, rower, elliptical: a duration, a heart rate,
+        /// calories (#745, #746).
         case training
     }
 
@@ -148,6 +159,9 @@ nonisolated public struct SportDescriptor: Sendable {
 
         /// A route, from the GPS.
         public static let route = Capabilities(rawValue: 1 << 0)
+        /// A distance: from the GPS outdoors, from the accelerometer on a
+        /// treadmill (#746), where the builder estimates it without a route.
+        public static let distance = Capabilities(rawValue: 1 << 3)
         /// Steps and cadence, from the pedometer.
         public static let steps = Capabilities(rawValue: 1 << 1)
         /// Climb and descent, from the altimeter.
@@ -208,7 +222,7 @@ nonisolated extension SportDescriptor {
         id: .walking,
         family: .onFoot,
         location: .outdoor,
-        capabilities: [.route, .steps, .elevation],
+        capabilities: [.route, .distance, .steps, .elevation],
         speedDisplay: .pace,
         gait: .walk,
         followsGaitChanges: true,
@@ -228,7 +242,7 @@ nonisolated extension SportDescriptor {
         id: .running,
         family: .onFoot,
         location: .outdoor,
-        capabilities: [.route, .steps, .elevation],
+        capabilities: [.route, .distance, .steps, .elevation],
         speedDisplay: .pace,
         gait: .run,
         followsGaitChanges: true,
@@ -248,7 +262,7 @@ nonisolated extension SportDescriptor {
         id: .hiking,
         family: .onFoot,
         location: .outdoor,
-        capabilities: [.route, .steps, .elevation],
+        capabilities: [.route, .distance, .steps, .elevation],
         speedDisplay: .pace,
         gait: .walk,
         followsGaitChanges: false,
@@ -271,7 +285,7 @@ nonisolated extension SportDescriptor {
         id: .trailRunning,
         family: .onFoot,
         location: .outdoor,
-        capabilities: [.route, .steps, .elevation],
+        capabilities: [.route, .distance, .steps, .elevation],
         speedDisplay: .pace,
         gait: .run,
         followsGaitChanges: false,
@@ -359,5 +373,78 @@ nonisolated extension SportDescriptor {
         benchmarks: .stationary,
         nounResource: "séance de yoga",
         verbResource: "tu t'entraînes"
+    )
+
+    // Indoor machines (#746). The rower and the elliptical are priced by the
+    // minute like strength (MET 5 to 7 for about 70 kg, rounded down). The
+    // Apple Watch measures no distance on either without a connected machine,
+    // so they show none: no « 0,00 km ».
+
+    static let rowing = SportDescriptor(
+        id: .rowing,
+        family: .training,
+        location: .indoor,
+        capabilities: [],
+        speedDisplay: .none,
+        gait: nil,
+        followsGaitChanges: false,
+        isRecordable: true,
+        labelResource: "Rameur",
+        sessionTitleResource: "Ta séance de rameur",
+        glyph: ActivityGlyph.rower,
+        healthKitActivityRawValue: 35,
+        garminSport: nil,
+        kcalPerStep: nil,
+        kcalPerMinute: 6,
+        benchmarks: .stationary,
+        nounResource: "séance de rameur",
+        verbResource: "tu rames"
+    )
+
+    static let elliptical = SportDescriptor(
+        id: .elliptical,
+        family: .training,
+        location: .indoor,
+        capabilities: [],
+        speedDisplay: .none,
+        gait: nil,
+        followsGaitChanges: false,
+        isRecordable: true,
+        labelResource: "Elliptique",
+        sessionTitleResource: "Ta séance d'elliptique",
+        glyph: ActivityGlyph.elliptical,
+        healthKitActivityRawValue: 16,
+        garminSport: nil,
+        kcalPerStep: nil,
+        kcalPerMinute: 5,
+        benchmarks: .stationary,
+        nounResource: "séance d'elliptique",
+        verbResource: "tu t'entraînes"
+    )
+
+    /// A run on a treadmill: steps, the distance the watch estimates from
+    /// them, a pace; no route, no climb, so no GPS.
+    static let indoorRunning = SportDescriptor(
+        id: .indoorRunning,
+        family: .onFoot,
+        location: .indoor,
+        capabilities: [.distance, .steps],
+        speedDisplay: .pace,
+        gait: .run,
+        // One sport from start to finish: a walk on the belt is still the
+        // treadmill session the person started.
+        followsGaitChanges: false,
+        isRecordable: true,
+        labelResource: "Tapis",
+        sessionTitleResource: "Ta course sur tapis",
+        glyph: ActivityGlyph.treadmill,
+        // A run in Santé, indoors: HealthKit has no treadmill type. Foulée's
+        // tag tells it apart (`SportID.workoutMetadata`).
+        healthKitActivityRawValue: 37,
+        garminSport: nil,
+        kcalPerStep: 0.09,
+        benchmarks: .paced,
+        nounResource: "course sur tapis",
+        verbResource: "tu cours"
     )
 }

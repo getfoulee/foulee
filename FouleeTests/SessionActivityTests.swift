@@ -33,7 +33,11 @@ struct SessionActivityTests {
         #expect(SessionActivity.yoga.hkActivityType == .yoga)
         #expect(SessionActivity.strength.hkActivityType == .traditionalStrengthTraining)
         #expect(SessionActivity.hiit.hkActivityType == .highIntensityIntervalTraining)
-        #expect(SessionActivity.allCases.count == 7)
+        #expect(SessionActivity.rowing.hkActivityType == .rowing)
+        #expect(SessionActivity.elliptical.hkActivityType == .elliptical)
+        // HealthKit has no treadmill type: Santé records a run, indoors (#746).
+        #expect(SessionActivity.indoorRunning.hkActivityType == .running)
+        #expect(SessionActivity.allCases.count == 10)
     }
 
     @Test("The two activities are named the way the rest of the app names them")

@@ -393,6 +393,26 @@
         }
       }
     },
+    "course sur tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "treadmill run"
+          }
+        }
+      }
+    },
+    "Elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elliptical"
+          }
+        }
+      }
+    },
     "Foulée n'a pas l'autorisation d'écrire dans Santé. Active l'eau dans Santé > Profil > Apps > Foulée." : {
       "localizations" : {
         "en" : {
@@ -423,6 +443,16 @@
         }
       }
     },
+    "Rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rower"
+          }
+        }
+      }
+    },
     "Renfo" : {
       "localizations" : {
         "en" : {
@@ -443,6 +473,36 @@
         }
       }
     },
+    "séance d'elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "elliptical session"
+          }
+        }
+      }
+    },
+    "séance de rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rowing session"
+          }
+        }
+      }
+    },
+    "Ta course sur tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your treadmill run"
+          }
+        }
+      }
+    },
     "Ta randonnée" : {
       "localizations" : {
         "en" : {
@@ -453,12 +513,32 @@
         }
       }
     },
+    "Ta séance d'elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your elliptical session"
+          }
+        }
+      }
+    },
     "Ta séance de HIIT" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your HIIT session"
+          }
+        }
+      }
+    },
+    "Ta séance de rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your rowing session"
           }
         }
       }
@@ -483,6 +563,16 @@
         }
       }
     },
+    "Tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treadmill"
+          }
+        }
+      }
+    },
     "Ton trail" : {
       "localizations" : {
         "en" : {
@@ -499,6 +589,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trail"
+          }
+        }
+      }
+    },
+    "tu rames" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "you row"
           }
         }
       }

@@ -210,7 +210,7 @@ struct ActiveSessionScreen: View {
                     Text(leadLabel(session))
                         .font(FouleeFont.footnote.weight(.semibold))
                         .foregroundStyle(.secondary)
-                    if !isAccessibilitySize, tracksRoute(session) {
+                    if !isAccessibilitySize, measuresDistance(session) {
                         ringFigures(session: session)
                             .padding(.top, 8)
                     }
@@ -218,7 +218,7 @@ struct ActiveSessionScreen: View {
             }
             // Grown with the room on the inner screen (#662).
             .frame(width: 232 * layout.scale, height: 232 * layout.scale)
-            if isAccessibilitySize, tracksRoute(session) {
+            if isAccessibilitySize, measuresDistance(session) {
                 ringFigures(session: session)
             }
         }
@@ -229,9 +229,15 @@ struct ActiveSessionScreen: View {
     }
 
     private func figuresAccessibilityValue(_ session: SessionRecord) -> Text {
-        guard tracksRoute(session) else { return Text("\(session.estimatedCalories) kilocalories") }
+        guard measuresDistance(session) else { return Text("\(session.estimatedCalories) kilocalories") }
         let (steps, distance) = (session.steps.groupedText(), session.distanceKm.kmText(fractionDigits: 1))
-        let (kcal, up, down) = (session.estimatedCalories, Int(session.elevationGainMeters), Int(session.elevationLossMeters))
+        let kcal = session.estimatedCalories
+        // A treadmill has no climb to tell (#746). Two whole sentences rather
+        // than one spliced: each translates as a sentence.
+        guard session.activity.sport.descriptor.showsElevation else {
+            return Text("\(steps) pas, \(distance), \(kcal) kilocalories")
+        }
+        let (up, down) = (Int(session.elevationGainMeters), Int(session.elevationLossMeters))
         return Text("\(steps) pas, \(distance), \(kcal) kilocalories, \(up) mètres de montée, \(down) mètres de descente")
     }
 
@@ -241,7 +247,7 @@ struct ActiveSessionScreen: View {
             metric(value: "\(session.estimatedCalories) kcal", label: "Énergie")
             if session.activity.sport.descriptor.liveLead == .climb {
                 metric(value: session.steps.groupedText(), label: "Pas")
-            } else {
+            } else if session.activity.sport.descriptor.showsElevation {
                 metric(value: climbText(session), label: "D+ / D−")
             }
         }
@@ -263,9 +269,15 @@ struct ActiveSessionScreen: View {
         }
     }
 
-    /// An indoor session has no distance, no climb and no map (#745).
+    /// An indoor session has no map (#745).
     private func tracksRoute(_ session: SessionRecord) -> Bool {
         session.activity.sport.descriptor.tracksRoute
+    }
+
+    /// Strength, yoga or a rower have no distance either; a treadmill has
+    /// one (#746).
+    private func measuresDistance(_ session: SessionRecord) -> Bool {
+        session.activity.sport.descriptor.measuresDistance
     }
 
     private func climbText(_ session: SessionRecord) -> String {

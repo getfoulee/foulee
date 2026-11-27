@@ -12,6 +12,10 @@ struct WatchIndoorSessionTests {
         (SessionActivity.strength, HKWorkoutActivityType.traditionalStrengthTraining),
         (.hiit, .highIntensityIntervalTraining),
         (.yoga, .yoga),
+        (.rowing, .rowing),
+        (.elliptical, .elliptical),
+        // HealthKit has no treadmill type: an indoor run (#746).
+        (.indoorRunning, .running),
     ])
     func configuredIndoors(activity: SessionActivity, type: HKWorkoutActivityType) async {
         let stub = WorkoutHealthKitStub()
@@ -22,12 +26,15 @@ struct WatchIndoorSessionTests {
 
     @Test("An indoor session never asks for the location, a walk does")
     func noLocationPrompt() async {
-        let yogaRoute = FakeRouteSource()
-        let yoga = WorkoutHealthKitStub().makeStore(route: WatchRouteStore(source: yogaRoute.source))
-        await yoga.start(activity: .yoga)
-        for _ in 0..<20 { await Task.yield() }
-        #expect(yogaRoute.authorizationRequests == 0)
-        #expect(yogaRoute.openedStreams == 0)
+        // A treadmill run counts steps and distance, but has no route (#746).
+        for activity in [SessionActivity.yoga, .indoorRunning] {
+            let indoorRoute = FakeRouteSource()
+            let indoor = WorkoutHealthKitStub().makeStore(route: WatchRouteStore(source: indoorRoute.source))
+            await indoor.start(activity: activity)
+            for _ in 0..<20 { await Task.yield() }
+            #expect(indoorRoute.authorizationRequests == 0)
+            #expect(indoorRoute.openedStreams == 0)
+        }
 
         let walkRoute = FakeRouteSource()
         let walk = WorkoutHealthKitStub().makeStore(route: WatchRouteStore(source: walkRoute.source))

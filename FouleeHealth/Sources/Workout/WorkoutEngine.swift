@@ -278,7 +278,7 @@ nonisolated public extension WorkoutEngine {
         let capabilities = sport.descriptor.capabilities
         var types: [HKQuantityType] = []
         if capabilities.contains(.steps) { types.append(HKQuantityType(.stepCount)) }
-        if capabilities.contains(.route) { types.append(HKQuantityType(.distanceWalkingRunning)) }
+        if capabilities.contains(.distance) { types.append(HKQuantityType(.distanceWalkingRunning)) }
         types.append(HKQuantityType(.activeEnergyBurned))
         types.append(HKQuantityType(.heartRate))
         return types

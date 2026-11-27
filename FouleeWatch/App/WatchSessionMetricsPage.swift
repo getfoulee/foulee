@@ -39,9 +39,10 @@ struct WatchSessionMetricsPage: View {
                     currentActivity
                 }
 
-                // An indoor session has no route, steps or climb (#745):
-                // its calories and heart rate are the whole page.
-                if metrics.activity.sport.descriptor.tracksRoute {
+                // Strength, yoga or a rower have no steps, distance or climb
+                // (#745): their calories and heart rate are the whole page.
+                // A treadmill keeps its steps and distance (#746).
+                if metrics.activity.sport.descriptor.measuresDistance {
                     HStack(spacing: 10) {
                         leadingFigure
                         metric(
@@ -77,7 +78,7 @@ struct WatchSessionMetricsPage: View {
         .sessionPage("Séance")
     }
 
-    /// The first tile of a sport with a route: the climb for a hike or a
+    /// The first tile of a sport with a distance: the climb for a hike or a
     /// trail, told by it (#744), the steps otherwise.
     @ViewBuilder
     private var leadingFigure: some View {

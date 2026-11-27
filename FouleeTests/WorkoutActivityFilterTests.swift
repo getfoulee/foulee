@@ -52,9 +52,11 @@ struct WorkoutActivityFilterTests {
     @Test("The résumé accepts the sports Foulée names — and nothing else")
     func acceptedActivityTypes() {
         // A trail is a run in Santé: no type of its own (#744). Strength, HIIT
-        // and yoga since #745.
+        // and yoga since #745; a treadmill run is a run, rower and elliptical
+        // since #746.
         #expect(WorkoutActivityFilter.summarizedActivityTypes == [
             .walking, .running, .hiking, .traditionalStrengthTraining, .highIntensityIntervalTraining, .yoga,
+            .rowing, .elliptical,
         ])
         #expect(!WorkoutActivityFilter.summarizedActivityTypes.contains(.cycling))
     }
@@ -73,7 +75,7 @@ struct WorkoutActivityFilterTests {
         #expect(clauses.contains(HKQuery.predicateForWorkouts(with: .yoga).predicateFormat))
         // ORed, not ANDed: an AND over several activity types matches no
         // workout. One clause each, no more — a stray type shows up here.
-        #expect(clauses.count == 6)
+        #expect(clauses.count == 8)
     }
 
     @Test("The date clause spans daysBack days back through end of today")
