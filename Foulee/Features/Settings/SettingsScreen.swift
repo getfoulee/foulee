@@ -27,7 +27,7 @@ struct SettingsScreen: View {
                     SheetHeader(eyebrow: "Foulée", title: "Réglages")
                     GlassSection {
                         link(.goals, summary: SettingsSummary.goals(
-                            mode: preferences.activityMode,
+                            favorites: preferences.favoriteSports,
                             minutesGoal: preferences.minutesGoal,
                             stepsGoal: preferences.stepsGoal
                         ))

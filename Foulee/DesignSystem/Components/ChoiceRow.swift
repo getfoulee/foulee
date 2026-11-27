@@ -1,9 +1,9 @@
 import FouleeDesignSystem
 import SwiftUI
 
-/// One tappable glass row of a single choice: the onboarding's « Marche »,
-/// « Course », « Les deux » (#221) and the sports of « Autre sport » (#743).
-/// The selected one carries a check, a ring and the selected trait.
+/// One tappable glass row: the sports of « Autre sport » (#743), and the
+/// favourite sports of Réglages and the onboarding (#835). A selected row
+/// carries a check, a ring and the selected trait.
 struct ChoiceRow: View {
     var title: Text
     var subtitle: Text?

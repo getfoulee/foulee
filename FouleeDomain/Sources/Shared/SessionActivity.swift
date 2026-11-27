@@ -49,9 +49,9 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
         self.init(rawValue: sport.rawValue)
     }
 
-    /// How the two pickers name this activity — « Marche » and « Course », the
-    /// same two words `ActivityMode.label` uses in Réglages and in onboarding
-    /// (issues #220, #221). One table rather than one per screen: the phone
+    /// How the pickers name this activity — « Marche », « Course » — the same
+    /// words the favourite sports list in Réglages and in onboarding (#835).
+    /// One table rather than one per screen: the phone
     /// sheet and the watch screen ask the same question, and a user who picked
     /// « Course » in Réglages must read the same word on the wrist.
     public var label: String {
@@ -76,8 +76,8 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     /// would let them drift, which is exactly what happened when #225 moved
     /// only the Lock Screen.
     ///
-    /// Distinct from `ActivityMode.label` (« Marche » / « Course »), which is
-    /// the short form the Settings picker needs; no new word either way. The
+    /// Distinct from `label` (« Marche » / « Course »), the short form the
+    /// lists need; no new word either way. The
     /// neutral « Ta sortie » is not here on purpose: it belongs to the one
     /// caller that can fail to have a `SessionActivity` at all
     /// (`WalkActivityAttributes`, for a payload written before #225).

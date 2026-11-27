@@ -2,14 +2,15 @@ import FouleeDesignSystem
 import FouleeDomain
 import SwiftUI
 
-/// Second onboarding screen — marche, course, ou les deux.
+/// Second onboarding screen: the favourite sports, the same list as
+/// Réglages › Activité (#835, owner's choice), walking ticked by default.
 ///
 /// Placed right after the welcome and before the goal step: the flow is linear
 /// with no back navigation, and this is its first consequential choice whose
 /// default isn't self-evident, so it has to be asked before the screens that
 /// are written around it (issue #221).
 ///
-/// Nothing here touches the streak: `activityMode` is a presentation
+/// Nothing here touches the streak: the favourites are a presentation
 /// preference, and the streak stays `max(appleExerciseTime, workout minutes)`
 /// over every activity type whatever is picked.
 struct OnboardingActivityView: View {
@@ -18,9 +19,9 @@ struct OnboardingActivityView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            // Scrolled for the same reason as the permissions screen: the
-            // heading plus three two-line rows outgrow a fixed stack at the
-            // larger Dynamic Type sizes. The CTA stays pinned to the bottom.
+            // Scrolled: the heading and a row per sport outgrow the screen,
+            // all the more at the larger Dynamic Type sizes. The CTA stays
+            // pinned to the bottom.
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
                     OnboardingStepIndicator(step: .activity)
@@ -41,29 +42,22 @@ struct OnboardingActivityView: View {
 
     private var heading: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Tu marches ou\ntu cours ?")
+            Text("Quels sont\ntes sports ?")
                 .scaledSystemFont(size: 30, weight: .bold)
                 .lineSpacing(2)
                 .accessibilityAddTraits(.isHeader)
-            Text("On adaptera Foulée à ta pratique. Ta série, elle, compte toutes tes activités.")
+            Text("Coche tes favoris : ils passent en tête. Ta série, elle, compte toutes tes activités.")
                 .font(FouleeFont.body)
                 .foregroundStyle(.secondary)
         }
     }
 
+    /// Written the moment a row is tapped rather than held in local state
+    /// until the end: an onboarding abandoned midway still leaves the choice
+    /// behind, and it is on disk well before `hasCompletedOnboarding`.
     private var choices: some View {
-        VStack(spacing: 12) {
-            ForEach(ActivityMode.allCases) { mode in
-                ActivityChoiceRow(
-                    mode: mode,
-                    isSelected: preferences.activityMode == mode,
-                    // Written the moment it's tapped rather than held in local
-                    // state until the end: an onboarding abandoned midway
-                    // still leaves the choice behind, and it is on disk well
-                    // before `hasCompletedOnboarding`.
-                    select: { preferences.activityMode = mode }
-                )
-            }
+        FavoriteSportsList(favorites: preferences.favoriteSports) { sport in
+            preferences.favoriteSports = SportChoice.toggling(sport, in: preferences.favoriteSports)
         }
     }
 
@@ -72,52 +66,9 @@ struct OnboardingActivityView: View {
     /// default (marche) still leaves the key on disk, instead of a blank that
     /// reads exactly like the installs which predate the question (#219).
     private func confirm() {
-        let chosen = preferences.activityMode
-        preferences.activityMode = chosen
+        let chosen = preferences.favoriteSports
+        preferences.favoriteSports = chosen
         onContinue()
-    }
-}
-
-/// One tappable glass row per mode. The copy lives here rather than on
-/// `ActivityMode`: onboarding wants a title *and* a line of explanation, and
-/// the enum deliberately carries no display label until the settings picker
-/// needs one (#220). The glyph did move onto the enum (#222) — unlike the
-/// prose it is reused verbatim by the Today ring, and two copies of that
-/// mapping is exactly how a runner ends up with a walking figure.
-///
-/// Internal rather than private only so the tests can name it: rows are built
-/// inside a `ForEach`, which stores a closure instead of its rows, and calling
-/// that closure is the only way to reach a row's tap action without a UI test
-/// (`OnboardingFlowTests.tappingARowWritesImmediately`).
-struct ActivityChoiceRow: View {
-    var mode: ActivityMode
-    var isSelected: Bool
-    var select: () -> Void
-
-    var body: some View {
-        ChoiceRow(
-            title: Text(title),
-            subtitle: Text(subtitle),
-            systemIcon: mode.icon,
-            isSelected: isSelected,
-            select: select
-        )
-    }
-
-    private var title: LocalizedStringResource {
-        switch mode {
-        case .walking: "Marche"
-        case .running: "Course"
-        case .both: "Les deux"
-        }
-    }
-
-    private var subtitle: LocalizedStringResource {
-        switch mode {
-        case .walking: "Une sortie tranquille, à ton rythme"
-        case .running: "Des sorties plus intenses"
-        case .both: "Ça dépend des jours"
-        }
     }
 }
 

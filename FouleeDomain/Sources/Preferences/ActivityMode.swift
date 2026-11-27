@@ -16,16 +16,6 @@ nonisolated public enum ActivityMode: String, CaseIterable, Codable, Sendable, I
     case both
 
     public var id: String { rawValue }
-
-    /// Segment titles for the Settings picker (issue #220). Short on purpose —
-    /// three of them share one segmented control's width.
-    public var label: String {
-        switch self {
-        case .walking: kitText("Marche")
-        case .running: kitText("Course")
-        case .both: kitText("Les deux")
-        }
-    }
 }
 
 nonisolated public extension ActivityMode {

@@ -739,16 +739,6 @@
         }
       }
     },
-    "Les deux" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Both"
-          }
-        }
-      }
-    },
     "Marche" : {
       "localizations" : {
         "en" : {

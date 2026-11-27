@@ -66,6 +66,13 @@ nonisolated public enum SportChoice {
         )
     }
 
+    /// The favourites once `sport` is ticked or unticked (#835). Never none:
+    /// unticking the only favourite leaves it, as « Démarrer » needs one.
+    public static func toggling(_ sport: SportID, in favorites: Set<SportID>) -> Set<SportID> {
+        guard favorites.contains(sport) else { return favorites.union([sport]) }
+        return favorites.count > 1 ? favorites.subtracting([sport]) : favorites
+    }
+
     /// What « Démarrer » starts and what « Autre sport » lists, together.
     public static func resolve(last: LastSport?, favorites: Set<SportID>) -> Resolved {
         Resolved(activity: defaultActivity(last: last, favorites: favorites), sections: sections(favorites: favorites))

@@ -70,19 +70,27 @@ struct OnboardingFlowTests {
         let preferences = UserPreferences(defaults: defaults)
         let screen = OnboardingActivityView(preferences: preferences, onContinue: {})
         // Marche is the default, so it is the row that starts out ticked.
-        #expect(row(.walking, screen)?.isSelected == true)
-        #expect(row(.running, screen)?.isSelected == false)
+        #expect(row(.walking, screen)?.isFavorite == true)
+        #expect(row(.hiking, screen)?.isFavorite == false)
 
-        // The row's own action, built the way the screen builds it.
-        row(.running, screen)?.select()
+        // The row's own action, built the way the screen builds it (#835).
+        row(.hiking, screen)?.toggle()
 
         // Committed on tap rather than held in local state until the end: an
         // onboarding abandoned midway still leaves the answer behind, and it
         // lands well before `hasCompletedOnboarding`.
-        #expect(defaults.string(forKey: "preferences.activityMode") == "running")
+        #expect(defaults.stringArray(forKey: "preferences.favoriteSports") == ["hiking", "walking"])
         #expect(defaults.bool(forKey: "preferences.hasCompletedOnboarding") == false)
-        #expect(row(.running, screen)?.isSelected == true)
-        #expect(row(.walking, screen)?.isSelected == false)
+        #expect(row(.hiking, screen)?.isFavorite == true)
+        #expect(row(.walking, screen)?.isFavorite == true)
+
+        // Unticked, walking leaves hiking, which can then not be unticked.
+        row(.walking, screen)?.toggle()
+        #expect(row(.hiking, screen)?.isOnlyFavorite == true)
+        row(.hiking, screen)?.toggle()
+        #expect(preferences.favoriteSports == [.hiking])
+        // The mode is still written for older builds, iCloud and Garmin.
+        #expect(defaults.string(forKey: "preferences.activityMode") != nil)
     }
 
     @Test("Continuer commits the untouched default, so the key is never left blank")
@@ -150,12 +158,13 @@ struct OnboardingFlowTests {
         #expect(preferences.activityMode == .walking)
     }
 
-    /// The activity screen's row for one mode, rebuilt from the live screen on
-    /// every call — a row holds the selection it was built with, so re-reading
-    /// it after a tap is what shows the tick moving.
-    private func row(_ mode: ActivityMode, _ screen: OnboardingActivityView) -> ActivityChoiceRow? {
-        ViewTreeProbe.forEachRow(
-            mode, of: ForEach<[ActivityMode], ActivityMode.ID, ActivityChoiceRow>.self, in: screen.body
+    /// The activity screen's row for one sport, rebuilt from the live screen
+    /// on every call — a row holds the selection it was built with, so
+    /// re-reading it after a tap is what shows the tick moving.
+    private func row(_ activity: SessionActivity, _ screen: OnboardingActivityView) -> FavoriteSportRow? {
+        guard let list = ViewTreeProbe.first(FavoriteSportsList.self, in: screen.body) else { return nil }
+        return ViewTreeProbe.forEachRow(
+            activity, of: ForEach<[SessionActivity], SessionActivity, FavoriteSportRow>.self, in: list.body
         )
     }
 

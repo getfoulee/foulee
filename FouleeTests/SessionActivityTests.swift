@@ -42,10 +42,10 @@ struct SessionActivityTests {
 
     @Test("The two activities are named the way the rest of the app names them")
     func labels() {
-        // The same two words as `ActivityMode.label`, `OnboardingActivityView`
-        // and the Réglages picker. Spelled out rather than compared to
-        // `ActivityMode.label`, which would make both sides free to drift
-        // together — the point is the exact string a user reads on the wrist.
+        // The same words as the favourite sports in Réglages and onboarding
+        // (#835). Spelled out rather than compared to the table, which would
+        // make both sides free to drift together — the point is the exact
+        // string a user reads on the wrist.
         #expect(SessionActivity.walking.label == "Marche")
         #expect(SessionActivity.running.label == "Course")
         #expect(SessionActivity.walking.icon == ActivityGlyph.walk)

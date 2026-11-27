@@ -7,18 +7,24 @@ struct SettingsGoalsPage: View {
     @Bindable var preferences: UserPreferences
 
     var body: some View {
-        GlassSection("Activité", footer: "Ta série compte toutes tes activités, quel que soit ce choix.") {
-            // Segmented: three short labels, one tap. The footnote is the
-            // literal truth rather than reassurance — the streak, the record
-            // and the calendar count exercise minutes across every activity
-            // type and never read this preference (#220).
-            Picker("Activité", selection: $preferences.activityMode) {
-                ForEach(ActivityMode.allCases) { mode in
-                    Text(mode.label).tag(mode)
-                }
+        // One row per sport, ticked when favourite (#835), in place of the
+        // walk / run / both control that could name no third sport. Glass
+        // rows of their own, so not inside a glass section. The footnote is
+        // the literal truth rather than reassurance: the streak, the record
+        // and the calendar count exercise minutes across every activity type
+        // and never read this preference (#220).
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Sports favoris")
+                .font(FouleeFont.headline)
+                .accessibilityAddTraits(.isHeader)
+            FavoriteSportsList(favorites: preferences.favoriteSports) { sport in
+                preferences.favoriteSports = SportChoice.toggling(sport, in: preferences.favoriteSports)
             }
-            .pickerStyle(.segmented)
+            Text("En tête de « Autre sport ». Ta série compte toutes tes activités, quel que soit ce choix.")
+                .font(FouleeFont.footnote)
+                .foregroundStyle(.secondary)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         // The session duration that drives the ring and the « démarrer ta
         // sortie » flow.
         GlassSection("Objectif d'activité") {
