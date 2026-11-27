@@ -102,6 +102,10 @@ final class ActiveSessionStore {
     @ObservationIgnored private var segmentSteps = 0
     @ObservationIgnored private var segmentDistance: Double = 0
     @ObservationIgnored private var segmentElevation = Elevation.zero
+    /// A ride's distance is summed along the route rather than read from the
+    /// pedometer (#750), from the last fix of the live segment.
+    @ObservationIgnored private var countsDistanceAlongRoute = false
+    @ObservationIgnored private var lastDistanceFix: Coordinate?
 
     /// Begin a fresh session. No-op when already active or finished — call
     /// `reset()` first to start a second walk in the same screen lifetime.
@@ -118,6 +122,7 @@ final class ActiveSessionStore {
         bankedDistance = 0
         bankedElevation = .zero
         route = []
+        countsDistanceAlongRoute = activity.sport.descriptor.measuresDistanceAlongRoute
         beginSegment()
         routeTask = makeRouteTask(for: activity)
         state = .active(session)
@@ -238,7 +243,10 @@ final class ActiveSessionStore {
         segmentSteps = 0
         segmentDistance = 0
         segmentElevation = .zero
-        pedometerTask = makePedometerTask(from: segmentStart)
+        // A pause is not ridden: the distance resumes from the next fix.
+        lastDistanceFix = nil
+        // No steps to count on a ride, and its distance is the route's.
+        pedometerTask = countsDistanceAlongRoute ? nil : makePedometerTask(from: segmentStart)
         altimeterTask = makeAltimeterTask()
     }
 
@@ -306,7 +314,10 @@ final class ActiveSessionStore {
             let missing = DegradedState.permissions(location: await locationAccess(), motion: motionAccess())
             await MainActor.run { self.degradedStates = missing }
             for await coordinate in updates {
-                await MainActor.run { self.route.append(coordinate) }
+                await MainActor.run {
+                    self.route.append(coordinate)
+                    self.countAlongRoute(to: coordinate)
+                }
             }
         }
     }
@@ -366,6 +377,7 @@ extension ActiveSessionStore {
         session.elapsed = bankedElapsed
         session.steps = bankedSteps
         route = []
+        countsDistanceAlongRoute = recovered.activity.sport.descriptor.measuresDistanceAlongRoute
         routeTask = makeRouteTask(for: recovered.activity)
         startLiveActivity(minutesGoal: minutesGoal)
         if recovered.isPaused {
@@ -468,5 +480,18 @@ private extension ActiveSessionStore {
     // content out as stale (the clock keeps ticking regardless).
     func nextStaleDate() -> Date {
         date.now.addingTimeInterval(10 * 60)
+    }
+}
+
+extension ActiveSessionStore {
+    /// Adds the step to `coordinate` to a ride's distance (#750), while the
+    /// outing is under way.
+    fileprivate func countAlongRoute(to coordinate: Coordinate) {
+        guard countsDistanceAlongRoute, case .active(var session) = state else { return }
+        segmentDistance += RouteDistance.step(from: lastDistanceFix, to: coordinate)
+        lastDistanceFix = coordinate
+        session.distanceMeters = bankedDistance + segmentDistance
+        state = .active(session)
+        Task { await pushLiveActivity(session: session, isPaused: false) }
     }
 }

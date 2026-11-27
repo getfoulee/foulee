@@ -117,7 +117,7 @@ nonisolated public struct SportDescriptor: Sendable {
     /// The devices that record a sport.
     public enum Devices: Equatable, Sendable {
         case phoneAndWatch
-        /// Cycling until the iPhone records it with the GPS alone (#750).
+        /// A ride indoors: the iPhone has no sensor for it (#750).
         case watchOnly
     }
 

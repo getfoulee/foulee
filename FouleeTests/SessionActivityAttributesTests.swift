@@ -104,4 +104,22 @@ struct SessionActivityAttributesTests {
             try JSONDecoder().decode(SessionActivityAttributes.self, from: Data(json.utf8))
         }
     }
+
+    @Test("A ride's Lock Screen row adds its average speed once it has one (#750)")
+    func rideShowsItsSpeed() {
+        let ride = SessionActivityAttributes(goalMinutes: 30, activity: .cycling)
+        #expect(ride.showsSpeed)
+        #expect(ride.metrics == [.distance, .calories])
+        let state = SessionActivityState(
+            timerBasis: Date(timeIntervalSinceReferenceDate: 0),
+            pausedAt: nil,
+            elapsed: 1_800,
+            steps: 0,
+            distanceKm: 12,
+            activeCalories: 180
+        )
+        #expect(ride.rowTexts(state).last == "24\u{00A0}km/h")
+        #expect(SessionActivityAttributes(goalMinutes: 30, activity: .walking).showsSpeed == false)
+        #expect(SessionActivityAttributes(goalMinutes: 30, activity: .walking).rowTexts(state).count == 2)
+    }
 }

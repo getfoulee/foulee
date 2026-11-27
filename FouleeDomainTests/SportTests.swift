@@ -196,7 +196,8 @@ struct SportTests {
     func rides(sport: SportID) {
         let descriptor = sport.descriptor
         #expect(descriptor.family == .cycling)
-        #expect(descriptor.devices == .watchOnly)
+        // An outdoor ride on both, an indoor one on the watch alone (#750).
+        #expect(descriptor.devices == (sport == .cycling ? .phoneAndWatch : .watchOnly))
         #expect(descriptor.speedDisplay == .speed)
         #expect(descriptor.capabilities.contains(.cyclingSensors))
         #expect(descriptor.capabilities.contains(.steps) == false)
@@ -211,5 +212,20 @@ struct SportTests {
         #expect(FouleeDomain.speedText(secondsPerKm: 150) == "24\u{00A0}km/h")
         #expect(TimeInterval(3_600).speedText(overKm: 25.4) == "25\u{00A0}km/h")
         #expect(TimeInterval(60).speedText(overKm: 0.01) == nil)
+    }
+
+    @Test("A phone ride's distance is summed along the route, jumps of the GPS left out (#750)")
+    func routeDistance() {
+        let start = Coordinate(latitude: 45.0, longitude: 5.0)
+        // About 111 m north.
+        let near = Coordinate(latitude: 45.001, longitude: 5.0)
+        let far = Coordinate(latitude: 45.01, longitude: 5.0)
+        #expect(abs(RouteDistance.meters(from: start, to: near) - 111.2) < 0.5)
+        #expect(RouteDistance.step(from: nil, to: start) == 0)
+        #expect(abs(RouteDistance.step(from: start, to: near) - 111.2) < 0.5)
+        #expect(RouteDistance.step(from: near, to: far) == 0)
+        #expect(SportID.cycling.descriptor.measuresDistanceAlongRoute)
+        #expect(SportID.running.descriptor.measuresDistanceAlongRoute == false)
+        #expect(SportID.cycling.descriptor.liveLead == .speed)
     }
 }

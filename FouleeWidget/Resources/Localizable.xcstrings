@@ -301,6 +301,16 @@
         }
       }
     },
+    "Commencer une sortie à vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a ride"
+          }
+        }
+      }
+    },
     "Commencer une séance d'elliptique" : {
       "localizations" : {
         "en" : {
@@ -781,6 +791,16 @@
         }
       }
     },
+    "sortie à vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ride"
+          }
+        }
+      }
+    },
     "Sport" : {
       "localizations" : {
         "en" : {
@@ -947,6 +967,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "One of today’s figures: steps, activity, distance or calories."
+          }
+        }
+      }
+    },
+    "Vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bike"
           }
         }
       }

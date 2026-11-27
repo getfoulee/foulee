@@ -20,6 +20,8 @@ nonisolated public extension SportDescriptor {
     /// The main figure of a live screen: the climb for a sport told by it
     /// (#744), the calories for one without steps (#745), the steps otherwise.
     var liveLead: MetricLead {
+        // A ride is told by its speed (#750).
+        if speedDisplay == .speed { return .speed }
         if showsElevation, benchmarks.leadingRecord == .climb { return .climb }
         return capabilities.contains(.steps) ? .steps : .calories
     }
@@ -30,6 +32,10 @@ nonisolated public extension SportDescriptor {
     /// Whether a live screen shows a distance: with a route, or on a
     /// treadmill without one (#746).
     var measuresDistance: Bool { capabilities.contains(.distance) }
+
+    /// Whether the phone sums the distance along the route rather than taking
+    /// the pedometer's (#750): a ride has a distance and no steps.
+    var measuresDistanceAlongRoute: Bool { tracksRoute && measuresDistance && !capabilities.contains(.steps) }
 }
 
 /// What a live screen shows first.
@@ -37,4 +43,6 @@ nonisolated public enum MetricLead: Equatable, Sendable {
     case steps
     case climb
     case calories
+    /// A ride's speed (#750).
+    case speed
 }

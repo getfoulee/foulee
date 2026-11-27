@@ -91,6 +91,43 @@ struct ActiveSessionStoreSessionTests {
         }
     }
 
+    @Test("A ride on the iPhone sums its distance along the route and never opens the pedometer (#750)")
+    func rideDistanceFromTheRoute() async {
+        let opened = LockedRef(0)
+        let finished = LockedRef<SessionRecord?>(nil)
+        let fixes = [45.0, 45.001, 45.002].map { Coordinate(latitude: $0, longitude: 5.0) }
+        await withDependencies {
+            $0.date = .constant(frozen)
+            $0.pedometer = PedometerClient(
+                isRhythmAvailable: { false },
+                openStream: { _, _ in opened.set(opened.value + 1) },
+                closeStream: {}
+            )
+            $0.healthKit = .testValue
+            $0.continuousClock = TestClock()
+            $0.phoneWorkoutSession = session(saves: true, started: LockedRef([]), finished: finished)
+            $0.location = LocationClient(
+                requestWhenInUse: { true },
+                currentLocation: { nil },
+                routeUpdates: {
+                    AsyncStream { continuation in
+                        fixes.forEach { continuation.yield($0) }
+                        continuation.finish()
+                    }
+                },
+                access: { .granted }
+            )
+        } operation: {
+            let ride = ActiveSessionStore()
+            ride.start(activity: .cycling)
+            for _ in 0..<100 where ride.route.count < fixes.count { await Task.yield() }
+            await ride.stop()
+            let distance = finished.value?.distanceMeters ?? 0
+            #expect(abs(distance - 222.4) < 1)
+            #expect(opened.value == 0)
+        }
+    }
+
     @Test("When the session's builder saves the outing, it is not saved a second time")
     func sessionSavesOnce() async {
         let saved = LockedRef<SessionRecord?>(nil)

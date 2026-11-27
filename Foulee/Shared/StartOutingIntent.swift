@@ -47,7 +47,7 @@ struct StartOutingIntent: AppIntent {
 /// Built on `SportID` (#747): every case but « Dernier sport » carries the raw
 /// value of the sport it names, so a shortcut saved before a sport was added
 /// keeps its value, and a test demands a case for every sport the iPhone
-/// records. A ride is the watch's until #750.
+/// records (an indoor ride is the watch's).
 /// The titles stay literals: the AppIntents metadata is read at build time.
 nonisolated enum OutingActivity: String, AppEnum {
     case walking
@@ -62,6 +62,7 @@ nonisolated enum OutingActivity: String, AppEnum {
     case rowing
     case elliptical
     case indoorRunning
+    case cycling
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation { "Sport" }
 
@@ -82,7 +83,8 @@ nonisolated enum OutingActivity: String, AppEnum {
             .yoga: DisplayRepresentation(title: "Yoga", synonyms: ["séance de yoga"]),
             .rowing: DisplayRepresentation(title: "Rameur", synonyms: ["séance de rameur"]),
             .elliptical: DisplayRepresentation(title: "Elliptique", synonyms: ["séance d'elliptique"]),
-            .indoorRunning: DisplayRepresentation(title: "Tapis", synonyms: ["course sur tapis"])
+            .indoorRunning: DisplayRepresentation(title: "Tapis", synonyms: ["course sur tapis"]),
+            .cycling: DisplayRepresentation(title: "Vélo", synonyms: ["sortie à vélo"])
         ]
     }
 

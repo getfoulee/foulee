@@ -1,10 +1,10 @@
 import Foundation
 
 nonisolated extension SportDescriptor {
-    // Rides (#749), on the watch only until #750: the iPhone has no honest
-    // distance without steps. The watch measures their energy; the per-minute
-    // rate is only the rule every recordable sport follows (MET 6 for about
-    // 70 kg, rounded down).
+    // Rides (#749). The watch measures their energy and reads a bike sensor;
+    // the iPhone records an outdoor ride with the GPS alone (#750), its
+    // distance summed along the route, and estimates the energy by the minute
+    // (MET 6 for about 70 kg, rounded down).
 
     static let cycling = SportDescriptor(
         id: .cycling,
@@ -15,7 +15,6 @@ nonisolated extension SportDescriptor {
         gait: nil,
         followsGaitChanges: false,
         isRecordable: true,
-        devices: .watchOnly,
         labelResource: "Vélo",
         sessionTitleResource: "Ta sortie à vélo",
         glyph: ActivityGlyph.cycling,
@@ -29,7 +28,8 @@ nonisolated extension SportDescriptor {
     )
 
     /// A home trainer: no route and no distance of its own, but the speed,
-    /// cadence and power a sensor sends.
+    /// cadence and power a sensor sends. The watch's only: the iPhone would
+    /// measure nothing indoors.
     static let indoorCycling = SportDescriptor(
         id: .indoorCycling,
         family: .cycling,
