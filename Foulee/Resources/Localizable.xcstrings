@@ -1303,6 +1303,26 @@
         }
       }
     },
+    "course en trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "trail run"
+          }
+        }
+      }
+    },
+    "course sur tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "treadmill run"
+          }
+        }
+      }
+    },
     "Dernier sport" : {
       "localizations" : {
         "en" : {
@@ -1343,12 +1363,32 @@
         }
       }
     },
+    "Elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elliptical"
+          }
+        }
+      }
+    },
     "Favoris" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Favorites"
+          }
+        }
+      }
+    },
+    "HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HIIT"
           }
         }
       }
@@ -1379,6 +1419,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The sport of your last workout"
+          }
+        }
+      }
+    },
+    "musculation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "weight training"
           }
         }
       }
@@ -1433,12 +1483,52 @@
         }
       }
     },
+    "Rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rower"
+          }
+        }
+      }
+    },
+    "rando" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hike"
+          }
+        }
+      }
+    },
+    "Randonnée" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hike"
+          }
+        }
+      }
+    },
     "Rapport de diagnostic Foulée" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foulée diagnostic report"
+          }
+        }
+      }
+    },
+    "Renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strength"
           }
         }
       }
@@ -1503,6 +1593,66 @@
         }
       }
     },
+    "séance d'elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "elliptical session"
+          }
+        }
+      }
+    },
+    "séance de HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HIIT session"
+          }
+        }
+      }
+    },
+    "séance de rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rowing session"
+          }
+        }
+      }
+    },
+    "séance de renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "strength session"
+          }
+        }
+      }
+    },
+    "séance de yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yoga session"
+          }
+        }
+      }
+    },
+    "Tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treadmill"
+          }
+        }
+      }
+    },
     "Tes données Santé ne sont pas touchées." : {
       "localizations" : {
         "en" : {
@@ -1519,6 +1669,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your settings go back to their defaults and your merged outings are split again, on this iPhone and your other devices. Your Health data stays as it is."
+          }
+        }
+      }
+    },
+    "Trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trail"
           }
         }
       }
@@ -5189,6 +5349,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "low visibility"
+          }
+        }
+      }
+    },
+    "Yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yoga"
           }
         }
       }

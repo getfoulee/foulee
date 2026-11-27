@@ -271,12 +271,132 @@
         }
       }
     },
+    "Commencer un trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a trail run"
+          }
+        }
+      }
+    },
+    "Commencer une course sur tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a treadmill run"
+          }
+        }
+      }
+    },
+    "Commencer une randonnée" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a hike"
+          }
+        }
+      }
+    },
+    "Commencer une séance d'elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start an elliptical session"
+          }
+        }
+      }
+    },
+    "Commencer une séance de HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a HIIT session"
+          }
+        }
+      }
+    },
+    "Commencer une séance de rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a rowing session"
+          }
+        }
+      }
+    },
+    "Commencer une séance de renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a strength session"
+          }
+        }
+      }
+    },
+    "Commencer une séance de yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a yoga session"
+          }
+        }
+      }
+    },
+    "course en trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "trail run"
+          }
+        }
+      }
+    },
+    "course sur tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "treadmill run"
+          }
+        }
+      }
+    },
     "Dernier sport" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last sport"
+          }
+        }
+      }
+    },
+    "Elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elliptical"
+          }
+        }
+      }
+    },
+    "HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HIIT"
           }
         }
       }
@@ -541,6 +661,16 @@
         }
       }
     },
+    "musculation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "weight training"
+          }
+        }
+      }
+    },
     "Ouvre d'abord Foulée pour autoriser l'accès à Santé." : {
       "localizations" : {
         "en" : {
@@ -587,6 +717,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "steps today"
+          }
+        }
+      }
+    },
+    "Rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rower"
+          }
+        }
+      }
+    },
+    "rando" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hike"
+          }
+        }
+      }
+    },
+    "Randonnée" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hike"
+          }
+        }
+      }
+    },
+    "Renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strength"
           }
         }
       }
@@ -651,6 +821,56 @@
         }
       }
     },
+    "séance d'elliptique" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "elliptical session"
+          }
+        }
+      }
+    },
+    "séance de HIIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HIIT session"
+          }
+        }
+      }
+    },
+    "séance de rameur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rowing session"
+          }
+        }
+      }
+    },
+    "séance de renfo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "strength session"
+          }
+        }
+      }
+    },
+    "séance de yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yoga session"
+          }
+        }
+      }
+    },
     "série Foulée" : {
       "localizations" : {
         "en" : {
@@ -667,6 +887,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foulée Streak"
+          }
+        }
+      }
+    },
+    "Tapis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treadmill"
           }
         }
       }
@@ -691,6 +921,16 @@
         }
       }
     },
+    "Trail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trail"
+          }
+        }
+      }
+    },
     "Tu tiens un sacré rythme. Bravo." : {
       "localizations" : {
         "en" : {
@@ -707,6 +947,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "One of today’s figures: steps, activity, distance or calories."
+          }
+        }
+      }
+    },
+    "Yoga" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yoga"
           }
         }
       }

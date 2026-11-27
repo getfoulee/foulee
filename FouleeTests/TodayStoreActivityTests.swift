@@ -93,6 +93,17 @@ struct TodayStoreActivityTests {
         #expect(OutingActivity.automatic.activity == nil)
     }
 
+    @Test("Raccourcis names every sport Foulée records, by its own raw value (#747)")
+    func everySportHasAShortcutValue() {
+        let named = OutingActivity.allCases.compactMap(\.activity)
+        #expect(named == SessionActivity.allCases)
+        #expect(Set(OutingActivity.allCases.map(\.rawValue)).isSuperset(of: SportID.allCases.map(\.rawValue)))
+        // Shortcuts saved before #747 keep the values they were saved with.
+        #expect(OutingActivity(rawValue: "walking") == .walking)
+        #expect(OutingActivity(rawValue: "running") == .running)
+        #expect(OutingActivity(rawValue: "automatic") == .automatic)
+    }
+
     @Test("The Watch payload carries the mode, not a default")
     func watchPayloadCarriesTheActivityMode() async throws {
         try await withDependencies {

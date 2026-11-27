@@ -19,7 +19,7 @@ struct StartOutingIntent: AppIntent {
         IntentDescription(
             "Ouvre Foulée et démarre une sortie.",
             categoryName: "Sortie",
-            searchKeywords: ["Marche", "Course", "Footing", "Balade"]
+            searchKeywords: ["Marche", "Course", "Footing", "Balade", "Randonnée", "Renfo", "Yoga", "Rameur", "Tapis"]
         )
     }
     // periphery:ignore - read by the AppIntents runtime, never from code.
@@ -43,33 +43,52 @@ struct StartOutingIntent: AppIntent {
 }
 
 /// The sport as Raccourcis lists it and Siri hears it.
+///
+/// Built on `SportID` (#747): every case but « Dernier sport » carries the raw
+/// value of the sport it names, so a shortcut saved before a sport was added
+/// keeps its value, and a test demands a case for every recordable sport.
+/// The titles stay literals: the AppIntents metadata is read at build time.
 nonisolated enum OutingActivity: String, AppEnum {
     case walking
     case running
+    // The raw value stays: shortcuts saved with it must keep working.
     case automatic
+    case hiking
+    case trailRunning
+    case strength
+    case hiit
+    case yoga
+    case rowing
+    case elliptical
+    case indoorRunning
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation { "Sport" }
 
+    /// The synonyms are the sports' feminine nouns, so that « Commence une
+    /// séance de yoga » reads as a sentence where « une yoga » would not.
     static var caseDisplayRepresentations: [OutingActivity: DisplayRepresentation] {
         [
             .walking: DisplayRepresentation(title: "Marche"),
             .running: DisplayRepresentation(title: "Course"),
-            // The raw value stays: shortcuts saved with it must keep working.
             .automatic: DisplayRepresentation(
                 title: "Dernier sport",
                 subtitle: "Le sport de ta dernière sortie"
-            )
+            ),
+            .hiking: DisplayRepresentation(title: "Randonnée", synonyms: ["rando"]),
+            .trailRunning: DisplayRepresentation(title: "Trail", synonyms: ["course en trail"]),
+            .strength: DisplayRepresentation(title: "Renfo", synonyms: ["séance de renfo", "musculation"]),
+            .hiit: DisplayRepresentation(title: "HIIT", synonyms: ["séance de HIIT"]),
+            .yoga: DisplayRepresentation(title: "Yoga", synonyms: ["séance de yoga"]),
+            .rowing: DisplayRepresentation(title: "Rameur", synonyms: ["séance de rameur"]),
+            .elliptical: DisplayRepresentation(title: "Elliptique", synonyms: ["séance d'elliptique"]),
+            .indoorRunning: DisplayRepresentation(title: "Tapis", synonyms: ["course sur tapis"])
         ]
     }
 
     /// The sport this names; `nil` for « Dernier sport », which the home
     /// resolves as « Démarrer » does (#743).
     var activity: SessionActivity? {
-        switch self {
-        case .walking: .walking
-        case .running: .running
-        case .automatic: nil
-        }
+        SessionActivity(rawValue: rawValue)
     }
 }
 
