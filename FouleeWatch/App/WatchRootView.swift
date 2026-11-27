@@ -127,17 +127,21 @@ struct WatchRootView: View {
     ) -> SportChoice.Resolved {
         let payload = WatchSyncStore.read(from: defaults)
         let favorites = payload?.favorites ?? [.walking]
-        let last = LastSport.newest(payload?.lastSport, LastSportPreference.read(from: defaults))
+        let last = LastSportPreference.newest(payload?.lastSport, in: defaults)
         return SportChoice.resolve(last: last, favorites: favorites)
     }
 
     /// Remembers a sport started on the wrist, in the App Group beside the
-    /// phone's payload.
+    /// phone's payload, and sends it to the iPhone so that its « Démarrer »
+    /// offers the same sport (#830).
     static func recordStart(
         of activity: SessionActivity,
         at date: Date,
-        in defaults: UserDefaults = WatchSyncStore.sharedDefaults
+        in defaults: UserDefaults = WatchSyncStore.sharedDefaults,
+        sending send: (LastSport) -> Void = LastSportTransfer.send
     ) {
-        LastSportPreference.write(LastSport(activity, at: date), to: defaults)
+        let last = LastSport(activity, at: date)
+        LastSportPreference.write(last, to: defaults)
+        send(last)
     }
 }

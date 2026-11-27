@@ -62,8 +62,11 @@ struct WatchStartActivityTests {
     func theNewerLastSportWins() throws {
         try withDefaults { defaults in
             WatchSyncStore.write(payload(.both, last: LastSport(sport: .running, startedAt: Self.earlier)), to: defaults)
-            WatchRootView.recordStart(of: .walking, at: Self.later, in: defaults)
+            var sent: [LastSport] = []
+            WatchRootView.recordStart(of: .walking, at: Self.later, in: defaults) { sent.append($0) }
             #expect(WatchRootView.sportChoice(syncedTo: defaults).activity == .walking)
+            // The iPhone hears of it too (#830).
+            #expect(sent == [LastSport(sport: .walking, startedAt: Self.later)])
 
             let newer = LastSport(sport: .running, startedAt: Self.later.addingTimeInterval(60))
             WatchSyncStore.write(payload(.both, last: newer), to: defaults)

@@ -51,6 +51,9 @@ struct RootView: View {
                 .publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
                 .receive(on: DispatchQueue.main)
         ) { _ in syncWithCloud() }
+        .onReceive(NotificationCenter.default.publisher(for: .watchLastSportReceived)) { _ in
+            preferences.reloadLastSport()
+        }
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background:

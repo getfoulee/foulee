@@ -70,4 +70,32 @@ struct SportChoiceTests {
         store.values[LastSportPreference.key] = Data(#"{"sport":"curling","startedAt":0}"#.utf8)
         #expect(LastSportPreference.read(from: store) == nil)
     }
+
+    @Test("The watch's last sport crosses to the iPhone as user info, and nothing else reads as one (#830)")
+    func transferRoundTrip() {
+        let last = LastSport(sport: .indoorRunning, startedAt: Self.later)
+        #expect(LastSport(transferUserInfo: last.transferUserInfo) == last)
+        #expect(LastSport(transferUserInfo: [:]) == nil)
+        #expect(LastSport(transferUserInfo: ["lastSport": "running"]) == nil)
+        let unknown = Data(#"{"sport":"curling","startedAt":0}"#.utf8)
+        #expect(LastSport(transferUserInfo: ["lastSport": unknown]) == nil)
+    }
+
+    @Test("A newer last sport from the other device is kept, an older one never overwrites (#830)")
+    func keepTheNewer() {
+        let store = Store()
+        let own = LastSport(sport: .walking, startedAt: Self.earlier)
+        LastSportPreference.write(own, to: store)
+
+        let older = LastSport(sport: .yoga, startedAt: Self.earlier.addingTimeInterval(-60))
+        #expect(LastSportPreference.keep(older, in: store) == false)
+        #expect(LastSportPreference.read(from: store) == own)
+        #expect(LastSportPreference.keep(own, in: store) == false)
+
+        let newer = LastSport(sport: .running, startedAt: Self.later)
+        #expect(LastSportPreference.newest(newer, in: store) == newer)
+        #expect(LastSportPreference.keep(newer, in: store))
+        #expect(LastSportPreference.read(from: store) == newer)
+        #expect(LastSportPreference.keep(LastSport(sport: .hiking, startedAt: Self.earlier), in: Store()))
+    }
 }
