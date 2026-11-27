@@ -27,6 +27,7 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
     case indoorRunning
     case cycling
     case indoorCycling
+    case poolSwimming
 
     /// The sport this session records. Same raw value, so the two stay
     /// interchangeable on disk and on the wire (#720).
@@ -44,6 +45,7 @@ nonisolated public enum SessionActivity: String, Codable, Sendable, CaseIterable
         case .indoorRunning: .indoorRunning
         case .cycling: .cycling
         case .indoorCycling: .indoorCycling
+        case .poolSwimming: .poolSwimming
         }
     }
 

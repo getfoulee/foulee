@@ -52,4 +52,30 @@ nonisolated extension SportDescriptor {
         nounResource: "séance de vélo d'intérieur",
         verbResource: "tu roules"
     )
+
+    // A pool (#751), on the watch alone: the iPhone stays dry. The watch
+    // measures the energy; the per-minute rate is the rule every recordable
+    // sport follows (MET 6 for about 70 kg, rounded down).
+
+    static let poolSwimming = SportDescriptor(
+        id: .poolSwimming,
+        family: .swimming,
+        location: .indoor,
+        capabilities: [.distance, .swimStrokes],
+        speedDisplay: .none,
+        gait: nil,
+        followsGaitChanges: false,
+        isRecordable: true,
+        devices: .watchOnly,
+        labelResource: "Piscine",
+        sessionTitleResource: "Ta séance de natation",
+        glyph: ActivityGlyph.poolSwim,
+        healthKitActivityRawValue: 46,
+        garminSport: nil,
+        kcalPerStep: nil,
+        kcalPerMinute: 6,
+        benchmarks: .ridden,
+        nounResource: "séance de natation",
+        verbResource: "tu nages"
+    )
 }

@@ -24,9 +24,11 @@ nonisolated extension HealthKitClient {
         // workoutDetail query fails with "Authorization not determined".
         // Water is read+write for the hydration tracker. Routes are read for
         // the detail map (#319) — refusing them costs the map and nothing else.
-        // Cycling distance is read for the rides in the résumé (#749).
+        // Cycling and swimming distances are read for the rides and swims in
+        // the résumé (#749, #751).
         let readTypes = Set<HKObjectType>(dayTypes).union([
-            heartRateType, workoutType, waterType, HKSeriesType.workoutRoute(), HKQuantityType(.distanceCycling)
+            heartRateType, workoutType, waterType, HKSeriesType.workoutRoute(),
+            HKQuantityType(.distanceCycling), HKQuantityType(.distanceSwimming)
         ])
         let writeTypes: Set<HKSampleType> = [workoutType, waterType]
 

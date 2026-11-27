@@ -12,7 +12,7 @@ struct SportTests {
             .walking: "walking", .running: "running", .hiking: "hiking", .trailRunning: "trailRunning",
             .strength: "strength", .hiit: "hiit", .yoga: "yoga",
             .rowing: "rowing", .elliptical: "elliptical", .indoorRunning: "indoorRunning",
-            .cycling: "cycling", .indoorCycling: "indoorCycling",
+            .cycling: "cycling", .indoorCycling: "indoorCycling", .poolSwimming: "poolSwimming",
         ]
         #expect(sport.rawValue == expected[sport])
         #expect(sport.descriptor.id == sport)
@@ -227,5 +227,36 @@ struct SportTests {
         #expect(SportID.cycling.descriptor.measuresDistanceAlongRoute)
         #expect(SportID.running.descriptor.measuresDistanceAlongRoute == false)
         #expect(SportID.cycling.descriptor.liveLead == .speed)
+    }
+
+    @Test("A pool counts its lengths from the distance, and a SWOLF adds seconds and strokes per length (#751)")
+    func pool() {
+        let pool = PoolLength(meters: 25)
+        #expect(pool.laps(over: 500) == 20)
+        #expect(pool.laps(over: 487) == 19)
+        #expect(pool.laps(over: 0) == 0)
+        #expect(PoolLength.presets.map(\.label) == ["25\u{00A0}m", "50\u{00A0}m", "33\u{00A0}m", "25\u{00A0}yd"])
+        // 20 lengths in 10 minutes and 300 strokes: 30 s and 15 strokes each.
+        #expect(swolf(duration: 600, strokes: 300, laps: 20) == 45)
+        #expect(swolf(duration: 600, strokes: 300, laps: 0) == nil)
+        #expect(SportID.poolSwimming.descriptor.devices == .watchOnly)
+        #expect(SportID.poolSwimming.descriptor.healthKitActivityRawValue == 46)
+    }
+
+    @Test("The last pool chosen is remembered, an absurd one never read back (#751)")
+    func poolPreference() {
+        let store = StubStore()
+        #expect(PoolLengthPreference.read(from: store) == .standard)
+        PoolLengthPreference.write(PoolLength(meters: 50), to: store)
+        #expect(PoolLengthPreference.read(from: store) == PoolLength(meters: 50))
+        store.values[PoolLengthPreference.key] = 4_000.0
+        #expect(PoolLengthPreference.read(from: store) == .standard)
+    }
+
+    private final class StubStore: SettingsKeyValueStore {
+        var values: [String: Any] = [:]
+        func object(forKey key: String) -> Any? { values[key] }
+        func set(_ value: Any?, forKey key: String) { values[key] = value }
+        func removeObject(forKey key: String) { values[key] = nil }
     }
 }

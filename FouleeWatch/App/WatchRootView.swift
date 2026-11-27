@@ -8,6 +8,8 @@ struct WatchRootView: View {
     /// « Autre sport »: the picker is on screen and nothing has started.
     /// Local to the idle route — a session in flight clears it.
     @State private var isChoosingActivity = false
+    /// A swim waiting for its pool (#751).
+    @State private var swimWaitingForPool: SessionActivity?
     private let pendingStart = WatchPendingStart.shared
     /// A session that outlived the app, to pick up (issue #554).
     private let recovery = WatchWorkoutRecovery.shared
@@ -60,6 +62,18 @@ struct WatchRootView: View {
         }
         .animation(.easeOut(duration: 0.25), value: store.state)
         .animation(.easeOut(duration: 0.25), value: isChoosingActivity)
+        .fullScreenCover(isPresented: Binding(
+            get: { swimWaitingForPool != nil },
+            set: { if !$0 { swimWaitingForPool = nil } }
+        )) {
+            if let swim = swimWaitingForPool {
+                WatchPoolLengthView(
+                    current: PoolLengthPreference.read(from: WatchSyncStore.sharedDefaults),
+                    onStart: { beginSwim(swim, in: $0) },
+                    onCancel: { swimWaitingForPool = nil }
+                )
+            }
+        }
         .task { await WatchWaterBackgroundDelivery.start() }
         // A session that outlived the app first (issue #554): a start the
         // phone asked for must not open a second one beside it. Then a start
@@ -106,8 +120,21 @@ struct WatchRootView: View {
     /// one « Démarrer » starts next (#743).
     private func begin(_ activity: SessionActivity) {
         isChoosingActivity = false
+        // A swim asks for its pool first (#751).
+        guard activity.sport.descriptor.family != .swimming else {
+            swimWaitingForPool = activity
+            return
+        }
         Self.recordStart(of: activity, at: .now)
         Task { await store.start(activity: activity) }
+    }
+
+    /// The swim starts in the pool chosen, which the next one offers first.
+    private func beginSwim(_ activity: SessionActivity, in pool: PoolLength) {
+        swimWaitingForPool = nil
+        PoolLengthPreference.write(pool, to: WatchSyncStore.sharedDefaults)
+        Self.recordStart(of: activity, at: .now)
+        Task { await store.start(activity: activity, pool: pool) }
     }
 
     /// What « Démarrer » starts and « Autre sport » lists (issues #223,

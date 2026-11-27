@@ -40,7 +40,9 @@ struct SessionActivityTests {
         // A ride is a ride in Santé, outdoors or indoors (#749).
         #expect(SessionActivity.cycling.hkActivityType == .cycling)
         #expect(SessionActivity.indoorCycling.hkActivityType == .cycling)
-        #expect(SessionActivity.allCases.count == 12)
+        // A pool is a swim in Santé (#751).
+        #expect(SessionActivity.poolSwimming.hkActivityType == .swimming)
+        #expect(SessionActivity.allCases.count == 13)
     }
 
     @Test("The two activities are named the way the rest of the app names them")

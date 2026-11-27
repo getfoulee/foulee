@@ -101,19 +101,47 @@ struct WatchFinishedView: View {
 
     /// « 3 100 pas · 2,40 km · ↑ 120 m · ↓ 115 m »: the climb and the
     /// descent when the barometer measured them (issues #535, #565).
+    ///
+    /// Only the figures the sport measures: no « 0 pas » for a ride or yoga,
+    /// lengths, metres and the SWOLF for a swim (#751).
     var figuresText: String {
-        let elevation = Elevation(ascent: metrics.climbMeters, descent: metrics.descentMeters).text.map { " · \($0)" } ?? ""
-        return String(localized: "\(metrics.steps.groupedText()) pas · \(metrics.distanceKm.kmText())") + elevation
+        let descriptor = metrics.activity.sport.descriptor
+        if metrics.pool != nil {
+            let swim = [
+                String(localized: "\(metrics.laps) longueurs"),
+                "\(Int(metrics.distanceMeters.rounded())) m",
+                metrics.swolf.map { String(localized: "SWOLF \($0)") }
+            ]
+            return swim.compactMap { $0 }.joined(separator: " · ")
+        }
+        var parts: [String] = []
+        if descriptor.capabilities.contains(.steps) { parts.append(String(localized: "\(metrics.steps.groupedText()) pas")) }
+        if descriptor.measuresDistance { parts.append(metrics.distanceKm.kmText()) }
+        if let elevation = Elevation(ascent: metrics.climbMeters, descent: metrics.descentMeters).text {
+            parts.append(elevation)
+        }
+        return parts.joined(separator: " · ")
     }
 
     /// The clock and the figures as VoiceOver says them (issue #600): « 25
     /// minutes et 12 secondes, 3 100 pas, 2,4 kilomètres, 120 mètres de
     /// montée ». « 25:12 » alone is read as a time of day, « ↑ » as an arrow.
     var summarySpokenText: String {
-        [
+        let descriptor = metrics.activity.sport.descriptor
+        if metrics.pool != nil {
+            return [
+                spokenDurationText(seconds: metrics.elapsed),
+                String(localized: "\(metrics.laps) longueurs"),
+                String(localized: "\(Int(metrics.distanceMeters.rounded())) mètres"),
+                metrics.swolf.map { String(localized: "SWOLF \($0)") }
+            ]
+            .compactMap { $0 }
+            .joined(separator: ", ")
+        }
+        return [
             spokenDurationText(seconds: metrics.elapsed),
-            MetricID.steps.spokenText(Double(metrics.steps)),
-            MetricID.distance.spokenText(metrics.distanceKm),
+            descriptor.capabilities.contains(.steps) ? MetricID.steps.spokenText(Double(metrics.steps)) : nil,
+            descriptor.measuresDistance ? MetricID.distance.spokenText(metrics.distanceKm) : nil,
             Elevation(ascent: metrics.climbMeters, descent: metrics.descentMeters).spokenText
         ]
         .compactMap { $0 }

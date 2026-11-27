@@ -62,7 +62,7 @@ struct RecordedActivityTests {
         // *write* side refuses these outright — that one feeds a permanent
         // stamp, this one feeds a label.
         #expect(RecordedActivity(.climbing, metadata: nil) == .other)
-        #expect(RecordedActivity(.swimming, metadata: nil) == .other)
+        #expect(RecordedActivity(.surfingSports, metadata: nil) == .other)
         #expect(SessionActivity(.climbing) == nil)
         // A ride is named since #749.
         #expect(RecordedActivity(.cycling, metadata: nil) == .cycling)

@@ -96,6 +96,36 @@
       "localizations" : {},
       "shouldTranslate" : false
     },
+    "%lld longueurs" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld lengths"
+          }
+        }
+      }
+    },
+    "%lld mouvements de bras" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld arm strokes"
+          }
+        }
+      }
+    },
+    "%lld mètres" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld meters"
+          }
+        }
+      }
+    },
     "%lld tours par minute" : {
       "localizations" : {
         "en" : {
@@ -162,6 +192,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Allow location for Foulée in Settings."
+          }
+        }
+      }
+    },
+    "Autre longueur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other length"
           }
         }
       }
@@ -410,6 +450,36 @@
         }
       }
     },
+    "Longueur du bassin" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pool length"
+          }
+        }
+      }
+    },
+    "longueurs" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "lengths"
+          }
+        }
+      }
+    },
+    "mouvements" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "strokes"
+          }
+        }
+      }
+    },
     "musculation" : {
       "localizations" : {
         "en" : {
@@ -420,12 +490,52 @@
         }
       }
     },
+    "Nager · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swim · %@"
+          }
+        }
+      }
+    },
+    "natation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "swimming"
+          }
+        }
+      }
+    },
+    "Piscine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pool"
+          }
+        }
+      }
+    },
     "Puissance inconnue" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Power unknown"
+          }
+        }
+      }
+    },
+    "Quel bassin ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which pool?"
           }
         }
       }
@@ -782,6 +892,26 @@
         }
       }
     },
+    "SWOLF %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SWOLF %lld"
+          }
+        }
+      }
+    },
+    "SWOLF inconnu" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SWOLF unknown"
+          }
+        }
+      }
+    },
     "Séance" : {
       "localizations" : {
         "en" : {
@@ -818,6 +948,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iPhone session"
+          }
+        }
+      }
+    },
+    "séance de natation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "swim"
           }
         }
       }

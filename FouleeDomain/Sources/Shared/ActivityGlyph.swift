@@ -36,6 +36,8 @@ nonisolated public enum ActivityGlyph {
     /// Rides (#749).
     public static let cycling = "figure.outdoor.cycle"
     public static let indoorCycling = "figure.indoor.cycle"
+    /// Laps of a pool (#751).
+    public static let poolSwim = "figure.pool.swim"
     /// Walk *and* run — also the neutral stand-in wherever the surface knows a
     /// session is running but not which activity it is (the Live Activity, see
     /// issue #225).

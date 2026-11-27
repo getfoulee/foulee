@@ -237,13 +237,15 @@ nonisolated public extension WorkoutEngine {
     /// The one way a session opens: HealthKit has no type for some sports (a
     /// trail is a run in Santé), so the stamp goes on at the start, where a
     /// session recovered after the app was killed can still read it.
+    /// `pool` is the length a swim's laps are counted in (#751).
     @MainActor func startSession(
         of activity: SessionActivity,
         at date: Date,
         leg: OutingLeg?,
-        delegate: (any WorkoutSessionDelegate)?
+        delegate: (any WorkoutSessionDelegate)?,
+        pool: PoolLength? = nil
     ) async throws -> WorkoutSessionHandle {
-        let handle = try await startSession(Self.configuration(for: activity), date, leg, delegate)
+        let handle = try await startSession(Self.configuration(for: activity, pool: pool), date, leg, delegate)
         // Never a reason to lose the session: without it a trail reads back
         // as a run.
         do {
@@ -256,12 +258,19 @@ nonisolated public extension WorkoutEngine {
 
     /// The configuration HealthKit stamps a session of `activity` with: its
     /// type and where it happens, both from the sport's descriptor (ADR 0018).
-    static func configuration(for activity: SessionActivity) -> HKWorkoutConfiguration {
+    ///
+    /// A swim is counted in a pool of `pool`'s length (#751), the standard one
+    /// when none was chosen.
+    static func configuration(for activity: SessionActivity, pool: PoolLength? = nil) -> HKWorkoutConfiguration {
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = activity.hkActivityType
         switch activity.sport.descriptor.location {
         case .outdoor: configuration.locationType = .outdoor
         case .indoor: configuration.locationType = .indoor
+        }
+        if activity.sport.descriptor.family == .swimming {
+            configuration.swimmingLocationType = .pool
+            configuration.lapLength = HKQuantity(unit: .meter(), doubleValue: (pool ?? .standard).meters)
         }
         return configuration
     }
@@ -287,6 +296,7 @@ nonisolated public extension WorkoutEngine {
         if capabilities.contains(.cyclingSensors) {
             types += [.cyclingSpeed, .cyclingCadence, .cyclingPower].map { HKQuantityType($0) }
         }
+        if capabilities.contains(.swimStrokes) { types.append(HKQuantityType(.swimmingStrokeCount)) }
         return types
     }
 
