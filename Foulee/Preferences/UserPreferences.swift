@@ -187,6 +187,12 @@ extension UserPreferences {
         lastSport = LastSport(activity, at: date.now)
     }
 
+    /// Picks up the last sport the watch sent, which `PhoneWatchSync` kept in
+    /// the defaults when it was the newer (#830).
+    func reloadLastSport() {
+        lastSport = LastSportPreference.newest(lastSport, in: defaults)
+    }
+
     /// Brings in what another iPhone changed: at launch and each time iCloud
     /// reports a change. Sends this one's settings instead when they are the
     /// newer.

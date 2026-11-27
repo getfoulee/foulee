@@ -71,6 +71,35 @@ struct TodayStoreActivityTests {
         }
     }
 
+    @Test("A sport started on the wrist becomes the iPhone's « Démarrer », an older one does not (#830)")
+    func watchLastSportReachesTheHome() async throws {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        try await withDependencies {
+            $0.date = .constant(now)
+        } operation: {
+            let suiteName = "TodayStoreActivityTests-\(UUID().uuidString)"
+            let defaults = try #require(UserDefaults(suiteName: suiteName))
+            defer { defaults.removePersistentDomain(forName: suiteName) }
+            let preferences = UserPreferences(defaults: defaults)
+            preferences.activityMode = .both
+            preferences.recordStart(of: .walking)
+            let store = TodayStore()
+
+            // What `PhoneWatchSync` does with the watch's user info.
+            let run = LastSport(sport: .running, startedAt: now.addingTimeInterval(600))
+            #expect(LastSportPreference.keep(run, in: defaults))
+            preferences.reloadLastSport()
+            store.apply(preferences: preferences)
+            #expect(store.startActivity == .running)
+
+            let older = LastSport(sport: .yoga, startedAt: now.addingTimeInterval(-600))
+            #expect(LastSportPreference.keep(older, in: defaults) == false)
+            preferences.reloadLastSport()
+            store.apply(preferences: preferences)
+            #expect(store.startActivity == .running)
+        }
+    }
+
     @Test("A shortcut starts the sport it names, else what the home button would")
     func shortcutStartActivity() async throws {
         try await withPreferences { preferences in

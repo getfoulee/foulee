@@ -12,6 +12,12 @@ import os
 /// `@unchecked Sendable` because an `NSObject` subclass can never be checked
 /// `Sendable` (issue #405); the mutable state it shares is behind
 /// `pending`'s lock, and `isMuted` is written once, before any delivery.
+nonisolated extension Notification.Name {
+    /// Posted on the main actor when the watch's last sport replaced this
+    /// iPhone's (#830).
+    static let watchLastSportReceived = Notification.Name("watchLastSportReceived")
+}
+
 nonisolated final class PhoneWatchSync: NSObject, WCSessionDelegate, @unchecked Sendable {
     static let shared = PhoneWatchSync()
 
@@ -167,6 +173,17 @@ nonisolated final class PhoneWatchSync: NSObject, WCSessionDelegate, @unchecked 
         // Fires when `isWatchAppInstalled` flips — resend so installing the
         // watch app after the fact syncs without reopening the iPhone app.
         pushPendingPayloadIfPossible()
+    }
+
+    /// The sport just started on the wrist (#830): kept when it is newer than
+    /// this iPhone's, so that « Démarrer » offers the same sport on both.
+    /// Delivered at the next launch when the app was not running.
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any]) {
+        guard let last = LastSport(transferUserInfo: userInfo) else { return }
+        Task { @MainActor in
+            guard LastSportPreference.keep(last, in: FouleeApp.preferencesDefaults) else { return }
+            NotificationCenter.default.post(name: .watchLastSportReceived, object: nil)
+        }
     }
 
     /// A trace from the hidden recorder (#727). Any other file is ignored.
