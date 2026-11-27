@@ -78,20 +78,20 @@ struct FavoriteSportsPreferenceTests {
     @Test("A sport this build does not know is skipped; none left reads as walking")
     func tolerantRead() {
         let store = Store()
-        store.values[Preference.key] = ["running", "cycling"]
+        store.values[Preference.key] = ["running", "curling"]
         #expect(Preference.favoriteSports(in: store) == [.running])
-        store.values[Preference.key] = ["cycling"]
+        store.values[Preference.key] = ["curling"]
         #expect(Preference.favoriteSports(in: store) == [.walking])
     }
 
     @Test("A newer build's unknown sport survives the migration")
     func keepsUnknownSportOnAgreement() {
         let store = Store()
-        store.values[Preference.key] = ["cycling", "running"]
+        store.values[Preference.key] = ["curling", "running"]
         store.values[Preference.modeKey] = "running"
         store.values[Preference.schemaVersionKey] = 1
         Preference.migrate(store)
-        #expect(store.values[Preference.key] as? [String] == ["cycling", "running"])
+        #expect(store.values[Preference.key] as? [String] == ["curling", "running"])
     }
 
     @Test("Mode and favourites read back as each other", arguments: ActivityMode.allCases)
@@ -114,9 +114,9 @@ struct FavoriteSportsPreferenceTests {
     @Test("Writing the favourites keeps a sport only a newer build knows")
     func writeKeepsUnknownSports() {
         let store = Store()
-        store.values[Preference.key] = ["cycling", "walking"]
+        store.values[Preference.key] = ["curling", "walking"]
         Preference.write([.running], to: store)
-        #expect(store.values[Preference.key] as? [String] == ["cycling", "running"])
+        #expect(store.values[Preference.key] as? [String] == ["curling", "running"])
     }
 
     @Test("The favourites are offered to a background reader only once migrated")

@@ -316,11 +316,14 @@ final class WatchWorkoutStore: NSObject {
         currentLeg = WatchActivityTotals(
             elapsed: builder.elapsedTime(at: now),
             steps: Int(builder.sum(of: .stepCount, in: .count())),
-            distanceMeters: builder.sum(of: .distanceWalkingRunning, in: .meter()),
+            distanceMeters: builder.sum(of: currentActivity.sport.distanceTypeIdentifier, in: .meter()),
             activeCalories: Int(builder.sum(of: .activeEnergyBurned, in: .kilocalorie()))
         )
         applyOutingTotals(to: &metrics, at: now)
         metrics.heartRate = builder.mostRecent(of: .heartRate, in: HKUnit(from: "count/min")).map(Int.init)
+        // A bike sensor's, `nil` without one (#749).
+        metrics.power = builder.mostRecent(of: .cyclingPower, in: .watt()).map(Int.init)
+        metrics.cadence = builder.mostRecent(of: .cyclingCadence, in: HKUnit(from: "count/min")).map(Int.init)
         state = .active(metrics)
         recordMovement(distanceMeters: metrics.distanceMeters, at: now)
         Task {

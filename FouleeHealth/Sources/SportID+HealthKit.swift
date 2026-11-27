@@ -16,4 +16,10 @@ nonisolated extension SportID {
     public init?(_ hkActivityType: HKWorkoutActivityType) {
         self.init(healthKitActivityRawValue: hkActivityType.rawValue)
     }
+
+    /// The quantity a workout of this sport sums its distance under: the
+    /// cycling one for a ride (#749), walking and running otherwise.
+    public var distanceTypeIdentifier: HKQuantityTypeIdentifier {
+        descriptor.family == .cycling ? .distanceCycling : .distanceWalkingRunning
+    }
 }

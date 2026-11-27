@@ -14,7 +14,8 @@ extension TodayStore {
     /// « Quel sport ? » (#743). On the store rather than in `TodayScreen`, so
     /// a test can reach it.
     var sportChoice: SportChoice.Resolved {
-        SportChoice.resolve(last: lastSport, favorites: favoriteSports)
+        // The iPhone's sports only: a ride is the watch's until #750.
+        SportChoice.resolve(last: lastSport, favorites: favoriteSports, on: .phone)
     }
 
     /// The sport the home's buttons name and start: the one just picked in

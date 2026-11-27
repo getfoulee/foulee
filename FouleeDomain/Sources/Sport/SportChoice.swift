@@ -48,18 +48,35 @@ nonisolated public struct LastSport: Codable, Equatable, Sendable {
 /// #743). Shared by the iPhone and the watch, so both offer the same sports
 /// in the same order.
 nonisolated public enum SportChoice {
-    /// The sport « Démarrer » starts: the last one, when Foulée can still
-    /// record it, or else the first favourite, or else walking, the app's
-    /// original sport.
-    public static func defaultActivity(last: LastSport?, favorites: Set<SportID>) -> SessionActivity {
-        if let last, let activity = SessionActivity(sport: last.sport) { return activity }
-        return SessionActivity.allCases.first { favorites.contains($0.sport) } ?? .walking
+    /// The device a choice is made on: the iPhone does not record every sport
+    /// the watch does (#749).
+    public enum Device: Sendable {
+        case phone
+        case watch
     }
 
-    /// The recordable sports, favourites first, each group in the catalogue's
-    /// order so a sport never moves between two visits.
-    public static func sections(favorites: Set<SportID>) -> Sections {
-        let sports = SessionActivity.allCases
+    /// The sports `device` records, in the catalogue's order.
+    public static func recordable(on device: Device) -> [SessionActivity] {
+        SessionActivity.allCases.filter { device == .watch || $0.sport.descriptor.devices == .phoneAndWatch }
+    }
+
+    /// The sport « Démarrer » starts: the last one, when `device` can still
+    /// record it, or else the first favourite it records, or else walking,
+    /// the app's original sport.
+    public static func defaultActivity(
+        last: LastSport?,
+        favorites: Set<SportID>,
+        on device: Device = .watch
+    ) -> SessionActivity {
+        let sports = recordable(on: device)
+        if let last, let activity = sports.first(where: { $0.sport == last.sport }) { return activity }
+        return sports.first { favorites.contains($0.sport) } ?? .walking
+    }
+
+    /// The sports `device` records, favourites first, each group in the
+    /// catalogue's order so a sport never moves between two visits.
+    public static func sections(favorites: Set<SportID>, on device: Device = .watch) -> Sections {
+        let sports = recordable(on: device)
         return Sections(
             favorites: sports.filter { favorites.contains($0.sport) },
             others: sports.filter { !favorites.contains($0.sport) }
@@ -74,8 +91,11 @@ nonisolated public enum SportChoice {
     }
 
     /// What « Démarrer » starts and what « Autre sport » lists, together.
-    public static func resolve(last: LastSport?, favorites: Set<SportID>) -> Resolved {
-        Resolved(activity: defaultActivity(last: last, favorites: favorites), sections: sections(favorites: favorites))
+    public static func resolve(last: LastSport?, favorites: Set<SportID>, on device: Device = .watch) -> Resolved {
+        Resolved(
+            activity: defaultActivity(last: last, favorites: favorites, on: device),
+            sections: sections(favorites: favorites, on: device)
+        )
     }
 
     public struct Sections: Equatable, Sendable {

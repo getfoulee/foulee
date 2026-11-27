@@ -1,4 +1,5 @@
 import FouleeDomain
+import FouleeHealth
 import HealthKit
 
 nonisolated extension WorkoutSummary {
@@ -12,9 +13,11 @@ nonisolated extension WorkoutSummary {
     /// metadata (0 when not recorded).
     init(workout: HKWorkout) {
         let metadata = workout.metadata
+        // A ride sums its distance under its own type (#749).
+        let distanceType = SportID(workout.workoutActivityType)?.distanceTypeIdentifier ?? .distanceWalkingRunning
         let distanceMeters = (metadata?[FouleeWorkoutMetadata.distanceMeters] as? Double)
             ?? workout
-                .statistics(for: HKQuantityType(.distanceWalkingRunning))?
+                .statistics(for: HKQuantityType(distanceType))?
                 .sumQuantity()?
                 .doubleValue(for: .meter())
             ?? 0

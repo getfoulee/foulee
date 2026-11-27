@@ -18,7 +18,9 @@ struct SessionActivityAttributesTests {
 
     @Test(
         "A walk and a run draw what they always did",
-        arguments: SessionActivity.allCases.filter { $0.sport.descriptor.location == .outdoor }
+        arguments: SessionActivity.allCases.filter {
+            $0.sport.descriptor.location == .outdoor && $0.sport.descriptor.family == .onFoot
+        }
     )
     func walkAndRun(activity: SessionActivity) {
         let attributes = SessionActivityAttributes(goalMinutes: 30, activity: activity)

@@ -219,6 +219,16 @@
         }
       }
     },
+    "%lld kilomètres par heure" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld kilometers per hour"
+          }
+        }
+      }
+    },
     "%lld minutes" : {
       "localizations" : {
         "en" : {
@@ -349,6 +359,16 @@
         }
       }
     },
+    "%lld km/h" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km/h"
+          }
+        }
+      }
+    },
     "%lld pas/min" : {
       "localizations" : {
         "en" : {
@@ -473,6 +493,16 @@
         }
       }
     },
+    "sortie à vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ride"
+          }
+        }
+      }
+    },
     "séance d'elliptique" : {
       "localizations" : {
         "en" : {
@@ -493,6 +523,16 @@
         }
       }
     },
+    "séance de vélo d'intérieur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "indoor ride"
+          }
+        }
+      }
+    },
     "Ta course sur tapis" : {
       "localizations" : {
         "en" : {
@@ -509,6 +549,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your hike"
+          }
+        }
+      }
+    },
+    "Ta sortie à vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your ride"
           }
         }
       }
@@ -549,6 +599,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your strength session"
+          }
+        }
+      }
+    },
+    "Ta séance de vélo d'intérieur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your indoor ride"
           }
         }
       }
@@ -603,12 +663,42 @@
         }
       }
     },
+    "tu roules" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "you ride"
+          }
+        }
+      }
+    },
     "Verre non enregistré — réessaie" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Glass not saved — try again"
+          }
+        }
+      }
+    },
+    "Vélo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bike"
+          }
+        }
+      }
+    },
+    "Vélo d'intérieur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indoor bike"
           }
         }
       }

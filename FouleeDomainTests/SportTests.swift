@@ -12,6 +12,7 @@ struct SportTests {
             .walking: "walking", .running: "running", .hiking: "hiking", .trailRunning: "trailRunning",
             .strength: "strength", .hiit: "hiit", .yoga: "yoga",
             .rowing: "rowing", .elliptical: "elliptical", .indoorRunning: "indoorRunning",
+            .cycling: "cycling", .indoorCycling: "indoorCycling",
         ]
         #expect(sport.rawValue == expected[sport])
         #expect(sport.descriptor.id == sport)
@@ -51,7 +52,7 @@ struct SportTests {
 
     @Test("Every other sport has a HealthKit type of its own")
     func healthKitTypesAreDistinctButForTrail() {
-        let tagged: Set<SportID> = [.trailRunning, .indoorRunning]
+        let tagged: Set<SportID> = [.trailRunning, .indoorRunning, .indoorCycling]
         let plain = SportID.allCases.filter { !tagged.contains($0) }.map(\.descriptor.healthKitActivityRawValue)
         #expect(Set(plain).count == plain.count)
         for sport in SportID.allCases where !tagged.contains(sport) {
@@ -61,7 +62,7 @@ struct SportTests {
 
     @Test("An unknown HealthKit type is no sport")
     func unknownHealthKitType() {
-        #expect(SportID(healthKitActivityRawValue: 13) == nil) // cycling
+        #expect(SportID(healthKitActivityRawValue: 9) == nil) // climbing
     }
 
     @Test("A recordable sport has everything a session needs", arguments: SportID.allCases)
@@ -189,5 +190,26 @@ struct SportTests {
         #expect(hiit.estimatedCalories == 160)
         let rowing = SessionRecord(startedAt: Date(timeIntervalSince1970: 1_800_000_000), elapsed: 30 * 60, activity: .rowing)
         #expect(rowing.estimatedCalories == 180)
+    }
+
+    @Test("A ride is a watch sport told by its distance and its speed in km/h (#749)", arguments: [SportID.cycling, .indoorCycling])
+    func rides(sport: SportID) {
+        let descriptor = sport.descriptor
+        #expect(descriptor.family == .cycling)
+        #expect(descriptor.devices == .watchOnly)
+        #expect(descriptor.speedDisplay == .speed)
+        #expect(descriptor.capabilities.contains(.cyclingSensors))
+        #expect(descriptor.capabilities.contains(.steps) == false)
+        #expect(descriptor.healthKitActivityRawValue == 13)
+        #expect(descriptor.benchmarks.comparesPace == false)
+        #expect(SportID.cycling.descriptor.location == .outdoor)
+        #expect(SportID.indoorCycling.descriptor.location == .indoor)
+    }
+
+    @Test("A ride's speed reads in whole km/h, over a stretch or live")
+    func speedText() {
+        #expect(FouleeDomain.speedText(secondsPerKm: 150) == "24\u{00A0}km/h")
+        #expect(TimeInterval(3_600).speedText(overKm: 25.4) == "25\u{00A0}km/h")
+        #expect(TimeInterval(60).speedText(overKm: 0.01) == nil)
     }
 }

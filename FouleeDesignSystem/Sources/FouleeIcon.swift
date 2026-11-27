@@ -20,6 +20,10 @@ nonisolated public enum FouleeIcon {
     public static let footsteps = MetricID.steps.glyph
     public static let distance = MetricID.distance.glyph
     public static let climb = "mountain.2.fill"
+    /// A ride's speed, power and cadence (#749).
+    public static let speed = "speedometer"
+    public static let power = "bolt.fill"
+    public static let cadence = "arrow.triangle.2.circlepath"
     public static let descent = "arrow.down.right"
     public static let flame = MetricID.calories.glyph
     public static let bell = "bell.fill"

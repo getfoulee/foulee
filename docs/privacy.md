@@ -12,9 +12,11 @@ suivre tes autres iPhone (voir « iCloud »).
 
 ## Données de santé (HealthKit)
 
-Avec ton autorisation, Foulée **lit** depuis l'app Santé : tes pas, ta distance,
-tes minutes d'exercice, tes calories actives, ta fréquence cardiaque, l'eau que
-tu as bue, tes séances et leur parcours. Ces données servent uniquement à
+Avec ton autorisation, Foulée **lit** depuis l'app Santé : tes pas, ta distance
+(à pied et à vélo), tes minutes d'exercice, tes calories actives, ta fréquence
+cardiaque, l'eau que tu as bue, tes séances et leur parcours. Pendant une sortie
+à vélo sur l'Apple Watch, elle enregistre aussi la vitesse, la cadence et la
+puissance qu'envoie un capteur Bluetooth, si tu en as un. Ces données servent uniquement à
 afficher tes statistiques et tes sorties dans l'app, et à calculer ta série.
 L'écran Hydratation affiche aussi chaque verre du jour avec le nom de l'app qui
 l'a enregistré dans Santé.

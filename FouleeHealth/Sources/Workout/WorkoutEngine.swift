@@ -278,9 +278,15 @@ nonisolated public extension WorkoutEngine {
         let capabilities = sport.descriptor.capabilities
         var types: [HKQuantityType] = []
         if capabilities.contains(.steps) { types.append(HKQuantityType(.stepCount)) }
-        if capabilities.contains(.distance) { types.append(HKQuantityType(.distanceWalkingRunning)) }
+        // A bike sensor brings the distance indoors as well (#749).
+        if capabilities.contains(.distance) || capabilities.contains(.cyclingSensors) {
+            types.append(HKQuantityType(sport.distanceTypeIdentifier))
+        }
         types.append(HKQuantityType(.activeEnergyBurned))
         types.append(HKQuantityType(.heartRate))
+        if capabilities.contains(.cyclingSensors) {
+            types += [.cyclingSpeed, .cyclingCadence, .cyclingPower].map { HKQuantityType($0) }
+        }
         return types
     }
 

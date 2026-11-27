@@ -38,7 +38,9 @@ struct SportChoiceTests {
     func sections() {
         let sections = SportChoice.sections(favorites: [.running, .hiking])
         #expect(sections.favorites == [.running, .hiking])
-        #expect(sections.others == [.walking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning])
+        #expect(sections.others == [
+            .walking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning, .cycling, .indoorCycling,
+        ])
         let all = SportChoice.sections(favorites: Set(SportID.allCases))
         #expect(all.favorites == SessionActivity.allCases)
         #expect(all.others.isEmpty)
@@ -104,5 +106,15 @@ struct SportChoiceTests {
         #expect(SportChoice.toggling(.hiking, in: [.walking]) == [.walking, .hiking])
         #expect(SportChoice.toggling(.walking, in: [.walking, .hiking]) == [.hiking])
         #expect(SportChoice.toggling(.hiking, in: [.hiking]) == [.hiking])
+    }
+
+    @Test("The iPhone offers no ride, and a ride last started on the wrist starts a favourite there (#749)")
+    func ridesStayOnTheWatch() {
+        let phone = SportChoice.sections(favorites: [.cycling, .running], on: .phone)
+        #expect(phone.favorites == [.running])
+        #expect(!phone.others.contains(.cycling) && !phone.others.contains(.indoorCycling))
+        let ride = LastSport(sport: .cycling, startedAt: Self.later)
+        #expect(SportChoice.defaultActivity(last: ride, favorites: [.running], on: .phone) == .running)
+        #expect(SportChoice.defaultActivity(last: ride, favorites: [.running], on: .watch) == .cycling)
     }
 }

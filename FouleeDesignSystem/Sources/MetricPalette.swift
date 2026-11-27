@@ -14,4 +14,7 @@ nonisolated public enum MetricPalette {
     public static let distance = Color(.sRGB, red: 10 / 255, green: 132 / 255, blue: 255 / 255)
     public static let calories = ReadablePalette.orange
     public static let heartRate = Color(.sRGB, red: 255 / 255, green: 69 / 255, blue: 58 / 255)
+    /// A bike sensor's power (#749). Speed takes the distance's colour and
+    /// cadence the steps'.
+    public static let power = ReadablePalette.indigoText
 }

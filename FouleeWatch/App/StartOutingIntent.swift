@@ -82,6 +82,8 @@ enum WatchOutingActivity: String, AppEnum, CaseIterable {
     case rowing
     case elliptical
     case indoorRunning
+    case cycling
+    case indoorCycling
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation { "Sport" }
 
@@ -117,6 +119,14 @@ enum WatchOutingActivity: String, AppEnum, CaseIterable {
             ),
             .indoorRunning: DisplayRepresentation(
                 title: "Tapis", image: .init(systemName: "figure.run.treadmill"), synonyms: ["course sur tapis"]
+            ),
+            .cycling: DisplayRepresentation(
+                title: "Vélo", image: .init(systemName: "figure.outdoor.cycle"), synonyms: ["sortie à vélo"]
+            ),
+            .indoorCycling: DisplayRepresentation(
+                title: "Vélo d'intérieur",
+                image: .init(systemName: "figure.indoor.cycle"),
+                synonyms: ["séance de vélo d'intérieur", "home trainer"]
             )
         ]
     }

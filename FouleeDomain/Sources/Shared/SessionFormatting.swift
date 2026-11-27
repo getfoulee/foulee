@@ -134,3 +134,22 @@ nonisolated public extension Double {
         "\(kmValue(fractionDigits: fractionDigits, locale: locale)) km"
     }
 }
+
+/// « 24 km/h » from a speed given as seconds per kilometre (#749): a ride's
+/// speed, to the kilometre per hour, which is all a wrist claims honestly.
+nonisolated public func speedText(secondsPerKm: TimeInterval) -> String {
+    kitText("\(Int((3_600 / secondsPerKm).rounded()))\u{00A0}km/h")
+}
+
+/// The same speed as VoiceOver says it: « 24 kilomètres par heure ».
+nonisolated public func spokenSpeedText(secondsPerKm: TimeInterval) -> String {
+    kitText("\(Int((3_600 / secondsPerKm).rounded())) kilomètres par heure")
+}
+
+nonisolated public extension TimeInterval {
+    /// « 24 km/h » over a whole stretch, `nil` where `paceText(overKm:)` is.
+    func speedText(overKm km: Double) -> String? {
+        guard paceText(overKm: km) != nil else { return nil }
+        return FouleeDomain.speedText(secondsPerKm: self / km)
+    }
+}
