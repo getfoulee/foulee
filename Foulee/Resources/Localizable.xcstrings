@@ -1303,6 +1303,16 @@
         }
       }
     },
+    "Choisit le sport, sans démarrer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Picks the sport without starting"
+          }
+        }
+      }
+    },
     "course en trail" : {
       "localizations" : {
         "en" : {
@@ -1329,16 +1339,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last sport"
-          }
-        }
-      }
-    },
-    "Démarre une sortie" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starts a workout"
           }
         }
       }

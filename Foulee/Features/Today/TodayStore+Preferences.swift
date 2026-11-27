@@ -10,19 +10,32 @@ extension TodayStore {
     /// payload still speak in.
     var activityMode: ActivityMode { ActivityMode(favorites: favoriteSports) }
 
-    /// The sport a tap on « Démarrer » starts (#743): the last one, or the
-    /// first favourite. On the store rather than in `TodayScreen`, so a test
-    /// can reach it.
+    /// The last sport, or the first favourite, and the sections of
+    /// « Quel sport ? » (#743). On the store rather than in `TodayScreen`, so
+    /// a test can reach it.
     var sportChoice: SportChoice.Resolved {
         SportChoice.resolve(last: lastSport, favorites: favoriteSports)
     }
 
-    var startActivity: SessionActivity { sportChoice.activity }
+    /// The sport the home's buttons name and start: the one just picked in
+    /// « Quel sport ? » (#832), else the last one or the first favourite.
+    var startActivity: SessionActivity { chosenSport ?? sportChoice.activity }
 
     /// What « Commencer une sortie » starts (#604): the sport the shortcut
     /// names, or exactly what the home button would.
     func startActivity(requested activity: SessionActivity?) -> SessionActivity {
         activity ?? startActivity
+    }
+
+    /// The one place an outing starts from the home, on the iPhone or on the
+    /// watch (#832): resolves the sport, records it once as the last sport,
+    /// and forgets the pick, which the last sport now names.
+    func beginStart(requested activity: SessionActivity?, preferences: UserPreferences) -> SessionActivity {
+        let started = startActivity(requested: activity)
+        preferences.recordStart(of: started)
+        chosenSport = nil
+        apply(preferences: preferences)
+        return started
     }
 
     /// The walk window as the mirrored copy stores it — hour and minute only.

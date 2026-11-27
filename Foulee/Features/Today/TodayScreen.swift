@@ -123,9 +123,11 @@ struct TodayScreen: View {
                 SportPickerSheet(
                     sections: store.sportChoice.sections,
                     current: store.startActivity,
+                    // Choosing names the sport; the home's buttons start it,
+                    // on the device the user picks there (#832).
                     onChoose: { sport in
+                        store.chosenSport = sport
                         isChoosingSport = false
-                        startChosen(sport)
                     },
                     onClose: { isChoosingSport = false }
                 )
@@ -165,7 +167,7 @@ struct TodayScreen: View {
             snapshot: snapshot,
             mirroring: mirroredSession.session?.device,
             canStartOnWatch: mirroredSession.canStartOnWatch,
-            onStartOnWatch: { startOnWatch(store.startActivity) },
+            onStartOnWatch: { startOnWatch() },
             sport: store.startActivity,
             onChooseSport: { isChoosingSport = true },
             notificationsEnabled: preferences.notificationsEnabled,
@@ -431,8 +433,7 @@ private extension TodayScreen {
             isShowingMirroredWalk = true
             return
         }
-        startingActivity = store.startActivity(requested: activity)
-        preferences.recordStart(of: startingActivity)
+        startingActivity = store.beginStart(requested: activity, preferences: preferences)
         if donates {
             StartOutingIntent().donate()
         }
@@ -450,19 +451,10 @@ private extension TodayScreen {
     }
 
     /// The wrist records a better outing (#283), so the phone hands it the
-    /// sport and the wrist opens the session.
-    func startOnWatch(_ activity: SessionActivity) {
-        preferences.recordStart(of: activity)
+    /// sport the buttons name and the wrist opens the session.
+    func startOnWatch() {
+        let activity = store.beginStart(requested: nil, preferences: preferences)
         Task { await mirroredSession.startOnWatch(activity) }
-    }
-
-    /// « Autre sport » starts where « Démarrer » would: wrist first (#283).
-    func startChosen(_ activity: SessionActivity) {
-        if mirroredSession.canStartOnWatch, !mirroredSession.isMirroring {
-            startOnWatch(activity)
-        } else {
-            startWalk(activity)
-        }
     }
 
     /// The session screen, on a fresh store or on one that took back an

@@ -74,6 +74,10 @@ final class TodayStore {
     /// them to start its own sessions (issues #223, #743).
     private(set) var favoriteSports: Set<SportID> = [.walking]
     private(set) var lastSport: LastSport?
+    /// The sport picked in « Quel sport ? » and not started yet (#832): what
+    /// the home's buttons name until one of them starts it. Never stored, so
+    /// it is not the last sport until an outing begins.
+    var chosenSport: SessionActivity?
 
     /// Last fetched history, kept so `apply(preferences:)` can re-derive the
     /// streaks immediately when the goal or active days change.
