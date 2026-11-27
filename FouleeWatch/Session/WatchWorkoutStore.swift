@@ -3,6 +3,7 @@ import FouleeHealth
 @preconcurrency import HealthKit
 import Observation
 import SwiftUI
+import WatchKit
 
 /// Drives the live walking workout on watchOS via `HKWorkoutSession` +
 /// `HKLiveWorkoutBuilder` — the same APIs the Workouts app uses, which
@@ -106,6 +107,9 @@ final class WatchWorkoutStore: NSObject {
     @ObservationIgnored var recordsTraces: () -> Bool = { WatchSyncStore.read()?.recordsDetectionTraces == true }
     /// The watch's charge, read at every batch (issue #614).
     @ObservationIgnored let battery: @MainActor () -> BatteryReading
+    /// A swim's pool and the water lock it turns on (#751).
+    @ObservationIgnored var pool: PoolLength?
+    @ObservationIgnored var lockWater: @MainActor () -> Void = { WKInterfaceDevice.current().enableWaterLock() }
     /// The outing was stopped before the battery could stop it (issue #614).
     var endedOnLowBattery = false
 
@@ -136,8 +140,9 @@ final class WatchWorkoutStore: NSObject {
     /// Santé records the session as — and that stamp is permanent (issue
     /// #223). It comes from « Démarrer », « Autre sport », the phone or Siri
     /// (#743); this path is the same either way.
-    func start(activity: SessionActivity) async {
+    func start(activity: SessionActivity, pool: PoolLength? = nil) async {
         guard case .idle = state else { return }
+        self.pool = pool
         #if DEBUG
         // Capture mode (issue #239): show the seeded session and open nothing.
         // It returns before `engine` is read, so there is no authorization
@@ -262,7 +267,7 @@ final class WatchWorkoutStore: NSObject {
         let leg = OutingLeg(outingID: outingID, index: 0)
         startTrace(activity: activity, at: now)
         let handle = await runOrTrap("ouverture de la séance") {
-            try await engine.startSession(of: activity, at: now, leg: leg, delegate: self)
+            try await engine.startSession(of: activity, at: now, leg: leg, delegate: self, pool: pool)
         }
         guard let handle else { return }
         await adopt(handle, activity: activity, legStartedAt: now, after: [])
@@ -291,10 +296,10 @@ final class WatchWorkoutStore: NSObject {
         currentLeg = .zero
         pendingSplit = nil
         resetPause()
-        state = .active(.empty(for: activity))
+        state = .active(.empty(for: activity, pool: pool))
+        lockWaterIfSwimming(activity)
         beginActivityDetection(from: activity)
-        // No GPS for a sport without a route (#745), so no location prompt.
-        if activity.sport.descriptor.tracksRoute { route.start() }
+        if activity.sport.descriptor.tracksRoute { route.start() } // No GPS, no prompt, without a route (#745).
         climb.start(clock: clock)
     }
 
@@ -324,6 +329,7 @@ final class WatchWorkoutStore: NSObject {
         // A bike sensor's, `nil` without one (#749).
         metrics.power = builder.mostRecent(of: .cyclingPower, in: .watt()).map(Int.init)
         metrics.cadence = builder.mostRecent(of: .cyclingCadence, in: HKUnit(from: "count/min")).map(Int.init)
+        metrics.strokes = Int(builder.sum(of: .swimmingStrokeCount, in: .count()))
         state = .active(metrics)
         recordMovement(distanceMeters: metrics.distanceMeters, at: now)
         Task {

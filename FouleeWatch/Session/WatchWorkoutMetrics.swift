@@ -13,6 +13,15 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     /// (#749), `nil` without one.
     var power: Int?
     var cadence: Int?
+    /// A swim's pool and arm strokes (#751); `nil` and 0 otherwise.
+    var pool: PoolLength?
+    var strokes = 0
+
+    /// The lengths swum, counted from the distance HealthKit adds at each.
+    var laps: Int { pool?.laps(over: distanceMeters) ?? 0 }
+
+    /// The seconds and strokes a length takes, added; `nil` before one.
+    var swolf: Int? { FouleeDomain.swolf(duration: elapsed, strokes: strokes, laps: laps) }
     /// The outing's climb so far, in metres (issue #535); 0 without a
     /// barometer.
     var climbMeters: Double = 0
@@ -77,9 +86,13 @@ nonisolated struct WatchWorkoutMetrics: Equatable, Sendable {
     /// has to name *some* activity and names the commoner one: a run opened at
     /// `zero` would read « Marche » for the second before the first metrics
     /// land.
-    static func empty(for activity: SessionActivity) -> WatchWorkoutMetrics {
+    ///
+    /// A swim counts its lengths in `pool`, the standard one when none was
+    /// chosen (#751); any other sport has no pool.
+    static func empty(for activity: SessionActivity, pool: PoolLength? = nil) -> WatchWorkoutMetrics {
         var metrics = zero
         metrics.activity = activity
+        if activity.sport.descriptor.family == .swimming { metrics.pool = pool ?? .standard }
         return metrics
     }
 

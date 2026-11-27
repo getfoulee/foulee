@@ -18,6 +18,8 @@ nonisolated public enum ActivityPalette {
     public static let hike = ReadablePalette.green
     /// Rides, outdoors and in (#749).
     public static let ride = ReadablePalette.blueText
+    /// Swims (#751).
+    public static let swim = ReadablePalette.purpleText
     /// Strength, HIIT, yoga, rower, elliptical (#745, #746): one colour, they
     /// never share an outing.
     public static let training = ReadablePalette.indigoText

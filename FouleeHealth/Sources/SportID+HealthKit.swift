@@ -18,8 +18,13 @@ nonisolated extension SportID {
     }
 
     /// The quantity a workout of this sport sums its distance under: the
-    /// cycling one for a ride (#749), walking and running otherwise.
+    /// cycling one for a ride (#749), the swimming one for a swim (#751),
+    /// walking and running otherwise.
     public var distanceTypeIdentifier: HKQuantityTypeIdentifier {
-        descriptor.family == .cycling ? .distanceCycling : .distanceWalkingRunning
+        switch descriptor.family {
+        case .cycling: .distanceCycling
+        case .swimming: .distanceSwimming
+        case .onFoot, .training: .distanceWalkingRunning
+        }
     }
 }

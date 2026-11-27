@@ -35,6 +35,8 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
     /// in Santé, indoors, told apart by Foulée's tag.
     case cycling
     case indoorCycling
+    /// Laps of a pool (#751), on the watch: lengths, strokes and a SWOLF.
+    case poolSwimming
 
     /// Everything Foulée knows about this sport.
     public var descriptor: SportDescriptor {
@@ -51,6 +53,7 @@ nonisolated public enum SportID: String, CaseIterable, Codable, Sendable {
         case .indoorRunning: .indoorRunning
         case .cycling: .cycling
         case .indoorCycling: .indoorCycling
+        case .poolSwimming: .poolSwimming
         }
     }
 
@@ -112,6 +115,8 @@ nonisolated public struct SportDescriptor: Sendable {
         case training
         /// Rides (#749): a speed rather than a pace, no steps.
         case cycling
+        /// Swimming (#751): lengths and strokes, under water.
+        case swimming
     }
 
     /// The devices that record a sport.
@@ -186,6 +191,8 @@ nonisolated public struct SportDescriptor: Sendable {
         /// Speed, cadence and power from a Bluetooth bike sensor (#749),
         /// when one is paired; the distance too, indoors.
         public static let cyclingSensors = Capabilities(rawValue: 1 << 4)
+        /// Lengths and arm strokes, counted by the watch in a pool (#751).
+        public static let swimStrokes = Capabilities(rawValue: 1 << 5)
         /// Steps and cadence, from the pedometer.
         public static let steps = Capabilities(rawValue: 1 << 1)
         /// Climb and descent, from the altimeter.

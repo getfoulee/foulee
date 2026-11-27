@@ -149,7 +149,8 @@ struct WatchActivityPickerTests {
 
         #expect(picker.sections.favorites == [.running])
         #expect(picker.sections.others == [
-            .walking, .hiking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning, .cycling, .indoorCycling,
+            .walking, .hiking, .trailRunning, .strength, .hiit, .yoga, .rowing, .elliptical, .indoorRunning,
+            .cycling, .indoorCycling, .poolSwimming,
         ])
         #expect(try #require(button(.running, picker)).isCurrent)
         #expect(try #require(button(.running, picker)).activity.label == "Course")

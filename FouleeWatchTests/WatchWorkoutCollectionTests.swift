@@ -105,11 +105,14 @@ struct WatchWorkoutCollectionTests {
         let ride = measured.union(
             [.distanceCycling, .cyclingSpeed, .cyclingCadence, .cyclingPower].map { HKQuantityType($0) }
         )
+        // A swim's distance and arm strokes (#751).
+        let swim = measured.union([.distanceSwimming, .swimmingStrokeCount].map { HKQuantityType($0) })
         for activity in SessionActivity.allCases {
             let expected = switch activity.sport.descriptor.family {
             case .onFoot: onFoot
             case .training: measured
             case .cycling: ride
+            case .swimming: swim
             }
             #expect(Set(WorkoutEngine.collectedTypes(for: activity.sport)) == expected)
         }

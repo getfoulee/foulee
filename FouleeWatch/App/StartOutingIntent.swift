@@ -84,6 +84,7 @@ enum WatchOutingActivity: String, AppEnum, CaseIterable {
     case indoorRunning
     case cycling
     case indoorCycling
+    case poolSwimming
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation { "Sport" }
 
@@ -127,6 +128,9 @@ enum WatchOutingActivity: String, AppEnum, CaseIterable {
                 title: "Vélo d'intérieur",
                 image: .init(systemName: "figure.indoor.cycle"),
                 synonyms: ["séance de vélo d'intérieur", "home trainer"]
+            ),
+            .poolSwimming: DisplayRepresentation(
+                title: "Piscine", image: .init(systemName: "figure.pool.swim"), synonyms: ["séance de natation", "natation"]
             )
         ]
     }

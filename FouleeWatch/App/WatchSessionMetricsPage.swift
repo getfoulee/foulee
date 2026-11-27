@@ -42,7 +42,9 @@ struct WatchSessionMetricsPage: View {
                 // Strength, yoga or a rower have no steps, distance or climb
                 // (#745): their calories and heart rate are the whole page.
                 // A treadmill keeps its steps and distance (#746).
-                if metrics.activity.sport.descriptor.measuresDistance {
+                if metrics.pool != nil {
+                    swimFigures
+                } else if metrics.activity.sport.descriptor.measuresDistance {
                     HStack(spacing: 10) {
                         leadingFigure
                         metric(
@@ -195,6 +197,44 @@ struct WatchSessionMetricsPage: View {
     /// so it reads first.
     ///
     /// One VoiceOver element each, the figure with its unit in words.
+    /// A swim's lengths and metres, then its strokes and SWOLF (#751).
+    private var swimFigures: some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 10) {
+                metric(
+                    value: "\(metrics.laps)",
+                    label: String(localized: "longueurs"),
+                    spoken: String(localized: "\(metrics.laps) longueurs"),
+                    icon: ActivityGlyph.poolSwim,
+                    tint: MetricPalette.distance
+                )
+                metric(
+                    value: "\(Int(metrics.distanceMeters.rounded()))",
+                    label: "m",
+                    spoken: String(localized: "\(Int(metrics.distanceMeters.rounded())) mètres"),
+                    icon: MetricID.distance.glyph,
+                    tint: MetricPalette.distance
+                )
+            }
+            HStack(spacing: 10) {
+                metric(
+                    value: "\(metrics.strokes)",
+                    label: String(localized: "mouvements"),
+                    spoken: String(localized: "\(metrics.strokes) mouvements de bras"),
+                    icon: FouleeIcon.cadence,
+                    tint: MetricPalette.steps
+                )
+                metric(
+                    value: metrics.swolf.map { "\($0)" } ?? "—",
+                    label: "SWOLF",
+                    spoken: metrics.swolf.map { String(localized: "SWOLF \($0)") } ?? String(localized: "SWOLF inconnu"),
+                    icon: FouleeIcon.speed,
+                    tint: MetricPalette.power
+                )
+            }
+        }
+    }
+
     /// Power and cadence from a bike sensor (#749).
     private var sensorFigures: some View {
         HStack(spacing: 10) {
