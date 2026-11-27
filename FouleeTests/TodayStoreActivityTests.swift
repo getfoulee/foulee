@@ -100,6 +100,53 @@ struct TodayStoreActivityTests {
         }
     }
 
+    @Test("Choosing a sport in « Quel sport ? » names it on the buttons and starts nothing (#832)")
+    func choosingNamesTheSport() async throws {
+        try await withDependencies {
+            $0.date = .constant(Date(timeIntervalSince1970: 1_800_000_000))
+        } operation: {
+            try await withPreferences { preferences in
+                preferences.activityMode = .walking
+                let store = TodayStore()
+                store.apply(preferences: preferences)
+
+                store.chosenSport = .yoga
+                #expect(store.startActivity == .yoga)
+                // Not the last sport until an outing starts.
+                #expect(preferences.lastSport == nil)
+                store.apply(preferences: preferences)
+                #expect(store.startActivity == .yoga)
+            }
+        }
+    }
+
+    @Test("A start, on the iPhone or the watch, records the sport once and forgets the pick (#832)")
+    func oneStartRecordsOnce() async throws {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        try await withDependencies {
+            $0.date = .constant(now)
+        } operation: {
+            try await withPreferences { preferences in
+                preferences.activityMode = .walking
+                let store = TodayStore()
+                store.apply(preferences: preferences)
+                store.chosenSport = .rowing
+
+                #expect(store.beginStart(requested: nil, preferences: preferences) == .rowing)
+                #expect(preferences.lastSport == LastSport(.rowing, at: now))
+                #expect(store.chosenSport == nil)
+                // The last sport now names it on the buttons.
+                #expect(store.startActivity == .rowing)
+
+                // A shortcut's sport wins over a pick, and is the one recorded.
+                store.chosenSport = .yoga
+                #expect(store.beginStart(requested: .running, preferences: preferences) == .running)
+                #expect(preferences.lastSport == LastSport(.running, at: now))
+                #expect(store.startActivity == .running)
+            }
+        }
+    }
+
     @Test("A shortcut starts the sport it names, else what the home button would")
     func shortcutStartActivity() async throws {
         try await withPreferences { preferences in

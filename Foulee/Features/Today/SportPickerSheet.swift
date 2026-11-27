@@ -3,8 +3,9 @@ import FouleeDomain
 import SwiftUI
 
 /// « Autre sport » (issue #743): the favourites first, then every other sport
-/// Foulée records. Choosing one starts it, and it becomes the sport
-/// « Démarrer » starts next time.
+/// Foulée records. Choosing one names it on the home's buttons without
+/// starting anything (#832): the device is picked there, and the sport becomes
+/// the last one only once an outing starts.
 struct SportPickerSheet: View {
     var sections: SportChoice.Sections
     /// The sport « Démarrer » starts now, checked.
@@ -78,7 +79,7 @@ struct SportPickerRow: View {
             isSelected: isCurrent,
             select: select
         )
-        .accessibilityHint(Text("Démarre une sortie"))
+        .accessibilityHint(Text("Choisit le sport, sans démarrer"))
     }
 }
 
